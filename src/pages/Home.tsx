@@ -6,7 +6,6 @@ import MaskTransition        from '@/components/animations/MaskTransition';
 import Projects              from '@/components/sections/Projects';
 import TechStack             from '@/components/sections/TechStack/index';
 import Experience            from '@/components/sections/Experience';
-import CareerTimeline        from '@/components/sections/CareerTimeline';
 import About                 from '@/components/sections/About';
 import EngineeringPhilosophy from '@/components/sections/EngineeringPhilosophy/index';
 import Certifications        from '@/components/sections/Certifications';
@@ -54,8 +53,7 @@ const Home = () => {
       <Projects />
       <TechStack />
 
-      {/* Career Timeline — after tech stack, before experience cards */}
-      <CareerTimeline />
+
 
       <Experience />
       <About />
