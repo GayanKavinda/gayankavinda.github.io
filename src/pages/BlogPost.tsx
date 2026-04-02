@@ -7,10 +7,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import { useTheme } from '@/context/ThemeProvider';
-import { POSTS } from '@/constants/blog';
+import Navbar from '@shared/components/layout/Navbar';
+import Footer from '@shared/components/layout/Footer';
+import { useTheme } from '@app/providers/theme-provider';
+import { POSTS } from '@features/blog/data/blog';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -299,3 +299,5 @@ const BlogPost = () => {
 };
 
 export default BlogPost;
+
+

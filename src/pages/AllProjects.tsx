@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import { setSEO } from '@/lib/seo';
+import Navbar from '@shared/components/layout/Navbar';
+import Footer from '@shared/components/layout/Footer';
+import { setSEO } from '@shared/lib/seo';
 
 const allProjects = [
   { slug: 'distributed-task-engine', name: 'Distributed Task Engine', desc: 'High-throughput task orchestration', tags: ['Go', 'Kafka', 'Redis'], cat: 'Web' },
@@ -117,3 +117,5 @@ const AllProjects = () => {
 };
 
 export default AllProjects;
+
+

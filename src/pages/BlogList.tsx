@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import { POSTS } from "@/constants/blog";
+import Navbar from "@shared/components/layout/Navbar";
+import Footer from "@shared/components/layout/Footer";
+import { POSTS } from "@features/blog/data/blog";
 
 const ALL_TAGS = ["All", ...Array.from(new Set(POSTS.map((p) => p.tag)))];
 
@@ -126,3 +126,5 @@ export const BlogList = () => {
 };
 
 export default BlogList;
+
+

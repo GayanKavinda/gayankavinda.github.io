@@ -1,24 +1,24 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import Navbar                from '@/components/layout/Navbar';
-import Hero                  from '@/components/sections/Hero/Hero';
-import MaskTransition        from '@/components/animations/MaskTransition';
-import Projects              from '@/components/sections/Projects';
-import TechStack             from '@/components/sections/TechStack/index';
-import Experience            from '@/components/sections/Experience';
-import About                 from '@/components/sections/About';
-import EngineeringPhilosophy from '@/components/sections/EngineeringPhilosophy/index';
-import Certifications        from '@/components/sections/Certifications';
-import Achievements          from '@/components/sections/Achievements';
-import OpenSource            from '@/components/sections/OpenSource';
-import Testimonials          from '@/components/sections/Testimonials';
-import ImpactMetrics         from '@/components/sections/ImpactMetrics';
-import CodeCadence           from '@/components/sections/CodeCadence';
-import Blog                  from '@/components/sections/Blog';
-import Contact               from '@/components/sections/Contact';
-import Footer                from '@/components/layout/Footer';
-import SideNav               from '@/components/layout/SideNav';
-import { setSEO, injectPersonSchema } from '@/lib/seo';
+import Navbar                from '@shared/components/layout/Navbar';
+import Hero                  from '@features/home/components/Hero/Hero';
+import MaskTransition        from '@shared/components/animations/MaskTransition';
+import Projects              from '@features/projects/components/Projects';
+import TechStack             from '@features/home/components/TechStack/index';
+import Experience            from '@features/home/components/Experience';
+import About                 from '@features/about/components/About';
+import EngineeringPhilosophy from '@features/about/components/EngineeringPhilosophy/index';
+import Certifications        from '@features/about/components/Certifications';
+import Achievements          from '@features/about/components/Achievements';
+import OpenSource            from '@features/home/components/OpenSource';
+import Testimonials          from '@features/home/components/Testimonials';
+import ImpactMetrics         from '@features/home/components/ImpactMetrics';
+import CodeCadence           from '@features/home/components/CodeCadence';
+import Blog                  from '@features/blog/components/Blog';
+import Contact               from '@features/contact/components/Contact';
+import Footer                from '@shared/components/layout/Footer';
+import SideNav               from '@shared/components/layout/SideNav';
+import { setSEO, injectPersonSchema } from '@shared/lib/seo';
 
 const Home = () => {
   const location = useLocation();
@@ -78,3 +78,4 @@ const Home = () => {
 };
 
 export default Home;
+
