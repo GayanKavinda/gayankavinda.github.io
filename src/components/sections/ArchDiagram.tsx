@@ -79,7 +79,7 @@ export const ArchDiagram = () => {
   const toggle = (id: string) => setActive(a => a === id ? '' : id);
 
   return (
-    <div className="border border-border rounded-2xl overflow-hidden bg-card">
+    <div className="border border-border rounded-2xl overflow-hidden bg-card elevation-card">
       {/* Header */}
       <div className="px-5 py-3.5 border-b border-border">
         <p className="font-mono text-[9px] tracking-[.14em] uppercase text-muted-foreground/60">

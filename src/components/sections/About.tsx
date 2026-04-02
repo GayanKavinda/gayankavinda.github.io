@@ -65,7 +65,7 @@ const About = () => {
 
           {/* Photo */}
           <div ref={photoRef} className="relative w-fit mx-auto md:mx-0">
-            <div className="w-[260px] h-[320px] md:w-[320px] md:h-[380px] rounded-lg border-2 border-crimson/40 overflow-hidden bg-card flex items-center justify-center">
+            <div className="w-[260px] h-[320px] md:w-[320px] md:h-[380px] rounded-lg border-2 border-crimson/40 overflow-hidden bg-card elevation-card flex items-center justify-center">
               <span className="font-mono text-[13px] text-foreground/20">[ Your Photo ]</span>
             </div>
             {/* Corner brackets */}
@@ -99,12 +99,12 @@ const About = () => {
             </div>
 
             {/* Stats — impact-driven, no subjective percentages */}
-            <div className="about-text-anim stats-row grid grid-cols-3 gap-4 md:gap-6 mt-8 md:mt-10 border-t border-border pt-6 md:pt-8">
+            <div className="about-text-anim stats-row grid grid-cols-3 gap-3 md:gap-4 mt-8 md:mt-10 border-t border-border pt-6 md:pt-8">
               {stats.map(s => (
-                <div key={s.label}>
-                  <p className="font-jakarta font-bold text-[clamp(28px,5vw,44px)] text-crimson leading-none tracking-tighter">{s.num}</p>
-                  <p className="font-mono text-[9px] md:text-[11px] text-gold uppercase tracking-wider mt-1">{s.label}</p>
-                  <p className="font-sans text-[11px] md:text-[13px] text-foreground/40 mt-0.5">{s.sub}</p>
+                <div key={s.label} className="bg-card elevation-card border border-border p-3 md:p-4 rounded-xl text-center md:text-left">
+                  <p className="font-jakarta font-bold text-[clamp(24px,4vw,36px)] text-crimson leading-none tracking-tighter">{s.num}</p>
+                  <p className="font-mono text-[9px] md:text-[10px] text-gold uppercase tracking-wider mt-1">{s.label}</p>
+                  <p className="font-sans text-[10px] md:text-[12px] text-foreground/50 mt-0.5">{s.sub}</p>
                 </div>
               ))}
             </div>

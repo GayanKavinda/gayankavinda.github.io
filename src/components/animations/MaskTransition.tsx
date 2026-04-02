@@ -42,8 +42,8 @@ const METRICS = [
   { label: 'SHIPPED', value: '2.8K', sub: 'deployments' },
 ];
 
-const FIRE_PARTICLE_COUNT = 80;
-const SPARK_COUNT = 35;
+const FIRE_PARTICLE_COUNT = 40;
+const SPARK_COUNT = 18;
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
@@ -69,7 +69,7 @@ const FireColumn = ({
   const seedOffset = side === 'left' ? 0 : 500;
 
   // Core fire particles
-  const coreParticles = Array.from({ length: 28 }, (_, i) => ({
+  const coreParticles = Array.from({ length: 14 }, (_, i) => ({
     id: i,
     x: baseX + (sr(i * 7 + seedOffset) - 0.5) * 3,
     width: 4 + sr(i * 11 + seedOffset) * 12,
@@ -81,7 +81,7 @@ const FireColumn = ({
   }));
 
   // Outer glow particles (wider, softer)
-  const glowParticles = Array.from({ length: 12 }, (_, i) => ({
+  const glowParticles = Array.from({ length: 6 }, (_, i) => ({
     id: i + 100,
     x: baseX + (sr(i * 31 + seedOffset) - 0.5) * 6,
     width: 20 + sr(i * 37 + seedOffset) * 30,
@@ -492,7 +492,7 @@ const MaskTransition = () => {
           trigger: outerRef.current,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 2.2,
+          scrub: 1.5,
           pin: false,
         },
       });
@@ -689,18 +689,14 @@ const MaskTransition = () => {
             <img ref={ghostLRef} src={maskImg} alt="" aria-hidden="true" style={{
               position: 'absolute', width: 'clamp(200px, 30vw, 380px)', height: 'auto',
               opacity: 0,
-              filter: isDark
-                ? 'hue-rotate(-20deg) saturate(1.5) brightness(0.6)'
-                : 'hue-rotate(15deg) saturate(1.3)',
+              filter: isDark ? 'brightness(0.6)' : 'none',
               mixBlendMode: isDark ? 'screen' : 'multiply',
               pointerEvents: 'none',
             }} />
             <img ref={ghostRRef} src={maskImg} alt="" aria-hidden="true" style={{
               position: 'absolute', width: 'clamp(200px, 30vw, 380px)', height: 'auto',
               opacity: 0,
-              filter: isDark
-                ? 'hue-rotate(20deg) saturate(1.5) brightness(0.6)'
-                : 'hue-rotate(-15deg) saturate(1.3)',
+              filter: isDark ? 'brightness(0.6)' : 'none',
               mixBlendMode: isDark ? 'screen' : 'multiply',
               pointerEvents: 'none',
             }} />
@@ -708,8 +704,8 @@ const MaskTransition = () => {
               width: 'clamp(200px, 30vw, 380px)', height: 'auto',
               position: 'relative', zIndex: 2,
               filter: isDark
-                ? 'drop-shadow(0 0 80px rgba(255,120,20,0.2)) drop-shadow(0 0 30px rgba(232,168,32,0.15))'
-                : 'drop-shadow(0 0 60px rgba(192,39,45,0.15)) drop-shadow(0 0 20px rgba(200,80,30,0.1))',
+                ? 'drop-shadow(0 0 40px rgba(232,168,32,0.15))'
+                : 'drop-shadow(0 0 30px rgba(192,39,45,0.1))',
             }} />
 
             {/* Fire light reflection on mask */}

@@ -81,7 +81,7 @@ const AllProjects = () => {
             <div
               key={p.name}
               onClick={() => navigate(`/projects/${p.slug}`)}
-              className="group rounded-xl border border-border bg-card overflow-hidden hover:border-[#D4891A]/40 hover:-translate-y-[2px] transition-all duration-300 relative cursor-pointer"
+              className="group rounded-xl border border-border bg-card elevation-card overflow-hidden hover:border-[#D4891A]/40 hover:-translate-y-[2px] transition-all duration-300 relative cursor-pointer"
             >
               <div className="h-[180px] flex items-center justify-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--card)) 50%, hsl(var(--muted)) 100%)' }}>
                 <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(rgba(196,30,58,0.15) 1px,transparent 1px),linear-gradient(90deg,rgba(196,30,58,0.15) 1px,transparent 1px)', backgroundSize: '24px 24px' }} />

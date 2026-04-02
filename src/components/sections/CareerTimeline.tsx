@@ -80,7 +80,7 @@ const CareerTimeline = () => {
         <div className="relative">
           {/* Spine */}
           <div className="absolute left-[18px] md:left-1/2 top-0 bottom-0 w-px md:-translate-x-px"
-            style={{ background: 'linear-gradient(to bottom, transparent, rgba(196,30,58,0.3) 10%, rgba(212,137,26,0.3) 90%, transparent)' }} />
+            style={{ background: 'linear-gradient(to bottom, transparent, rgba(196,30,58,0.5) 10%, rgba(212,137,26,0.5) 90%, transparent)' }} />
 
           <div className="space-y-8 md:space-y-10">
             {ENTRIES.map((e, i) => {
@@ -111,7 +111,7 @@ const CareerTimeline = () => {
                   <div className="hidden md:block w-[calc(50%-24px)]" />
 
                   {/* Card */}
-                  <div className={`ml-12 md:ml-0 md:w-[calc(50%-24px)] rounded-xl border border-border bg-card p-5 hover:border-[${e.color}]/40 hover:-translate-y-[2px] transition-all duration-200 group relative overflow-hidden`}>
+                  <div className={`ml-12 md:ml-0 md:w-[calc(50%-24px)] rounded-xl border border-border bg-card p-5 elevation-card hover:border-[${e.color}]/40 hover:-translate-y-[2px] transition-all duration-200 group relative overflow-hidden`}>
                     {/* Top accent */}
                     <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: e.color }} />
 

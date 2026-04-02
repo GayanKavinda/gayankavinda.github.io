@@ -85,7 +85,7 @@ export const SystemPillars = () => {
       {PILLARS.map(p => (
         <div
           key={p.name}
-          className="pillar-card group relative bg-card border border-border rounded-2xl p-5 overflow-hidden
+          className="pillar-card elevation-card group relative bg-card border border-border rounded-2xl p-5 overflow-hidden
                      transition-all duration-200 hover:border-border/50"
         >
           {/* Top accent line */}

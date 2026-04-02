@@ -223,10 +223,10 @@ const ProjectDetail = () => {
         {/* Metrics */}
         <div className="cs-metrics grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
           {project.metrics.map((m, i) => (
-            <div key={i} className="cs-block rounded-xl border border-border bg-card p-5 text-center relative overflow-hidden group hover:-translate-y-[2px] transition-all duration-200">
+            <div key={i} className="cs-block elevation-card rounded-xl border border-border bg-card p-5 text-center relative overflow-hidden group hover:-translate-y-[2px] transition-all duration-200">
               <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: i % 2 === 0 ? '#C41E3A' : '#D4891A' }} />
               <p className="font-playfair font-black text-[clamp(28px,4vw,40px)] leading-none text-foreground tracking-tighter">{m.value}</p>
-              <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-foreground/40 mt-2">{m.label}</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-foreground/75 mt-2">{m.label}</p>
             </div>
           ))}
         </div>
@@ -284,7 +284,7 @@ const ProjectDetail = () => {
           <SectionHead tag="// Engineering" title="Tech __Breakdown__" accent="Breakdown" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {project.techBreakdown.map((t, i) => (
-              <div key={i} className="rounded-lg border border-border bg-card p-4 hover:border-[#D4891A]/40 hover:-translate-y-[2px] transition-all duration-200 group">
+              <div key={i} className="rounded-lg border border-border bg-card elevation-card p-4 hover:border-[#D4891A]/40 hover:-translate-y-[2px] transition-all duration-200 group">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="font-mono text-[12px] font-semibold text-[#C41E3A]">{t.name}</span>
                 </div>
@@ -299,7 +299,7 @@ const ProjectDetail = () => {
           <SectionHead tag="// Retrospective" title="Key __Learnings__" accent="Learnings" />
           <div className="space-y-3">
             {project.learnings.map((l, i) => (
-              <div key={i} className="flex items-start gap-4 rounded-lg border border-border bg-card px-5 py-4 hover:border-[#C41E3A]/30 transition-colors">
+              <div key={i} className="flex items-start gap-4 rounded-lg border border-border bg-card elevation-card px-5 py-4 hover:border-[#C41E3A]/30 transition-colors">
                 <span className="font-mono text-[11px] text-[#C41E3A] mt-0.5 flex-shrink-0">
                   {String(i + 1).padStart(2, '0')}
                 </span>

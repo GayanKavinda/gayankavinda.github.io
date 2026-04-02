@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
+    --background: 0 0% 100%;
     --foreground: 220 15% 15%;
     --card: 0 0% 100%;
     --card-foreground: 220 15% 15%;
@@ -22,7 +22,7 @@
     --accent-foreground: 220 15% 15%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 0% / 0.08;
+    --border: 0 0% 0% / 0.14;
     --input: 0 0% 0% / 0.08;
     --ring: 358 72% 46%;
     --radius: 0.5rem;
@@ -115,15 +115,24 @@
   }
 }
 
-/* ─── Smooth theme transition ──────────────────────────────────────────────── */
-/* Applied globally so every element fades gracefully when .dark is toggled     */
-body, .bg-background, .bg-card, .glass {
-  transition: background-color 150ms ease;
+/* ─── Performance Optimization ────────────────────────────────────────────── */
+/* Hardware acceleration hints for heavy parallax and animated layers.         */
+.mask-transition-outer,
+.fire-column,
+.fire-core-particle,
+.fire-glow-particle,
+.fire-spark,
+.terminal-panel,
+.bera-crew {
+  will-change: transform, opacity;
 }
-/* Don't transition things that shouldn't animate on theme change */
-[class*="animate-"], canvas, video, img,
-.cursor-dot, .cursor-ring {
+
+/* Instant theme snap: suppressed only during the toggle moment */
+.theme-snap *, 
+.theme-snap *::before, 
+.theme-snap *::after {
   transition: none !important;
+  animation-play-state: paused !important;
 }
 
 /* Custom cursor */
@@ -208,6 +217,21 @@ body, .bg-background, .bg-card, .glass {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
+}
+
+/* Premium Card Elevation - for white backgrounds */
+.elevation-card {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04), 0 2px 10px rgba(0, 0, 0, 0.02);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.elevation-card:hover {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06), 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+.dark .elevation-card {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.dark .elevation-card:hover {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Smooth scrolling - UI/UX Pro Max recommendation */

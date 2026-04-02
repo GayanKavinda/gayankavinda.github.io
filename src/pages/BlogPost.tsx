@@ -10,7 +10,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useTheme } from '@/context/ThemeProvider';
-import { POSTS } from '@/components/sections/Blog';
+import { POSTS } from '@/constants/blog';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -273,7 +273,7 @@ const BlogPost = () => {
               <div className="space-y-3">
                 {POSTS.filter(p => p.slug !== slug).slice(0, 2).map(p => (
                   <div key={p.slug}
-                    className="rounded-lg border border-border bg-card p-4 cursor-pointer hover:border-[#D4891A]/40 hover:-translate-y-[2px] transition-all duration-200 group"
+                    className="rounded-lg border border-border bg-card p-4 elevation-card cursor-pointer hover:border-[#D4891A]/40 hover:-translate-y-[2px] transition-all duration-200 group"
                     onClick={() => { navigate(`/blog/${p.slug}`); window.scrollTo(0, 0); }}>
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="font-mono text-[8px] uppercase tracking-[0.1em] px-2 py-0.5 rounded-full"

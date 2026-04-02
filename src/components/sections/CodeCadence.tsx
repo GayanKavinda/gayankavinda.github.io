@@ -23,8 +23,9 @@ interface GithubEvent {
   created_at: string;
   repo: { name: string };
   payload: {
-    commits?: { message: string }[];
+    commits?: { message: string; sha?: string }[];
     action?: string;
+    ref_type?: string;
   };
 }
 
@@ -149,7 +150,7 @@ const fetchGithubData = async (): Promise<GithubStats> => {
     }
 
     // Process events
-    const events = (eventsData as any[])
+    const events = (eventsData as GithubEvent[])
       .filter((e) => ['PushEvent', 'CreateEvent', 'WatchEvent', 'ForkEvent', 'IssuesEvent'].includes(e.type))
       .map((e) => {
         let message = '';
@@ -443,10 +444,10 @@ const CodeCadence = () => {
                 ].map((s) => (
                   <div
                     key={s.label}
-                    className="stat-card rounded-[8px] border border-border p-3 text-center bg-card"
+                    className="stat-card elevation-card rounded-[8px] border border-border p-3 text-center bg-card"
                   >
                     <p className="font-jakarta font-bold text-[24px] text-gold tracking-tight">{s.num}</p>
-                    <p className="font-mono text-[9px] uppercase tracking-wider mt-1 text-foreground/40">
+                    <p className="font-mono text-[9px] uppercase tracking-wider mt-1 text-foreground/70">
                       {s.label}
                     </p>
                   </div>

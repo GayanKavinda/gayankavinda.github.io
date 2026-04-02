@@ -67,7 +67,7 @@ const Projects = () => {
       <div className="max-w-[1200px] mx-auto px-6 md:px-10">
 
         {/* Hero card */}
-        <div className="project-card rounded-xl border border-border overflow-hidden hover:border-crimson/40 hover:-translate-y-[2px] transition-all duration-300 bg-card">
+        <div className="project-card elevation-card rounded-xl border border-border overflow-hidden hover:border-crimson/40 hover:-translate-y-[2px] transition-all duration-300 bg-card">
           <div className="h-[180px] md:h-[280px] overflow-hidden relative"
             style={{ background: 'linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--card)) 50%, hsl(var(--muted)) 100%)' }}
           >
@@ -108,7 +108,7 @@ const Projects = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
 
           {/* Micro project grid */}
-          <div className="project-card rounded-xl border border-border p-5 md:p-6 bg-card">
+          <div className="project-card elevation-card rounded-xl border border-border p-5 md:p-6 bg-card">
             <div className="flex justify-between items-center mb-4">
               <span className="font-mono text-[11px] uppercase text-gold">Recent Projects</span>
               <span className="font-mono text-[11px] text-foreground/40">4 projects</span>
@@ -128,7 +128,7 @@ const Projects = () => {
           </div>
 
           {/* Side project */}
-          <div className="project-card rounded-xl border border-border overflow-hidden hover:border-crimson/40 hover:-translate-y-[2px] transition-all duration-300 bg-card">
+          <div className="project-card elevation-card rounded-xl border border-border overflow-hidden hover:border-crimson/40 hover:-translate-y-[2px] transition-all duration-300 bg-card">
             <div className="h-[140px] md:h-[180px] overflow-hidden relative"
               style={{ background: 'linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--card)) 50%, hsl(var(--muted)) 100%)' }}
             >

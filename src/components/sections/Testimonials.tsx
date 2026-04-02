@@ -129,7 +129,7 @@ export const TestimonialsColumn = (props: {
             <React.Fragment key={index}>
               {props.testimonials.map(({ text, image, name, role }, i) => (
                 <div
-                  className="p-6 md:p-8 rounded-2xl border border-border bg-card shadow-lg shadow-crimson/[0.03] max-w-[280px] md:max-w-xs w-full transition-all duration-300 hover:border-crimson/20 hover:shadow-crimson/[0.08]"
+                  className="p-6 md:p-8 rounded-2xl border border-border bg-card shadow-lg shadow-crimson/[0.03] elevation-card max-w-[280px] md:max-w-xs w-full transition-all duration-300 hover:border-crimson/20 hover:shadow-crimson/[0.08]"
                   key={i}
                 >
                   <blockquote className="font-sans text-[13px] md:text-[14px] text-foreground/75 leading-[1.7] mb-6">

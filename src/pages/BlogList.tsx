@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { POSTS } from "@/components/sections/Blog";
+import { POSTS } from "@/constants/blog";
 
 const ALL_TAGS = ["All", ...Array.from(new Set(POSTS.map((p) => p.tag)))];
 

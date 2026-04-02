@@ -73,7 +73,7 @@ const TechStack = () => {
                 <div className="font-playfair text-[24px] md:text-[28px] font-bold text-foreground leading-none">
                   <CountUp target={s.target} suffix={s.suffix} />
                 </div>
-                <div className="font-mono text-[8px] md:text-[9px] tracking-[.14em] uppercase text-muted-foreground/50 mt-1.5">
+                <div className="font-mono text-[8px] md:text-[9px] tracking-[.14em] uppercase text-muted-foreground/80 mt-1.5">
                   {s.label}
                 </div>
               </div>
@@ -91,7 +91,7 @@ const TechStack = () => {
 
           {/* Left — pillars */}
           <div>
-            <p className="font-mono text-[9px] tracking-[.16em] uppercase text-muted-foreground/50 mb-1">
+            <p className="font-mono text-[9px] tracking-[.16em] uppercase text-muted-foreground/80 mb-1">
               // System design pillars
             </p>
             <SystemPillars />
@@ -99,7 +99,7 @@ const TechStack = () => {
 
           {/* Right — TechGraph Radar Chart */}
           <div className="relative">
-            <p className="font-mono text-[9px] tracking-[.16em] uppercase text-muted-foreground/50 mb-6 lg:text-right">
+            <p className="font-mono text-[9px] tracking-[.16em] uppercase text-muted-foreground/80 mb-6 lg:text-right">
               // Proficiency Graph
             </p>
             <div className="flex justify-center lg:justify-end">

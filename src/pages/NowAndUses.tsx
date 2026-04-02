@@ -87,7 +87,7 @@ export const Now = () => {
         {/* Items */}
         <div className="space-y-6">
           {NOW_ITEMS.map((item, i) => (
-            <div key={i} className="rounded-xl border border-border bg-card p-6 relative overflow-hidden group hover:-translate-y-[2px] transition-all duration-200">
+            <div key={i} className="rounded-xl border border-border bg-card elevation-card p-6 relative overflow-hidden group hover:-translate-y-[2px] transition-all duration-200">
               <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: item.color }} />
               <div className="flex items-center gap-2 mb-3">
                 <span className="font-mono text-[9px] uppercase tracking-[0.12em] px-2.5 py-1 rounded-full border"
@@ -240,7 +240,7 @@ export const Uses = () => {
               </div>
               <div className="space-y-2">
                 {section.items.map((item, j) => (
-                  <div key={j} className="rounded-lg border border-border bg-card px-5 py-3.5 flex items-start gap-4 hover:border-foreground/15 transition-colors group">
+                  <div key={j} className="rounded-lg border border-border bg-card elevation-card px-5 py-3.5 flex items-start gap-4 hover:border-foreground/15 transition-colors group">
                     <span className="font-jakarta font-semibold text-[14px] text-foreground min-w-[160px] flex-shrink-0 group-hover:text-[#D4891A] transition-colors">{item.name}</span>
                     <span className="font-sans text-[13px] text-foreground/50 leading-relaxed">{item.note}</span>
                   </div>

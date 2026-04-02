@@ -65,7 +65,7 @@ const Achievements = () => {
           {achievements.map((item, i) => (
             <div
               key={i}
-              className="ach-item group relative rounded-lg border border-border bg-card backdrop-blur-sm p-5 hover:border-[#E8A820]/60 hover:bg-[#E8A820]/[0.05] hover:shadow-xl hover:shadow-[#E8A820]/10 hover:-translate-y-[3px] transition-all duration-300 cursor-default overflow-hidden"
+              className="ach-item group elevation-card relative rounded-lg border border-border bg-card backdrop-blur-sm p-5 hover:border-[#E8A820]/60 hover:bg-[#E8A820]/[0.05] hover:shadow-xl hover:shadow-[#E8A820]/10 hover:-translate-y-[3px] transition-all duration-300 cursor-default overflow-hidden"
             >
               {/* Subtle left accent - always visible */}
               <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#E8A820] to-[#C41E3A] opacity-40 group-hover:opacity-100 transition-opacity duration-300" />

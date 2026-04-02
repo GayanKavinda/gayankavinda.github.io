@@ -108,7 +108,7 @@ const EngineeringPhilosophy = () => {
           {PRINCIPLES.map((p) => (
             <div key={p.num} className="phil-step flex flex-col gap-4">
               <div
-                className="w-full rounded-xl overflow-hidden border border-border bg-muted/30"
+                className="w-full rounded-xl overflow-hidden border border-border bg-muted/30 elevation-card"
                 style={{ aspectRatio: '4/3' }}
               >
                 <p.Mockup />

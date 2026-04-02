@@ -84,7 +84,7 @@ const OpenSource = () => {
           <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/35 mb-5">// Upstream contributions</p>
           <div className="space-y-3">
             {CONTRIBUTIONS.map((c, i) => (
-              <div key={i} className="os-card group rounded-xl border border-border bg-card p-5 hover:border-[#E8A820]/40 hover:-translate-y-[2px] transition-all duration-200 relative overflow-hidden cursor-pointer">
+              <div key={i} className="os-card elevation-card group rounded-xl border border-border bg-card p-5 hover:border-[#E8A820]/40 hover:-translate-y-[2px] transition-all duration-200 relative overflow-hidden cursor-pointer">
                 <div className="absolute left-0 top-0 bottom-0 w-[2px]" style={{ background: `linear-gradient(to bottom, ${c.color}, ${c.color}60)` }} />
                 <div className="flex items-start gap-4 flex-wrap">
                   <div className="flex-1 min-w-0">
@@ -114,7 +114,7 @@ const OpenSource = () => {
           <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/35 mb-5">// My own projects</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {OWN_PROJECTS.map((p, i) => (
-              <div key={i} className="os-card group rounded-xl border border-border bg-card p-5 hover:border-[#D4891A]/40 hover:-translate-y-[2px] transition-all duration-200 cursor-pointer">
+              <div key={i} className="os-card elevation-card group rounded-xl border border-border bg-card p-5 hover:border-[#D4891A]/40 hover:-translate-y-[2px] transition-all duration-200 cursor-pointer">
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div className="w-8 h-8 rounded-lg bg-[#D4891A]/10 flex items-center justify-center">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4891A" strokeWidth="1.5" strokeLinecap="round">

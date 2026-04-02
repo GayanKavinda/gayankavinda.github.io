@@ -66,7 +66,7 @@ const ImpactMetrics = () => {
               >
                 {m.value}{m.suffix}
               </span>
-              <span className="font-mono text-[9px] md:text-[11px] uppercase tracking-[0.12em] text-foreground/45 mt-2">
+              <span className="font-mono text-[9px] md:text-[11px] uppercase tracking-[0.12em] text-foreground/75 mt-2">
                 {m.label}
               </span>
 

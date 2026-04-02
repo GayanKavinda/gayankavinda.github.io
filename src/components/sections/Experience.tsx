@@ -67,7 +67,7 @@ const Experience = () => {
         className="absolute inset-0 w-full h-full object-cover opacity-[0.05] pointer-events-none z-0"
         style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
       />
-      <div className="absolute inset-0 z-[1]" style={{ background: 'hsl(var(--background) / 0.92)' }} />
+      <div className="absolute inset-0 z-[1]" style={{ background: 'hsl(var(--background))' }} />
 
       <div className="relative z-[2] text-center mb-12 md:mb-16">
         <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8A820] mb-3">// Career</p>
@@ -95,7 +95,7 @@ const Experience = () => {
             >
 
               <div
-                className={`rounded-lg border border-border p-4 bg-card ${e.current ? 'border-l-[3px] border-l-crimson' : ''}`}
+                className={`elevation-card rounded-lg border border-border p-4 bg-card ${e.current ? 'border-l-[3px] border-l-crimson' : ''}`}
               >
                 <p className="font-mono text-[12px] text-gold">{e.company}</p>
                 <p className="font-jakarta font-bold text-[17px] text-foreground mt-0.5 tracking-tight">{e.role}</p>
@@ -127,7 +127,7 @@ const Experience = () => {
               <div className="absolute left-1/2 -translate-x-1/2 font-mono text-[11px] text-gold z-10 bg-background/80 backdrop-blur-sm px-2 py-1 rounded-md border border-border" style={{ top: 20 }}>{e.year}</div>
               <div className={`w-[44%] ${isLeft ? 'mr-auto pr-10 text-right' : 'ml-auto pl-10'}`}>
                 <div
-                  className={`rounded-lg border border-border p-5 bg-card transition-all duration-300 hover:scale-[1.02] ${e.current ? 'border-l-[3px] border-l-crimson border-crimson/35' : ''}`}
+                  className={`elevation-card rounded-lg border border-border p-5 bg-card transition-all duration-300 hover:scale-[1.02] ${e.current ? 'border-l-[3px] border-l-crimson border-crimson/35' : ''}`}
                 >
                   <p className="font-mono text-[13px] text-gold">{e.company}</p>
                   <p className="font-jakarta font-bold text-[18px] text-foreground mt-1 tracking-tight">{e.role}</p>

@@ -63,7 +63,7 @@ function inputCls(isDark: boolean) {
 // ─── FieldRow ─────────────────────────────────────────────────────────────────
 const FieldRow = ({ id, label, children }: { id: string; label: string; children: React.ReactNode }) => (
   <div className="contact-field flex flex-col gap-1.5">
-    <Label htmlFor={id} className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/45">
+    <Label htmlFor={id} className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/75">
       {label}
     </Label>
     {children}
@@ -220,7 +220,7 @@ const InfoPanel = ({ isDark }: { isDark: boolean }) => {
     return () => ctx.revert();
   }, []);
 
-  const panelBg   = isDark ? 'hsl(0 0% 7%)'   : 'hsl(220 20% 97%)';
+  const panelBg   = isDark ? 'hsl(0 0% 7%)'   : 'hsl(0 0% 100%)';
   const panelBdr  = isDark ? 'hsl(0 0% 100%/0.07)' : 'hsl(220 15% 15%/0.10)';
   const blockBg   = 'transparent';
   const blockBdr  = isDark ? 'hsl(0 0% 100%/0.08)' : 'hsl(220 15% 15%/0.09)';
@@ -229,7 +229,11 @@ const InfoPanel = ({ isDark }: { isDark: boolean }) => {
     <div
       ref={panelRef}
       className="relative rounded-2xl overflow-hidden flex flex-col gap-0"
-      style={{ background: panelBg, border: `1px solid ${panelBdr}` }}
+      style={{
+        background: panelBg,
+        border: `1px solid ${panelBdr}`,
+        boxShadow: isDark ? '0 20px 50px rgba(0,0,0,0.3)' : '0 20px 50px rgba(0,0,0,0.05)',
+      }}
     >
       {/* parallax images */}
       <img ref={maskRef} src={maskImg} alt="" aria-hidden
@@ -272,7 +276,7 @@ const InfoPanel = ({ isDark }: { isDark: boolean }) => {
               <span key={role}
                 className="font-sans text-[12px] px-3 py-1.5 rounded-lg"
                 style={{
-                  background: isDark ? 'hsl(0 0% 14%)' : 'hsl(220 14% 94%)',
+                  background: isDark ? 'hsl(0 0% 14%)' : 'hsl(0 0% 96%)',
                   color: 'hsl(var(--foreground)/0.75)',
                   border: `1px solid ${blockBdr}`,
                 }}
@@ -327,7 +331,7 @@ const InfoPanel = ({ isDark }: { isDark: boolean }) => {
               <a key={s.label} href={s.href}
                 className="group flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all duration-150"
                 style={{
-                  background: isDark ? 'hsl(0 0% 13%)' : 'hsl(220 14% 94%)',
+                  background: isDark ? 'hsl(0 0% 13%)' : 'hsl(0 0% 96%)',
                   border: `1px solid ${blockBdr}`,
                 }}
               >
@@ -390,7 +394,7 @@ const Contact = () => {
 
   // theme-aware card surfaces
   const cardBg  = isDark ? 'hsl(0 0% 6%)'        : 'hsl(0 0% 100%)';
-  const cardBdr = isDark ? 'hsl(0 0% 100% / 0.07)' : 'hsl(220 15% 15% / 0.10)';
+  const cardBdr = isDark ? 'hsl(0 0% 100% / 0.09)' : 'hsl(220 15% 15% / 0.15)';
 
   return (
     <section id="contact" ref={sectionRef} className="py-[100px] md:py-[120px]">
@@ -416,7 +420,11 @@ const Contact = () => {
 
           {/* ══ LEFT — form ══ */}
           <div className="rounded-2xl p-7 md:p-9"
-            style={{ background: cardBg, border: `1px solid ${cardBdr}` }}>
+            style={{
+              background: cardBg,
+              border: `1px solid ${cardBdr}`,
+              boxShadow: isDark ? '0 20px 50px rgba(0,0,0,0.3)' : '0 20px 50px rgba(0,0,0,0.05)',
+            }}>
 
             {submitted ? (
               <div className="flex flex-col items-start gap-5 py-6">

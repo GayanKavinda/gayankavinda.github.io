@@ -65,7 +65,7 @@ const Certifications = () => {
           {certifications.map((cert, i) => (
             <div
               key={i}
-              className="cert-card group relative rounded-lg border border-border bg-card backdrop-blur-sm p-4 hover:border-[#E8A820]/60 hover:shadow-xl hover:shadow-[#E8A820]/10 hover:-translate-y-[3px] transition-all duration-300 cursor-default overflow-hidden"
+              className="cert-card group elevation-card relative rounded-lg border border-border bg-card backdrop-blur-sm p-4 hover:border-[#E8A820]/60 hover:shadow-xl hover:shadow-[#E8A820]/10 hover:-translate-y-[3px] transition-all duration-300 cursor-default overflow-hidden"
             >
               {/* Gradient glow on hover */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#E8A820]/[0.08] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />

@@ -176,10 +176,10 @@ const Hero = () => {
           <pre className="font-mono text-[11px] md:text-[13px] leading-relaxed overflow-x-auto">
             <span className="text-crimson">const</span>{' '}
             <span className="text-gold">engineer</span>{' '}
-            <span style={{ color: 'rgba(26,26,46,0.4)' }}>=</span>
+            <span className="text-foreground/45">=</span>
             {' {\n'}
             {'  '}
-            <span style={{ color: 'rgba(26,26,46,0.55)' }}>stack</span>
+            <span className="text-foreground/60">stack</span>
             {': ['}
             <span className="text-green-600">"TypeScript"</span>
             {', '}
@@ -188,12 +188,12 @@ const Hero = () => {
             <span className="text-green-600">"Go"</span>
             {'],\n'}
             {'  '}
-            <span style={{ color: 'rgba(26,26,46,0.55)' }}>focus</span>
+            <span className="text-foreground/60">focus</span>
             {': '}
             <span className="text-green-600">"distributed systems"</span>
             {',\n'}
             {'  '}
-            <span style={{ color: 'rgba(26,26,46,0.55)' }}>coffee</span>
+            <span className="text-foreground/60">coffee</span>
             {': '}
             <span className="text-gold">Infinity</span>
             {'\n}'}
