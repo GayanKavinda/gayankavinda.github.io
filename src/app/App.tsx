@@ -4,6 +4,7 @@ import { TooltipProvider } from "@shared/components/ui/tooltip";
 import CustomCursor from "@shared/components/layout/CustomCursor";
 import ResumeButton from "@shared/components/common/ResumeButton";
 import { ThemeProvider } from "@app/providers/theme-provider";
+import { ChatBot } from '@/features/agent';
 
 // ── Pages ─────────────────────────────────────────────────────────────────────
 import Home          from "@pages/Home";
@@ -55,6 +56,9 @@ const App = () => (
               {/* Catch-all */}
               <Route path="*"                       element={<NotFound />} />
             </Routes>
+            
+            {/* Portfolio Agent - Chatbot */}
+            <ChatBot />
           </BrowserRouter>
         </PreLoader>
       </TooltipProvider>
