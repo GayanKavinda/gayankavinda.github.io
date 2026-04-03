@@ -187,13 +187,13 @@ const UploadZone = ({
 
 // ─── InfoPanel ────────────────────────────────────────────────────────────────
 const SOCIALS = [
-  { label: 'GitHub',   href: '#', abbr: 'GH' },
-  { label: 'LinkedIn', href: '#', abbr: 'LI' },
-  { label: 'X',        href: '#', abbr: 'X'  },
-  { label: 'Dev.to',   href: '#', abbr: 'DEV' },
+  { label: 'GitHub',   href: import.meta.env.VITE_CONTACT_GITHUB || '#', abbr: 'GH' },
+  { label: 'LinkedIn', href: import.meta.env.VITE_CONTACT_LINKEDIN || '#', abbr: 'LI' },
+  { label: 'X',        href: import.meta.env.VITE_CONTACT_X || '#', abbr: 'X'  },
+  { label: 'Dev.to',   href: import.meta.env.VITE_CONTACT_DEVTO || '#', abbr: 'DEV' },
 ];
 
-const OPEN_TO = ['Full-time roles', 'Contract / freelance', 'Technical consulting'];
+const OPEN_TO = (import.meta.env.VITE_CONTACT_OPEN_TO || 'Full-time roles, Contract / freelance, Technical consulting').split(',').map((s: string) => s.trim());
 
 const InfoPanel = ({ isDark }: { isDark: boolean }) => {
   const time    = useColomboTime();
@@ -258,11 +258,10 @@ const InfoPanel = ({ isDark }: { isDark: boolean }) => {
             />
             <div>
               <p className="font-playfair text-[17px] font-bold text-foreground leading-snug">
-                Employed — open to the right thing.
+                {import.meta.env.VITE_CONTACT_STATUS || 'Employed — open to the right thing.'}
               </p>
               <p className="font-sans text-[13px] text-foreground/50 mt-1.5 leading-relaxed">
-                Not actively hunting, but I pay attention when something interesting lands.
-                If you're building something worth the conversation, reach out.
+                {import.meta.env.VITE_CONTACT_STATUS_DESC || 'Not actively hunting, but I pay attention when something interesting lands.'}
               </p>
             </div>
           </div>
@@ -312,11 +311,11 @@ const InfoPanel = ({ isDark }: { isDark: boolean }) => {
         {/* ── Email ── */}
         <div className="px-7 py-5" style={{ background: blockBg, borderBottom: `1px solid ${blockBdr}` }}>
           <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/35 mb-2">Direct email</p>
-          <a href="mailto:hello@yourdomain.com"
+          <a href={`mailto:${import.meta.env.VITE_CONTACT_EMAIL || 'hello@yourdomain.com'}`}
             className="font-mono text-[14px] transition-colors hover:text-[#C41E3A]"
             style={{ color: 'hsl(var(--foreground)/0.80)' }}
           >
-            hello@yourdomain.com
+            {import.meta.env.VITE_CONTACT_EMAIL || 'hello@yourdomain.com'}
           </a>
           <p className="font-sans text-[12px] text-foreground/35 mt-1">
             Replies within 24 h — usually same day.

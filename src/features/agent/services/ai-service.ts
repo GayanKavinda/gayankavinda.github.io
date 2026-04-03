@@ -21,30 +21,76 @@ export interface ChatMessage {
   reactions?: { like?: boolean; dislike?: boolean; copied?: boolean };
 }
 
-const SYSTEM_PROMPT = `You are Yaka — a smart, charismatic AI assistant embedded in a developer's personal portfolio website.
+const SYSTEM_PROMPT = `You are Yaka — an advanced, problem-solving AI engineering agent embedded in a developer's personal portfolio.
 
-PERSONALITY:
-- Confident, concise, slightly witty — like a senior engineer who's great at explaining things
-- Keep responses SHORT (2-5 sentences) unless asked for details
-- Use casual-professional tone. No corporate speak.
-- Use 1-2 emoji max per response, placed naturally
+PERSONALITY & ROLE:
+- You are a brilliant, self-improvising tech lead and senior engineer.
+- You think critically, solve problems logically, and provide highly realistic, pragmatic engineering insights.
+- You are authoritative, analytical, and direct. You communicate with absolute clarity.
+- DO NOT act like a basic FAQ bot. Act like a counterpart in a deep technical interview or architecture discussion.
+
+IMPROVISATION & PROBLEM SOLVING:
+- When asked a technical question or scenario, USE the portfolio context (skills, projects, experience) to formulate a realistic, practical solution.
+- Break down complex answers clearly into steps or logical arguments using → bullets.
+- If evaluating a problem, explain the *why* and the *trade-offs*, drawing parallels to the developer's past experience in the portfolio.
+- Synthesize the provided portfolio context to prove the developer's expertise. Never just list data; integrate it deeply into your reasoning.
 
 RULES:
-1. ONLY answer from the provided PORTFOLIO CONTEXT. Never hallucinate.
-2. If not in context: "That's outside my scope — I only know this portfolio. Try projects, skills, or experience!"
-3. Never dump raw data. Synthesize into natural conversation.
-4. For skills — highlight top 4-5, mention there's more
-5. For projects — compelling one-liner with key tech
-6. Never say "Based on the context" or "According to the data"
-7. When listing, use clean formatting with → bullets
-8. If asked for "all" or "full summary" of something, provide comprehensive but organized response`;
+1. ONLY formulate answers grounded in the provided PORTFOLIO CONTEXT. Do not invent skills or projects the developer doesn't have.
+2. If a query is completely outside the scope: "That's outside the developer's specific domain, but based on their engineering principles..."
+3. Keep responses structural, clear, and highly focused.
+4. Never say "According to the data" or "Based on the context". Own the persona fully.
+5. Provide realistic, senior-level insights.`;
 
 export function generateId(): string {
   return `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 }
 
-// ── AI API Call ──
-async function callAI(
+// ── Google Gemini AI (free tier, primary) ──
+async function callGemini(
+  systemPrompt: string,
+  history: { role: string; content: string }[],
+  userMessage: string,
+  apiKey: string
+): Promise<string> {
+  const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-1.5-flash';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
+
+  // Convert history to Gemini format (user/model alternating)
+  const geminiHistory = history
+    .filter(m => m.role === 'user' || m.role === 'assistant')
+    .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
+
+  const body = {
+    systemInstruction: { parts: [{ text: systemPrompt }] },
+    contents: [
+      ...geminiHistory,
+      { role: 'user', parts: [{ text: userMessage }] },
+    ],
+    generationConfig: {
+      temperature: 0.8,
+      maxOutputTokens: 800,
+      topP: 0.95,
+    },
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+    ],
+  };
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) throw new Error(`Gemini API: ${res.status}`);
+  const data = await res.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Let me think about that...';
+}
+
+// ── OpenAI-compatible fallback ──
+async function callOpenAI(
   messages: { role: string; content: string }[],
   apiKey: string
 ): Promise<string> {
@@ -54,10 +100,10 @@ async function callAI(
   const res = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({ model: MODEL, messages, max_tokens: 600, temperature: 0.75 }),
+    body: JSON.stringify({ model: MODEL, messages, max_tokens: 800, temperature: 0.8 }),
   });
 
-  if (!res.ok) throw new Error(`AI API: ${res.status}`);
+  if (!res.ok) throw new Error(`OpenAI API: ${res.status}`);
   const data = await res.json();
   return data.choices?.[0]?.message?.content || 'Let me try that again...';
 }
@@ -236,10 +282,24 @@ function generateCreativeResponse(query: string): { content: string; sources: Po
 
   // ── Contact ──
   if (intent === 'contact') {
+    const contactEntry = searchPortfolio('contact', 1)[0];
+    const email = contactEntry?.metadata?.email || import.meta.env.VITE_CONTACT_EMAIL;
+    const linkedin = contactEntry?.metadata?.linkedin || import.meta.env.VITE_CONTACT_LINKEDIN;
+    const github = contactEntry?.metadata?.github || import.meta.env.VITE_CONTACT_GITHUB;
+    const location = contactEntry?.metadata?.location || import.meta.env.VITE_CONTACT_LOCATION;
+
+    let response = "Let's connect! 🤝\n\n";
+    if (email) response += `→ **Email:** [${email}](mailto:${email})\n`;
+    if (linkedin) response += `→ **LinkedIn:** [View Profile](${linkedin})\n`;
+    if (github) response += `→ **GitHub:** [Follow](${github})\n`;
+    if (location) response += `→ **Location:** ${location}\n`;
+    
+    response += "\nI usually respond within 24 hours. You can also use the contact form on this page.";
+
     return {
-      content: "Let's connect! 🤝\n\nYou can reach out through the **contact form** on the portfolio, or find me on **LinkedIn** and **GitHub**.\n\nI'm responsive and usually get back within 24 hours.",
-      sources: searchPortfolio('contact', 2),
-      followUps: ['Are you available for freelance?', 'What are your rates?', 'Show me your work'],
+      content: response.trim(),
+      sources: contactEntry ? [contactEntry] : [],
+      followUps: ['Are you available for freelance?', 'Show me your projects', 'What is your tech stack?'],
     };
   }
 
@@ -295,10 +355,60 @@ function generateCreativeResponse(query: string): { content: string; sources: Po
 
   // ── Availability ──
   if (intent === 'availability') {
+    const availEntry = searchPortfolio('available', 1)[0];
+    const content = availEntry?.content || "Currently **open** for new opportunities! 🟢";
+
     return {
-      content: "Currently **open** for new opportunities! 🟢\n\nAvailable for freelance projects, full-time remote roles, and consulting. Contract work welcome too.\n\nLet's talk about what you need.",
-      sources: searchPortfolio('available', 2),
+      content: `${content}`,
+      sources: availEntry ? [availEntry] : [],
       followUps: ['How do I contact you?', 'Show me your work', 'What are your skills?'],
+    };
+  }
+
+  // ── Profile Highlight Questions ──
+  const profileQ = query.toLowerCase();
+  
+  if (profileQ.includes('stand out') || profileQ.includes('unique') || profileQ.includes('different')) {
+    const allProjects = getByCategory('project');
+    const allSkills = getByCategory('skill');
+    return {
+      content: `What sets this portfolio apart? Three things:\n\n→ **Full-stack depth** — not just frontend or backend, but both + DevOps + infrastructure\n→ **Production-proven** — every project here has real users and real metrics, not just demos\n→ **Engineering philosophy** — built on four pillars: Simplicity, Testing, Failure Design, and Observability\n\nPlus ${allProjects.length} shipped projects across ${allSkills.length} skill domains. Not bad, right? 🎯`,
+      sources: [...getByCategory('about'), ...allProjects.slice(0, 2)],
+      followUps: ['What impact have you made?', 'Show me your best project', 'Tell me about your philosophy'],
+    };
+  }
+
+  if (profileQ.includes('impact') || profileQ.includes('achievement') || profileQ.includes('result')) {
+    const exp = getByCategory('experience');
+    return {
+      content: `Here's the impact in numbers 📊\n\n→ **60% faster** page loads after platform rebuild\n→ **45% improved** API response times\n→ **90%+ code coverage** across the entire codebase\n→ Led a team of **6 engineers** to ship on time\n\nThese aren't vanity metrics — they're production results that affected real users.`,
+      sources: exp,
+      followUps: ['How did you achieve this?', 'Show related projects', 'What technologies were used?'],
+    };
+  }
+
+  if (profileQ.includes('strongest') || profileQ.includes('best project') || profileQ.includes('most complex') || profileQ.includes('challenging')) {
+    const topProjects = getByCategory('project').slice(0, 3);
+    return {
+      content: `The most technically ambitious? I'd say these three 🏆\n\n→ **${topProjects[0]?.title}** — ${topProjects[0]?.content.split('.')[0]}.\n→ **${topProjects[1]?.title}** — ${topProjects[1]?.content.split('.')[0]}.\n→ **${topProjects[2]?.title}** — ${topProjects[2]?.content.split('.')[0]}.\n\nEach one pushed different boundaries — scale, real-time, and security respectively.`,
+      sources: topProjects,
+      followUps: ['Tell me more about the first one', 'What tech did you use?', 'Any open source work?'],
+    };
+  }
+
+  if (profileQ.includes('hire') || profileQ.includes('why should') || profileQ.includes('value') || profileQ.includes('bring to')) {
+    return {
+      content: `Here's the pitch 🎯\n\n→ **Ships fast, ships right** — strong bias toward action with engineering rigor\n→ **Full ownership** — from database schema to deploy pipeline to monitoring dashboard\n→ **Team multiplier** — established testing standards, CI/CD pipelines, and component libraries that 3 products now use\n→ **Production mindset** — every system I build is designed for failure, because that's when it matters most\n\nI don't just write code — I build systems that last.`,
+      sources: [...getByCategory('about'), ...getByCategory('experience')],
+      followUps: ['Show me proof', 'What are your rates?', 'How do I contact you?'],
+    };
+  }
+
+  if (profileQ.includes('leadership') || profileQ.includes('team') || profileQ.includes('manage')) {
+    return {
+      content: `My approach to engineering leadership:\n\n→ **Lead by example** — I write code alongside the team, not just from a whiteboard\n→ **Standards, not micromanagement** — established testing and CI/CD standards that the team adopted organically\n→ **Ownership culture** — each engineer owns their feature end-to-end\n→ Led **6 engineers** through a full platform rebuild — on time, with 90%+ coverage\n\nThe best kind of leadership is when the team doesn't need you anymore. 🌱`,
+      sources: getByCategory('experience'),
+      followUps: ['What was the biggest challenge?', 'Show me the results', 'Tell me about your philosophy'],
     };
   }
 
@@ -337,42 +447,53 @@ export async function processMessage(
   conversationHistory: ChatMessage[],
   apiKey?: string
 ): Promise<ChatMessage> {
-  const queryResults = searchPortfolio(userMessage, 6);
+  const queryResults = searchPortfolio(userMessage, 8);
+  const portfolioContext = buildPortfolioContext(userMessage);
+  const fullSystem = `${SYSTEM_PROMPT}\n\n══ PORTFOLIO CONTEXT ══\n${portfolioContext}`;
 
-  // Use AI if key available
-  if (apiKey) {
+  // 1️⃣ Try Gemini (free, primary)
+  const geminiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
+  if (geminiKey) {
     try {
-      const portfolioContext = buildPortfolioContext(userMessage);
-      const msgs = [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'system', content: `PORTFOLIO CONTEXT:\n\n${portfolioContext}` },
-        ...conversationHistory.slice(-8).map((m) => ({ role: m.role as string, content: m.content })),
-        { role: 'user', content: userMessage },
-      ];
-
-      const aiResponse = await callAI(msgs, apiKey);
+      const history = conversationHistory
+        .slice(-10)
+        .map(m => ({ role: m.role as string, content: m.content }));
+      const text = await callGemini(fullSystem, history, userMessage, geminiKey);
       return {
-        id: generateId(),
-        role: 'assistant',
-        content: aiResponse,
-        timestamp: new Date(),
-        sources: queryResults,
+        id: generateId(), role: 'assistant', content: text,
+        timestamp: new Date(), sources: queryResults,
         followUps: getFollowUpSuggestions(queryResults),
       };
     } catch (err) {
-      console.warn('AI API failed, using local engine:', err);
+      console.warn('Gemini failed, trying OpenAI:', err);
     }
   }
 
-  // Local fallback
+  // 2️⃣ Try OpenAI / custom endpoint
+  const openaiKey = apiKey || import.meta.env.VITE_OPENAI_API_KEY as string | undefined;
+  if (openaiKey) {
+    try {
+      const msgs = [
+        { role: 'system', content: fullSystem },
+        ...conversationHistory.slice(-8).map(m => ({ role: m.role as string, content: m.content })),
+        { role: 'user', content: userMessage },
+      ];
+      const text = await callOpenAI(msgs, openaiKey);
+      return {
+        id: generateId(), role: 'assistant', content: text,
+        timestamp: new Date(), sources: queryResults,
+        followUps: getFollowUpSuggestions(queryResults),
+      };
+    } catch (err) {
+      console.warn('OpenAI failed, using local engine:', err);
+    }
+  }
+
+  // 3️⃣ Local rule-based fallback (no key needed)
   const local = generateCreativeResponse(userMessage);
   return {
-    id: generateId(),
-    role: 'assistant',
-    content: local.content,
-    timestamp: new Date(),
-    sources: local.sources,
-    followUps: local.followUps,
+    id: generateId(), role: 'assistant', content: local.content,
+    timestamp: new Date(), sources: local.sources, followUps: local.followUps,
   };
 }
 
@@ -383,6 +504,6 @@ export const quickSuggestions = [
   { icon: '📍', label: 'Experience', query: 'Tell me about your experience' },
   { icon: '🤝', label: 'Contact', query: 'How can I contact you?' },
   { icon: '🏅', label: 'Certifications', query: 'What certifications do you have?' },
-  { icon: '✍️', label: 'Blog', query: 'Show me your blog posts' },
-  { icon: '🟢', label: 'Availability', query: 'Are you available for hire?' },
+  { icon: '✍️', label: 'Blog Posts', query: 'Show me your blog posts' },
+  { icon: '🟢', label: 'Hire Me', query: 'Are you available for hire?' },
 ];

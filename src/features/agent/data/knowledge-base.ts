@@ -216,9 +216,15 @@ export const portfolioKnowledge: PortfolioEntry[] = [
     category: 'contact',
     title: 'Contact Information',
     content:
-      'You can reach me through the contact form on my portfolio, or connect with me on LinkedIn and GitHub. I am open to freelance projects, full-time opportunities, and open-source collaboration.',
-    keywords: ['contact', 'email', 'reach', 'hire', 'connect', 'linkedin', 'github', 'message', 'freelance'],
+      `Direct email: ${import.meta.env.VITE_CONTACT_EMAIL || 'hello@yourdomain.com'}. You can also reach me through the contact form on my portfolio, or connect with me on LinkedIn (${import.meta.env.VITE_CONTACT_LINKEDIN || 'LinkedIn'}) and GitHub (${import.meta.env.VITE_CONTACT_GITHUB || 'GitHub'}). I am currently based in ${import.meta.env.VITE_CONTACT_LOCATION || 'Colombo, Sri Lanka'}.`,
+    keywords: ['contact', 'email', 'reach', 'hire', 'connect', 'linkedin', 'github', 'message', 'freelance', 'location', 'twitter', 'x', 'devto', 'address'],
     link: '/#contact',
+    metadata: {
+      email: import.meta.env.VITE_CONTACT_EMAIL || 'hello@yourdomain.com',
+      linkedin: import.meta.env.VITE_CONTACT_LINKEDIN || '#',
+      github: import.meta.env.VITE_CONTACT_GITHUB || '#',
+      location: import.meta.env.VITE_CONTACT_LOCATION || 'Colombo, Sri Lanka'
+    },
   },
 
   // ── General ──
@@ -250,8 +256,8 @@ export const portfolioKnowledge: PortfolioEntry[] = [
     id: 'availability',
     category: 'general',
     title: 'Availability',
-    content: 'I am currently available for freelance projects and full-time remote opportunities. Open to contract work and consulting.',
-    keywords: ['available', 'hire', 'freelance', 'remote', 'open', 'status', 'work with', 'booking'],
+    content: `${import.meta.env.VITE_CONTACT_STATUS || 'Current status'} — ${import.meta.env.VITE_CONTACT_STATUS_DESC || 'Available for projects.'} Open to: ${import.meta.env.VITE_CONTACT_OPEN_TO || 'Full-time, freelance, and consulting'}.`,
+    keywords: ['available', 'hire', 'freelance', 'remote', 'open', 'status', 'work with', 'booking', 'rates', 'opportunity'],
     link: '/#contact',
   },
 ];
