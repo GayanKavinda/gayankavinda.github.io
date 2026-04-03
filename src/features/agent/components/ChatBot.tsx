@@ -282,11 +282,10 @@ const Msg = ({
 
       <div className={`max-w-[82%] ${isU ? '' : ''}`}>
         {/* Bubble */}
-        <div className={`px-3.5 py-2.5 text-[13px] leading-[1.7] ${
-          isU
+        <div className={`px-3.5 py-2.5 text-[13px] leading-[1.7] ${isU
             ? 'bg-black text-white dark:bg-white dark:text-black rounded-[16px] rounded-br-[4px] border border-transparent'
             : 'bg-gray-50 dark:bg-zinc-900 text-[hsl(var(--foreground)/0.85)] rounded-[16px] rounded-tl-[4px] border border-gray-100 dark:border-zinc-800'
-        }`}>
+          }`}>
           {text.split('\n').map((line, i) => {
             if (line.trim().startsWith('→')) {
               return (
