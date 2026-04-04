@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { TooltipProvider } from "@shared/components/ui/tooltip";
 import CustomCursor from "@shared/components/layout/CustomCursor";
-import ResumeButton from "@shared/components/common/ResumeButton";
 import { ThemeProvider } from "@app/providers/theme-provider";
 import { ChatBot } from '@/features/agent';
 
@@ -24,9 +23,8 @@ const App = () => (
   <ThemeProvider defaultTheme="dark" storageKey="gy-theme">
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <PreLoader>
+        {/* <PreLoader> */}
           <CustomCursor />
-          <ResumeButton />
           <BrowserRouter
             future={{
               v7_startTransition: true,
@@ -60,7 +58,7 @@ const App = () => (
             {/* Portfolio Agent - Chatbot */}
             <ChatBot />
           </BrowserRouter>
-        </PreLoader>
+        {/* </PreLoader> */}
       </TooltipProvider>
     </QueryClientProvider>
   </ThemeProvider>
