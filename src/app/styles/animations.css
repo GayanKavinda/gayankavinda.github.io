@@ -1,0 +1,118 @@
+/* ─── Global Animations & Hardware Acceleration ────────────────────────────────────────────── */
+
+/* Hardware acceleration hints for heavy elements */
+.mask-transition-outer,
+.terminal-panel,
+.stat-card,
+.concentric-rings,
+.ring-circle,
+.particle-canvas,
+.stat-row {
+  will-change: transform, opacity;
+}
+
+/* Instant theme snap: suppressed only during the toggle moment */
+.theme-snap *, 
+.theme-snap *::before, 
+.theme-snap *::after {
+  transition: none !important;
+  animation-play-state: paused !important;
+}
+
+/* Keyframes */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(-8px); }
+  50% { transform: translateY(8px); }
+}
+
+@keyframes resumePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(192, 39, 45, 0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(192, 39, 45, 0); }
+}
+
+/* HUD side word cycling animation */
+@keyframes hudWordCycle {
+  0%, 24%  { color: rgba(180,120,20,0.7); }
+  25%, 100% { color: rgba(30,30,40,0.14); }
+}
+
+/* Scanline animation for HUD menu */
+@keyframes scanline {
+  0% { transform: translateY(-100vh); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Cinematic Marquee */
+@keyframes mqCinema {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Green Pulse */
+@keyframes greenPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+  50%      { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+}
+
+/* Nav link underline */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: hsl(var(--gold));
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .ring-circle {
+    animation: none !important;
+    opacity: 0.3 !important;
+  }
+
+  .particle-canvas {
+    display: none !important;
+  }
+
+  .term-line {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  .stat-card {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  [style*="auraPulse"] {
+    animation: none !important;
+  }
+}

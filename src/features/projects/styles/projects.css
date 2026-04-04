@@ -1,0 +1,4 @@
+/* ── Project card hover line ── */
+.project-card:hover .hover-line {
+  width: 100% !important;
+}

@@ -82,7 +82,7 @@ async function callClaude(system: string, history: { role: string; content: stri
 }
 
 async function callGemini(system: string, history: { role: string; content: string }[], user: string, key: string): Promise<string> {
-  const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-1.5-flash';
+  const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.5-flash';
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${key}`;
   const geminiHistory = history.filter(m => m.role === 'user' || m.role === 'assistant').slice(-10)
     .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));

@@ -68,19 +68,13 @@ const EngineeringPhilosophy = () => {
       }
     }, ref.current);
     
-    // Add a small delay for ScrollTrigger refresh to catch layout changes
-    const timeout = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 100);
-
     return () => {
-      clearTimeout(timeout);
       ctx.revert();
     };
   }, []);
 
   return (
-    <section id="philosophy" ref={ref} className="py-[80px] md:py-[100px] bg-background">
+    <section id="philosophy" ref={ref} className="relative py-[80px] md:py-[100px] bg-background">
       <div className="max-w-[1200px] mx-auto px-6 md:px-10">
 
         <div className="text-center mb-12 md:mb-16">

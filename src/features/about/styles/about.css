@@ -1,0 +1,17 @@
+/* ── About section stat animation ── */
+.about-text-anim {
+  opacity: 1; /* fallback if GSAP not loaded */
+}
+
+/* ── Metric count-up ── */
+.metric-val {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Mobile resets for experience timeline ── */
+@media (max-width: 767px) {
+  /* Experience zigzag: hide center line on mobile (handled by single-column layout) */
+  #experience .center-line {
+    display: none;
+  }
+}

@@ -1,6 +1,6 @@
 // src/features/agent/components/ChatBot.tsx
 // ═══════════════════════════════════════════════════════════════════════════════
-// GARA YAKA — AGENT v7.4 · Strong Purple Gradient · Fixed Light Mode Contrast
+// GARA YAKA — AGENT v8 · Clean Modern Design · High Contrast · Light/Dark
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
@@ -173,17 +173,13 @@ function renderRich(text: string): React.ReactNode[] {
     if (chunk.startsWith('**') && chunk.endsWith('**'))
       return <strong key={i} className="font-semibold">{chunk.slice(2, -2)}</strong>;
     if (chunk.startsWith('`') && chunk.endsWith('`'))
-      return <code key={i} style={{
-        fontSize: '10.5px', padding: '1px 6px', borderRadius: '5px', fontFamily: 'DM Mono, monospace',
-        background: 'rgba(168,85,247,0.12)', color: '#9333ea',
-        border: '1px solid rgba(168,85,247,0.25)', display: 'inline-block',
-      }}>{chunk.slice(1, -1)}</code>;
+      return <code key={i} className="gy-code">{chunk.slice(1, -1)}</code>;
     if (chunk.startsWith('_') && chunk.endsWith('_') && !chunk.startsWith('__'))
-      return <span key={i} style={{ opacity: 0.55, fontSize: '11px' }}>{chunk.slice(1, -1)}</span>;
+      return <span key={i} className="gy-text-muted text-[11px]">{chunk.slice(1, -1)}</span>;
     const link = chunk.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
     if (link)
       return <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer"
-        style={{ color: '#7c3aed', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+        className="text-[#ca2127] underline underline-offset-2 hover:text-[#a01a1f] transition-colors">
         {link[1]}
       </a>;
     return <React.Fragment key={i}>{chunk}</React.Fragment>;
@@ -194,56 +190,37 @@ function renderRich(text: string): React.ReactNode[] {
 
 const ProjCard = ({ e }: { e: any }) => (
   <a href={e.link || '#'}
-    className="group flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-300"
-    style={{
-      background: 'rgba(255,255,255,0.55)',
-      border: '1px solid rgba(168,85,247,0.2)',
-      backdropFilter: 'blur(8px)',
-    }}
-    onMouseEnter={e => {
-      const el = e.currentTarget as HTMLElement;
-      el.style.background = 'rgba(255,255,255,0.85)';
-      el.style.borderColor = 'rgba(168,85,247,0.45)';
-      el.style.transform = 'translateY(-1px)';
-      el.style.boxShadow = '0 6px 20px rgba(124,58,237,0.12)';
-    }}
-    onMouseLeave={e => {
-      const el = e.currentTarget as HTMLElement;
-      el.style.background = 'rgba(255,255,255,0.55)';
-      el.style.borderColor = 'rgba(168,85,247,0.2)';
-      el.style.transform = 'translateY(0)';
-      el.style.boxShadow = 'none';
-    }}>
-    <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-      style={{ background: 'rgba(168,85,247,0.1)' }}>
-      <Ic path={P.star} size={11} style={{ color: '#9333ea' } as any} />
+    className="group flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-300
+      bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06]
+      hover:bg-black/[0.04] dark:hover:bg-white/[0.06] hover:border-[#ca2127]/30
+      hover:-translate-y-px hover:shadow-md">
+    <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0
+      bg-[#ca2127]/10 dark:bg-[#ca2127]/15">
+      <Ic path={P.star} size={11} className="text-[#ca2127]" />
     </div>
     <div className="flex-1 min-w-0">
-      <p className="text-[11px] font-semibold truncate" style={{ color: '#1e1040' }}>{e.title}</p>
+      <p className="text-[11px] font-semibold truncate gy-text-primary">{e.title}</p>
       {e.metadata?.tech && (
-        <p className="text-[9px] font-mono mt-0.5 truncate" style={{ color: 'rgba(124,58,237,0.5)' }}>
-          {e.metadata.tech}
-        </p>
+        <p className="text-[9px] font-mono mt-0.5 truncate gy-text-muted">{e.metadata.tech}</p>
       )}
     </div>
-    <Ic path={P.arrow} size={10} style={{ color: 'rgba(124,58,237,0.3)', flexShrink: 0 } as any} />
+    <Ic path={P.arrow} size={10} className="gy-text-muted flex-shrink-0" />
   </a>
 );
 
 // ─── MINI BUTTON ──────────────────────────────────────────────────────────────
 
-const MiniBtn = ({ onClick, active, activeColor = '#9333ea', title, children }: {
+const MiniBtn = ({ onClick, active, activeColor = '#ca2127', title, children }: {
   onClick: () => void; active?: boolean; activeColor?: string;
   title?: string; children: React.ReactNode;
 }) => (
   <button onClick={onClick} title={title}
-    className="p-1 rounded-lg cursor-pointer transition-all duration-150"
+    className="p-1 rounded-lg cursor-pointer transition-all duration-150
+      text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400"
     style={{
-      color:      active ? activeColor : 'rgba(100,80,140,0.35)',
-      background: active ? `${activeColor}18` : 'transparent',
-    }}
-    onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.color = 'rgba(100,80,140,0.65)'; }}
-    onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.color = 'rgba(100,80,140,0.35)'; }}>
+      color:      active ? activeColor : undefined,
+      background: active ? `${activeColor}15` : 'transparent',
+    }}>
     {children}
   </button>
 );
@@ -254,22 +231,14 @@ const HdrBtn = ({ onClick, title, active, danger, children }: {
   onClick: () => void; title: string; active?: boolean; danger?: boolean; children: React.ReactNode;
 }) => (
   <button onClick={onClick} title={title}
-    className="flex items-center justify-center w-6 h-6 rounded-lg cursor-pointer
-      transition-all duration-200 hover:scale-105 active:scale-95"
-    style={{
-      color:      danger ? 'rgba(100,80,140,0.4)' : active ? '#9333ea' : 'rgba(80,60,120,0.45)',
-      background: active ? 'rgba(168,85,247,0.12)' : 'transparent',
-    }}
-    onMouseEnter={e => {
-      const el = e.currentTarget as HTMLElement;
-      el.style.color      = danger ? '#ef4444' : '#9333ea';
-      el.style.background = danger ? 'rgba(239,68,68,0.1)' : 'rgba(168,85,247,0.12)';
-    }}
-    onMouseLeave={e => {
-      const el = e.currentTarget as HTMLElement;
-      el.style.color      = danger ? 'rgba(100,80,140,0.4)' : active ? '#9333ea' : 'rgba(80,60,120,0.45)';
-      el.style.background = active ? 'rgba(168,85,247,0.12)' : 'transparent';
-    }}>
+    className={`flex items-center justify-center w-7 h-7 rounded-lg cursor-pointer
+      transition-all duration-200 hover:scale-105 active:scale-95
+      ${danger
+        ? 'text-gray-400 dark:text-gray-600 hover:text-red-500 hover:bg-red-500/10'
+        : active
+          ? 'text-[#ca2127] bg-[#ca2127]/10'
+          : 'text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-black/[0.04] dark:hover:bg-white/[0.06]'
+      }`}>
     {children}
   </button>
 );
@@ -307,11 +276,8 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
     >
       {!isU && (
         <div className="flex-shrink-0 mt-0.5">
-          <div className="w-7 h-7 rounded-xl flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, rgba(168,85,247,0.18), rgba(124,58,237,0.12))',
-              border: '1px solid rgba(168,85,247,0.3)',
-            }}>
+          <div className="w-7 h-7 rounded-xl flex items-center justify-center
+            bg-[#ca2127]/10 dark:bg-[#ca2127]/15 border border-[#ca2127]/20">
             <GaraYakaMask size={17} />
           </div>
         </div>
@@ -324,16 +290,15 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
             ${isU ? 'rounded-br-[4px]' : 'rounded-tl-[4px]'}`}
           style={isU
             ? {
-                background: 'linear-gradient(135deg, #7c3aed 0%, #9333ea 60%, #a855f7 100%)',
+                background: 'linear-gradient(135deg, #ca2127 0%, #c09515 100%)',
                 color: '#ffffff',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+                boxShadow: '0 2px 8px rgba(202,33,39,0.2)',
               }
             : {
-                /* Bot bubble: solid white so it pops cleanly off bg */
-                background: '#ffffff',
-                color: '#1e1040',
-                border: '1px solid rgba(168,85,247,0.18)',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+                background: 'var(--gy-bot-bg, #ffffff)',
+                color: 'var(--gy-bot-text, #111827)',
+                border: '1px solid var(--gy-bot-border, rgba(0,0,0,0.08))',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
               }
           }
         >
@@ -342,10 +307,7 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
             if (line.trim().startsWith('→'))
               return (
                 <div key={li} className={`flex gap-2 ${li > 0 ? 'mt-1' : ''}`}>
-                  <span style={{
-                    flexShrink: 0, marginTop: '2px', fontSize: '11px', fontWeight: 700,
-                    color: isU ? 'rgba(255,255,255,0.55)' : '#a855f7',
-                  }}>›</span>
+                  <span className={`flex-shrink-0 mt-0.5 text-[11px] font-bold ${isU ? 'text-white/50' : 'text-[#ca2127]'}`}>›</span>
                   <span className="flex-1">{isU ? line.replace(/^→\s*/, '') : renderRich(line.replace(/^→\s*/, ''))}</span>
                 </div>
               );
@@ -354,11 +316,8 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
             </p>;
           })}
           {tw && !done && (
-            <span className="inline-block w-[1.5px] h-3 ml-0.5 align-middle rounded-full opacity-70"
-              style={{
-                background: isU ? 'rgba(255,255,255,0.8)' : '#a855f7',
-                animation: 'gyCaret 1s step-end infinite',
-              }} />
+            <span className={`inline-block w-[1.5px] h-3 ml-0.5 align-middle rounded-full ${isU ? 'bg-white/70' : 'bg-[#ca2127]'}`}
+              style={{ animation: 'gyCaret 1s step-end infinite' }} />
           )}
         </div>
 
@@ -374,13 +333,9 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
           <div className="flex gap-1.5 flex-wrap">
             {otherSrcs.map((s: any) => (
               <a key={s.id} href={s.link || '#'}
-                className="text-[8.5px] px-2 py-[3px] rounded-full font-mono uppercase tracking-wider transition-all duration-200"
-                style={{
-                  background: 'rgba(255,255,255,0.6)',
-                  border: '1px solid rgba(168,85,247,0.25)',
-                  color: 'rgba(124,58,237,0.7)',
-                  backdropFilter: 'blur(4px)',
-                }}>
+                className="text-[8.5px] px-2 py-[3px] rounded-full font-mono uppercase tracking-wider
+                  bg-black/[0.03] dark:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.06]
+                  gy-text-secondary transition-colors hover:border-[#ca2127]/30">
                 {s.title.length > 22 ? s.title.slice(0, 22) + '…' : s.title}
               </a>
             ))}
@@ -391,10 +346,10 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
         {!isU && done && (
           <div className="flex items-center gap-0.5 mt-0.5 transition-all duration-200"
             style={{ opacity: hover ? 1 : 0, transform: hover ? 'translateY(0)' : 'translateY(3px)' }}>
-            <span style={{ fontSize: '8.5px', fontFamily: 'DM Mono', color: 'rgba(100,80,140,0.35)', marginRight: '6px' }}>
+            <span className="text-[8.5px] font-mono gy-text-muted mr-1.5">
               {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
-            <MiniBtn onClick={() => onReact('like')}   active={msg.reactions?.like}    activeColor="#9333ea" title="Helpful"><Ic path={P.thumbU} size={10} /></MiniBtn>
+            <MiniBtn onClick={() => onReact('like')}   active={msg.reactions?.like}    activeColor="#ca2127" title="Helpful"><Ic path={P.thumbU} size={10} /></MiniBtn>
             <MiniBtn onClick={() => onReact('dislike')} active={msg.reactions?.dislike} activeColor="#ef4444" title="Not helpful"><Ic path={P.thumbD} size={10} /></MiniBtn>
             <MiniBtn onClick={handleCopy} active={copied} activeColor="#10b981" title="Copy"><Ic path={copied ? P.check : P.copy} size={10} /></MiniBtn>
             {onRegen && <MiniBtn onClick={onRegen} title="Regenerate"><Ic path={P.refresh} size={10} /></MiniBtn>}
@@ -409,23 +364,17 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
 
 const TypingDots = () => (
   <div className="flex items-start gap-2" style={{ animation: 'gyFade .25s ease' }}>
-    <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-      style={{
-        background: 'linear-gradient(135deg, rgba(168,85,247,0.18), rgba(124,58,237,0.12))',
-        border: '1px solid rgba(168,85,247,0.3)',
-      }}>
+    <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5
+      bg-[#ca2127]/10 dark:bg-[#ca2127]/15 border border-[#ca2127]/20">
       <GaraYakaMask size={17} />
     </div>
-    <div className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl rounded-tl-[4px]"
-      style={{
-        background: '#ffffff',
-        border: '1px solid rgba(168,85,247,0.18)',
-        boxShadow: '0 2px 12px rgba(124,58,237,0.08)',
-      }}>
+    <div className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl rounded-tl-[4px]
+      bg-white dark:bg-[#1c1c20] border border-black/[0.06] dark:border-white/[0.06]"
+      style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
       {[0, 1, 2].map(i => (
         <span key={i} className="w-1.5 h-1.5 rounded-full" style={{
-          background: i === 0 ? '#a855f7' : i === 1 ? '#9333ea' : '#c084fc',
-          opacity: 0.6,
+          background: '#ca2127',
+          opacity: 0.5,
           animation: `gyBounce 1.1s ease ${i * 0.16}s infinite`,
         }} />
       ))}
@@ -517,315 +466,51 @@ const ChatBot: React.FC = () => {
 
   return (
     <>
+      {/* CSS Variables for dark mode bot bubbles */}
       <style>{`
-        /* ── Keyframes ── */
-        @keyframes gyFade     { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes gyBounce   { 0%,60%,100%{transform:translateY(0);opacity:.3} 30%{transform:translateY(-5px);opacity:1} }
-        @keyframes gyIn       { from{opacity:0;transform:translateY(18px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }
-        @keyframes gyOut      { from{opacity:1;transform:translateY(0) scale(1)} to{opacity:0;transform:translateY(18px) scale(0.96)} }
-        @keyframes gySheet    { from{transform:translateY(100%)} to{transform:translateY(0)} }
-        @keyframes gySheetOut { from{transform:translateY(0)} to{transform:translateY(100%)} }
-        @keyframes gyFloat    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
-        @keyframes gySlide    { from{opacity:0;transform:translateX(8px)} to{opacity:1;transform:translateX(0)} }
-        @keyframes gyCaret    { 0%,49%{opacity:1} 50%,100%{opacity:0} }
-        @keyframes gyMicLive  { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.1)} }
-        @keyframes gySpin     { from{transform:rotate(0)} to{transform:rotate(360deg)} }
-        @keyframes gyGlow     { 0%,100%{opacity:.5} 50%{opacity:1} }
-        @keyframes gyPulse    { 0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,.3)} 60%{box-shadow:0 0 0 14px rgba(124,58,237,0)} }
-        @keyframes gyShimmer  { 0%{background-position:200% center} 100%{background-position:-200% center} }
-
-        /* ══════════════════════════════════════════════════════════════
-           PURPLE + WHITE ANIMATED GRADIENT — FULL PANEL
-           Strong, visible, beautiful. Corner blobs drift slowly.
-
-           Light mode:
-             TL = rich violet      #7c3aed at 40% opacity
-             TR = white
-             BR = bright purple    #a855f7 at 30% opacity
-             BL = indigo           #6366f1 at 25% opacity
-             Base = near-white with purple warmth
-
-           Dark mode:
-             TL = deep violet
-             TR = near-black
-             BR = indigo-shadow
-             BL = purple ink
-        ══════════════════════════════════════════════════════════════ */
-        @keyframes gyPanelDrift {
-          0%   { background-position: 0%   0%;   }
-          33%  { background-position: 100% 50%;  }
-          66%  { background-position: 50%  100%; }
-          100% { background-position: 0%   0%;   }
+        .gy-code {
+          font-size: 10.5px; padding: 1px 6px; border-radius: 5px; font-family: 'DM Mono', monospace;
+          background: rgba(202,33,39,0.08); color: #ca2127;
+          border: 1px solid rgba(202,33,39,0.15); display: inline-block;
         }
-
-        /* ── LIGHT MODE — visible theme gradient ── */
-        .gy-panel-bg {
-          background:
-            radial-gradient(ellipse 80% 60% at 0%   0%,   rgba(202,33,39,0.12)  0%, transparent 70%),
-            radial-gradient(ellipse 60% 50% at 100% 0%,   rgba(255,255,255,1)    0%, transparent 60%),
-            radial-gradient(ellipse 70% 60% at 100% 100%, rgba(192,149,21,0.12)  0%, transparent 70%),
-            radial-gradient(ellipse 60% 50% at 0%   100%, rgba(147,51,234,0.12)  0%, transparent 60%),
-            linear-gradient(135deg, #fffcfc 0%, #ffffff 40%, #fefdfa 70%, #fbfaff 100%);
-          background-size: 200% 200%;
-          animation: gyPanelDrift 14s ease-in-out infinite;
-          border: 1px solid rgba(200,200,200,0.4);
-          /* Removed shining outerline */
-          box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        .dark .gy-code {
+          background: rgba(202,33,39,0.12); color: #ef8a8e;
+          border-color: rgba(202,33,39,0.2);
         }
-
-        /* ── DARK MODE ── */
-        .dark .gy-panel-bg {
-          background:
-            radial-gradient(ellipse 80% 60% at 0%   0%,   rgba(202,33,39,0.2)  0%, transparent 65%),
-            radial-gradient(ellipse 60% 50% at 100% 0%,   rgba(10,5,5,1)        0%, transparent 55%),
-            radial-gradient(ellipse 70% 60% at 100% 100%, rgba(192,149,21,0.15)  0%, transparent 65%),
-            radial-gradient(ellipse 60% 50% at 0%   100%, rgba(147,51,234,0.18)  0%, transparent 60%),
-            linear-gradient(135deg, #110505 0%, #080808 40%, #0d0a02 70%, #0a0415 100%);
-          background-size: 200% 200%;
-          animation: gyPanelDrift 18s ease-in-out infinite;
-          border: 1px solid rgba(255,255,255,0.08);
-          /* Removed shining outerline */
-          box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        :root {
+          --gy-bot-bg: #ffffff;
+          --gy-bot-text: #111827;
+          --gy-bot-border: rgba(0,0,0,0.08);
         }
-
-        /* ── Header — frosted glass, readable over purple bg ── */
-        .gy-header-bg {
-          background: rgba(248,244,255,0.88);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border-bottom: 1px solid rgba(168,85,247,0.18);
+        .dark {
+          --gy-bot-bg: #1c1c20;
+          --gy-bot-text: #f3f4f6;
+          --gy-bot-border: rgba(255,255,255,0.06);
         }
-        .dark .gy-header-bg {
-          background: rgba(12,6,24,0.88);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border-bottom: 1px solid rgba(168,85,247,0.2);
-        }
-
-        /* ── Footer ── */
-        .gy-footer-bg {
-          background: rgba(248,244,255,0.92);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border-top: 1px solid rgba(168,85,247,0.14);
-        }
-        .dark .gy-footer-bg {
-          background: rgba(12,6,24,0.92);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border-top: 1px solid rgba(168,85,247,0.18);
-        }
-
-        /* ── Strip ── */
-        .gy-strip-bg {
-          background: rgba(248,244,255,0.82);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border-top: 1px solid rgba(168,85,247,0.12);
-        }
-        .dark .gy-strip-bg {
-          background: rgba(12,6,24,0.82);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border-top: 1px solid rgba(168,85,247,0.16);
-        }
-
-        /* ── Search ── */
-        .gy-search-bg {
-          background: rgba(248,244,255,0.85);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border-bottom: 1px solid rgba(168,85,247,0.14);
-        }
-        .dark .gy-search-bg {
-          background: rgba(12,6,24,0.85);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border-bottom: 1px solid rgba(168,85,247,0.16);
-        }
-
-        /* ── Scrollbar ── */
-        .gy-scroll::-webkit-scrollbar       { width: 2px; }
-        .gy-scroll::-webkit-scrollbar-track { background: transparent; }
-        .gy-scroll::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.2); border-radius: 99px; }
-        .gy-scroll::-webkit-scrollbar-thumb:hover { background: rgba(168,85,247,0.38); }
-
-        /* ── Strip ── */
-        .gy-strip {
-          display:flex; align-items:center; gap:5px; overflow-x:auto;
-          padding:8px 13px; scrollbar-width:none; -webkit-overflow-scrolling:touch;
-        }
-        .gy-strip::-webkit-scrollbar { display:none; }
-
-        /* ── Chips — purple on white, hover fills purple ── */
-        .gy-chip {
-          flex-shrink:0; white-space:nowrap; font-size:10px; padding:3.5px 12px;
-          border-radius:999px; cursor:pointer;
-          font-family:'Instrument Sans',sans-serif;
-          background: rgba(255,255,255,0.7);
-          border: 1px solid rgba(168,85,247,0.25);
-          color: rgba(109,40,217,0.75);
-          backdrop-filter: blur(6px);
-          transition: all .22s cubic-bezier(.16,1,.3,1);
-        }
-        .gy-chip:hover {
-          background: linear-gradient(135deg,#7c3aed,#9333ea);
-          color: white; border-color: transparent;
-          transform: translateY(-1.5px);
-          box-shadow: 0 5px 16px rgba(124,58,237,0.32);
-        }
-        .dark .gy-chip {
-          background: rgba(30,12,60,0.7);
-          border-color: rgba(168,85,247,0.3);
-          color: rgba(196,156,255,0.8);
-        }
-        .dark .gy-chip:hover {
-          background: linear-gradient(135deg,#7c3aed,#9333ea);
-          color: white;
-        }
-
-        /* ── Explore cards ── */
-        .gy-init {
-          text-align:left; padding:10px; border-radius:12px; cursor:pointer;
-          background: rgba(255,255,255,0.55);
-          border: 1px solid rgba(168,85,247,0.15);
-          backdrop-filter: blur(8px);
-          transition: all .25s cubic-bezier(.16,1,.3,1);
-        }
-        .gy-init:hover {
-          background: rgba(255,255,255,0.88);
-          border-color: rgba(168,85,247,0.35);
-          transform: translateY(-2px);
-          box-shadow: 0 10px 30px rgba(124,58,237,0.14);
-        }
-        .dark .gy-init {
-          background: rgba(30,12,60,0.45);
-          border-color: rgba(168,85,247,0.2);
-        }
-        .dark .gy-init:hover {
-          background: rgba(40,16,80,0.7);
-          border-color: rgba(168,85,247,0.4);
-          box-shadow: 0 10px 30px rgba(124,58,237,0.25);
-        }
-
-        /* ── FAB ── */
-        .gy-fab {
-          position:fixed; bottom:20px; right:20px; z-index:9990;
-          width:44px; height:44px; border-radius:14px;
-          display:flex; align-items:center; justify-content:center;
-          border:none; outline:none; cursor:pointer;
-          background: linear-gradient(135deg, #ca2127 0%, #c09515 100%);
-          box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* removed shining outerline */
-          transition: all .3s cubic-bezier(.16,1,.3,1);
-        }
-        .gy-fab:hover {
-          transform: scale(1.08) translateY(-1px);
-          box-shadow: 0 6px 14px rgba(0,0,0,0.2);
-        }
-        .gy-fab:active { transform:scale(0.94); }
-        @media(max-width:640px){.gy-fab{bottom:16px;right:16px;width:42px;height:42px;border-radius:13px;}}
-
-        /* ── Send ── */
-        .gy-send {
-          display:flex; align-items:center; justify-content:center;
-          width:33px; height:33px; border-radius:10px; flex-shrink:0;
-          border:none; cursor:pointer; color:white;
-          background: linear-gradient(135deg, #ca2127 0%, #c09515 100%);
-          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-          transition: all .2s cubic-bezier(.16,1,.3,1);
-        }
-        .gy-send:hover:not(:disabled) { transform:scale(1.07); box-shadow:0 4px 10px rgba(0,0,0,0.15); }
-        .gy-send:active:not(:disabled){ transform:scale(0.93); }
-        .gy-send:disabled { opacity:.25; cursor:default; box-shadow:none; }
-
-        /* ── Mic ── */
-        .gy-mic {
-          display:flex; align-items:center; justify-content:center;
-          width:33px; height:33px; border-radius:10px; flex-shrink:0;
-          border:none; cursor:pointer; position:relative;
-          background:transparent; color:rgba(124,58,237,0.5);
-          transition: all .22s cubic-bezier(.16,1,.3,1);
-        }
-        .gy-mic:hover { background:rgba(202,33,39,0.1); color:#ca2127; transform:scale(1.05); }
-        .gy-mic.live  {
-          background:linear-gradient(135deg, #ca2127 0%, #c09515 100%);
-          color:white; animation:gyMicLive 1.4s ease infinite;
-          box-shadow:0 2px 8px rgba(0,0,0,0.15);
-        }
-
-        /* ── Input ── */
-        .gy-input {
-          flex:1; padding:8px 12px; font-size:12.5px; border-radius:10px;
-          background:rgba(255,255,255,0.7);
-          border:1px solid rgba(168,85,247,0.22);
-          color:#1e1040; outline:none;
-          font-family:'Instrument Sans',sans-serif;
-          backdrop-filter: blur(8px);
-          transition: border-color .2s, box-shadow .2s, background .2s;
-        }
-        .gy-input:focus {
-          background:rgba(255,255,255,0.95);
-          border-color:rgba(124,58,237,0.5);
-          box-shadow:0 0 0 3px rgba(124,58,237,0.1);
-        }
-        .gy-input::placeholder { color:rgba(124,58,237,0.32); }
-        .gy-input:disabled     { opacity:.3; }
-        .dark .gy-input        { background:rgba(20,8,45,0.7); color:#e2d9f3; border-color:rgba(168,85,247,0.25); }
-        .dark .gy-input:focus  { background:rgba(25,10,55,0.95); border-color:rgba(168,85,247,0.55); box-shadow:0 0 0 3px rgba(168,85,247,0.12); }
-        .dark .gy-input::placeholder { color:rgba(168,85,247,0.35); }
-
-        /* ── Name shimmer — purple gradient ── */
-        .gy-name {
-          background: linear-gradient(90deg,#7c3aed,#a855f7,#c084fc,#9333ea,#7c3aed);
-          background-size: 300% auto;
-          -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-          animation: gyShimmer 4s linear infinite;
-        }
-
-        /* ── Resize ── */
-        .gy-resize { position:absolute;top:0;left:0;width:16px;height:16px;cursor:nw-resize;z-index:10; }
-        .gy-resize::before {
-          content:'';position:absolute;top:4px;left:4px;width:8px;height:8px;
-          border-top:1.5px solid rgba(168,85,247,0.28);
-          border-left:1.5px solid rgba(168,85,247,0.28);
-          transition:border-color .2s;
-        }
-        .gy-resize:hover::before { border-color:rgba(168,85,247,0.6); }
-
-        /* ── Light mode text corrections ──
-           All UI text on the purple-tinted frosted panels must be dark/readable
-        ── */
-        .gy-ui-text        { color: #2d1b69; }
-        .gy-ui-text-muted  { color: rgba(74,38,160,0.6); }
-        .gy-ui-text-faint  { color: rgba(109,40,217,0.38); }
-        .dark .gy-ui-text       { color: #e2d9f3; }
-        .dark .gy-ui-text-muted { color: rgba(196,156,255,0.6); }
-        .dark .gy-ui-text-faint { color: rgba(196,156,255,0.35); }
       `}</style>
 
       {/* ── FAB ── */}
       <button onClick={toggleChat} aria-label="Toggle Yaka" className="gy-fab"
         style={{ animation: !isOpen && !interacted ? 'gyFloat 3.5s ease infinite' : undefined }}>
         {!interacted && !isOpen && (
-          <span style={{ position:'absolute',inset:0,borderRadius:14,animation:'gyPulse 2.5s ease infinite',pointerEvents:'none' }} />
+          <span style={{ position:'absolute',inset:0,borderRadius:16,animation:'gyPulse 2.5s ease infinite',pointerEvents:'none' }} />
         )}
         {isOpen ? <Ic path={P.x} size={17} sw={2.2} className="text-white" /> : <GaraYakaMask size={24} white />}
         {unreadCount > 0 && !isOpen && (
           <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 rounded-full
-            text-[8.5px] font-bold flex items-center justify-center border-[1.5px]"
-            style={{ background:'linear-gradient(135deg,#f59e0b,#f97316)', color:'white', borderColor:'white' }}>
+            text-[8.5px] font-bold flex items-center justify-center border-[1.5px]
+            bg-gradient-to-br from-amber-500 to-orange-500 text-white border-white">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
         {!interacted && !isOpen && !mobile && (
-          <span className="absolute -top-px -left-px px-1.5 py-px rounded-md text-[7px] font-mono opacity-40"
-            style={{ background:'rgba(20,8,45,0.75)', color:'white' }}>⌘K</span>
+          <span className="absolute -top-px -left-px px-1.5 py-px rounded-md text-[7px] font-mono
+            bg-black/70 text-white/70">⌘K</span>
         )}
       </button>
 
       {isOpen && mobile && (
-        <div className="fixed inset-0 z-[9988]"
-          style={{ background:'rgba(15,5,35,0.55)', backdropFilter:'blur(4px)' }}
+        <div className="fixed inset-0 z-[9988] bg-black/40 backdrop-blur-sm"
           onClick={doClose} />
       )}
 
@@ -848,35 +533,26 @@ const ChatBot: React.FC = () => {
 
             {/* ── HEADER ── */}
             <header className="gy-header-bg flex items-center justify-between px-3.5 py-2.5 flex-shrink-0">
-              {mobile && <div className="absolute top-2 left-1/2 -translate-x-1/2 w-9 h-1 rounded-full"
-                style={{ background:'rgba(168,85,247,0.25)' }} />}
+              {mobile && <div className="absolute top-2 left-1/2 -translate-x-1/2 w-9 h-1 rounded-full bg-black/10 dark:bg-white/10" />}
 
               <div className="flex items-center gap-2.5">
                 <div className="relative">
-                  <div className="w-9 h-9 rounded-[12px] flex items-center justify-center"
-                    style={{
-                      background: 'linear-gradient(135deg,rgba(168,85,247,0.18),rgba(124,58,237,0.1))',
-                      border: '1px solid rgba(168,85,247,0.3)',
-                    }}>
+                  <div className="w-9 h-9 rounded-[12px] flex items-center justify-center
+                    bg-[#ca2127]/10 dark:bg-[#ca2127]/15 border border-[#ca2127]/20">
                     <GaraYakaMask size={22} />
                   </div>
-                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full"
-                    style={{ border:'2px solid rgba(248,244,255,0.9)', animation:'gyGlow 2.5s ease infinite' }} />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full
+                    border-2 border-white dark:border-[#18181c]"
+                    style={{ animation:'gyGlow 2.5s ease infinite' }} />
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    {/* Name with purple shimmer — clearly visible */}
                     <p className="text-[13px] font-bold gy-name tracking-tight"
                       style={{ fontFamily:"'Plus Jakarta Sans',sans-serif" }}>Yaka</p>
-                    <span className="text-[7.5px] px-1.5 py-px rounded-md font-mono uppercase tracking-widest"
-                      style={{
-                        background:'rgba(124,58,237,0.1)',
-                        color:'#7c3aed',
-                        border:'1px solid rgba(124,58,237,0.22)',
-                      }}>agent</span>
+                    <span className="text-[7.5px] px-1.5 py-px rounded-md font-mono uppercase tracking-widest
+                      bg-[#ca2127]/10 text-[#ca2127] border border-[#ca2127]/20">agent</span>
                   </div>
-                  <p className="text-[8.5px] font-mono tracking-[.06em]"
-                    style={{ color: isLoading ? '#9333ea' : 'rgba(109,40,217,0.5)' }}>
+                  <p className={`text-[8.5px] font-mono tracking-[.06em] ${isLoading ? 'text-[#ca2127]' : 'gy-text-muted'}`}>
                     {isLoading
                       ? <span style={{ animation:'gyGlow 1.5s ease infinite', display:'inline-block' }}>thinking…</span>
                       : 'online · portfolio ai'}
@@ -897,7 +573,7 @@ const ChatBot: React.FC = () => {
                     <Ic path={expanded ? P.shrink : P.expand} size={12} />
                   </HdrBtn>
                 </>}
-                <div style={{ width:'1px', height:'14px', background:'rgba(168,85,247,0.2)', margin:'0 2px' }} />
+                <div className="w-px h-3.5 bg-black/10 dark:bg-white/10 mx-0.5" />
                 <HdrBtn onClick={clearChat} title="Clear" danger><Ic path={P.trash} size={12} /></HdrBtn>
                 <HdrBtn onClick={doClose} title="Minimize"><Ic path={P.minus} size={12} /></HdrBtn>
               </div>
@@ -907,16 +583,15 @@ const ChatBot: React.FC = () => {
             {searching && (
               <div className="gy-search-bg px-3.5 py-2" style={{ animation:'gyFade .18s ease' }}>
                 <div className="flex items-center gap-2">
-                  <Ic path={P.search} size={12} style={{ color:'rgba(124,58,237,0.4)', flexShrink:0 } as any} />
+                  <Ic path={P.search} size={12} className="gy-text-muted flex-shrink-0" />
                   <input value={searchQ} onChange={e => setSearchQ(e.target.value)}
                     placeholder="Search messages…" autoFocus
-                    style={{
-                      flex:1, background:'transparent', border:'none', outline:'none',
-                      fontSize:'12px', fontFamily:'Instrument Sans', color:'#2d1b69',
-                    }} />
+                    className="flex-1 bg-transparent border-none outline-none text-[12px] gy-text-primary
+                      placeholder:gy-text-muted"
+                    style={{ fontFamily: 'Instrument Sans' }} />
                   {searchQ && (
                     <button onClick={() => setSearchQ('')}
-                      style={{ color:'rgba(124,58,237,0.4)', cursor:'pointer', background:'none', border:'none' }}>
+                      className="gy-text-muted hover:text-gray-600 dark:hover:text-gray-400 cursor-pointer bg-transparent border-none">
                       <Ic path={P.x} size={11} />
                     </button>
                   )}
@@ -924,7 +599,7 @@ const ChatBot: React.FC = () => {
               </div>
             )}
 
-            {/* ── MESSAGES — transparent, purple gradient shows through ── */}
+            {/* ── MESSAGES ── */}
             <div ref={bodyRef} className="flex-1 overflow-y-auto gy-scroll px-3.5 py-4 space-y-3.5">
               {filtered.map((m, i) => (
                 <MsgBubble key={m.id} msg={m} idx={i}
@@ -939,18 +614,15 @@ const ChatBot: React.FC = () => {
               {messages.length <= 1 && !isLoading && (
                 <div className="pt-1" style={{ animation:'gyFade .3s ease' }}>
                   <div className="flex items-center gap-1.5 mb-2.5">
-                    <Ic path={P.spark} size={10} style={{ color:'rgba(168,85,247,0.55)' } as any} />
-                    <p className="text-[8.5px] font-mono uppercase tracking-[.14em]"
-                      style={{ color:'rgba(109,40,217,0.45)' }}>Explore</p>
+                    <Ic path={P.spark} size={10} className="text-[#ca2127]/50" />
+                    <p className="text-[8.5px] font-mono uppercase tracking-[.14em] gy-text-muted">Explore</p>
                   </div>
                   <div className="grid grid-cols-2 gap-1.5">
                     {suggestions.slice(0, 8).map((s, i) => (
                       <button key={s.query} onClick={() => sendMessage(s.query)} className="gy-init"
                         style={{ animation:`gyFade .3s ease ${i * 45}ms both` }}>
                         <span className="text-[15px] block mb-1.5">{s.icon}</span>
-                        {/* Card label — dark purple so it's readable on light frosted bg */}
-                        <span className="text-[10.5px] font-medium block leading-snug"
-                          style={{ color:'#3b1a78' }}>{s.label}</span>
+                        <span className="text-[10.5px] font-medium block leading-snug gy-text-primary">{s.label}</span>
                       </button>
                     ))}
                   </div>
@@ -965,15 +637,9 @@ const ChatBot: React.FC = () => {
                 style={{ animation:'gyFade .2s ease' }}>
                 <button onClick={scrollEnd}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-pointer
-                    transition-all duration-200"
-                  style={{
-                    background:'rgba(248,244,255,0.92)',
-                    border:'1px solid rgba(168,85,247,0.22)',
-                    boxShadow:'0 4px 16px rgba(124,58,237,0.12)',
-                    fontSize:'8.5px', fontFamily:'DM Mono',
-                    color:'rgba(109,40,217,0.55)',
-                    backdropFilter:'blur(8px)',
-                  }}>
+                    transition-all duration-200 text-[8.5px] font-mono
+                    bg-white/90 dark:bg-[#1c1c20]/90 border border-black/[0.08] dark:border-white/[0.06]
+                    gy-text-secondary shadow-lg backdrop-blur-sm">
                   <Ic path={P.chevD} size={9} /> scroll to latest
                 </button>
               </div>
@@ -983,7 +649,7 @@ const ChatBot: React.FC = () => {
             {followUps.length > 0 && messages.length > 1 && !isLoading && (
               <div className="gy-strip-bg flex-shrink-0">
                 <div className="gy-strip">
-                  <Ic path={P.spark} size={9} style={{ color:'rgba(168,85,247,0.5)', flexShrink:0 } as any} />
+                  <Ic path={P.spark} size={9} className="text-[#ca2127]/40 flex-shrink-0" />
                   {followUps.slice(0, 5).map((q, qi) => (
                     <button key={q} onClick={() => sendMessage(q)} className="gy-chip"
                       style={{ animation:`gySlide .3s ease ${qi * 55}ms both` }}>
@@ -1002,8 +668,8 @@ const ChatBot: React.FC = () => {
                     title={listening ? 'Stop' : 'Voice'}>
                     <Ic path={listening ? P.micOff : P.mic} size={13} />
                     {listening && (
-                      <span className="absolute inset-[-4px] rounded-[13px]"
-                        style={{ border:'1px solid rgba(168,85,247,0.4)', animation:'gyGlow .7s ease infinite alternate' }} />
+                      <span className="absolute inset-[-4px] rounded-[14px] border border-[#ca2127]/40"
+                        style={{ animation:'gyGlow .7s ease infinite alternate' }} />
                     )}
                   </button>
                 )}
@@ -1022,25 +688,20 @@ const ChatBot: React.FC = () => {
               </form>
 
               {voiceErrMsg && (
-                <div className="flex items-center gap-2 mt-2 px-3 py-2 rounded-xl"
-                  style={{
-                    background:'rgba(239,68,68,0.07)',
-                    border:'1px solid rgba(239,68,68,0.2)',
-                    animation:'gyFade .2s ease',
-                  }}>
-                  <span style={{ color:'#ef4444', fontSize:'10px', fontWeight:700 }}>⚠</span>
-                  <span style={{ fontSize:'10px', color:'rgba(239,68,68,0.8)', flex:1 }}>{voiceErrMsg}</span>
+                <div className="flex items-center gap-2 mt-2 px-3 py-2 rounded-xl
+                  bg-red-500/[0.06] border border-red-500/20"
+                  style={{ animation:'gyFade .2s ease' }}>
+                  <span className="text-red-500 text-[10px] font-bold">⚠</span>
+                  <span className="text-[10px] text-red-500/80 flex-1">{voiceErrMsg}</span>
                   <button onClick={() => setVoiceErrMsg(null)}
-                    style={{ color:'rgba(239,68,68,0.4)', cursor:'pointer', background:'none', border:'none' }}>
+                    className="text-red-500/40 cursor-pointer bg-transparent border-none">
                     <Ic path={P.x} size={9} />
                   </button>
                 </div>
               )}
 
-              {/* Footer text — clearly readable purple */}
-              <p className="text-center text-[7.5px] font-mono tracking-[.18em] uppercase mt-2"
-                style={{ color:'rgba(109,40,217,0.3)' }}>
-                gara yaka · portfolio ai{!mobile && <span style={{ marginLeft:'8px', opacity:0.5 }}>⌘K</span>}
+              <p className="text-center text-[7.5px] font-mono tracking-[.18em] uppercase mt-2 gy-text-muted">
+                gara yaka · portfolio ai{!mobile && <span className="ml-2 opacity-50">⌘K</span>}
               </p>
             </div>
           </div>
