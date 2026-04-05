@@ -6,44 +6,19 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { useChat } from '../hooks/useChat';
 import type { ChatMessage } from '../services/ai-service';
+import maskImg from '@shared/assets/mask.png';
 
-const GaraYakaMask = ({ size = 24, white = false }: { size?: number; white?: boolean }) => (
-  <svg width={size} height={size} viewBox="0 0 48 60" fill="none">
-    <defs>
-      <linearGradient id="gy-mg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%"   stopColor={white ? 'rgba(255,255,255,0.95)' : '#ca2127'} />
-        <stop offset="100%" stopColor={white ? 'rgba(255,255,255,0.7)'  : '#c09515'} />
-      </linearGradient>
-    </defs>
-    <path d="M24 1 L20 11 L24 9 L28 11 Z"          fill="url(#gy-mg)" opacity="0.95"/>
-    <path d="M16 4 L14 14 L20 11 Z"                 fill="url(#gy-mg)" opacity="0.75"/>
-    <path d="M32 4 L34 14 L28 11 Z"                 fill="url(#gy-mg)" opacity="0.75"/>
-    <path d="M10 7 L8 17 L15 13 Z"                  fill="url(#gy-mg)" opacity="0.5"/>
-    <path d="M38 7 L40 17 L33 13 Z"                 fill="url(#gy-mg)" opacity="0.5"/>
-    <path d="M8 17 Q24 12 40 17 L38 22 Q24 18 10 22 Z" fill="url(#gy-mg)" opacity="0.88"/>
-    <ellipse cx="24" cy="39" rx="16" ry="19"
-      fill="url(#gy-mg)" fillOpacity="0.07" stroke="url(#gy-mg)" strokeWidth="1.4"/>
-    <path d="M13 29 Q18.5 25 24 26 Q29.5 25 35 29"
-      stroke="url(#gy-mg)" strokeWidth="1.7" strokeLinecap="round" fill="none"/>
-    <ellipse cx="18" cy="33" rx="4.2" ry="2.8"
-      stroke="url(#gy-mg)" strokeWidth="1.4" fill="url(#gy-mg)" fillOpacity="0.1"/>
-    <circle cx="18" cy="33" r="1.5" fill="url(#gy-mg)" opacity="0.95"/>
-    <ellipse cx="30" cy="33" rx="4.2" ry="2.8"
-      stroke="url(#gy-mg)" strokeWidth="1.4" fill="url(#gy-mg)" fillOpacity="0.1"/>
-    <circle cx="30" cy="33" r="1.5" fill="url(#gy-mg)" opacity="0.95"/>
-    <path d="M22 37 L20.5 42 Q24 44 27.5 42 L26 37 Q24 38 22 37Z"
-      stroke="url(#gy-mg)" strokeWidth="1.1" fill="url(#gy-mg)" fillOpacity="0.08"/>
-    <path d="M16 46.5 Q24 52.5 32 46.5"
-      stroke="url(#gy-mg)" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-    <path d="M20 47.5 L21 51 L24 49 L27 51 L28 47.5"
-      stroke="url(#gy-mg)" strokeWidth="0.9" fill="url(#gy-mg)" fillOpacity="0.18"/>
-    <circle cx="11.5" cy="39" r="2" fill="url(#gy-mg)" opacity="0.35"/>
-    <circle cx="36.5" cy="39" r="2" fill="url(#gy-mg)" opacity="0.35"/>
-    <path d="M9.5 36 Q8.5 39 9.5 42"
-      stroke="url(#gy-mg)" strokeWidth="1" strokeLinecap="round" opacity="0.45"/>
-    <path d="M38.5 36 Q39.5 39 38.5 42"
-      stroke="url(#gy-mg)" strokeWidth="1" strokeLinecap="round" opacity="0.45"/>
-  </svg>
+const GaraYakaMask = ({ size = 24 }: { size?: number }) => (
+  <img 
+    src={maskImg} 
+    alt="Gara Yaka Mask" 
+    style={{ 
+      width: size, 
+      height: size, 
+      objectFit: 'contain',
+      filter: 'drop-shadow(0 2px 10px var(--gy-c1))'
+    }}
+  />
 );
 
 const Ic = ({ path, size = 15, className = '', sw = 1.75, style }: {
@@ -179,7 +154,7 @@ function renderRich(text: string): React.ReactNode[] {
     const link = chunk.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
     if (link)
       return <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer"
-        className="text-[#ca2127] underline underline-offset-2 hover:text-[#a01a1f] transition-colors">
+        className="gy-accent-text underline underline-offset-2 hover:opacity-80 transition-colors">
         {link[1]}
       </a>;
     return <React.Fragment key={i}>{chunk}</React.Fragment>;
@@ -192,11 +167,10 @@ const ProjCard = ({ e }: { e: any }) => (
   <a href={e.link || '#'}
     className="group flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-300
       bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06]
-      hover:bg-black/[0.04] dark:hover:bg-white/[0.06] hover:border-[#ca2127]/30
+      hover:bg-black/[0.04] dark:hover:bg-white/[0.06] gy-accent-border
       hover:-translate-y-px hover:shadow-md">
-    <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0
-      bg-[#ca2127]/10 dark:bg-[#ca2127]/15">
-      <Ic path={P.star} size={11} className="text-[#ca2127]" />
+    <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 gy-accent-bg-glow">
+      <Ic path={P.star} size={11} className="gy-accent-text" />
     </div>
     <div className="flex-1 min-w-0">
       <p className="text-[11px] font-semibold truncate gy-text-primary">{e.title}</p>
@@ -210,7 +184,7 @@ const ProjCard = ({ e }: { e: any }) => (
 
 // ─── MINI BUTTON ──────────────────────────────────────────────────────────────
 
-const MiniBtn = ({ onClick, active, activeColor = '#ca2127', title, children }: {
+const MiniBtn = ({ onClick, active, activeColor = 'var(--gy-c1)', title, children }: {
   onClick: () => void; active?: boolean; activeColor?: string;
   title?: string; children: React.ReactNode;
 }) => (
@@ -236,7 +210,7 @@ const HdrBtn = ({ onClick, title, active, danger, children }: {
       ${danger
         ? 'text-gray-400 dark:text-gray-600 hover:text-red-500 hover:bg-red-500/10'
         : active
-          ? 'text-[#ca2127] bg-[#ca2127]/10'
+          ? 'gy-accent-text gy-accent-bg-glow'
           : 'text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-black/[0.04] dark:hover:bg-white/[0.06]'
       }`}>
     {children}
@@ -275,11 +249,8 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
       onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
     >
       {!isU && (
-        <div className="flex-shrink-0 mt-0.5">
-          <div className="w-7 h-7 rounded-xl flex items-center justify-center
-            bg-[#ca2127]/10 dark:bg-[#ca2127]/15 border border-[#ca2127]/20">
-            <GaraYakaMask size={17} />
-          </div>
+        <div className="flex-shrink-0 mt-1">
+          <GaraYakaMask size={24} />
         </div>
       )}
 
@@ -290,9 +261,9 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
             ${isU ? 'rounded-br-[4px]' : 'rounded-tl-[4px]'}`}
           style={isU
             ? {
-                background: 'linear-gradient(135deg, #ca2127 0%, #c09515 100%)',
+                background: 'linear-gradient(135deg, var(--gy-c1) 0%, var(--gy-c2) 100%)',
                 color: '#ffffff',
-                boxShadow: '0 2px 8px rgba(202,33,39,0.2)',
+                boxShadow: '0 2px 8px color-mix(in srgb, var(--gy-c1) 30%, transparent)',
               }
             : {
                 background: 'var(--gy-bot-bg, #ffffff)',
@@ -307,7 +278,7 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
             if (line.trim().startsWith('→'))
               return (
                 <div key={li} className={`flex gap-2 ${li > 0 ? 'mt-1' : ''}`}>
-                  <span className={`flex-shrink-0 mt-0.5 text-[11px] font-bold ${isU ? 'text-white/50' : 'text-[#ca2127]'}`}>›</span>
+                  <span className={`flex-shrink-0 mt-0.5 text-[11px] font-bold ${isU ? 'text-white/50' : 'gy-accent-text'}`}>›</span>
                   <span className="flex-1">{isU ? line.replace(/^→\s*/, '') : renderRich(line.replace(/^→\s*/, ''))}</span>
                 </div>
               );
@@ -316,8 +287,8 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
             </p>;
           })}
           {tw && !done && (
-            <span className={`inline-block w-[1.5px] h-3 ml-0.5 align-middle rounded-full ${isU ? 'bg-white/70' : 'bg-[#ca2127]'}`}
-              style={{ animation: 'gyCaret 1s step-end infinite' }} />
+            <span className={`inline-block w-[1.5px] h-3 ml-0.5 align-middle rounded-full ${isU ? 'bg-white/70' : ''}`}
+              style={{ background: isU ? undefined : 'var(--gy-c1)', animation: 'gyCaret 1s step-end infinite' }} />
           )}
         </div>
 
@@ -335,7 +306,7 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
               <a key={s.id} href={s.link || '#'}
                 className="text-[8.5px] px-2 py-[3px] rounded-full font-mono uppercase tracking-wider
                   bg-black/[0.03] dark:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.06]
-                  gy-text-secondary transition-colors hover:border-[#ca2127]/30">
+                  gy-text-secondary transition-colors hover:border-[#0284c7]/40 dark:hover:border-[#0ea5e9]/50">
                 {s.title.length > 22 ? s.title.slice(0, 22) + '…' : s.title}
               </a>
             ))}
@@ -349,7 +320,7 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
             <span className="text-[8.5px] font-mono gy-text-muted mr-1.5">
               {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
-            <MiniBtn onClick={() => onReact('like')}   active={msg.reactions?.like}    activeColor="#ca2127" title="Helpful"><Ic path={P.thumbU} size={10} /></MiniBtn>
+            <MiniBtn onClick={() => onReact('like')}   active={msg.reactions?.like}    activeColor="#0e9f6e" title="Helpful"><Ic path={P.thumbU} size={10} /></MiniBtn>
             <MiniBtn onClick={() => onReact('dislike')} active={msg.reactions?.dislike} activeColor="#ef4444" title="Not helpful"><Ic path={P.thumbD} size={10} /></MiniBtn>
             <MiniBtn onClick={handleCopy} active={copied} activeColor="#10b981" title="Copy"><Ic path={copied ? P.check : P.copy} size={10} /></MiniBtn>
             {onRegen && <MiniBtn onClick={onRegen} title="Regenerate"><Ic path={P.refresh} size={10} /></MiniBtn>}
@@ -364,17 +335,15 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
 
 const TypingDots = () => (
   <div className="flex items-start gap-2" style={{ animation: 'gyFade .25s ease' }}>
-    <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5
-      bg-[#ca2127]/10 dark:bg-[#ca2127]/15 border border-[#ca2127]/20">
-      <GaraYakaMask size={17} />
+    <div className="flex-shrink-0 mt-1">
+      <GaraYakaMask size={24} />
     </div>
     <div className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl rounded-tl-[4px]
       bg-white dark:bg-[#1c1c20] border border-black/[0.06] dark:border-white/[0.06]"
       style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
       {[0, 1, 2].map(i => (
         <span key={i} className="w-1.5 h-1.5 rounded-full" style={{
-          background: '#ca2127',
-          opacity: 0.5,
+          background: 'var(--gy-c1)', opacity: 0.5,
           animation: `gyBounce 1.1s ease ${i * 0.16}s infinite`,
         }} />
       ))}
@@ -470,12 +439,12 @@ const ChatBot: React.FC = () => {
       <style>{`
         .gy-code {
           font-size: 10.5px; padding: 1px 6px; border-radius: 5px; font-family: 'DM Mono', monospace;
-          background: rgba(202,33,39,0.08); color: #ca2127;
-          border: 1px solid rgba(202,33,39,0.15); display: inline-block;
+          background: rgba(2,132,199,0.08); color: #0284c7;
+          border: 1px solid rgba(2,132,199,0.15); display: inline-block;
         }
         .dark .gy-code {
-          background: rgba(202,33,39,0.12); color: #ef8a8e;
-          border-color: rgba(202,33,39,0.2);
+          background: rgba(14,165,233,0.12); color: #38bdf8;
+          border-color: rgba(14,165,233,0.25);
         }
         :root {
           --gy-bot-bg: #ffffff;
@@ -489,23 +458,30 @@ const ChatBot: React.FC = () => {
         }
       `}</style>
 
+      {/* ── FAB LABEL ── */}
+      {!interacted && !isOpen && !mobile && (
+        <div className="fixed bottom-[28px] right-[75px] z-[9990] flex items-center justify-end
+          animate-in fade-in slide-in-from-right-4 duration-700 pointer-events-none">
+          <div className="bg-white/90 dark:bg-[#12121a]/90 text-black dark:text-white
+            border border-black/[0.08] dark:border-white/[0.08]
+            px-3 py-1.5 rounded-full text-[11px] font-bold tracking-widest uppercase
+            shadow-lg flex items-center gap-2 backdrop-blur-md">
+            <span>Agent</span>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--gy-c1)', animation: 'gyPulse 2s infinite' }} />
+          </div>
+        </div>
+      )}
+
       {/* ── FAB ── */}
       <button onClick={toggleChat} aria-label="Toggle Yaka" className="gy-fab"
         style={{ animation: !isOpen && !interacted ? 'gyFloat 3.5s ease infinite' : undefined }}>
-        {!interacted && !isOpen && (
-          <span style={{ position:'absolute',inset:0,borderRadius:16,animation:'gyPulse 2.5s ease infinite',pointerEvents:'none' }} />
-        )}
-        {isOpen ? <Ic path={P.x} size={17} sw={2.2} className="text-white" /> : <GaraYakaMask size={24} white />}
+        {isOpen ? <Ic path={P.x} size={17} sw={2.2} className="text-[#ca2127]" /> : <GaraYakaMask size={48} />}
         {unreadCount > 0 && !isOpen && (
           <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 rounded-full
             text-[8.5px] font-bold flex items-center justify-center border-[1.5px]
             bg-gradient-to-br from-amber-500 to-orange-500 text-white border-white">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
-        )}
-        {!interacted && !isOpen && !mobile && (
-          <span className="absolute -top-px -left-px px-1.5 py-px rounded-md text-[7px] font-mono
-            bg-black/70 text-white/70">⌘K</span>
         )}
       </button>
 
@@ -537,11 +513,8 @@ const ChatBot: React.FC = () => {
 
               <div className="flex items-center gap-2.5">
                 <div className="relative">
-                  <div className="w-9 h-9 rounded-[12px] flex items-center justify-center
-                    bg-[#ca2127]/10 dark:bg-[#ca2127]/15 border border-[#ca2127]/20">
-                    <GaraYakaMask size={22} />
-                  </div>
-                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full
+                  <GaraYakaMask size={32} />
+                  <span className="absolute -bottom-0.5 right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full
                     border-2 border-white dark:border-[#18181c]"
                     style={{ animation:'gyGlow 2.5s ease infinite' }} />
                 </div>
@@ -550,9 +523,9 @@ const ChatBot: React.FC = () => {
                     <p className="text-[13px] font-bold gy-name tracking-tight"
                       style={{ fontFamily:"'Plus Jakarta Sans',sans-serif" }}>Yaka</p>
                     <span className="text-[7.5px] px-1.5 py-px rounded-md font-mono uppercase tracking-widest
-                      bg-[#ca2127]/10 text-[#ca2127] border border-[#ca2127]/20">agent</span>
+                      gy-accent-text gy-accent-bg-glow gy-accent-border border">agent</span>
                   </div>
-                  <p className={`text-[8.5px] font-mono tracking-[.06em] ${isLoading ? 'text-[#ca2127]' : 'gy-text-muted'}`}>
+                  <p className={`text-[8.5px] font-mono tracking-[.06em] ${isLoading ? 'gy-accent-text' : 'gy-text-muted'}`}>
                     {isLoading
                       ? <span style={{ animation:'gyGlow 1.5s ease infinite', display:'inline-block' }}>thinking…</span>
                       : 'online · portfolio ai'}
@@ -614,7 +587,7 @@ const ChatBot: React.FC = () => {
               {messages.length <= 1 && !isLoading && (
                 <div className="pt-1" style={{ animation:'gyFade .3s ease' }}>
                   <div className="flex items-center gap-1.5 mb-2.5">
-                    <Ic path={P.spark} size={10} className="text-[#ca2127]/50" />
+                    <Ic path={P.spark} size={10} className="gy-accent-text opacity-70" />
                     <p className="text-[8.5px] font-mono uppercase tracking-[.14em] gy-text-muted">Explore</p>
                   </div>
                   <div className="grid grid-cols-2 gap-1.5">
@@ -649,7 +622,7 @@ const ChatBot: React.FC = () => {
             {followUps.length > 0 && messages.length > 1 && !isLoading && (
               <div className="gy-strip-bg flex-shrink-0">
                 <div className="gy-strip">
-                  <Ic path={P.spark} size={9} className="text-[#ca2127]/40 flex-shrink-0" />
+                  <Ic path={P.spark} size={9} className="gy-accent-text opacity-60 flex-shrink-0" />
                   {followUps.slice(0, 5).map((q, qi) => (
                     <button key={q} onClick={() => sendMessage(q)} className="gy-chip"
                       style={{ animation:`gySlide .3s ease ${qi * 55}ms both` }}>
@@ -668,7 +641,7 @@ const ChatBot: React.FC = () => {
                     title={listening ? 'Stop' : 'Voice'}>
                     <Ic path={listening ? P.micOff : P.mic} size={13} />
                     {listening && (
-                      <span className="absolute inset-[-4px] rounded-[14px] border border-[#ca2127]/40"
+                      <span className="absolute inset-[-4px] rounded-[14px] border gy-accent-border"
                         style={{ animation:'gyGlow .7s ease infinite alternate' }} />
                     )}
                   </button>
