@@ -6,12 +6,23 @@ const CustomCursor = () => {
   const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let rafId: number;
     const onMove = (e: MouseEvent) => {
-      if (dotRef.current) { dotRef.current.style.left = e.clientX + 'px'; dotRef.current.style.top = e.clientY + 'px'; }
-      if (ringRef.current) { ringRef.current.style.left = e.clientX + 'px'; ringRef.current.style.top = e.clientY + 'px'; }
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        if (dotRef.current) {
+          dotRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+        }
+        if (ringRef.current) {
+          ringRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+        }
+      });
     };
-    window.addEventListener('mousemove', onMove);
-    return () => window.removeEventListener('mousemove', onMove);
+    window.addEventListener('mousemove', onMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (

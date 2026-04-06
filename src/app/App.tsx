@@ -9,8 +9,6 @@ import { ChatBot } from '@/features/agent';
 import Home          from "@pages/Home";
 import AllProjects   from "@pages/AllProjects";
 import ProjectDetail from "@pages/ProjectDetail";   // NEW
-import BlogList      from "@pages/BlogList";         // NEW
-import BlogPost      from "@pages/BlogPost";         // NEW
 import { Now }       from "@pages/NowAndUses";       // NEW
 import { Uses }      from "@pages/NowAndUses";       // NEW
 import NotFound      from "@pages/NotFound";
@@ -43,9 +41,6 @@ const App = () => (
               <Route path="/contact"                element={<Navigate to="/#contact"    replace />} />
               <Route path="/skills"                 element={<Navigate to="/#skills"     replace />} />
 
-              {/* Blog */}
-              <Route path="/blog"                   element={<BlogList />} />
-              <Route path="/blog/:slug"             element={<BlogPost />} />
 
               {/* Personal pages */}
               <Route path="/now"                    element={<Now />} />

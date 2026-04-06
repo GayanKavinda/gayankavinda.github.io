@@ -8,14 +8,8 @@ import TechStack             from '@features/home/components/TechStack/index';
 import Experience            from '@features/home/components/Experience';
 import About                 from '@features/about/components/About';
 import EngineeringPhilosophy from '@features/about/components/EngineeringPhilosophy/index';
-import Certifications        from '@features/about/components/Certifications';
-import Achievements          from '@features/about/components/Achievements';
-import OpenSource            from '@features/home/components/OpenSource';
-import Testimonials          from '@features/home/components/Testimonials';
-import ImpactMetrics         from '@features/home/components/ImpactMetrics';
-import CodeCadence           from '@features/home/components/CodeCadence';
-import Blog                  from '@features/blog/components/Blog';
 import Contact               from '@features/contact/components/Contact';
+import CodeCadence           from '@features/home/components/CodeCadence';
 import Footer                from '@shared/components/layout/Footer';
 import SideNav               from '@shared/components/layout/SideNav';
 import { setSEO, injectPersonSchema } from '@shared/lib/seo';
@@ -58,18 +52,7 @@ const Home = () => {
       <Experience />
       <About />
       <EngineeringPhilosophy />
-      <Certifications />
-      <Achievements />
-
-      {/* Open Source — after achievements, shows community involvement */}
-      <OpenSource />
-
-      <Testimonials />
-      <ImpactMetrics />
       <CodeCadence />
-
-      {/* Blog — near bottom, before contact */}
-      <Blog />
 
       <Contact />
       <Footer />

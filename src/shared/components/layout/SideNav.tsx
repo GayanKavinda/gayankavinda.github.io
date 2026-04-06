@@ -10,9 +10,6 @@ const SECTIONS = [
   { id: 'experience',  label: 'Experience'    },
   { id: 'about',       label: 'About'         },
   { id: 'philosophy',  label: 'Philosophy'    },
-  { id: 'opensource',  label: 'Open Source'   },  // new
-  { id: 'testimonials',label: 'Testimonials'  },
-  { id: 'blog',        label: 'Writing'       },  // new
   { id: 'contact',     label: 'Contact'       },
 ];
 
