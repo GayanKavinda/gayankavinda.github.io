@@ -17,18 +17,18 @@ export const rm = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export const SKILLS = [
-  { name: 'TypeScript', cat: 'fe',    pct: 92 },
-  { name: 'React',      cat: 'fe',    pct: 88 },
-  { name: 'Next.js',    cat: 'fe',    pct: 80 },
-  { name: 'Node.js',    cat: 'be',    pct: 85 },
-  { name: 'Python',     cat: 'be',    pct: 78 },
-  { name: 'GraphQL',    cat: 'be',    pct: 72 },
-  { name: 'AWS',        cat: 'infra', pct: 82 },
-  { name: 'Docker',     cat: 'infra', pct: 80 },
-  { name: 'Kubernetes', cat: 'infra', pct: 70 },
-  { name: 'PostgreSQL', cat: 'data',  pct: 75 },
-  { name: 'Redis',      cat: 'data',  pct: 68 },
-  { name: 'MongoDB',    cat: 'data',  pct: 65 },
+  { name: 'TypeScript', cat: 'fe', desc: 'Type-safe JavaScript for scalable applications' },
+  { name: 'React',      cat: 'fe', desc: 'UI library for building interactive interfaces' },
+  { name: 'Next.js',    cat: 'fe', desc: 'React framework with SSR and routing' },
+  { name: 'Node.js',    cat: 'be', desc: 'Server-side JavaScript runtime' },
+  { name: 'Python',     cat: 'be', desc: 'Backend development and automation' },
+  { name: 'GraphQL',    cat: 'be', desc: 'API query language for efficient data fetching' },
+  { name: 'AWS',        cat: 'infra', desc: 'Cloud infrastructure and services' },
+  { name: 'Docker',     cat: 'infra', desc: 'Containerization for consistent deployments' },
+  { name: 'Kubernetes', cat: 'infra', desc: 'Container orchestration at scale' },
+  { name: 'PostgreSQL', cat: 'data', desc: 'Relational database for structured data' },
+  { name: 'Redis',      cat: 'data', desc: 'In-memory cache and message broker' },
+  { name: 'MongoDB',    cat: 'data', desc: 'NoSQL database for flexible schemas' },
 ];
 
 export const ICON_MAP: Record<string, string> = {

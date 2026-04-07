@@ -1,20 +1,16 @@
 //src/components/sections/TechStack/index.tsx
-// Upgraded "The Stack" section.
-// KEY CHANGES from previous version:
-//   - Radar chart replaced with SystemPillars (4 architectural pillars)
-//   - "Avg proficiency %" stat removed — subjective and junior-looking
-//   - Stat row now shows: Technologies · Domains · Years
-//   - Top-4 featured cards retain progress bars (useful for recruiters) but are
-//     repositioned below the marquee, right column beside the pillars
+// Clean "The Stack" section — essential parts only.
+// Features:
+//   - Animated skill marquee with gradient fades
+//   - Clean stat row: Technologies + Years Experience
+//   - No subjective proficiency percentages
 //   - Full mobile responsiveness
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SkillMarquee } from './SkillMarquee';
-import { SystemPillars } from '../SystemPillars';
-import { TechGraph } from './TechGraph';
-import { SKILLS, CAT_META, rm } from './constants';
+import { SKILLS, rm } from './constants';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -57,19 +53,18 @@ const TechStack = () => {
             The <em className="italic text-[#C41E3A]">Stack</em>
           </h2>
           <p className="text-[13px] md:text-[14px] text-muted-foreground mt-3 max-w-[360px] mx-auto leading-relaxed">
-            Technologies grouped by the engineering pillar they serve.
+            Technologies I use to build production-ready systems.
           </p>
         </div>
 
-        {/* ── Stat row — no subjective percentages ─────────────────── */}
+        {/* ── Stat row ─────────────────── */}
         <div className="flex justify-center mb-10 md:mb-14">
           <div className="inline-flex border border-border rounded-2xl overflow-hidden divide-x divide-border">
             {[
-              { target: SKILLS.length, suffix: '',  label: 'Technologies'   },
-              { target: 99.9,          suffix: '%', label: 'Uptime Focused' },
+              { target: SKILLS.length, suffix: '+', label: 'Technologies'   },
               { target: 10,            suffix: '+', label: 'Years Experience' },
             ].map((s, i) => (
-              <div key={i} className="flex flex-col items-center justify-center px-6 md:px-10 py-4 md:py-5 min-w-[90px] md:min-w-[120px]">
+              <div key={i} className="flex flex-col items-center justify-center px-8 md:px-12 py-4 md:py-5 min-w-[100px] md:min-w-[140px]">
                 <div className="font-playfair text-[24px] md:text-[28px] font-bold text-foreground leading-none">
                   <CountUp target={s.target} suffix={s.suffix} />
                 </div>
@@ -82,31 +77,8 @@ const TechStack = () => {
         </div>
 
         {/* ── Marquee ───────────────────────────────────────────────── */}
-        <div className="mb-12 md:mb-16">
+        <div className="mb-8">
           <SkillMarquee />
-        </div>
-
-        {/* ── System Pillars & TechGraph ─────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 md:gap-16 items-center">
-
-          {/* Left — pillars */}
-          <div>
-            <p className="font-mono text-[9px] tracking-[.16em] uppercase text-muted-foreground/80 mb-1">
-              // System design pillars
-            </p>
-            <SystemPillars />
-          </div>
-
-          {/* Right — TechGraph Radar Chart */}
-          <div className="relative">
-            <p className="font-mono text-[9px] tracking-[.16em] uppercase text-muted-foreground/80 mb-6 lg:text-right">
-              // Proficiency Graph
-            </p>
-            <div className="flex justify-center lg:justify-end">
-              <TechGraph />
-            </div>
-          </div>
-
         </div>
       </div>
     </section>
