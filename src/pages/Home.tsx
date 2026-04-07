@@ -9,7 +9,6 @@ import Experience            from '@features/home/components/Experience';
 import About                 from '@features/about/components/About';
 import EngineeringPhilosophy from '@features/about/components/EngineeringPhilosophy/index';
 import Contact               from '@features/contact/components/Contact';
-import CodeCadence           from '@features/home/components/CodeCadence';
 import Footer                from '@shared/components/layout/Footer';
 import SideNav               from '@shared/components/layout/SideNav';
 import { setSEO, injectPersonSchema } from '@shared/lib/seo';
@@ -52,7 +51,6 @@ const Home = () => {
       <Experience />
       <About />
       <EngineeringPhilosophy />
-      <CodeCadence />
 
       <Contact />
       <Footer />

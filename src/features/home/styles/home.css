@@ -26,18 +26,9 @@
   50%, 100% { opacity: 0; }
 }
 
-/* ── Stat Card Slide Up ── */
-@keyframes statSlideUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
 /* ═══ RESPONSIVE ═══ */
 
 @media (max-width: 1024px) {
-  .terminal-panel {
-    display: none !important;
-  }
 }
 
 @media (max-width: 767px) {
@@ -48,14 +39,6 @@
   .concentric-rings {
     width: clamp(280px, 70vw, 400px) !important;
     height: clamp(280px, 70vw, 400px) !important;
-  }
-
-  .stat-card {
-    padding: 6px 10px !important;
-  }
-
-  .stat-row {
-    gap: 6px !important;
   }
 
   .particle-canvas {
@@ -73,10 +56,6 @@
   }
 
   .particle-canvas {
-    display: none !important;
-  }
-
-  .stat-card:nth-child(n+4) {
     display: none !important;
   }
 }
