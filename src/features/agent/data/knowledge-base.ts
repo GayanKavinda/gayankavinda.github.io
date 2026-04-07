@@ -5,7 +5,7 @@
 
 export interface PortfolioEntry {
   id: string;
-  category: 'about' | 'project' | 'skill' | 'experience' | 'certification' | 'blog' | 'contact' | 'general';
+  category: 'about' | 'project' | 'skill' | 'experience' | 'contact' | 'general';
   title: string;
   content: string;
   keywords: string[];
@@ -168,47 +168,7 @@ export const portfolioKnowledge: PortfolioEntry[] = [
     metadata: { period: '2021 – 2023', company: 'StartupXYZ', role: 'Software Engineer' },
   },
 
-  // ── Certifications ──
-  {
-    id: 'cert-1',
-    category: 'certification',
-    title: 'AWS Solutions Architect Associate',
-    content: 'Amazon Web Services Solutions Architect Associate certification. Validates ability to design distributed systems on AWS.',
-    keywords: ['certification', 'aws', 'cloud', 'architect', 'amazon', 'credential'],
-    link: '/#certifications',
-    metadata: { issuer: 'Amazon Web Services', year: '2023' },
-  },
-  {
-    id: 'cert-2',
-    category: 'certification',
-    title: 'Google Professional Cloud Developer',
-    content: 'Google Cloud Professional Developer certification. Demonstrates expertise in building scalable applications on GCP.',
-    keywords: ['certification', 'google', 'gcp', 'cloud', 'developer', 'credential'],
-    link: '/#certifications',
-    metadata: { issuer: 'Google Cloud', year: '2024' },
-  },
 
-  // ── Blog ──
-  {
-    id: 'blog-1',
-    category: 'blog',
-    title: 'Building Resilient Microservices',
-    content:
-      'A deep dive into circuit breaker patterns, retry strategies, and graceful degradation in distributed systems. Covers practical examples with Node.js and Kubernetes.',
-    keywords: ['blog', 'article', 'microservices', 'resilience', 'architecture', 'distributed', 'patterns'],
-    link: '/blog/building-resilient-microservices',
-    metadata: { readTime: '8 min', date: '2024' },
-  },
-  {
-    id: 'blog-2',
-    category: 'blog',
-    title: 'The Art of Clean Code',
-    content:
-      'Why readability matters more than cleverness. Practical tips for writing maintainable, self-documenting code that your team will thank you for.',
-    keywords: ['blog', 'article', 'clean code', 'readability', 'best practices', 'maintainable'],
-    link: '/blog/the-art-of-clean-code',
-    metadata: { readTime: '6 min', date: '2024' },
-  },
 
   // ── Contact ──
   {
@@ -232,7 +192,7 @@ export const portfolioKnowledge: PortfolioEntry[] = [
     id: 'nav-home',
     category: 'general',
     title: 'Homepage',
-    content: 'The homepage features a cinematic hero section, tech stack visualization, experience timeline, impact metrics, testimonials, and more.',
+    content: 'The homepage features a cinematic hero section, tech stack visualization, experience timeline, and more.',
     keywords: ['home', 'homepage', 'main', 'landing'],
     link: '/',
   },
@@ -244,14 +204,7 @@ export const portfolioKnowledge: PortfolioEntry[] = [
     keywords: ['projects', 'portfolio', 'work', 'all projects', 'gallery'],
     link: '/projects',
   },
-  {
-    id: 'nav-blog',
-    category: 'general',
-    title: 'Blog',
-    content: 'My blog covers software engineering, architecture patterns, DevOps, and career insights.',
-    keywords: ['blog', 'articles', 'writing', 'posts'],
-    link: '/blog',
-  },
+
   {
     id: 'availability',
     category: 'general',
@@ -389,22 +342,16 @@ export function getFollowUpSuggestions(lastSources: PortfolioEntry[]): string[] 
   categories.forEach((cat) => {
     switch (cat) {
       case 'project':
-        suggestions.push('Show all projects', 'What tech do you use most?', 'Any open source work?');
+        suggestions.push('Show all projects', 'What tech do you use most?');
         break;
       case 'skill':
-        suggestions.push('Show me projects using these', 'What about backend skills?', 'Any certifications?');
+        suggestions.push('Show me projects using these', 'What about backend skills?');
         break;
       case 'experience':
         suggestions.push('What projects came from this?', 'What skills did you gain?', 'Are you available now?');
         break;
       case 'about':
         suggestions.push('What are your core skills?', 'Show me your work', 'How can I hire you?');
-        break;
-      case 'certification':
-        suggestions.push('Show related projects', 'What other credentials?', 'Tell me about your experience');
-        break;
-      case 'blog':
-        suggestions.push('Any more articles?', 'Show related projects', 'What topics do you write about?');
         break;
       case 'contact':
         suggestions.push('Are you available for freelance?', 'Show me your work first', 'What are your rates?');

@@ -6,12 +6,12 @@ import { ThemeProvider } from "@app/providers/theme-provider";
 import { ChatBot } from '@/features/agent';
 
 // ── Pages ─────────────────────────────────────────────────────────────────────
-import Home          from "@pages/Home";
-import AllProjects   from "@pages/AllProjects";
+import Home from "@pages/Home";
+import AllProjects from "@pages/AllProjects";
 import ProjectDetail from "@pages/ProjectDetail";   // NEW
-import { Now }       from "@pages/NowAndUses";       // NEW
-import { Uses }      from "@pages/NowAndUses";       // NEW
-import NotFound      from "@pages/NotFound";
+import { Now } from "@pages/NowAndUses";       // NEW
+import { Uses } from "@pages/NowAndUses";       // NEW
+import NotFound from "@pages/NotFound";
 
 import { PreLoader } from "@shared/components/layout/PreLoader";
 
@@ -22,37 +22,37 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         {/* <PreLoader> */}
-          <CustomCursor />
-          <BrowserRouter
-            future={{
-              v7_startTransition: true,
-              v7_relativeSplatPath: true,
-            }}
-          >
-            <Routes>
-              {/* Core */}
-              <Route path="/"                       element={<Home />} />
-              <Route path="/projects"               element={<AllProjects />} />
-              <Route path="/projects/:slug"         element={<ProjectDetail />} />
+        <CustomCursor />
+        <BrowserRouter
+          future={{
+            v7_startTransition: true,
+            v7_relativeSplatPath: true,
+          }}
+        >
+          <Routes>
+            {/* Core */}
+            <Route path="/" element={<Home />} />
+            <Route path="/projects" element={<AllProjects />} />
+            <Route path="/projects/:slug" element={<ProjectDetail />} />
 
-              {/* Redirects for direct section access — ensures /experience etc don't 404 */}
-              <Route path="/experience"             element={<Navigate to="/#experience" replace />} />
-              <Route path="/about"                  element={<Navigate to="/#about"      replace />} />
-              <Route path="/contact"                element={<Navigate to="/#contact"    replace />} />
-              <Route path="/skills"                 element={<Navigate to="/#skills"     replace />} />
+            {/* Redirects for direct section access — ensures /experience etc don't 404 */}
+            <Route path="/experience" element={<Navigate to="/#experience" replace />} />
+            <Route path="/about" element={<Navigate to="/#about" replace />} />
+            <Route path="/contact" element={<Navigate to="/#contact" replace />} />
+            <Route path="/skills" element={<Navigate to="/#skills" replace />} />
 
 
-              {/* Personal pages */}
-              <Route path="/now"                    element={<Now />} />
-              <Route path="/uses"                   element={<Uses />} />
+            {/* Personal pages */}
+            <Route path="/now" element={<Now />} />
+            <Route path="/uses" element={<Uses />} />
 
-              {/* Catch-all */}
-              <Route path="*"                       element={<NotFound />} />
-            </Routes>
-            
-            {/* Portfolio Agent - Chatbot */}
-            <ChatBot />
-          </BrowserRouter>
+            {/* Catch-all */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+
+          {/* Portfolio Agent - Chatbot */}
+          <ChatBot />
+        </BrowserRouter>
         {/* </PreLoader> */}
       </TooltipProvider>
     </QueryClientProvider>

@@ -76,7 +76,7 @@ const About = () => {
             ))}
             <div className="flex gap-4 mt-5">
               {['GitHub', 'LinkedIn', 'Twitter'].map(s => (
-                <a key={s} href="#" className="font-mono text-[11px] md:text-[12px] text-foreground/50 hover:text-gold transition-colors">{s}</a>
+                <a key={s} href="#" className="font-mono text-[11px] md:text-[12px] text-foreground/75 hover:text-gold transition-colors">{s}</a>
               ))}
             </div>
           </div>
@@ -92,7 +92,7 @@ const About = () => {
               <div className="w-12 h-px bg-gradient-to-r from-transparent to-[#C41E3A]" />
               <div className="w-2 h-2 rounded-full bg-[#E8A820]" />
             </div>
-            <div className="about-text-anim mt-5 md:mt-6 space-y-4 font-sans text-[14px] md:text-[16px] leading-[1.7] text-foreground/70">
+            <div className="about-text-anim mt-5 md:mt-6 space-y-4 font-sans text-[14px] md:text-[16px] leading-[1.7] text-foreground/88">
               <p>With over a decade in the trenches, I've learned that great software isn't just about clean code — it's about understanding the problem deeply before writing a single line.</p>
               <p>I specialize in distributed systems, cloud architecture, and building developer tools that teams actually enjoy using. My approach combines battle-tested engineering principles with a relentless focus on user experience.</p>
               <p>When I'm not architecting systems, you'll find me contributing to open source, writing about software design patterns, or exploring the intersection of technology and traditional art forms.</p>
@@ -104,7 +104,7 @@ const About = () => {
                 <div key={s.label} className="bg-card elevation-card border border-border p-3 md:p-4 rounded-xl text-center md:text-left">
                   <p className="font-jakarta font-bold text-[clamp(24px,4vw,36px)] text-crimson leading-none tracking-tighter">{s.num}</p>
                   <p className="font-mono text-[9px] md:text-[10px] text-gold uppercase tracking-wider mt-1">{s.label}</p>
-                  <p className="font-sans text-[10px] md:text-[12px] text-foreground/50 mt-0.5">{s.sub}</p>
+                  <p className="font-sans text-[10px] md:text-[12px] text-foreground/70 mt-0.5">{s.sub}</p>
                 </div>
               ))}
             </div>

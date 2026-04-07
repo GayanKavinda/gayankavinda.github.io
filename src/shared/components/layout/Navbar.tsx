@@ -59,8 +59,8 @@ const Navbar = () => {
     WebkitBackdropFilter: 'blur(24px)',
     boxShadow: isDark ? '0 2px 20px rgba(0,0,0,0.4)' : '0 2px 20px rgba(0,0,0,0.08)',
   };
-  const textMuted = isDark ? 'rgba(245,240,232,0.45)' : 'rgba(26,26,46,0.45)';
-  const textActive = isDark ? 'rgba(245,240,232,0.9)' : '#1a1a2e';
+  const textMuted = isDark ? 'rgba(245,240,232,0.45)' : 'rgba(26,26,46,0.72)';
+  const textActive = isDark ? 'rgba(245,240,232,0.9)' : '#0a0a14';
   const scrolledBg = isDark ? 'rgba(10,10,10,0.97)' : 'rgba(250,250,250,0.97)';
   const scrolledBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
   const dropdownBg = isDark ? 'rgba(17,17,17,0.98)' : 'rgba(250,250,250,0.98)';

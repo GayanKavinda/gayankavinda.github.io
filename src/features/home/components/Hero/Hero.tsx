@@ -1,4 +1,4 @@
-//src/components/sections/Hero/Hero.tsx
+// src/features/home/components/Hero/Hero.tsx
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
@@ -133,7 +133,7 @@ const Hero = () => {
         </h2>
 
         {/* Description — shorter on mobile to avoid overflow */}
-        <p className="hero-text-anim font-sans leading-[1.7] mt-4 text-foreground/65
+        <p className="hero-text-anim font-sans leading-[1.7] mt-4 text-foreground/85
                        text-[14px] max-w-[320px]
                        md:text-[16px] md:max-w-[480px]">
           Building scalable distributed systems and elegant interfaces. Passionate about
@@ -153,7 +153,7 @@ const Hero = () => {
             View My Work
           </button>
           <button
-            className="font-mono text-[12px] md:text-[13px] border border-foreground/25
+            className="font-mono text-[12px] md:text-[13px] border border-foreground/40
                         text-foreground px-6 md:px-7 py-2.5 md:py-3 rounded
                         transition-all hover:border-foreground/50"
             onClick={() =>
@@ -176,10 +176,10 @@ const Hero = () => {
           <pre className="font-mono text-[11px] md:text-[13px] leading-relaxed overflow-x-auto">
             <span className="text-crimson">const</span>{' '}
             <span className="text-gold">engineer</span>{' '}
-            <span className="text-foreground/45">=</span>
+            <span className="text-foreground/60">=</span>
             {' {\n'}
             {'  '}
-            <span className="text-foreground/60">stack</span>
+            <span className="text-foreground/75">stack</span>
             {': ['}
             <span className="text-green-600">"TypeScript"</span>
             {', '}
@@ -188,12 +188,12 @@ const Hero = () => {
             <span className="text-green-600">"Go"</span>
             {'],\n'}
             {'  '}
-            <span className="text-foreground/60">focus</span>
+            <span className="text-foreground/75">focus</span>
             {': '}
             <span className="text-green-600">"distributed systems"</span>
             {',\n'}
             {'  '}
-            <span className="text-foreground/60">coffee</span>
+            <span className="text-foreground/75">coffee</span>
             {': '}
             <span className="text-gold">Infinity</span>
             {'\n}'}

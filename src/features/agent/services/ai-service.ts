@@ -37,7 +37,7 @@ IDENTITY & PERSONA:
 RESPONSE RULES:
 - Ground answers in the PORTFOLIO CONTEXT. Do not invent skills or projects.
 - Use → bullets for lists. **bold** for key terms. \`code\` for tech names.
-- For "full summary" or "tell me about everything" — synthesize ALL categories: about, skills, experience, projects, certifications, blog, availability. Write it as a confident first-person introduction.
+- For "full summary" or "tell me about everything" — synthesize ALL categories: about, skills, experience, projects, availability. Write it as a confident first-person introduction.
 - Keep high-signal, no filler. Match tone to query: casual → conversational, technical → structured.
 - If out of scope: "That's outside my core domain, but based on my engineering philosophy..."`;
 
@@ -122,7 +122,7 @@ type Intent =
   | 'portfolio_summary'           // ← KEY FIX: full summary intent
   | 'skills' | 'projects' | 'projects_all'
   | 'experience' | 'contact' | 'about'
-  | 'certifications' | 'blog' | 'availability'
+  | 'availability'
   | 'profile_standout' | 'profile_impact' | 'profile_hire' | 'profile_leadership' | 'profile_best'
   | 'unknown';
 
@@ -162,8 +162,7 @@ function detectIntent(query: string): Intent {
     ['experience',        [/experience|work.*history|career|job|compan|background|resume|cv|role/i]],
     ['contact',           [/contact|reach|email|hire|connect|message|get.?in.?touch|work.?with/i]],
     ['about',             [/about\s+me|engineering\s+philosophy|philosophy|describe\s+yourself/i]],
-    ['certifications',    [/cert|qualification|credential|accredit|license|badge/i]],
-    ['blog',              [/blog|article|writ|post|read|publish/i]],
+
     ['availability',      [/available|open.?to|freelance|status|accepting|booking|rates|remote/i]],
   ];
 
@@ -198,7 +197,7 @@ function buildLocalResponse(query: string): { content: string; sources: Portfoli
 
     case 'help':
       return {
-        content: "Here's what I can cover:\n\n→ **Full Portfolio Summary** — everything in one shot\n→ **Skills & Tech Stack** — the full toolkit\n→ **Projects** — things I've shipped\n→ **Experience** — work history and roles\n→ **Certifications** — credentials\n→ **Blog** — articles I've written\n→ **Contact** — how to reach me\n→ **Availability** — open for work?\n\nJust ask naturally.",
+        content: "Here's what I can cover:\n\n→ **Full Portfolio Summary** — everything in one shot\n→ **Skills & Tech Stack** — the full toolkit\n→ **Projects** — things I've shipped\n→ **Experience** — work history and roles\n→ **Contact** — how to reach me\n→ **Availability** — open for work?\n\nJust ask naturally.",
         sources: [],
         followUps: ["Give me a full summary", 'Show me your best project', "What's your tech stack?"],
       };
@@ -212,8 +211,6 @@ function buildLocalResponse(query: string): { content: string; sources: Portfoli
       const skills   = getByCategory('skill');
       const projects = getByCategory('project');
       const exp      = getByCategory('experience');
-      const certs    = getByCategory('certification');
-      const blogs    = getByCategory('blog');
       const avail    = getByCategory('general').find(e => e.id === 'availability');
 
       // Build a rich, structured summary that reads like a senior engineer's bio
@@ -230,12 +227,6 @@ function buildLocalResponse(query: string): { content: string; sources: Portfoli
       // Experience highlights
       const currentRole = exp.find(e => e.metadata?.period?.includes('Present'));
       const prevRole    = exp.find(e => !e.metadata?.period?.includes('Present'));
-
-      // Certifications
-      const certList = certs.map(c => c.title).join(', ');
-
-      // Blog topics
-      const blogList = blogs.map(b => `**${b.title}**`).join(' and ');
 
       // Availability
       const availText = avail?.content || 'Open to new opportunities.';
@@ -263,12 +254,9 @@ function buildLocalResponse(query: string): { content: string; sources: Portfoli
       if (projects.length > 3) response += `_…and ${projects.length - 3} more in the portfolio._\n`;
       response += '\n';
 
-      if (certs.length > 0) response += `**Certifications:** ${certList}\n\n`;
-      if (blogs.length > 0) response += `**Writing:** ${blogList}\n\n`;
-
       response += `**Availability:** ${availText}`;
 
-      const allSources = [...about, ...skills, ...exp, ...projects.slice(0, 3), ...certs];
+      const allSources = [...about, ...skills, ...exp, ...projects.slice(0, 3)];
       return {
         content: response.trim(),
         sources: allSources,
@@ -284,7 +272,7 @@ function buildLocalResponse(query: string): { content: string; sources: Portfoli
         const type = e.metadata?.type ? ` [${e.metadata.type}]` : '';
         r += `→ **${e.title}**${type} — ${e.content.split('.')[0]}.${tech}\n\n`;
       });
-      return { content: r.trim(), sources: all, followUps: ['Tell me more about one', 'Which is most complex?', 'Any open source?'] };
+      return { content: r.trim(), sources: all, followUps: ['Tell me more about one', 'Which is most complex?'] };
     }
 
     case 'projects': {
@@ -297,7 +285,7 @@ function buildLocalResponse(query: string): { content: string; sources: Portfoli
         r += `→ **${e.title}** — ${e.content.split('.')[0]}.${tech}\n\n`;
       });
       if (all.length > entries.length) r += `_…and ${all.length - entries.length} more._`;
-      return { content: r.trim(), sources: entries, followUps: ['Show all projects', 'Any open source?', 'What tech do you use most?'] };
+      return { content: r.trim(), sources: entries, followUps: ['Show all projects', 'What tech do you use most?'] };
     }
 
     case 'skills': {
@@ -312,7 +300,7 @@ function buildLocalResponse(query: string): { content: string; sources: Portfoli
         if (extra > 0) r += ` _+${extra} more_`;
         r += '\n';
       });
-      return { content: r.trim(), sources: skillEntries, followUps: ['Show React projects', 'What about DevOps?', 'Any certs?'] };
+      return { content: r.trim(), sources: skillEntries, followUps: ['Show React projects', 'What about DevOps?'] };
     }
 
     case 'experience': {
@@ -343,26 +331,10 @@ function buildLocalResponse(query: string): { content: string; sources: Portfoli
     case 'about': {
       const aboutEntries = getByCategory('about');
       const intro = aboutEntries[0]?.content.split('.').slice(0, 2).join('.') + '.';
-      let r = intro + "\n\nEngineering runs on four pillars: **Simplicity · Testing · Failure Design · Observability**.";
+      const r = intro + "\n\nEngineering runs on four pillars: **Simplicity · Testing · Failure Design · Observability**.";
       return { content: r, sources: aboutEntries, followUps: ["Give me a full summary", "What are your core skills?", 'How can I hire you?'] };
     }
 
-    case 'certifications': {
-      const certs = getByCategory('certification');
-      let r = "Professional credentials:\n\n";
-      certs.forEach(e => { r += `→ **${e.title}**${e.metadata?.issuer ? ` _by ${e.metadata.issuer}_` : ''}\n${e.content}\n\n`; });
-      return { content: r.trim(), sources: certs, followUps: ['Show related projects', 'What about experience?', 'Tech stack?'] };
-    }
-
-    case 'blog': {
-      const posts = getByCategory('blog');
-      let r = "From the blog:\n\n";
-      posts.forEach(e => {
-        const rt = e.metadata?.readTime ? ` _(${e.metadata.readTime} read)_` : '';
-        r += `→ **${e.title}**${rt}\n${e.content.split('.')[0]}.\n\n`;
-      });
-      return { content: r.trim(), sources: posts, followUps: ['Any more articles?', 'Show projects', 'What do you write about?'] };
-    }
 
     case 'availability': {
       const entry = searchPortfolio('available', 1)[0];
@@ -408,7 +380,7 @@ function buildLocalResponse(query: string): { content: string; sources: Portfoli
       return {
         content: `Most technically ambitious:\n\n→ **${top[0]?.title}** — ${top[0]?.content.split('.')[0]}.\n→ **${top[1]?.title}** — ${top[1]?.content.split('.')[0]}.\n→ **${top[2]?.title}** — ${top[2]?.content.split('.')[0]}.\n\nEach pushed different limits: scale, real-time throughput, and security.`,
         sources: top,
-        followUps: ['Tell me more about the first one', 'What tech did you use?', 'Any open source?'],
+        followUps: ['Tell me more about the first one', 'What tech did you use?'],
       };
     }
 
@@ -497,6 +469,5 @@ export const quickSuggestions = [
   { icon: '📋', label: 'All Projects',         query: 'Show all projects with full summary' },
   { icon: '📍', label: 'Experience',           query: 'Tell me about your experience' },
   { icon: '🤝', label: 'Get in Touch',         query: 'How can I contact you?' },
-  { icon: '🏅', label: 'Certifications',       query: 'What certifications do you have?' },
   { icon: '🟢', label: 'Available for Hire',   query: 'Are you available for hire?' },
 ];

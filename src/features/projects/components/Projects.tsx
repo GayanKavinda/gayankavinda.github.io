@@ -83,7 +83,7 @@ const Projects = () => {
           <div className="p-5 md:p-7 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
             <div className="flex-1">
               <h3 className="font-jakarta font-bold text-[20px] md:text-[24px] text-foreground tracking-tight">{heroProject.name}</h3>
-              <p className="font-sans text-[14px] md:text-[15px] text-foreground/50 mt-1">{heroProject.desc}</p>
+              <p className="font-sans text-[14px] md:text-[15px] text-foreground/80 mt-1">{heroProject.desc}</p>
               {/* Impact metrics row */}
               <div className="flex gap-4 mt-3 flex-wrap">
                 {heroProject.metrics.map(m => (
@@ -98,7 +98,7 @@ const Projects = () => {
             </div>
             <div className="flex flex-row md:flex-col gap-4 md:gap-2 md:items-end">
               <LinkBtn icon="↗" text="Live Demo"   color="text-crimson" />
-              <LinkBtn icon="{ }" text="GitHub"    color="text-foreground/50 hover:text-gold" />
+              <LinkBtn icon="{ }" text="GitHub"    color="text-foreground/75 hover:text-gold" />
               <LinkBtn icon="→" text="Case Study"  color="text-gold" />
             </div>
           </div>
@@ -111,7 +111,7 @@ const Projects = () => {
           <div className="project-card elevation-card rounded-xl border border-border p-5 md:p-6 bg-card">
             <div className="flex justify-between items-center mb-4">
               <span className="font-mono text-[11px] uppercase text-gold">Recent Projects</span>
-              <span className="font-mono text-[11px] text-foreground/40">4 projects</span>
+              <span className="font-mono text-[11px] text-foreground/65">4 projects</span>
             </div>
             <div className="grid grid-cols-2 gap-3">
               {microProjects.map(p => (
@@ -120,7 +120,7 @@ const Projects = () => {
                 >
                   <p className="font-mono text-[12px] md:text-[13px] text-foreground font-medium">{p.name}</p>
                   <p className="font-mono text-[10px] md:text-[11px] text-crimson mt-1">{p.tech}</p>
-                  <p className="font-sans text-[12px] md:text-[13px] text-foreground/40 mt-1">{p.desc}</p>
+                  <p className="font-sans text-[12px] md:text-[13px] text-foreground/70 mt-1">{p.desc}</p>
                   <div className="text-right mt-1"><span className="text-gold text-[13px]">↗</span></div>
                 </div>
               ))}
@@ -141,7 +141,7 @@ const Projects = () => {
             </div>
             <div className="p-4 md:p-5">
               <h3 className="font-jakarta font-bold text-[18px] md:text-[22px] text-foreground tracking-tight">{sideProject.name}</h3>
-              <p className="font-sans text-[13px] md:text-[15px] text-foreground/50 mt-1">{sideProject.desc}</p>
+              <p className="font-sans text-[13px] md:text-[15px] text-foreground/75 mt-1">{sideProject.desc}</p>
               <div className="flex gap-[6px] mt-3 flex-wrap">
                 {sideProject.tags.map(t => (
                   <span key={t} className="font-mono text-[11px] text-crimson border border-crimson/25 bg-crimson/[0.12] px-[10px] py-[3px] rounded-[3px]">{t}</span>
@@ -149,7 +149,7 @@ const Projects = () => {
               </div>
               <div className="flex gap-4 mt-4">
                 <LinkBtn icon="↗" text="Live Demo"  color="text-crimson" />
-                <LinkBtn icon="{ }" text="GitHub"   color="text-foreground/50 hover:text-gold" />
+                <LinkBtn icon="{ }" text="GitHub"   color="text-foreground/75 hover:text-gold" />
               </div>
             </div>
           </div>
