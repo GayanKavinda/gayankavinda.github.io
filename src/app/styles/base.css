@@ -1,147 +1,169 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 220 15% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 220 15% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 15%;
-    --primary: 358 72% 46%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 40 75% 52%;
-    --secondary-foreground: 220 15% 15%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 12% 35%;
-    --accent: 40 75% 52%;
-    --accent-foreground: 220 15% 15%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 0% / 0.14;
-    --input: 0 0% 0% / 0.08;
-    --ring: 358 72% 46%;
-    --radius: 0.5rem;
+  @layer base {
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 220 15% 10%;
+      --card: 0 0% 100%;
+      --card-foreground: 220 15% 15%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 220 15% 15%;
+      --primary: 358 72% 46%;
+      --primary-foreground: 0 0% 100%;
+      --secondary: 40 75% 52%;
+      --secondary-foreground: 220 15% 15%;
+      --muted: 220 14% 96%;
+      --muted-foreground: 220 12% 35%;
+      --accent: 40 75% 52%;
+      --accent-foreground: 220 15% 15%;
+      --destructive: 0 84% 60%;
+      --destructive-foreground: 0 0% 100%;
+      --border: 0 0% 0% / 0.14;
+      --input: 0 0% 0% / 0.08;
+      --ring: 358 72% 46%;
+      --radius: 0.5rem;
 
-    --crimson: 358 72% 46%;
-    --gold: 40 80% 42%;
-    --bone: 220 15% 15%;
-    --card-bg: 0 0% 100%;
-    --dark-bg: 0 0% 98%;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 15% 15%;
-    --sidebar-primary: 358 72% 46%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 40 75% 52%;
-    --sidebar-accent-foreground: 220 15% 15%;
-    --sidebar-border: 0 0% 0% / 0.08;
-    --sidebar-ring: 358 72% 46%;
+      --crimson: 358 72% 46%;
+      --gold: 40 80% 42%;
+      --bone: 220 15% 15%;
+      --card-bg: 0 0% 100%;
+      --dark-bg: 0 0% 98%;
+      --sidebar-background: 0 0% 100%;
+      --sidebar-foreground: 220 15% 15%;
+      --sidebar-primary: 358 72% 46%;
+      --sidebar-primary-foreground: 0 0% 100%;
+      --sidebar-accent: 40 75% 52%;
+      --sidebar-accent-foreground: 220 15% 15%;
+      --sidebar-border: 0 0% 0% / 0.08;
+      --sidebar-ring: 358 72% 46%;
 
-    /* UI/UX Pro Max recommended variables */
-    --easing: cubic-bezier(0.16, 1, 0.3, 1);
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --glass-bg: rgba(255, 255, 255, 0.80);
-    --glass-border: rgba(0, 0, 0, 0.08);
-    color-scheme: light;
+      /* UI/UX Pro Max recommended variables */
+      --easing: cubic-bezier(0.16, 1, 0.3, 1);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --glass-bg: rgba(255, 255, 255, 0.80);
+      --glass-border: rgba(0, 0, 0, 0.08);
+      color-scheme: light;
+    }
+
+    .dark {
+      --background: 0 0% 4%;
+      --foreground: 40 33% 94%;
+      --card: 0 0% 7%;
+      --card-foreground: 40 33% 94%;
+      --popover: 0 0% 7%;
+      --popover-foreground: 40 33% 94%;
+      --primary: 358 72% 46%;
+      --primary-foreground: 0 0% 100%;
+      --secondary: 40 75% 52%;
+      --secondary-foreground: 40 33% 94%;
+      --muted: 0 0% 7%;
+      --muted-foreground: 40 33% 94%;
+      --accent: 40 75% 52%;
+      --accent-foreground: 40 33% 94%;
+      --destructive: 0 84% 60%;
+      --destructive-foreground: 0 0% 100%;
+      --border: 0 0% 100% / 0.07;
+      --input: 0 0% 100% / 0.07;
+      --ring: 358 72% 46%;
+
+      --crimson: 358 72% 46%;
+      --gold: 40 80% 42%;
+      --bone: 40 33% 94%;
+
+      --card-bg: 0 0% 7%;
+      --dark-bg: 0 0% 4%;
+      --sidebar-background: 0 0% 7%;
+      --sidebar-foreground: 40 33% 94%;
+      --sidebar-primary: 358 72% 46%;
+      --sidebar-primary-foreground: 0 0% 100%;
+      --sidebar-accent: 40 75% 52%;
+      --sidebar-accent-foreground: 40 33% 94%;
+      --sidebar-border: 0 0% 100% / 0.07;
+      --sidebar-ring: 358 72% 46%;
+
+      --glass-bg: rgba(17, 17, 17, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.08);
+
+      color-scheme: dark;
+    }
+
+    .dark ::selection {
+      background: hsl(var(--crimson) / 0.2);
+      color: hsl(40 33% 94%);
+    }
+
+    * {
+      @apply border-border;
+    }
+    body {
+      @apply bg-background text-foreground;
+      font-family: 'Instrument Sans', sans-serif;
+      cursor: none;
+      overflow-x: hidden; /* Prevent horizontal scroll from any stray overflow */
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Playfair Display', serif;
+    }
+    ::selection {
+      background: hsl(var(--crimson) / 0.2);
+      color: hsl(220 15% 15%);
+    }
+
+    .section-fade-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 20vh;
+      pointer-events: none;
+      z-index: 30;
+      background: linear-gradient(to bottom, hsl(var(--background)), transparent);
+    }
+
+    .section-fade-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 20vh;
+      pointer-events: none;
+      z-index: 30;
+      background: linear-gradient(to top, hsl(var(--background)), transparent);
+    }
   }
 
-  .dark {
-    --background: 0 0% 4%;
-    --foreground: 40 33% 94%;
-    --card: 0 0% 7%;
-    --card-foreground: 40 33% 94%;
-    --popover: 0 0% 7%;
-    --popover-foreground: 40 33% 94%;
-    --primary: 358 72% 46%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 40 75% 52%;
-    --secondary-foreground: 40 33% 94%;
-    --muted: 0 0% 7%;
-    --muted-foreground: 40 33% 94%;
-    --accent: 40 75% 52%;
-    --accent-foreground: 40 33% 94%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 100% / 0.07;
-    --input: 0 0% 100% / 0.07;
-    --ring: 358 72% 46%;
-
-    --crimson: 358 72% 46%;
-    --gold: 40 80% 42%;
-    --bone: 40 33% 94%;
-
-    --card-bg: 0 0% 7%;
-    --dark-bg: 0 0% 4%;
-    --sidebar-background: 0 0% 7%;
-    --sidebar-foreground: 40 33% 94%;
-    --sidebar-primary: 358 72% 46%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 40 75% 52%;
-    --sidebar-accent-foreground: 40 33% 94%;
-    --sidebar-border: 0 0% 100% / 0.07;
-    --sidebar-ring: 358 72% 46%;
-
-    --glass-bg: rgba(17, 17, 17, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.08);
-
-    color-scheme: dark;
+  /* Smooth scrolling - UI/UX Pro Max recommendation */
+  html {
+    scroll-behavior: smooth;
   }
 
-  .dark ::selection {
-    background: hsl(var(--crimson) / 0.2);
-    color: hsl(40 33% 94%);
+  /* Marquee animations */
+  @keyframes marquee-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-33.333%); }
   }
 
-  * {
-    @apply border-border;
+  @keyframes marquee-right {
+    0% { transform: translateX(-33.333%); }
+    100% { transform: translateX(0); }
   }
-  body {
-    @apply bg-background text-foreground;
-    font-family: 'Instrument Sans', sans-serif;
-    cursor: none;
-    overflow-x: hidden; /* Prevent horizontal scroll from any stray overflow */
+
+  .animate-marquee-left {
+    animation: marquee-left 30s linear infinite;
   }
-  h1, h2, h3, h4 {
-    font-family: 'Playfair Display', serif;
+
+  .animate-marquee-right {
+    animation: marquee-right 30s linear infinite;
   }
-  ::selection {
-    background: hsl(var(--crimson) / 0.2);
-    color: hsl(220 15% 15%);
+
+  /* Pause on hover for better UX */
+  .animate-marquee-left:hover,
+  .animate-marquee-right:hover {
+    animation-play-state: paused;
   }
-}
-
-/* Smooth scrolling - UI/UX Pro Max recommendation */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Marquee animations */
-@keyframes marquee-left {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-33.333%); }
-}
-
-@keyframes marquee-right {
-  0% { transform: translateX(-33.333%); }
-  100% { transform: translateX(0); }
-}
-
-.animate-marquee-left {
-  animation: marquee-left 30s linear infinite;
-}
-
-.animate-marquee-right {
-  animation: marquee-right 30s linear infinite;
-}
-
-/* Pause on hover for better UX */
-.animate-marquee-left:hover,
-.animate-marquee-right:hover {
-  animation-play-state: paused;
-}

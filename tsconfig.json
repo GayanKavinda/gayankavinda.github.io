@@ -6,9 +6,13 @@
     "noUnusedParameters": false,
     "paths": {
       "@/*": ["./src/*"],
+      "@app": ["./src/app"],
       "@app/*": ["./src/app/*"],
+      "@features": ["./src/features"],
       "@features/*": ["./src/features/*"],
+      "@shared": ["./src/shared"],
       "@shared/*": ["./src/shared/*"],
+      "@pages": ["./src/pages"],
       "@pages/*": ["./src/pages/*"]
     },
     "skipLibCheck": true,

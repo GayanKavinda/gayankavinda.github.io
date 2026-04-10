@@ -396,7 +396,7 @@ const Contact = () => {
   const cardBdr = isDark ? 'hsl(0 0% 100% / 0.09)' : 'hsl(220 15% 15% / 0.15)';
 
   return (
-    <section id="contact" ref={sectionRef} className="py-[100px] md:py-[120px]">
+    <section id="contact" ref={sectionRef} className="py-[100px] md:py-[120px] relative">
       <div className="max-w-[1140px] mx-auto px-6 md:px-10">
 
         {/* ── header ── */}
@@ -542,6 +542,8 @@ const Contact = () => {
           100% { background-position: -200% center; }
         }
       `}</style>
+      <div className="section-fade-top" />
+      <div className="section-fade-bottom" />
     </section>
   );
 };

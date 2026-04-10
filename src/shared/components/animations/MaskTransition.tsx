@@ -663,27 +663,9 @@ const MaskTransition = () => {
             <StatRow isDark={isDark} />
           </div>
 
-          {/* ── Top + bottom fades (static, no animation) ── */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 0, left: 0, right: 0,
-              height: '22vh',
-              background: 'linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 100%)',
-              zIndex: 35,
-              pointerEvents: 'none',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 0, left: 0, right: 0,
-              height: '22vh',
-              background: 'linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)',
-              zIndex: 35,
-              pointerEvents: 'none',
-            }}
-          />
+          {/* ── Section Fades ────────────────────────────────────────── */}
+          <div className="section-fade-top" />
+          <div className="section-fade-bottom" />
 
         </div>
       </div>

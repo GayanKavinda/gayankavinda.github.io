@@ -81,6 +81,8 @@ const TechStack = () => {
           <SkillMarquee />
         </div>
       </div>
+      <div className="section-fade-top" />
+      <div className="section-fade-bottom" />
     </section>
   );
 };

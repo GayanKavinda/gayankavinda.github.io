@@ -202,17 +202,11 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* ── Bottom fade ────────────────────────────────────────────── */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none z-10"
-        style={{
-          background: 'linear-gradient(to top, hsl(var(--background)), transparent)',
-        }}
-      />
+      {/* ── Section Fades ────────────────────────────────────────── */}
+      <div className="section-fade-top" />
+      <div className="section-fade-bottom" />
     </section>
   );
 };
 
 export default Hero;
-  
-
