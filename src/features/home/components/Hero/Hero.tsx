@@ -73,10 +73,10 @@ const Hero = () => {
       >
         <path
           d="M50 10 C30 25 20 50 35 70 C40 78 50 85 50 90 C50 85 60 78 65 70 C80 50 70 25 50 10Z"
-          stroke="#C0272D" strokeWidth="0.5"
+          stroke="hsl(var(--crimson))" strokeWidth="0.5"
         />
-        <circle cx="42" cy="45" r="2" fill="#C0272D" opacity="0.5" />
-        <circle cx="58" cy="45" r="2" fill="#C0272D" opacity="0.5" />
+        <circle cx="42" cy="45" r="2" fill="hsl(var(--crimson))" opacity="0.5" />
+        <circle cx="58" cy="45" r="2" fill="hsl(var(--crimson))" opacity="0.5" />
       </svg>
 
       {/* ── Dancer image ─────────────────────────────────────────────
@@ -98,7 +98,7 @@ const Hero = () => {
         ].join(' ')}
         style={{
           mixBlendMode:  isDark ? 'screen'   : 'multiply',
-          filter:        'drop-shadow(40px 0px 70px rgba(192,39,45,0.2))',
+          filter:        `drop-shadow(40px 0px 70px hsla(var(--crimson), 0.2))`,
         }}
       />
 
@@ -167,35 +167,35 @@ const Hero = () => {
         {/* Code block — slightly smaller on mobile */}
         <div
           className="hero-text-anim mt-6 md:mt-8 rounded-lg p-3.5 md:p-4
-                      max-w-[340px] md:max-w-[440px]"
+                      max-w-[340px] md:max-w-[440px] backdrop-blur-[2px]"
           style={{
-            background: 'hsl(var(--muted))',
-            border:     '1px solid hsl(var(--border))',
+            background: 'hsla(var(--muted), 0.5)',
+            border:     '1px solid hsla(var(--border), 0.5)',
           }}
         >
           <pre className="font-mono text-[11px] md:text-[13px] leading-relaxed overflow-x-auto">
             <span className="text-crimson">const</span>{' '}
-            <span className="text-gold">engineer</span>{' '}
+            <span className="text-amber-500">engineer</span>{' '}
             <span className="text-foreground/60">=</span>
             {' {\n'}
             {'  '}
-            <span className="text-foreground/75">stack</span>
+            <span className="text-indigo-500">stack</span>
             {': ['}
-            <span className="text-green-600">"TypeScript"</span>
+            <span className="text-emerald-500">"TypeScript"</span>
             {', '}
-            <span className="text-green-600">"React"</span>
+            <span className="text-emerald-500">"React"</span>
             {', '}
-            <span className="text-green-600">"Go"</span>
+            <span className="text-emerald-500">"Go"</span>
             {'],\n'}
             {'  '}
-            <span className="text-foreground/75">focus</span>
+            <span className="text-rose-500">focus</span>
             {': '}
-            <span className="text-green-600">"distributed systems"</span>
+            <span className="text-emerald-500">"distributed systems"</span>
             {',\n'}
             {'  '}
-            <span className="text-foreground/75">coffee</span>
+            <span className="text-indigo-500">coffee</span>
             {': '}
-            <span className="text-gold">Infinity</span>
+            <span className="text-amber-500">Infinity</span>
             {'\n}'}
             {';'}
           </pre>

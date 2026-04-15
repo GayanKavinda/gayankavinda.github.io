@@ -46,11 +46,11 @@ const TechStack = () => {
 
         {/* ── Header ────────────────────────────────────────────────── */}
         <div className="text-center mb-10 md:mb-14">
-          <p className="font-mono text-[10px] tracking-[.18em] uppercase text-[#D4891A] mb-2.5">
+          <p className="font-mono text-[10px] tracking-[.18em] uppercase text-amber-500 mb-2.5">
             // Technology
           </p>
           <h2 className="font-playfair text-[clamp(32px,5vw,56px)] font-bold text-foreground leading-tight">
-            The <em className="italic text-[#C41E3A]">Stack</em>
+            The <em className="italic text-crimson">Stack</em>
           </h2>
           <p className="text-[13px] md:text-[14px] text-muted-foreground mt-3 max-w-[360px] mx-auto leading-relaxed">
             Technologies I use to build production-ready systems.

@@ -3,7 +3,8 @@
 // Row 1: Frontend + Backend (scrolls left)
 // Row 2: Infrastructure + Data (scrolls right)
 
-import React from 'react';
+import React, { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { SkillChip } from './SkillChip';
 import { CAT_META, SKILLS } from './constants';
 
@@ -42,28 +43,42 @@ function renderTrackItems(skills: typeof ROW_1, keyPrefix: string) {
   );
 }
 
-export const SkillMarquee = () => (
-  <div 
-    className="w-full overflow-hidden py-16"
-    style={{
-      maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
-      WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'
-    }}
-  >
-    <div className="space-y-12">
-      {/* Row 1 — Frontend & Backend (scrolls left) */}
-      <div className="relative z-10 hover:z-20 transition-[z-index]">
-        <div className="flex gap-3 animate-marquee-left py-2 overflow-visible">
-          {renderTrackItems(ROW_1, 'row1')}
-        </div>
-      </div>
+export const SkillMarquee = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: false, margin: '-50px' });
 
-      {/* Row 2 — Infrastructure & Data (scrolls right) */}
-      <div className="relative z-10 hover:z-20 transition-[z-index]">
-        <div className="flex gap-3 animate-marquee-right py-2 overflow-visible">
-          {renderTrackItems(ROW_2, 'row2')}
+  return (
+    <div 
+      ref={containerRef}
+      className="w-full overflow-hidden py-16"
+      style={{
+        maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
+        WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
+        contentVisibility: 'auto',
+        containIntrinsicSize: '0 400px'
+      }}
+    >
+      <div className="space-y-12">
+        {/* Row 1 — Frontend & Backend (scrolls left) */}
+        <div className="relative z-10 hover:z-20 transition-[z-index]">
+          <div 
+            className="flex gap-3 animate-marquee-left py-2 overflow-visible"
+            style={{ animationPlayState: isInView ? 'running' : 'paused' }}
+          >
+            {renderTrackItems(ROW_1, 'row1')}
+          </div>
+        </div>
+
+        {/* Row 2 — Infrastructure & Data (scrolls right) */}
+        <div className="relative z-10 hover:z-20 transition-[z-index]">
+          <div 
+            className="flex gap-3 animate-marquee-right py-2 overflow-visible"
+            style={{ animationPlayState: isInView ? 'running' : 'paused' }}
+          >
+            {renderTrackItems(ROW_2, 'row2')}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};

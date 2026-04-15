@@ -33,6 +33,12 @@ export default {
         crimson: "hsl(var(--crimson))",
         gold: "hsl(var(--gold))",
         bone: "hsl(var(--bone))",
+        emerald: "hsl(var(--emerald))",
+        indigo: "hsl(var(--indigo))",
+        amber: "hsl(var(--amber))",
+        rose: "hsl(var(--rose))",
+        slate: "hsl(var(--slate))",
+        ocean: "hsl(var(--ocean))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

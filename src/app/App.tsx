@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { ReactLenis } from 'lenis/react';
 import { TooltipProvider } from "@shared/components/ui/tooltip";
 import CustomCursor from "@shared/components/layout/CustomCursor";
 import { ThemeProvider } from "@app/providers/theme-provider";
@@ -19,43 +20,45 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <ThemeProvider defaultTheme="dark" storageKey="gy-theme">
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        {/* <PreLoader> */}
-        <CustomCursor />
-        <BrowserRouter
-          future={{
-            v7_startTransition: true,
-            v7_relativeSplatPath: true,
-          }}
-        >
-          <Routes>
-            {/* Core */}
-            <Route path="/" element={<Home />} />
-            <Route path="/projects" element={<AllProjects />} />
-            <Route path="/projects/:slug" element={<ProjectDetail />} />
+    <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          {/* <PreLoader> */}
+          <CustomCursor />
+          <BrowserRouter
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
+            }}
+          >
+            <Routes>
+              {/* Core */}
+              <Route path="/" element={<Home />} />
+              <Route path="/projects" element={<AllProjects />} />
+              <Route path="/projects/:slug" element={<ProjectDetail />} />
 
-            {/* Redirects for direct section access — ensures /experience etc don't 404 */}
-            <Route path="/experience" element={<Navigate to="/#experience" replace />} />
-            <Route path="/about" element={<Navigate to="/#about" replace />} />
-            <Route path="/contact" element={<Navigate to="/#contact" replace />} />
-            <Route path="/skills" element={<Navigate to="/#skills" replace />} />
+              {/* Redirects for direct section access — ensures /experience etc don't 404 */}
+              <Route path="/experience" element={<Navigate to="/#experience" replace />} />
+              <Route path="/about" element={<Navigate to="/#about" replace />} />
+              <Route path="/contact" element={<Navigate to="/#contact" replace />} />
+              <Route path="/skills" element={<Navigate to="/#skills" replace />} />
 
 
-            {/* Personal pages */}
-            <Route path="/now" element={<Now />} />
-            <Route path="/uses" element={<Uses />} />
+              {/* Personal pages */}
+              <Route path="/now" element={<Now />} />
+              <Route path="/uses" element={<Uses />} />
 
-            {/* Catch-all */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              {/* Catch-all */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
 
-          {/* Portfolio Agent - Chatbot */}
-          <ChatBot />
-        </BrowserRouter>
-        {/* </PreLoader> */}
-      </TooltipProvider>
-    </QueryClientProvider>
+            {/* Portfolio Agent - Chatbot */}
+            <ChatBot />
+          </BrowserRouter>
+          {/* </PreLoader> */}
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ReactLenis>
   </ThemeProvider>
 );
 
