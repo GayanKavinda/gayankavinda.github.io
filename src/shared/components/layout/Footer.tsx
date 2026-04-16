@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion } from 'framer-motion';
 import maskImg from '@shared/assets/mask.png';
 import { useTheme } from '@app/providers/theme-provider';
 import { QRCode } from '@shared/components/ui/qr-code';
@@ -37,34 +38,14 @@ const SOCIAL_LINKS = [
     label: 'Twitter', href: 'https://twitter.com',
     icon: <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633z"/></svg>,
   },
-  {
-    label: 'Dribbble', href: 'https://dribbble.com',
-    icon: <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14"><path fillRule="evenodd" d="M8 0C3.584 0 0 3.584 0 8s3.584 8 8 8c4.408 0 8-3.584 8-8s-3.592-8-8-8zm5.284 3.688a6.802 6.802 0 011.545 4.251c-.226-.043-2.482-.503-4.755-.217-.052-.112-.096-.234-.148-.355-.139-.33-.295-.668-.451-.99 2.516-1.023 3.662-2.498 3.81-2.69zM8 1.18c1.735 0 3.323.65 4.53 1.718-.122.174-1.155 1.553-3.584 2.464-1.12-2.056-2.36-3.74-2.551-4A6.95 6.95 0 018 1.18zm-2.907.642A43.123 43.123 0 017.627 5.77c-3.193.85-6.013.833-6.317.833a6.865 6.865 0 013.783-4.78zM1.163 8.01V7.8c.295.01 3.61.053 7.02-.971.196.381.381.772.555 1.162l-.27.078c-3.54 1.137-5.42 4.24-5.576 4.504A6.824 6.824 0 011.163 8.01zm2.838 5.532c.104-.17 1.49-2.858 5.262-4.174.018-.008.035-.008.053-.017.94 2.442 1.329 4.49 1.433 5.073a6.84 6.84 0 01-6.748-.882zm8.017.654a28.09 28.09 0 00-1.329-4.816c2.143-.347 4.023.226 4.252.296a6.842 6.842 0 01-2.923 4.52z"/></svg>,
-  },
 ];
 
-// ── Footer component ───────────────────────────────────────────────────────────
 const Footer = () => {
   const { theme } = useTheme();
   const isDark    = theme === 'dark';
   const footerRef = useRef<HTMLElement>(null);
   const wmRef     = useRef<HTMLDivElement>(null);
   const [hov, setHov] = useState<string | null>(null);
-
-  // ── Theme tokens: pure white vs pure near-black ──────────────────────────────
-  //
-  // LIGHT: pure #FFFFFF background. All text is dark ink on white.
-  //   t1 = near-black primary text       (#0C0C0E)
-  //   t2 = mid-grey secondary text
-  //   t3 = faint tertiary / back-to-top
-  //   t4 = very faint micro text (stack / copyright)
-  //   hairline = thin separator lines
-  //   iconBdr  = icon circle borders
-  //   badgeBg  = pill background
-  //   wmColor  = watermark text: dark ink at low opacity, NO gradient
-  //
-  // DARK: pure #0A0A0A background. All text is white ink on black.
-  //   Same slots, inverted.
 
   const bg        = isDark ? '#0A0A0A'              : '#FFFFFF';
   const t1        = isDark ? '#F0EEE8'              : '#0C0C0E';
@@ -75,25 +56,8 @@ const Footer = () => {
   const iconBdr   = isDark ? 'rgba(255,255,255,.12)' : 'rgba(0,0,0,.12)';
   const badgeBg   = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.04)';
 
-  // ── Watermark: pure solid ghost, NO gradient ─────────────────────────────────
-  // Dark mode:  white text at low alpha, fine white stroke.
-  // Light mode: black text at low alpha, fine black stroke.
-  // Result: a clean outlined ghost letterform, equally readable in both themes.
-
-  // ── GSAP animations ──────────────────────────────────────────────────────────
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo('.gy-fade', { y: 26, opacity: 0 }, {
-        y: 0, opacity: 1,
-        stagger: 0.055,
-        duration: 0.72,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: 'top 88%',
-          once: true,
-        },
-      });
       if (wmRef.current) {
         gsap.fromTo(wmRef.current, { y: 14 }, {
           y: -14, ease: 'none',
@@ -109,7 +73,6 @@ const Footer = () => {
     return () => ctx.revert();
   }, []);
 
-  // ── Helpers ───────────────────────────────────────────────────────────────────
   const linkStyle = (key: string): React.CSSProperties => ({
     fontSize: '13px',
     color: hov === key ? t1 : t2,
@@ -131,6 +94,29 @@ const Footer = () => {
     marginBottom: '18px',
   };
 
+  const footerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1]
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6 } 
+    }
+  };
+
   return (
     <footer
       ref={footerRef}
@@ -143,21 +129,22 @@ const Footer = () => {
         flexDirection: 'column',
       }}
     >
-
-
-      {/* ── Main content area (Centered) ─────────────────────────────────────── */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        width: '100%',
-        padding: '80px 80px 40px',
-      }}>
-
-        {/* ── 4-column grid with hairline vertical dividers ─────────────────── */}
-        <div
-          className="gy-fade"
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={footerVariants}
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          width: '100%',
+          padding: '80px 80px 40px',
+        }}
+      >
+        <motion.div
+          variants={itemVariants}
           style={{
             display: 'grid',
             gridTemplateColumns:
@@ -165,375 +152,92 @@ const Footer = () => {
             width: '100%',
           }}
         >
-
-          {/* ── Brand ───────────────────────────────────────────────────────── */}
           <div style={{ paddingRight: '36px', paddingBottom: '52px' }}>
-
-            {/* Logo row */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '16px' }}>
-              <img
-                src={maskImg}
-                alt=""
-                style={{
-                  width: '24px', height: '24px',
-                  mixBlendMode: isDark ? 'screen' : 'multiply',
-                  filter: isDark ? 'brightness(2)' : 'none',
-                }}
-              />
-              <span style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: '19px', fontWeight: 700,
-                color: t1, letterSpacing: '-0.02em', lineHeight: 1,
-              }}>
-                Gara Yaka
-              </span>
+              <img src={maskImg} alt="" style={{ width: '24px', height: '24px', mixBlendMode: isDark ? 'screen' : 'multiply', filter: isDark ? 'brightness(2)' : 'none' }} />
+              <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '19px', fontWeight: 700, color: t1 }}>Gara Yaka</span>
             </div>
-
-            {/* Tagline */}
-            <p style={{
-              fontSize: '13px', lineHeight: 1.78,
-              color: t2, maxWidth: '210px', marginBottom: '20px',
-            }}>
-              Crafting purposeful digital experiences — where tradition meets precision.
-            </p>
-
-            {/* Availability badge */}
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: '8px',
-              background: badgeBg,
-              border: `1px solid ${hairline}`,
-              borderRadius: '999px', padding: '5px 13px', marginBottom: '22px',
-            }}>
-              <span style={{
-                width: '7px', height: '7px', borderRadius: '50%',
-                background: '#22c55e', flexShrink: 0,
-                animation: 'gyPulse 2.2s ease-in-out infinite',
-              }} />
-              <span style={{
-                fontFamily: "'DM Mono', monospace",
-                fontSize: '9px', letterSpacing: '0.14em',
-                textTransform: 'uppercase' as const, color: t2,
-              }}>
-                Available for work
-              </span>
-            </div>
-
-            {/* Social icon row */}
+            <p style={{ fontSize: '13px', color: t2, maxWidth: '210px', marginBottom: '20px' }}>Crafting purposeful digital experiences — where tradition meets precision.</p>
             <div style={{ display: 'flex', gap: '7px' }}>
-              {SOCIAL_LINKS.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={s.label}
-                  style={{
-                    width: '30px', height: '30px', borderRadius: '50%',
-                    border: `1px solid ${hov === `si-${s.label}` ? `${CRIMSON}60` : iconBdr}`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: hov === `si-${s.label}` ? CRIMSON : t2,
-                    transition: 'all 180ms',
-                    transform: hov === `si-${s.label}` ? 'translateY(-2px)' : 'none',
-                    textDecoration: 'none',
-                  }}
-                  onMouseEnter={() => setHov(`si-${s.label}`)}
-                  onMouseLeave={() => setHov(null)}
-                >
-                  {s.icon}
-                </a>
+              {SOCIAL_LINKS.map(s => (
+                <a key={s.label} href={s.href} style={{ width: '30px', height: '30px', borderRadius: '50%', border: `1px solid ${iconBdr}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: t2 }}>{s.icon}</a>
               ))}
             </div>
           </div>
-
-          {/* Divider */}
           <div style={{ background: hairline }} />
-
-          {/* ── Pages ───────────────────────────────────────────────────────── */}
           <div style={{ padding: '0 26px 52px' }}>
-            <span style={colHead}>Pages</span>
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {NAV_LINKS.map((l) => (
-                <li key={l.label}>
-                  <a
-                    href={l.href}
-                    style={linkStyle(`nav-${l.label}`)}
-                    onMouseEnter={() => setHov(`nav-${l.label}`)}
-                    onMouseLeave={() => setHov(null)}
-                  >
-                    {hov === `nav-${l.label}` && (
-                      <span style={{ color: CRIMSON, fontSize: '11px', lineHeight: 1 }}>›</span>
-                    )}
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+             <span style={colHead}>Pages</span>
+             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+               {NAV_LINKS.map(l => <li key={l.label}><a href={l.href} style={linkStyle(l.label)}>{l.label}</a></li>)}
+             </ul>
           </div>
-
-          {/* Divider */}
           <div style={{ background: hairline }} />
-
-          {/* ── Socials ─────────────────────────────────────────────────────── */}
           <div style={{ padding: '0 26px 52px' }}>
-            <span style={colHead}>Socials</span>
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {SOCIAL_LINKS.map((s) => (
-                <li key={s.label}>
-                  <a
-                    href={s.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={linkStyle(`soc-${s.label}`)}
-                    onMouseEnter={() => setHov(`soc-${s.label}`)}
-                    onMouseLeave={() => setHov(null)}
-                  >
-                    {s.label}
-                    <svg
-                      style={{ opacity: 0.4, flexShrink: 0 }}
-                      width="9" height="9" viewBox="0 0 12 12"
-                      fill="none" stroke="currentColor"
-                      strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
-                    >
-                      <path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" />
-                    </svg>
-                  </a>
-                </li>
-              ))}
-            </ul>
+             <span style={colHead}>Socials</span>
+             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+               {SOCIAL_LINKS.map(s => <li key={s.label}><a href={s.href} target="_blank" rel="noreferrer" style={linkStyle(s.label)}>{s.label}</a></li>)}
+             </ul>
           </div>
-
-          {/* Divider */}
           <div style={{ background: hairline }} />
-
-          {/* ── Connect & Collaborate ───────────────────────────────────────── */}
           <div style={{ paddingLeft: '40px', paddingBottom: '32px' }}>
-            <span style={colHead}>Connect & Collaborate</span>
-            <p style={{ fontSize: '14px', lineHeight: 1.6, color: t2, marginBottom: '20px', maxWidth: '260px' }}>
-              Have a visionary project? Let's create something extraordinary together.
-            </p>
+             <span style={colHead}>Connect & Collaborate</span>
+             <p style={{ fontSize: '14px', color: t2, marginBottom: '20px' }}>Have a visionary project? Let's create something extraordinary together.</p>
+             <div style={{ display: 'flex', gap: '18px', alignItems: 'center' }}>
+                <QRCode value="https://garayaka.com" size={80} />
+                <a href="mailto:contact@garayaka.com" style={{ ...linkStyle('mail'), color: t1, fontWeight: 500 }}>contact@garayaka.com</a>
+             </div>
+          </div>
+        </motion.div>
+      </motion.div>
 
-            {/* QR Code + Email side by side */}
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '18px', marginBottom: '18px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '7px', flexShrink: 0 }}>
-                <div style={{
-                  padding: '7px',
-                  background: '#FFFFFF',
-                  borderRadius: '10px',
-                  boxShadow: isDark
-                    ? '0 0 0 1px rgba(255,255,255,0.10), 0 4px 16px rgba(0,0,0,0.5)'
-                    : '0 0 0 1px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.08)',
-                  lineHeight: 0,
-                }}>
-                  <QRCode 
-                    value="https://garayaka.com" 
-                    size={100}
-                    logo={
-                      <img 
-                        src={maskImg} 
-                        alt="Gara Yaka Logo"
-                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                      />
-                    }
-                  />
-                </div>
-                <span style={{
-                  fontFamily: "'DM Mono', monospace",
-                  fontSize: '8.5px', letterSpacing: '0.12em',
-                  textTransform: 'uppercase', color: t3,
-                }}>
-                  Scan to visit
-                </span>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingTop: '4px' }}>
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase', color: t3 }}>
-                  Or reach out directly
-                </span>
-                <a
-                  href="mailto:contact@garayaka.com"
-                  style={{ ...linkStyle('mail'), fontSize: '13px', fontWeight: 500, color: t1, wordBreak: 'break-all' }}
-                  onMouseEnter={() => setHov('mail')}
-                  onMouseLeave={() => setHov(null)}
-                >
-                  contact@garayaka.com
-                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ opacity: 0.5, flexShrink: 0 }}>
-                    <path d="M1 11L11 1M11 1H4M11 1V8" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-
-            {/* CTA button */}
-            <a
-              href="#contact"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '8px',
-                fontFamily: "'DM Mono', monospace",
-                fontSize: '11px', letterSpacing: '0.08em', textTransform: 'uppercase',
-                color: hov === 'cta' ? '#fff' : t1,
-                background: hov === 'cta' ? CRIMSON : 'transparent',
-                border: `1px solid ${hov === 'cta' ? CRIMSON : hairline}`,
-                borderRadius: '6px', padding: '11px 20px',
-                textDecoration: 'none', transition: 'all 240ms cubic-bezier(0.4, 0, 0.2, 1)',
-              }}
-              onMouseEnter={() => setHov('cta')}
-              onMouseLeave={() => setHov(null)}
-            >
-              Start a conversation
-            </a>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.5, duration: 1 }}
+        style={{ width: '100%', flexShrink: 0 }}
+      >
+        <div ref={wmRef} style={{ width: '100%', overflow: 'hidden', userSelect: 'none', pointerEvents: 'none', marginBottom: '4px' }}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1440 180" preserveAspectRatio="xMidYMid meet" aria-hidden="true" style={{ display: 'block' }}>
+            <defs>
+              <linearGradient id="wm-brand" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor={CRIMSON} />
+                <stop offset="50%" stopColor={GOLD} />
+                <stop offset="100%" stopColor={CRIMSON} />
+              </linearGradient>
+              <linearGradient id="wm-mask" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="white" stopOpacity="1" />
+                <stop offset="45%" stopColor="white" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="white" stopOpacity="0" />
+              </linearGradient>
+              <mask id="wm-fade-mask">
+                <rect x="0" y="0" width="1440" height="180" fill="url(#wm-mask)" />
+              </mask>
+              <linearGradient id="wm-stroke" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor={CRIMSON} stopOpacity={isDark ? 0.3 : 0.2} />
+                <stop offset="50%" stopColor={GOLD} stopOpacity={isDark ? 0.25 : 0.15} />
+                <stop offset="100%" stopColor={CRIMSON} stopOpacity={isDark ? 0.3 : 0.2} />
+              </linearGradient>
+            </defs>
+            <text x="720" y="148" textAnchor="middle" fontFamily="'Plus Jakarta Sans', sans-serif" fontWeight="900" fontSize="168" letterSpacing="-4" fill="url(#wm-brand)" stroke="url(#wm-stroke)" strokeWidth="0.8" paintOrder="stroke fill" mask="url(#wm-fade-mask)" opacity={isDark ? 0.55 : 0.45}>
+              GaraYaka
+            </text>
+          </svg>
+        </div>
+        <div style={{ width: '100%', padding: '0 60px 28px' }}>
+          <div style={{ borderTop: `1px solid ${hairline}`, paddingTop: '18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+             <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '9.5px', color: t4 }}>© {YEAR} Gara Yaka. All rights reserved.</span>
+             <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '9.5px', color: t4 }}>React · GSAP · TypeScript · D3</span>
+             <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ background: 'none', border: 'none', color: t3, cursor: 'pointer', fontFamily: "'DM Mono', monospace", fontSize: '9.5px', textTransform: 'uppercase' }}>Back to top</button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* ── WATERMARK & BOTTOM BAR ────────────────────────────────────────────── */}
-      <div style={{ width: '100%', flexShrink: 0 }}>
-        {/* SVG Watermark — using portfolio crimson/gold palette */}
-<div
-  ref={wmRef}
-  className="gy-fade"
-  style={{
-    width: '100%',
-    overflow: 'hidden',
-    userSelect: 'none',
-    pointerEvents: 'none',
-    lineHeight: 0,
-    marginBottom: '4px',
-  }}
->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="100%"
-    viewBox="0 0 1440 180"
-    preserveAspectRatio="xMidYMid meet"
-    aria-hidden="true"
-    style={{ display: 'block' }}
-  >
-    <defs>
-      {/* 
-        Horizontal gradient: Crimson → Gold (your brand colors)
-        Vertical mask gradient: visible top → fade to transparent bottom
-      */}
-
-      {/* Brand color horizontal sweep */}
-      <linearGradient id="wm-brand" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%"   stopColor={CRIMSON} />
-        <stop offset="50%"  stopColor={GOLD} />
-        <stop offset="100%" stopColor={CRIMSON} />
-      </linearGradient>
-
-      {/* Vertical opacity fade mask */}
-      <linearGradient id="wm-mask" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"   stopColor="white" stopOpacity="1" />
-        <stop offset="45%"  stopColor="white" stopOpacity="0.6" />
-        <stop offset="100%" stopColor="white" stopOpacity="0" />
-      </linearGradient>
-
-      {/* Combine: brand colors + vertical fade */}
-      <mask id="wm-fade-mask">
-        <rect
-          x="0" y="0"
-          width="1440" height="180"
-          fill="url(#wm-mask)"
-        />
-      </mask>
-
-      {/* Stroke gradient: Crimson → Gold with fade */}
-      <linearGradient id="wm-stroke" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%"   stopColor={CRIMSON} stopOpacity={isDark ? 0.3 : 0.2} />
-        <stop offset="50%"  stopColor={GOLD}    stopOpacity={isDark ? 0.25 : 0.15} />
-        <stop offset="100%" stopColor={CRIMSON} stopOpacity={isDark ? 0.3 : 0.2} />
-      </linearGradient>
-    </defs>
-
-    <text
-      x="720"
-      y="148"
-      textAnchor="middle"
-      fontFamily="'Plus Jakarta Sans', sans-serif"
-      fontWeight="900"
-      fontSize="168"
-      letterSpacing="-4"
-      fill="url(#wm-brand)"
-      stroke="url(#wm-stroke)"
-      strokeWidth="0.8"
-      paintOrder="stroke fill"
-      mask="url(#wm-fade-mask)"
-      opacity={isDark ? 0.55 : 0.45}
-    >
-      GaraYaka
-    </text>
-  </svg>
-</div>
-
-        {/* Bottom bar container */}
-        <div style={{ width: '100%', padding: '0 60px 28px' }}>
-          <div
-            className="gy-fade"
-            style={{
-              borderTop: `1px solid ${hairline}`,
-              paddingTop: '18px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '10px',
-            }}
-          >
-          {/* Copyright */}
-          <span style={{
-            fontFamily: "'DM Mono', monospace",
-            fontSize: '9.5px', letterSpacing: '0.07em', color: t4,
-          }}>
-            © {YEAR} Gara Yaka. All rights reserved.
-          </span>
-
-          {/* Stack */}
-          <span style={{
-            fontFamily: "'DM Mono', monospace",
-            fontSize: '9.5px', letterSpacing: '0.07em', color: t4,
-          }}>
-            React · GSAP · TypeScript · D3
-          </span>
-
-          {/* Back to top */}
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: '5px',
-              fontFamily: "'DM Mono', monospace",
-              fontSize: '9.5px', letterSpacing: '0.12em',
-              textTransform: 'uppercase' as const,
-              color: hov === 'top' ? GOLD : t3,
-              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-              transition: 'color 200ms',
-            }}
-            onMouseEnter={() => setHov('top')}
-            onMouseLeave={() => setHov(null)}
-          >
-            Back to top
-            <svg
-              style={{
-                transform: hov === 'top' ? 'translateY(-2px)' : 'none',
-                transition: 'transform 200ms',
-              }}
-              width="11" height="11" viewBox="0 0 14 14"
-              fill="none" stroke="currentColor"
-              strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-            >
-              <path d="M7 11V3M7 3L3.5 6.5M7 3L10.5 6.5" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-      {/* ── Injected keyframes ─────────────────────────────────────────────────── */}
       <style>{`
         @keyframes gyPulse {
           0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,.5); }
           50%      { box-shadow: 0 0 0 5px rgba(34,197,94,0); }
         }
-        /* Responsive: collapse grid to wrap layout below 960px */
         @media (max-width: 960px) {
           footer > div > div[style*="grid-template-columns"] {
             display: flex !important;
@@ -543,16 +247,6 @@ const Footer = () => {
           footer > div > div[style*="grid-template-columns"] > div {
             flex: 1 1 140px;
           }
-          footer > div > div[style*="grid-template-columns"] > div[style*="background"] {
-            display: none;  /* hide vertical dividers in wrap mode */
-          }
-        }
-        @media (max-width: 560px) {
-          footer > div > div[style*="grid-template-columns"] > div {
-            flex: 1 1 100% !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-          }
         }
       `}</style>
     </footer>
@@ -560,4 +254,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

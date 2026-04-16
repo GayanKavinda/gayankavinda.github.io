@@ -1,31 +1,38 @@
 /* src/app/animations.css */
 /* ═══════════════════════════════════════════════════════════════════════════
-   animations.css — Performance-optimized Animations
+   GARA YAKA — Performance-optimised Animations
+   Rules:
+     · All movement via transform / opacity only (no layout properties)
+     · translate3d() everywhere for GPU promotion
+     · will-change applied only on elements that actually animate,
+       removed after completion via JS (.animation-done { will-change: auto })
+     · Keyframes defined once here. base.css duplicates removed.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── GPU Compositing Hints ──────────────────────────────────────────────── */
-/* FIX: Only apply will-change on elements that actually animate */
-/* Avoid blanket will-change — it causes extra memory allocation */
-.will-animate-transform {
-  will-change: transform;
-}
+.will-animate-transform  { will-change: transform; }
+.will-animate-opacity    { will-change: opacity; }
+.will-animate-both       { will-change: transform, opacity; }
+.animation-done          { will-change: auto; }
 
-.will-animate-opacity {
-  will-change: opacity;
+/* ── Easing Tokens ──────────────────────────────────────────────────────── */
+:root {
+  --ease-out-expo:      cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-sine:   cubic-bezier(0.37, 0, 0.63, 1);
+  --ease-spring:        cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast:      150ms;
+  --duration-normal:    300ms;
+  --duration-slow:      500ms;
+  --duration-slower:    700ms;
 }
-
-/* Remove will-change after animation completes via JS */
-/* .animation-done { will-change: auto; } */
 
 /* ── Keyframes ──────────────────────────────────────────────────────────── */
 
-/* FIX: float — use translate3d for GPU */
 @keyframes float {
   0%, 100% { transform: translate3d(0, -8px, 0); }
-  50%       { transform: translate3d(0, 8px, 0); }
+  50%       { transform: translate3d(0,  8px, 0); }
 }
 
-/* FIX: Two separate marquee directions */
 @keyframes marquee-left {
   0%   { transform: translate3d(0, 0, 0); }
   100% { transform: translate3d(-33.333%, 0, 0); }
@@ -42,12 +49,12 @@
 }
 
 @keyframes pulse-ring {
-  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--crimson) / 0.4); }
+  0%, 100% { box-shadow: 0 0 0 0   hsl(var(--crimson) / 0.4); }
   50%       { box-shadow: 0 0 0 10px hsl(var(--crimson) / 0); }
 }
 
 @keyframes pulse-ring-green {
-  0%, 100% { box-shadow: 0 0 0 0 hsl(142 72% 36% / 0.4); }
+  0%, 100% { box-shadow: 0 0 0 0  hsl(142 72% 36% / 0.4); }
   50%       { box-shadow: 0 0 0 6px hsl(142 72% 36% / 0); }
 }
 
@@ -101,18 +108,19 @@
 
 @keyframes shimmer {
   0%   { background-position: -800px 0; }
-  100% { background-position: 800px 0; }
+  100% { background-position:  800px 0; }
 }
 
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--gold) / 0.2); }
+  0%, 100% { box-shadow: 0 0 0   0 hsl(var(--gold) / 0.2); }
   50%       { box-shadow: 0 0 30px 8px hsl(var(--gold) / 0.15); }
 }
 
+/* Used by shimmer-border in utilities.css */
 @keyframes gradient-shift {
-  0%   { background-position: 0% 50%; }
+  0%   { background-position: 0%   50%; }
   50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  100% { background-position: 0%   50%; }
 }
 
 @keyframes spin {
@@ -120,13 +128,37 @@
   to   { transform: rotate(360deg); }
 }
 
-/* Scanline — for HUD effects */
+/* Scanline — HUD / terminal effects */
 @keyframes scanline {
   0%   { transform: translate3d(0, -100vh, 0); }
-  100% { transform: translate3d(0, 100vh, 0); }
+  100% { transform: translate3d(0,  100vh, 0); }
+}
+
+/* Reveal on scroll — used by .reveal-on-scroll in utilities.css */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes reveal-scale {
+  from {
+    opacity: 0;
+    transform: scale3d(0.92, 0.92, 1);
+  }
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
 }
 
 /* ── Animation Utility Classes ──────────────────────────────────────────── */
+
 .animate-float {
   animation: float 4s var(--ease-in-out-sine) infinite;
 }
@@ -137,6 +169,10 @@
 
 .animate-pulse-ring {
   animation: pulse-ring 2.5s var(--ease-in-out-sine) infinite;
+}
+
+.animate-pulse-ring-green {
+  animation: pulse-ring-green 2.5s var(--ease-in-out-sine) infinite;
 }
 
 .animate-shimmer {
@@ -159,20 +195,24 @@
   animation: gradient-shift 5s ease infinite;
 }
 
-.animate-marquee-left {
-  animation: marquee-left 30s linear infinite;
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
 
-.animate-marquee-right {
-  animation: marquee-right 30s linear infinite;
+.animate-scanline {
+  animation: scanline 8s linear infinite;
 }
 
-/* FIX: Pause on hover — preserve for marquee parent */
+/* Marquee */
+.animate-marquee-left  { animation: marquee-left  30s linear infinite; }
+.animate-marquee-right { animation: marquee-right 30s linear infinite; }
+
 .marquee-container:hover .animate-marquee-left,
 .marquee-container:hover .animate-marquee-right {
   animation-play-state: paused;
 }
 
+/* Entry animations */
 .animate-fade-in {
   animation: fade-in var(--duration-normal) ease both;
 }
@@ -181,22 +221,48 @@
   animation: fade-in-up var(--duration-slower) var(--ease-out-expo) both;
 }
 
+.animate-fade-in-down {
+  animation: fade-in-down var(--duration-slower) var(--ease-out-expo) both;
+}
+
 .animate-scale-in {
   animation: scale-in var(--duration-slow) var(--ease-out-expo) both;
 }
 
+/* Stagger helpers — apply to parent, children pick up delay via nth-child */
+.stagger > * { animation-fill-mode: both; }
+.stagger > *:nth-child(1)  { animation-delay: 0ms; }
+.stagger > *:nth-child(2)  { animation-delay: 60ms; }
+.stagger > *:nth-child(3)  { animation-delay: 120ms; }
+.stagger > *:nth-child(4)  { animation-delay: 180ms; }
+.stagger > *:nth-child(5)  { animation-delay: 240ms; }
+.stagger > *:nth-child(6)  { animation-delay: 300ms; }
+.stagger > *:nth-child(n+7){ animation-delay: 360ms; }
+
+/* Scroll reveal — toggled by IntersectionObserver adding .revealed */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translate3d(0, 40px, 0);
+  transition:
+    opacity    0.8s var(--ease-out-expo),
+    transform  0.8s var(--ease-out-expo);
+}
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
 /* ── Theme Toggle — Instant snap ────────────────────────────────────────── */
-/* FIX: Scope to only color/bg transitions, not transforms */
+/* Scoped to color/bg only. Never pauses transform-based animations. */
 .theme-snap *,
 .theme-snap *::before,
 .theme-snap *::after {
   transition:
-    color 0ms,
+    color            0ms,
     background-color 0ms,
-    border-color 0ms,
-    fill 0ms,
-    stroke 0ms !important;
-  animation-play-state: paused !important;
+    border-color     0ms,
+    fill             0ms,
+    stroke           0ms !important;
 }
 
 /* ── Reduced Motion ─────────────────────────────────────────────────────── */
@@ -204,13 +270,13 @@
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    animation-duration:       0.01ms !important;
+    animation-iteration-count: 1     !important;
+    transition-duration:      0.01ms !important;
+    scroll-behavior:          auto   !important;
   }
 
-  /* FIX: Don't hide — just make static */
+  /* Keep elements visible — just make them static */
   .ring-circle {
     animation: none !important;
     opacity: 0.25 !important;
@@ -223,21 +289,20 @@
 
   .term-line,
   .stat-card {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
+    animation:  none !important;
+    opacity:    1    !important;
+    transform:  none !important;
   }
 
   .animate-marquee-left,
   .animate-marquee-right {
-    animation: none !important;
-    /* Show static content */
-    transform: none !important;
+    animation: none    !important;
+    transform: none    !important;
   }
 
   .reveal-on-scroll {
-    opacity: 1 !important;
-    transform: none !important;
+    opacity:    1    !important;
+    transform:  none !important;
     transition: none !important;
   }
 }

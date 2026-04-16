@@ -1,14 +1,11 @@
 //src/components/sections/EngineeringPhilosophy/index.tsx
 
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef } from 'react';
+import { motion } from 'framer-motion';
 import { ObservabilityMockup } from './mockups/ObservabilityMockup';
 import { SimplicityMockup } from './mockups/SimplicityMockup';
 import { TestingMockup } from './mockups/TestingMockup';
 import { FailureMockup } from './mockups/FailureMockup';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const PRINCIPLES = [
   {
@@ -45,97 +42,106 @@ const PRINCIPLES = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.2
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 25, opacity: 0 },
+  visible: { 
+    y: 0, 
+    opacity: 1,
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+  }
+};
+
 const EngineeringPhilosophy = () => {
   const ref = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    if (!ref.current) return;
-    const ctx = gsap.context(() => {
-      const elements = gsap.utils.toArray('.phil-step');
-      if (elements.length > 0) {
-        gsap.from(elements, {
-          y: 28,
-          opacity: 0,
-          stagger: 0.13,
-          duration: 0.7,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: ref.current,
-            start: 'top 80%',
-            once: true,
-          },
-        });
-      }
-    }, ref.current);
-    
-    return () => {
-      ctx.revert();
-    };
-  }, []);
-
   return (
-    <section id="philosophy" ref={ref} className="relative py-[80px] md:py-[100px] bg-background">
+    <section id="philosophy" ref={ref} className="relative py-[100px] md:py-[140px] bg-background">
       <div className="max-w-[1200px] mx-auto px-6 md:px-10">
 
-        <div className="text-center mb-12 md:mb-16">
-          <div className="inline-flex items-center gap-2 bg-muted rounded-full px-4 py-1.5 mb-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16 md:mb-20"
+        >
+          <div className="inline-flex items-center gap-2 bg-muted/50 border border-border/50 rounded-full px-5 py-2 mb-6 backdrop-blur-sm">
             <span className="text-[10px] font-mono tracking-widest text-[#D4891A]">
               ▶▶
             </span>
-            <span className="text-[11px] font-mono tracking-widest uppercase text-muted-foreground">
-              Engineering Philosophy
+            <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-muted-foreground font-medium">
+              Architectural Core
             </span>
           </div>
-          <h2 className="font-jakarta font-extrabold text-[clamp(30px,5vw,50px)] text-foreground leading-tight tracking-tight">
-            How I{' '}
-            <em className="font-playfair italic font-medium text-[#C41E3A]">
-              Work
-            </em>
+          <h2 className="font-jakarta font-extrabold text-[clamp(34px,6vw,54px)] text-foreground leading-[1.1] tracking-tight">
+            The Engineering{' '}
+            <span className="font-playfair italic font-medium text-[#C41E3A]">
+              Mindset
+            </span>
           </h2>
-          <p className="text-[14px] text-muted-foreground mt-3 max-w-[460px] mx-auto leading-relaxed">
-            Principles I've earned through production incidents,
-            architecture reviews, and a decade of shipping.
+          <p className="text-[15px] md:text-[16px] text-muted-foreground mt-5 max-w-[500px] mx-auto leading-relaxed font-medium">
+            Standardizing technical excellence through production-tested 
+            principles and systemic rigor.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-5 items-start">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6 items-start"
+        >
           {PRINCIPLES.map((p) => (
-            <div key={p.num} className="phil-step flex flex-col gap-4">
+            <motion.div key={p.num} variants={itemVariants} className="flex flex-col gap-5 group">
               <div
-                className="w-full rounded-xl overflow-hidden border border-border bg-muted/30 elevation-card"
+                className="w-full rounded-2xl overflow-hidden border border-border/50 bg-muted/10 backdrop-blur-sm group-hover:border-crimson/30 transition-colors duration-500 shadow-sm"
                 style={{ aspectRatio: '4/3' }}
               >
                 <p.Mockup />
               </div>
 
-              <p
-                className="font-mono text-[11px] font-semibold tracking-[.14em] uppercase"
-                style={{ color: p.color }}
-              >
-                {p.num}
-              </p>
+              <div className="space-y-3">
+                <p
+                  className="font-mono text-[11px] font-bold tracking-[.2em] uppercase"
+                  style={{ color: p.color }}
+                >
+                  {p.num}
+                </p>
 
-              <h3 className="font-jakarta text-[18px] md:text-[19px] font-bold text-foreground leading-snug -mt-2 tracking-tight">
-                {p.title}
-              </h3>
+                <h3 className="font-jakarta text-[20px] font-bold text-foreground leading-snug tracking-tight group-hover:text-crimson transition-colors">
+                  {p.title}
+                </h3>
 
-              <p className="font-sans text-[13px] text-muted-foreground leading-[1.75]">
-                {p.body}
-              </p>
+                <p className="font-sans text-[14px] text-muted-foreground leading-[1.8] font-medium opacity-80">
+                  {p.body}
+                </p>
+              </div>
 
-              <div className="flex flex-wrap gap-2 mt-auto pt-1">
+              <div className="flex flex-wrap gap-2 mt-auto pt-3">
                 {p.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="text-[11px] font-sans text-foreground/65 border border-border rounded-full px-3 py-1 bg-muted/40"
+                    className="text-[10px] font-mono tracking-wide text-foreground/50 border border-border/60 rounded-lg px-2.5 py-1 bg-muted/5 group-hover:border-crimson/10 transition-colors"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
       <div className="section-fade-top" />
       <div className="section-fade-bottom" />

@@ -1,83 +1,350 @@
 /* src/app/styles/utilities.css */
-/* ─── Global Utilities ────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   GARA YAKA — Global Utilities
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Custom cursor */
+/* ── Custom Cursor ──────────────────────────────────────────────────────── */
 .cursor-dot {
   position: fixed;
   left: 0;
   top: 0;
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background: hsl(var(--crimson));
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
+  /* GPU-composited only — never paint */
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.06s linear, opacity 0.2s ease;
 }
+
 .cursor-ring {
   position: fixed;
   left: 0;
   top: 0;
-  width: 20px;
-  height: 20px;
-  border: 1px solid hsl(var(--gold));
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid hsl(var(--gold) / 0.6);
   border-radius: 50%;
   pointer-events: none;
   z-index: 9998;
-  transition: width 0.2s ease, height 0.2s ease;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  transition:
+    transform 0.12s cubic-bezier(0.16, 1, 0.3, 1),
+    width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s ease,
+    opacity 0.3s ease;
 }
 
-/* Scrollbar hidden for certificates scroll */
+/* Hover state — expand ring over interactive targets */
+.cursor-ring.is-hovering {
+  width: 44px;
+  height: 44px;
+  border-color: hsl(var(--crimson) / 0.5);
+}
+
+/* Click state — collapse */
+.cursor-dot.is-clicking {
+  transform: translate3d(0, 0, 0) scale(2.5);
+  background: hsl(var(--gold));
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
 .scrollbar-hidden::-webkit-scrollbar { display: none; }
 .scrollbar-hidden { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Accessible focus styles */
-:focus-visible,
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid hsl(var(--gold));
-  outline-offset: 3px;
-  border-radius: 3px;
+/* Styled scrollbar for non-hidden scroll containers */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--gold) / 0.25) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar { width: 4px; height: 4px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: hsl(var(--gold) / 0.25);
+  border-radius: 2px;
 }
 
-/* Glassmorphism effect */
+/* ── Focus Styles ───────────────────────────────────────────────────────── */
+:focus-visible,
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid hsl(var(--gold));
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Glassmorphism ──────────────────────────────────────────────────────── */
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
   border: 1px solid var(--glass-border);
 }
 
-/* Premium Card Elevation */
-.elevation-card {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04), 0 2px 10px rgba(0, 0, 0, 0.02);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-}
-.elevation-card:hover {
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06), 0 4px 20px rgba(0, 0, 0, 0.03);
-}
-.dark .elevation-card {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-.dark .elevation-card:hover {
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 4px 20px rgba(0, 0, 0, 0.15);
+.glass-sm {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
 }
 
-/* Tighter section spacing on mobile */
-@media (max-width: 767px) {
-  section { padding-top: 64px; padding-bottom: 64px; }
-  
-  /* Code blocks in Hero: allow horizontal scroll within pre */
-  pre { white-space: pre; overflow-x: auto; max-width: 100%; }
+/* ── Elevation System ───────────────────────────────────────────────────── */
+/*
+  Three tiers: sm / md / lg
+  Light: low-contrast shadows (soft gray)
+  Dark:  deep blacks + subtle gold bloom on hover
+*/
+
+/* tier 1 — cards, surfaces */
+.elevation-sm {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.elevation-sm:hover {
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.07),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+}
+.dark .elevation-sm {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.25);
+}
+.dark .elevation-sm:hover {
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.5),
+    0 0 0 1px hsl(var(--gold) / 0.08);
+  transform: translateY(-2px);
 }
 
-/* Mobile nav overlay backdrop */
+/* tier 2 — modal panels, feature cards */
+.elevation-md {
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.elevation-md:hover {
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-4px);
+}
+.dark .elevation-md {
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.5),
+    0 8px 40px rgba(0, 0, 0, 0.35);
+}
+.dark .elevation-md:hover {
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.6),
+    0 0 60px hsl(var(--gold) / 0.06),
+    0 0 0 1px hsl(var(--gold) / 0.1);
+  transform: translateY(-4px);
+}
+
+/* tier 3 — hero elements, spotlighted cards */
+.elevation-lg {
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.06),
+    0 20px 60px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.elevation-lg:hover {
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.07);
+  transform: translateY(-6px);
+}
+.dark .elevation-lg {
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.55),
+    0 24px 72px rgba(0, 0, 0, 0.4);
+}
+.dark .elevation-lg:hover {
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.65),
+    0 0 80px hsl(var(--gold) / 0.08),
+    0 0 0 1px hsl(var(--gold) / 0.12);
+  transform: translateY(-6px);
+}
+
+/* Backward-compat alias */
+.elevation-card { @extend .elevation-md; }
+
+/* ── Section Layout System ──────────────────────────────────────────────── */
+.section-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+
+.section-narrow {
+  max-width: 800px;
+  margin-inline: auto;
+}
+
+.section-wide {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3rem);
+}
+
+/* ── Typography Helpers ─────────────────────────────────────────────────── */
+
+/* Display headline — Playfair Display */
+.text-display {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+/* UI mono — DM Mono */
+.text-mono {
+  font-family: 'DM Mono', 'Fira Code', monospace;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* Balanced text for body paragraphs */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Gradient text — crimson to gold */
+.text-gradient {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--crimson)) 0%,
+    hsl(var(--gold)) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtle gold shimmer variant */
+.text-gradient-gold {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--gold)) 0%,
+    hsl(38 92% 65%) 50%,
+    hsl(var(--gold)) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Visual Dividers ────────────────────────────────────────────────────── */
+.divider-crimson {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    hsl(var(--crimson) / 0.4),
+    transparent
+  );
+}
+
+.divider-gold {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    hsl(var(--gold) / 0.3),
+    transparent
+  );
+}
+
+/* ── Noise Texture Overlay ──────────────────────────────────────────────── */
+/* Apply to a pseudo-element for non-blocking grain */
+.noise-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+}
+
+/* ── Mobile nav overlay backdrop ───────────────────────────────────────── */
 @media (max-width: 1023px) {
+  body.menu-open {
+    overflow: hidden;
+  }
   body.menu-open::after {
     content: '';
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
     z-index: 998;
     pointer-events: none;
   }
+}
+
+/* ── Section Spacing ────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  section {
+    padding-top: clamp(48px, 10vw, 80px);
+    padding-bottom: clamp(48px, 10vw, 80px);
+  }
+
+  pre {
+    white-space: pre;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
+
+/* ── Interaction: Inert Shimmer Border ──────────────────────────────────── */
+/* Replaces premium-card from base.css — GPU-safe, no paint jank */
+.shimmer-border {
+  position: relative;
+}
+.shimmer-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--crimson) / 0),
+    hsl(var(--gold) / 0.3),
+    hsl(var(--crimson) / 0)
+  );
+  background-size: 200% 200%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  animation: gradient-shift 4s ease infinite paused;
+  pointer-events: none;
+}
+.shimmer-border:hover::before {
+  opacity: 1;
+  animation-play-state: running;
 }
