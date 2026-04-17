@@ -15,6 +15,8 @@ import { Uses } from "@pages/NowAndUses";       // NEW
 import NotFound from "@pages/NotFound";
 
 import { PreLoader } from "@shared/components/layout/PreLoader";
+import { CacheConsent } from "@shared/components/layout/CacheConsent";
+import ScrollToTop from "@shared/components/layout/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +33,7 @@ const App = () => (
               v7_relativeSplatPath: true,
             }}
           >
+            <ScrollToTop />
             <Routes>
               {/* Core */}
               <Route path="/" element={<Home />} />
@@ -54,6 +57,7 @@ const App = () => (
 
             {/* Portfolio Agent - Chatbot */}
             <ChatBot />
+            <CacheConsent />
           </BrowserRouter>
           {/* </PreLoader> */}
         </TooltipProvider>

@@ -105,7 +105,6 @@ const ProjectDetail = () => {
   const project = PROJECTS[slug ?? ''] ?? PROJECTS['distributed-task-engine'];
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     const ctx = gsap.context(() => {
       gsap.from('.cs-reveal', {
         y: 32, opacity: 0, stagger: 0.09, duration: 0.75, ease: 'power2.out',

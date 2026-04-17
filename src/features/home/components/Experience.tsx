@@ -1,13 +1,10 @@
+// src/features/about/components/Experience.tsx
+
 import { motion, useMotionValue, useMotionTemplate, useSpring } from 'framer-motion';
 import React, { useRef, useState } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Badge } from '@shared/components/ui/badge';
-import { useTheme } from '@app/providers/theme-provider';
 
-gsap.registerPlugin(ScrollTrigger);
-
-// ─── Data Types & Mock Data ───────────────────────────────────────────────────
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
 type TagColor = 'crimson' | 'emerald' | 'indigo' | 'amber' | 'rose' | 'slate' | 'ocean';
 
@@ -72,7 +69,7 @@ const entries: Entry[] = [
     bullets: [
       'Developed React dashboard used by 50K+ daily active users',
       'Created GraphQL API layer consolidating 12 REST endpoints',
-      'Optimized bundle size by 45% through code splitting',
+      'Optimised bundle size by 45% through code splitting',
     ],
     tags: ['React', 'TypeScript', 'Node.js', 'GraphQL'],
   },
@@ -92,181 +89,194 @@ const entries: Entry[] = [
   },
 ];
 
+const TOTAL_YEARS = entries.reduce((acc, e) => acc + e.durationYears, 0);
 const MAX_DURATION = Math.max(...entries.map(e => e.durationYears));
 
-// ─── Sub-Components ───────────────────────────────────────────────────────────
+// ─── Stat pill ────────────────────────────────────────────────────────────────
+
+const Stat = ({ value, label }: { value: string; label: string }) => (
+  <div className="flex flex-col gap-0.5">
+    <span className="font-display font-semibold text-xl text-foreground leading-none">{value}</span>
+    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-foreground/30">{label}</span>
+  </div>
+);
+
+// ─── Arrow icon ───────────────────────────────────────────────────────────────
 
 const ArrowIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="shrink-0 mt-[3px] text-crimson">
-    <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+  <svg
+    width="11" height="11" viewBox="0 0 12 12" fill="none"
+    className="shrink-0 mt-[4px] text-[hsl(var(--crimson))]"
+  >
+    <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" strokeWidth="1.4"
+      strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
-// ─── Main Card Component ──────────────────────────────────────────────────────
+// ─── Experience Card ──────────────────────────────────────────────────────────
 
 const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: number }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(entry.current || index === 0);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Mouse position for the spotlight effect
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Spring configurations for smooth movement
-  const springConfig = { damping: 25, stiffness: 300 };
-  const rotateX = useSpring(0, springConfig);
-  const rotateY = useSpring(0, springConfig);
+  const springCfg = { damping: 22, stiffness: 280 };
+  const rotateX = useSpring(0, springCfg);
+  const rotateY = useSpring(0, springCfg);
+
+  const spotlightBg = useMotionTemplate`radial-gradient(380px circle at ${mouseX}px ${mouseY}px, hsl(var(--crimson) / 0.07), transparent 40%)`;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    // Update spotlight position
     mouseX.set(e.clientX - rect.left);
     mouseY.set(e.clientY - rect.top);
-
-    // Calculate rotation for 3D effect (subtle)
-    const rotateVal = 4; // Max rotation degrees
-    rotateX.set((e.clientY - centerY) / (rect.height / 2) * -rotateVal);
-    rotateY.set((e.clientX - centerX) / (rect.width / 2) * rotateVal);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    rotateX.set(0);
-    rotateY.set(0);
+    const maxRot = 3;
+    rotateX.set(((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -maxRot);
+    rotateY.set(((e.clientX - rect.left - rect.width / 2) / (rect.width / 2)) * maxRot);
   };
 
   const pct = (entry.durationYears / MAX_DURATION) * 100;
 
   return (
     <motion.div
-      ref={cardRef}
-      className="relative z-10 my-3 perspective-1000"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0, x: 24 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.55, delay: index * 0.09, ease: [0.16, 1, 0.3, 1] }}
+      className="relative"
     >
+      {/* Timeline connector dot — sits to the left, lines up with the spine */}
+      <div className="absolute -left-[41px] top-7 flex flex-col items-center gap-1 hidden md:flex">
+        <div
+          className={`
+            w-3 h-3 rounded-full border-2 transition-all duration-300
+            ${entry.current
+              ? 'bg-[hsl(var(--crimson))] border-[hsl(var(--crimson))] shadow-[0_0_10px_hsl(var(--crimson)/0.5)]'
+              : 'bg-background border-white/20 group-hover:border-white/40'
+            }
+          `}
+        />
+        {index < entries.length - 1 && (
+          <div className="w-px flex-1 min-h-[calc(100%+1.5rem)] bg-gradient-to-b from-white/10 to-transparent" />
+        )}
+      </div>
+
       <motion.div
-        layout
+        ref={cardRef}
         onMouseMove={handleMouseMove}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          rotateX,
-          rotateY,
-          transformStyle: "preserve-3d",
-          willChange: "transform"
-        }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => { setHovered(false); rotateX.set(0); rotateY.set(0); }}
+        style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
         className={`
-          relative w-full cursor-pointer overflow-hidden rounded-3xl border border-black/5 dark:border-white/5 bg-card/70 dark:bg-zinc-900/80 shadow-sm dark:shadow-none
-          transition-all duration-500 ease-out
-          ${isHovered ? 'border-black/10 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.08)] bg-card/80 dark:bg-background/80 -translate-y-1' : 'hover:border-black/10 dark:hover:border-white/10'}
+          relative overflow-hidden rounded-2xl cursor-pointer
+          border transition-all duration-400
+          bg-white/60 dark:bg-white/[0.03]
+          ${hovered
+            ? 'border-black/12 dark:border-white/12 shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] -translate-y-1'
+            : 'border-black/[0.07] dark:border-white/[0.06] shadow-sm dark:shadow-none'
+          }
         `}
+        onClick={() => setIsExpanded(!isExpanded)}
       >
-        {/* Spotlight Effect Background */}
+        {/* Spotlight */}
         <motion.div
-          className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-300"
-          style={{
-            background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(199,55,55,0.08), transparent 40%)`,
-            opacity: isHovered ? 1 : 0,
-          }}
+          className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
+          style={{ background: spotlightBg, opacity: hovered ? 1 : 0 }}
         />
 
-        <div className="relative z-10 flex flex-col p-5">
-          {/* ── Header (Always Visible) ────────────────────────────── */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              {/* Timeline Node */}
-              <div className="hidden sm:flex flex-col items-center">
-                <div className={`w-2.5 h-2.5 rounded-full ${entry.current ? 'bg-crimson shadow-[0_0_8px_hsl(358_72%_46%/0.6)]' : 'bg-muted-foreground/20'} transition-colors duration-300`} />
-                {index < entries.length - 1 && (
-                   <div className="w-px h-8 bg-gradient-to-b from-white/10 to-transparent mt-1" />
+        {/* Gold top-edge accent on current role */}
+        {entry.current && (
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[hsl(var(--crimson))] via-[hsl(var(--gold))] to-transparent" />
+        )}
+
+        <div className="relative z-10 p-6 md:p-7">
+
+          {/* ── Top row ── */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              {/* Year + current badge */}
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[hsl(var(--gold)/0.7)]">
+                  {entry.year}
+                </span>
+                {entry.current && (
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-[hsl(var(--crimson))]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--crimson))] animate-pulse" />
+                    Now
+                  </span>
                 )}
               </div>
 
-              <div>
-                <motion.p 
-                  className="font-mono text-[11px] uppercase tracking-[0.15em] text-gold flex items-center gap-2"
-                  animate={{ color: isHovered ? 'hsl(var(--gold))' : 'hsl(var(--muted-foreground))' }}
-                >
-                  {entry.year}
-                  {entry.current && (
-                    <span className="flex items-center gap-1.5 text-crimson text-[10px] font-bold">
-                      <span className="w-1.5 h-1.5 bg-crimson rounded-full animate-pulse" />
-                      Present
-                    </span>
-                  )}
-                </motion.p>
-                <h3 className="font-jakarta font-bold text-[17px] text-foreground mt-0.5 tracking-tight">
-                  {entry.role}
-                </h3>
+              {/* Role */}
+              <h3 className="font-display font-medium text-base md:text-[18px] text-foreground/80 dark:text-foreground tracking-tight leading-tight">
+                {entry.role}
+              </h3>
+
+              {/* Company + period */}
+              <div className="flex items-center gap-2 mt-1.5">
+                <span className="font-mono text-[12px] text-foreground/40 uppercase tracking-wider font-medium">
+                  {entry.company}
+                </span>
+                <span className="text-foreground/20 text-xs">·</span>
+                <span className="font-mono text-[11px] text-foreground/30">
+                  {entry.period}
+                </span>
               </div>
             </div>
 
-            {/* Right Side: Company Badge */}
-            <div className="text-right hidden sm:block">
-               <div className="font-mono text-[11px] uppercase tracking-wider text-foreground/50">
-                 {entry.company}
-               </div>
+            {/* Duration bar — always visible */}
+            <div className="shrink-0 flex flex-col items-end gap-2.5 pt-0.5">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[11px] text-foreground/40 tabular-nums">
+                  {entry.durationLabel}
+                </span>
+                {/* Chevron icon */}
+                <motion.svg
+                  animate={{ rotate: isExpanded ? 180 : 0 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  width="14" height="14" viewBox="0 0 24 24" fill="none" 
+                  stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                  className="text-foreground/20"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </motion.svg>
+              </div>
+              
+              <div className="w-16 h-1 rounded-full bg-white/8 dark:bg-white/[0.06] overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-to-r from-[hsl(var(--crimson))] to-[hsl(var(--gold))]"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: `${pct}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: index * 0.1 + 0.3, ease: [0.16, 1, 0.3, 1] }}
+                />
+              </div>
             </div>
           </div>
 
-          {/* ── Expandable Content (The "Popup" Data) ─────────────── */}
+          {/* ── Expandable Details ── */}
           <motion.div
-            layout
             initial={false}
             animate={{ 
-              height: isHovered ? 'auto' : 0, 
-              opacity: isHovered ? 1 : 0,
-              marginTop: isHovered ? 16 : 0 
+              height: isExpanded ? 'auto' : 0,
+              opacity: isExpanded ? 1 : 0,
+              marginTop: isExpanded ? 20 : 0
             }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <div className="border-t border-white/[0.06] pt-4 mt-2">
-              
-              {/* Tenure Bar & Tags */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3 w-full max-w-[200px]">
-                  <div className="flex-1 h-[3px] bg-white/[0.05] rounded-full overflow-hidden">
-                    <motion.div 
-                       className="h-full rounded-full bg-gradient-to-r from-crimson to-gold"
-                       initial={{ width: 0 }}
-                       animate={{ width: isHovered ? `${pct}%` : 0 }}
-                       transition={{ duration: 0.6, delay: 0.1 }}
-                    />
-                  </div>
-                  <span className="font-mono text-[10px] text-foreground/40 whitespace-nowrap">
-                    {entry.durationLabel}
-                  </span>
-                </div>
-
-                <div className="flex gap-1.5 flex-wrap justify-end">
-                  {entry.tags.map(tag => (
-                    <Badge
-                      key={tag}
-                      variant="premium"
-                      color={getTagColor(tag)}
-                      className="text-[9px] uppercase tracking-wider px-2 py-0.5"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              {/* Bullets */}
-              <ul className="space-y-2.5">
+            <div className="pt-4 border-t border-white/[0.08]">
+              <ul className="space-y-3 mb-6">
                 {entry.bullets.map((b, j) => (
-                  <motion.li 
-                    key={j} 
-                    className="flex items-start gap-2.5 text-[13px] text-foreground/70 leading-relaxed"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : -10 }}
+                  <motion.li
+                    key={j}
+                    className="flex items-start gap-2.5 text-[13px] leading-relaxed text-foreground/60"
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: isExpanded ? 1 : 0, x: isExpanded ? 0 : -8 }}
                     transition={{ duration: 0.3, delay: j * 0.05 }}
                   >
                     <ArrowIcon />
@@ -274,11 +284,19 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
                   </motion.li>
                 ))}
               </ul>
-              
-              <div className="mt-4 sm:hidden text-left">
-                 <div className="font-mono text-[11px] uppercase tracking-wider text-foreground/50">
-                   {entry.company}
-                 </div>
+
+              {/* Tags */}
+              <div className="flex flex-wrap gap-1.5">
+                {entry.tags.map(tag => (
+                  <Badge
+                    key={tag}
+                    variant="premium"
+                    color={getTagColor(tag)}
+                    className="text-[9px] uppercase tracking-wider px-2 py-0.5"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
               </div>
             </div>
           </motion.div>
@@ -290,10 +308,9 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
 
 ExperienceCard.displayName = 'ExperienceCard';
 
-// ─── Main Section Component ───────────────────────────────────────────────────
+// ─── Main Section ─────────────────────────────────────────────────────────────
 
 const Experience = () => {
-  const { theme } = useTheme();
   const sectionRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -301,44 +318,100 @@ const Experience = () => {
       id="experience"
       ref={sectionRef}
       className="relative py-[100px] md:py-[140px] overflow-hidden"
-      style={{
-        contentVisibility: 'auto',
-        containIntrinsicSize: '0 800px'
-      }}
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 900px' }}
     >
-      {/* Background Styling */}
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-background via-background to-transparent" />
-      
-      {/* Ambient Light Effects */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-crimson/5 rounded-full blur-[120px] pointer-events-none will-change-transform" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gold/5 rounded-full blur-[120px] pointer-events-none will-change-transform" />
+      {/* Ambient glow — tighter, more intentional */}
+      <div className="absolute top-1/4 left-0 w-[480px] h-[480px] bg-[hsl(var(--crimson)/0.04)] rounded-full blur-[100px] pointer-events-none -translate-x-1/2" />
+      <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-[hsl(var(--gold)/0.04)] rounded-full blur-[100px] pointer-events-none translate-x-1/2" />
 
-      <div className="relative z-10 container max-w-3xl mx-auto px-6">
-        {/* Section Header */}
-        <div className="mb-16 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-gold/80 mb-4">
-              <span className="text-crimson">///</span> Timeline
-            </p>
-            <h2 className="font-jakarta font-extrabold text-4xl md:text-5xl text-foreground tracking-tight">
-              Professional{' '}
-              <span className="bg-gradient-to-r from-crimson to-gold bg-clip-text text-transparent">
-                Experience
-              </span>
-            </h2>
-          </motion.div>
-        </div>
+      <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8">
 
-        {/* Timeline List */}
-        <div className="relative pl-0 md:pl-6 border-l border-white/[0.05] ml-3">
-          {entries.map((entry, i) => (
-            <ExperienceCard key={entry.company} entry={entry} index={i} />
-          ))}
+        {/* ── Two-column layout: sticky left / scrolling right ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-12 xl:gap-20 items-start">
+
+          {/* ── LEFT: sticky header column ── */}
+          <div className="lg:sticky lg:top-28 flex flex-col gap-10">
+
+            {/* Label */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55 }}
+            >
+              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[hsl(var(--gold)/0.6)] mb-4">
+                <span className="text-[hsl(var(--crimson))]">///</span> Timeline
+              </p>
+              <h2 className="font-display font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
+                Professional{' '}
+                <span className="font-playfair italic font-medium text-[hsl(var(--crimson))]">
+                  Experience
+                </span>
+              </h2>
+              <p className="text-sm text-foreground/40 leading-relaxed max-w-[280px]">
+                Architecting scalable systems and refined sensory experiences across 10 years of engineering.
+              </p>
+            </motion.div>
+
+            {/* Stats row */}
+            <motion.div
+              className="flex gap-8"
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Stat value={`${TOTAL_YEARS}+`} label="Years" />
+              <div className="w-px bg-white/[0.07]" />
+              <Stat value={`${entries.length}`} label="Companies" />
+              <div className="w-px bg-white/[0.07]" />
+              <Stat value="2M+" label="Users served" />
+            </motion.div>
+
+            {/* Divider */}
+            <motion.div
+              className="h-px bg-gradient-to-r from-[hsl(var(--gold)/0.2)] to-transparent"
+              initial={{ scaleX: 0, originX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+            />
+
+            {/* Mini legend */}
+            <motion.div
+              className="flex flex-col gap-3"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-[hsl(var(--crimson))] shadow-[0_0_8px_hsl(var(--crimson)/0.5)]" />
+                <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/40">Current role</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <div className="w-2.5 h-2.5 rounded-full border border-white/20" />
+                <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/40">Past role</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-1 rounded-full bg-gradient-to-r from-[hsl(var(--crimson))] to-[hsl(var(--gold))]" />
+                <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/40">Tenure length</span>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* ── RIGHT: scrolling card column with timeline spine ── */}
+          <div className="relative md:pl-10">
+
+            {/* Vertical spine — only visible on md+ */}
+            <div className="absolute left-0 top-4 bottom-4 w-px bg-gradient-to-b from-[hsl(var(--gold)/0.15)] via-white/[0.06] to-transparent hidden md:block" />
+
+            <div className="flex flex-col gap-5">
+              {entries.map((entry, i) => (
+                <ExperienceCard key={entry.company} entry={entry} index={i} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

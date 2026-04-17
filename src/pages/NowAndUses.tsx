@@ -47,7 +47,6 @@ export const Now = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     setSEO({
       title:       'Now — What I\'m Working On',
       description: 'What Gara Yaka is focused on right now — projects, learning, reading, and life.',
@@ -128,7 +127,6 @@ export const Uses = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     setSEO({
       title:       'Uses — Tools & Setup',
       description: 'The software, hardware, and tools Gara Yaka uses daily.',

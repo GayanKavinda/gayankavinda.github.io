@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar                from '@shared/components/layout/Navbar';
-import Hero                  from '@features/home/components/Hero/Hero';
+import Hero                  from '@features/home/components/Hero';
 import MaskTransition        from '@shared/components/animations/MaskTransition';
 import Projects              from '@features/projects/components/Projects';
 import TechStack             from '@features/home/components/TechStack/index';
 import Experience            from '@features/home/components/Experience';
 import About                 from '@features/about/components/About';
 import EngineeringPhilosophy from '@features/about/components/EngineeringPhilosophy/index';
-import Contact               from '@features/contact/components/Contact';
+import Contact               from '@features/contact/Contact';
 import Footer                from '@shared/components/layout/Footer';
 import SideNav               from '@shared/components/layout/SideNav';
 import { setSEO, injectPersonSchema } from '@shared/lib/seo';

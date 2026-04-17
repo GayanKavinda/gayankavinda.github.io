@@ -33,7 +33,6 @@ const AllProjects = () => {
   );
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     setSEO({
       title: 'Full Portfolio | Gara Yaka',
       description: 'Explore the complete archive of production-ready applications, open-source systems, and architectural experiments.',

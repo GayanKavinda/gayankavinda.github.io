@@ -147,44 +147,65 @@ const Footer = () => {
           variants={itemVariants}
           style={{
             display: 'grid',
-            gridTemplateColumns:
-              'minmax(280px,1.4fr) 1px minmax(140px,1fr) 1px minmax(140px,1fr) 1px minmax(240px,1.2fr)',
+            gridTemplateColumns: 'minmax(280px, 1.4fr) minmax(140px, 1fr) minmax(140px, 1fr) minmax(240px, 1.2fr)',
             width: '100%',
           }}
+          className="footer-grid-container"
         >
-          <div style={{ paddingRight: '36px', paddingBottom: '52px' }}>
+          {/* Column 1: Info */}
+          <div style={{ paddingRight: '46px', paddingBottom: '52px', borderRight: `1px solid ${hairline}` }} className="footer-col">
             <div style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '16px' }}>
-              <img src={maskImg} alt="" style={{ width: '24px', height: '24px', mixBlendMode: isDark ? 'screen' : 'multiply', filter: isDark ? 'brightness(2)' : 'none' }} />
-              <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '19px', fontWeight: 700, color: t1 }}>Gara Yaka</span>
+              <img src={maskImg} alt="" style={{ width: '24px', height: '24px', mixBlendMode: isDark ? 'screen' : 'multiply', filter: isDark ? 'brightness(1.5)' : 'none' }} />
+              <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '18px', fontWeight: 700, color: t1, letterSpacing: '-0.02em' }}>Gara Yaka</span>
             </div>
-            <p style={{ fontSize: '13px', color: t2, maxWidth: '210px', marginBottom: '20px' }}>Crafting purposeful digital experiences — where tradition meets precision.</p>
-            <div style={{ display: 'flex', gap: '7px' }}>
+            <p style={{ fontSize: '13px', color: t2, maxWidth: '210px', marginBottom: '24px', lineHeight: '1.6' }}>
+              Architecting precision-driven digital systems where heritage meets modern engineering.
+            </p>
+            <div style={{ display: 'flex', gap: '8px' }}>
               {SOCIAL_LINKS.map(s => (
-                <a key={s.label} href={s.href} style={{ width: '30px', height: '30px', borderRadius: '50%', border: `1px solid ${iconBdr}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: t2 }}>{s.icon}</a>
+                <a key={s.label} href={s.href} 
+                  style={{ 
+                    width: '32px', height: '32px', borderRadius: '50%', border: `1px solid ${iconBdr}`, 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: t2,
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = t1; e.currentTarget.style.borderColor = t1; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = t2; e.currentTarget.style.borderColor = iconBdr; }}
+                >
+                  {s.icon}
+                </a>
               ))}
             </div>
           </div>
-          <div style={{ background: hairline }} />
-          <div style={{ padding: '0 26px 52px' }}>
-             <span style={colHead}>Pages</span>
-             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-               {NAV_LINKS.map(l => <li key={l.label}><a href={l.href} style={linkStyle(l.label)}>{l.label}</a></li>)}
+
+          {/* Column 2: Pages */}
+          <div style={{ padding: '0 36px 52px', borderRight: `1px solid ${hairline}` }} className="footer-col">
+             <span style={colHead}>Navigation</span>
+             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+               {NAV_LINKS.map(l => <li key={l.label}><a href={l.href} style={linkStyle(l.label)} onMouseEnter={() => setHov(l.label)} onMouseLeave={() => setHov(null)}>{l.label}</a></li>)}
              </ul>
           </div>
-          <div style={{ background: hairline }} />
-          <div style={{ padding: '0 26px 52px' }}>
-             <span style={colHead}>Socials</span>
-             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-               {SOCIAL_LINKS.map(s => <li key={s.label}><a href={s.href} target="_blank" rel="noreferrer" style={linkStyle(s.label)}>{s.label}</a></li>)}
+
+          {/* Column 3: Socials */}
+          <div style={{ padding: '0 36px 52px', borderRight: `1px solid ${hairline}` }} className="footer-col">
+             <span style={colHead}>Ecosystem</span>
+             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+               {SOCIAL_LINKS.map(s => <li key={s.label}><a href={s.href} target="_blank" rel="noreferrer" style={linkStyle(s.label)} onMouseEnter={() => setHov(s.label)} onMouseLeave={() => setHov(null)}>{s.label}</a></li>)}
              </ul>
           </div>
-          <div style={{ background: hairline }} />
-          <div style={{ paddingLeft: '40px', paddingBottom: '32px' }}>
-             <span style={colHead}>Connect & Collaborate</span>
-             <p style={{ fontSize: '14px', color: t2, marginBottom: '20px' }}>Have a visionary project? Let's create something extraordinary together.</p>
-             <div style={{ display: 'flex', gap: '18px', alignItems: 'center' }}>
-                <QRCode value="https://garayaka.com" size={80} />
-                <a href="mailto:contact@garayaka.com" style={{ ...linkStyle('mail'), color: t1, fontWeight: 500 }}>contact@garayaka.com</a>
+
+          {/* Column 4: Contact */}
+          <div style={{ paddingLeft: '46px', paddingBottom: '32px' }} className="footer-col">
+             <span style={colHead}>Vision</span>
+             <p style={{ fontSize: '13px', color: t2, marginBottom: '24px', lineHeight: '1.6' }}>
+               Ready to architect the future? Let's discuss your next breakthrough.
+             </p>
+             <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                <QRCode value="https://garayaka.com" size={72} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span style={{ fontSize: '10px', color: t4, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Direct Line</span>
+                  <a href="mailto:hello@garayaka.com" style={{ ...linkStyle('mail'), color: t1, fontWeight: 600, fontSize: '14px' }}>hello@garayaka.com</a>
+                </div>
              </div>
           </div>
         </motion.div>
@@ -238,14 +259,26 @@ const Footer = () => {
           0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,.5); }
           50%      { box-shadow: 0 0 0 5px rgba(34,197,94,0); }
         }
-        @media (max-width: 960px) {
-          footer > div > div[style*="grid-template-columns"] {
-            display: flex !important;
-            flex-wrap: wrap !important;
-            gap: 36px 20px !important;
+        @media (max-width: 1024px) {
+          .footer-grid-container {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 40px !important;
           }
-          footer > div > div[style*="grid-template-columns"] > div {
-            flex: 1 1 140px;
+          .footer-col {
+            border-right: none !important;
+            padding: 0 !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .footer-grid-container {
+            grid-template-columns: 1fr !important;
+          }
+          .footer-col {
+            padding: 0 !important;
+          }
+          footer > div:first-of-type {
+            padding: 60px 40px !important;
           }
         }
       `}</style>
