@@ -26,7 +26,7 @@
   top: 0;
   width: 28px;
   height: 28px;
-  border: 1.5px solid hsl(var(--gold) / 0.6);
+  border: 1.5px solid hsl(var(--secondary) / 0.55);
   border-radius: 50%;
   pointer-events: none;
   z-index: 99999;
@@ -76,7 +76,7 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid hsl(var(--gold));
+  outline: 2px solid hsl(var(--primary));
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -125,7 +125,7 @@ select:focus-visible {
 .dark .elevation-sm:hover {
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.5),
-    0 0 0 1px hsl(var(--gold) / 0.08);
+    0 0 0 1px hsl(var(--primary) / 0.10);
   transform: translateY(-2px);
 }
 
@@ -151,8 +151,8 @@ select:focus-visible {
 .dark .elevation-md:hover {
   box-shadow:
     0 8px 40px rgba(0, 0, 0, 0.6),
-    0 0 60px hsl(var(--gold) / 0.06),
-    0 0 0 1px hsl(var(--gold) / 0.1);
+    0 0 60px hsl(var(--primary) / 0.08),
+    0 0 0 1px hsl(var(--primary) / 0.12);
   transform: translateY(-4px);
 }
 
@@ -178,8 +178,8 @@ select:focus-visible {
 .dark .elevation-lg:hover {
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.65),
-    0 0 80px hsl(var(--gold) / 0.08),
-    0 0 0 1px hsl(var(--gold) / 0.12);
+    0 0 80px hsl(var(--primary) / 0.10),
+    0 0 0 1px hsl(var(--primary) / 0.14);
   transform: translateY(-6px);
 }
 
@@ -227,25 +227,25 @@ select:focus-visible {
   text-wrap: balance;
 }
 
-/* Gradient text — crimson to gold */
+/* Gradient text — violet to cyan */
 .text-gradient {
   background: linear-gradient(
     135deg,
-    hsl(var(--crimson)) 0%,
-    hsl(var(--gold)) 100%
+    hsl(var(--primary)) 0%,
+    hsl(var(--secondary)) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Subtle gold shimmer variant */
+/* Subtle cyan shimmer variant */
 .text-gradient-gold {
   background: linear-gradient(
     90deg,
-    hsl(var(--gold)) 0%,
-    hsl(38 92% 65%) 50%,
-    hsl(var(--gold)) 100%
+    hsl(var(--secondary)) 0%,
+    hsl(var(--primary)) 50%,
+    hsl(var(--secondary)) 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -259,7 +259,7 @@ select:focus-visible {
   background: linear-gradient(
     to right,
     transparent,
-    hsl(var(--crimson) / 0.4),
+    hsl(var(--primary) / 0.4),
     transparent
   );
 }
@@ -269,7 +269,7 @@ select:focus-visible {
   background: linear-gradient(
     to right,
     transparent,
-    hsl(var(--gold) / 0.3),
+    hsl(var(--secondary) / 0.35),
     transparent
   );
 }
@@ -331,9 +331,9 @@ select:focus-visible {
   padding: 1px;
   background: linear-gradient(
     135deg,
-    hsl(var(--crimson) / 0),
-    hsl(var(--gold) / 0.3),
-    hsl(var(--crimson) / 0)
+    hsl(var(--primary) / 0),
+    hsl(var(--secondary) / 0.35),
+    hsl(var(--primary) / 0)
   );
   background-size: 200% 200%;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);

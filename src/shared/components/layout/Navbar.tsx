@@ -93,7 +93,7 @@ const Navbar = () => {
           {/* Logo */}
           <button
             onClick={() => go('home')}
-            style={{ fontFamily: "'Playfair Display',serif", fontSize: 18, color: '#C0272D', fontWeight: 900, cursor: 'pointer', background: 'none', border: 'none' }}
+            style={{ fontFamily: "'Playfair Display',serif", fontSize: 18, color: '#7C5CFC', fontWeight: 900, cursor: 'pointer', background: 'none', border: 'none' }}
           >
             GY.
           </button>
@@ -123,14 +123,14 @@ const Navbar = () => {
               onClick={() => window.open('/resume.pdf', '_blank')}
               style={{
                 fontFamily: "'DM Mono',monospace", fontSize: 10,
-                color: '#B8860B', letterSpacing: '0.15em', textTransform: 'uppercase',
+                color: '#7C5CFC', letterSpacing: '0.15em', textTransform: 'uppercase',
                 padding: '6px 18px', borderRadius: 50,
-                border: '1px solid rgba(184,134,11,0.35)',
-                background: 'rgba(184,134,11,0.06)', cursor: 'pointer',
+                border: '1px solid rgba(124,92,252,0.30)',
+                background: 'rgba(124,92,252,0.06)', cursor: 'pointer',
                 transition: 'all 0.2s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background='rgba(184,134,11,0.12)'; e.currentTarget.style.borderColor='rgba(184,134,11,0.6)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background='rgba(184,134,11,0.06)'; e.currentTarget.style.borderColor='rgba(184,134,11,0.35)'; }}
+              onMouseEnter={e => { e.currentTarget.style.background='rgba(124,92,252,0.10)'; e.currentTarget.style.borderColor='rgba(124,92,252,0.55)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background='rgba(124,92,252,0.06)'; e.currentTarget.style.borderColor='rgba(124,92,252,0.30)'; }}
             >
               ↓ Resume
             </button>
@@ -155,7 +155,7 @@ const Navbar = () => {
             onClick={() => go('home')}
             style={{
               fontFamily: "'Playfair Display',serif", fontSize: 15,
-              color: '#C0272D', fontWeight: 900, marginRight: 8,
+              color: '#7C5CFC', fontWeight: 900, marginRight: 8,
               paddingRight: 14, borderRight: '1px solid rgba(0,0,0,0.08)',
               background: 'none', border: 'none', borderRadius: 0, cursor: 'pointer',
             }}
@@ -195,14 +195,14 @@ const Navbar = () => {
             onClick={() => window.open('/resume.pdf', '_blank')}
             style={{
               fontFamily: "'DM Mono',monospace", fontSize: 10,
-              color: '#B8860B', letterSpacing: '0.14em', textTransform: 'uppercase',
+              color: '#7C5CFC', letterSpacing: '0.14em', textTransform: 'uppercase',
               padding: '6px 16px', borderRadius: 50,
-              border: '1px solid rgba(184,134,11,0.35)',
-              background: 'rgba(184,134,11,0.06)', cursor: 'pointer',
+              border: '1px solid rgba(124,92,252,0.30)',
+              background: 'rgba(124,92,252,0.06)', cursor: 'pointer',
               transition: 'all 0.2s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.background='rgba(184,134,11,0.12)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background='rgba(184,134,11,0.06)'; }}
+            onMouseEnter={e => { e.currentTarget.style.background='rgba(124,92,252,0.10)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background='rgba(124,92,252,0.06)'; }}
           >
             ↓ Resume
           </button>
@@ -238,7 +238,7 @@ const Navbar = () => {
             onClick={() => go('home')}
             style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
           >
-            <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, color: '#C0272D', fontWeight: 900 }}>GY.</span>
+            <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, color: '#7C5CFC', fontWeight: 900 }}>GY.</span>
             <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: textMuted, letterSpacing: '0.05em' }}>Gara Yaka</span>
           </button>
 
@@ -251,15 +251,15 @@ const Navbar = () => {
               style={{
                 width: 38, height: 38, borderRadius: '50%',
                 border: '1px solid transparent',
-                background: menuOpen ? 'rgba(192,39,45,0.08)' : 'transparent',
+                background: menuOpen ? 'rgba(124,92,252,0.08)' : 'transparent',
                 display: 'flex', flexDirection: 'column', alignItems: 'center',
                 justifyContent: 'center', gap: 5, cursor: 'pointer',
                 transition: 'all 0.3s',
               }}
             >
-              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#C0272D' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(45deg) translate(3px, 4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
+              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#7C5CFC' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(45deg) translate(3px, 4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
               <span style={{ display: 'block', width: menuOpen ? 0 : 10, height: 1, background: textActive, borderRadius: 1, transition: 'width 0.3s', opacity: menuOpen ? 0 : 1 }} />
-              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#C0272D' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(-45deg) translate(3px, -4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
+              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#7C5CFC' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(-45deg) translate(3px, -4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
             </button>
           </div>
         </div>
@@ -282,7 +282,7 @@ const Navbar = () => {
             onClick={() => go('home')}
             style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
           >
-            <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, color: '#C0272D', fontWeight: 900 }}>GY.</span>
+            <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, color: '#7C5CFC', fontWeight: 900 }}>GY.</span>
             <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: textMuted, letterSpacing: '0.05em' }}>Gara Yaka</span>
           </button>
 
@@ -295,15 +295,15 @@ const Navbar = () => {
               style={{
                 width: 38, height: 38, borderRadius: '50%',
                 border: `1px solid ${dividerColor}`,
-                background: menuOpen ? 'rgba(192,39,45,0.08)' : (isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'),
+                background: menuOpen ? 'rgba(124,92,252,0.08)' : (isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'),
                 display: 'flex', flexDirection: 'column', alignItems: 'center',
                 justifyContent: 'center', gap: 5, cursor: 'pointer',
                 transition: 'all 0.3s',
               }}
             >
-              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#C0272D' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(45deg) translate(3px, 4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
+              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#7C5CFC' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(45deg) translate(3px, 4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
               <span style={{ display: 'block', width: menuOpen ? 0 : 10, height: 1, background: textActive, borderRadius: 1, transition: 'width 0.3s', opacity: menuOpen ? 0 : 1 }} />
-              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#C0272D' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(-45deg) translate(3px, -4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
+              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#7C5CFC' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(-45deg) translate(3px, -4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
             </button>
           </div>
         </div>
@@ -355,14 +355,14 @@ const Navbar = () => {
                 onClick={() => { setMenuOpen(false); window.open('/resume.pdf','_blank'); }}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 10,
-                  background: 'none', border: '1px solid rgba(184,134,11,0.3)',
+                  background: 'none', border: '1px solid rgba(124,92,252,0.28)',
                   borderRadius: 50, cursor: 'pointer',
                   fontFamily: "'DM Mono',monospace", fontSize: 11,
-                  color: '#B8860B', letterSpacing: '0.15em', textTransform: 'uppercase',
+                  color: '#7C5CFC', letterSpacing: '0.15em', textTransform: 'uppercase',
                   padding: '10px 24px', transition: 'all 0.2s',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(184,134,11,0.08)'; e.currentTarget.style.borderColor = 'rgba(184,134,11,0.6)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(184,134,11,0.3)'; }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(124,92,252,0.08)'; e.currentTarget.style.borderColor = 'rgba(124,92,252,0.55)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(124,92,252,0.28)'; }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                   <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>

@@ -7,113 +7,117 @@
 
   @layer base {
     :root {
-      --background: 0 0% 100%;
-      --foreground: 220 15% 10%;
+      /* ── Light Mode: Obsidian Violet ─────────────────────────── */
+      --background: 240 10% 97%;          /* #F5F5FA — faint lilac off-white  */
+      --foreground: 246 20% 12%;          /* #171621 — near-black with violet hint */
       --card: 0 0% 100%;
-      --card-foreground: 220 15% 15%;
+      --card-foreground: 246 20% 12%;
       --popover: 0 0% 100%;
-      --popover-foreground: 220 15% 15%;
-      --primary: 358 72% 46%;
+      --popover-foreground: 246 20% 12%;
+      --primary: 252 95% 68%;             /* #7C5CFC — Electric Violet          */
       --primary-foreground: 0 0% 100%;
-      --secondary: 40 75% 52%;
-      --secondary-foreground: 220 15% 15%;
-      --muted: 220 14% 96%;
-      --muted-foreground: 220 12% 35%;
-      --accent: 40 75% 52%;
-      --accent-foreground: 220 15% 15%;
-      --destructive: 0 84% 60%;
+      --secondary: 193 100% 50%;          /* #00D4FF — Luminous Cyan            */
+      --secondary-foreground: 246 20% 12%;
+      --muted: 240 10% 93%;               /* #EAEAF2 — subtle lavender surface  */
+      --muted-foreground: 246 12% 45%;    /* #676380 — muted lavender-grey      */
+      --accent: 193 100% 50%;
+      --accent-foreground: 246 20% 12%;
+      --destructive: 355 80% 58%;
       --destructive-foreground: 0 0% 100%;
-      --border: 0 0% 0% / 0.14;
-      --input: 0 0% 0% / 0.08;
-      --ring: 358 72% 46%;
+      --border: 246 20% 12% / 0.10;
+      --input: 246 20% 12% / 0.07;
+      --ring: 252 95% 68%;
       --radius: 0.5rem;
 
-      --crimson: 358 72% 46%;
-      --gold: 40 80% 42%;
-      --bone: 220 15% 15%;
+      /* ── Brand Aliases ───────────────────────────────────────── */
+      --crimson: 252 95% 68%;             /* kept alias pointing to violet now  */
+      --gold: 193 100% 45%;              /* kept alias pointing to cyan now    */
+      --bone: 246 20% 12%;
       --card-bg: 0 0% 100%;
-      --dark-bg: 0 0% 98%;
+      --dark-bg: 240 10% 97%;
       --sidebar-background: 0 0% 100%;
-      --sidebar-foreground: 220 15% 15%;
-      --sidebar-primary: 358 72% 46%;
+      --sidebar-foreground: 246 20% 12%;
+      --sidebar-primary: 252 95% 68%;
       --sidebar-primary-foreground: 0 0% 100%;
-      --sidebar-accent: 40 75% 52%;
-      --sidebar-accent-foreground: 220 15% 15%;
-      --sidebar-border: 0 0% 0% / 0.08;
-      --sidebar-ring: 358 72% 46%;
+      --sidebar-accent: 193 100% 50%;
+      --sidebar-accent-foreground: 246 20% 12%;
+      --sidebar-border: 246 20% 12% / 0.08;
+      --sidebar-ring: 252 95% 68%;
 
       /* UI/UX Pro Max recommended variables */
       --easing: cubic-bezier(0.16, 1, 0.3, 1);
       --radius-sm: 8px;
       --radius-md: 12px;
       --radius-lg: 16px;
-      --glass-bg: rgba(255, 255, 255, 0.80);
-      --glass-border: rgba(0, 0, 0, 0.08);
+      --glass-bg: rgba(245, 245, 250, 0.82);
+      --glass-border: rgba(124, 92, 252, 0.12);
 
       /* Semantic Premium Colors */
-      --emerald: 160 84% 39%;
-      --indigo: 239 84% 67%;
-      --amber: 38 92% 50%;
-      --rose: 350 89% 60%;
-      --slate: 215 25% 27%;
-      --ocean: 199 89% 38%;
+      --emerald: 158 70% 40%;
+      --indigo: 252 95% 68%;
+      --amber: 38 90% 52%;
+      --rose: 355 80% 58%;
+      --slate: 246 12% 42%;
+      --ocean: 193 100% 40%;
       
       color-scheme: light;
     }
 
     .dark {
-      --background: 0 0% 4%;
-      --foreground: 40 33% 94%;
-      --card: 0 0% 7%;
-      --card-foreground: 40 33% 94%;
-      --popover: 0 0% 7%;
-      --popover-foreground: 40 33% 94%;
-      --primary: 358 72% 46%;
+      /* ── Dark Mode: Deep Obsidian ────────────────────────────── */
+      --background: 246 20% 4%;           /* #090910 — deep obsidian            */
+      --foreground: 248 30% 94%;          /* #EEEDF8 — soft lavender-white      */
+      --card: 246 22% 8%;                 /* #101019 — elevated obsidian surface */
+      --card-foreground: 248 30% 94%;
+      --popover: 246 22% 8%;
+      --popover-foreground: 248 30% 94%;
+      --primary: 252 95% 68%;             /* #7C5CFC — Electric Violet          */
       --primary-foreground: 0 0% 100%;
-      --secondary: 40 75% 52%;
-      --secondary-foreground: 40 33% 94%;
-      --muted: 0 0% 7%;
-      --muted-foreground: 40 33% 94%;
-      --accent: 40 75% 52%;
-      --accent-foreground: 40 33% 94%;
-      --destructive: 0 84% 60%;
+      --secondary: 193 100% 50%;          /* #00D4FF — Luminous Cyan            */
+      --secondary-foreground: 248 30% 94%;
+      --muted: 246 22% 11%;               /* #141422 — dark muted surface       */
+      --muted-foreground: 248 18% 55%;    /* #8A87A8 — muted lavender           */
+      --accent: 193 100% 50%;
+      --accent-foreground: 248 30% 94%;
+      --destructive: 355 80% 58%;
       --destructive-foreground: 0 0% 100%;
-      --border: 0 0% 100% / 0.07;
-      --input: 0 0% 100% / 0.07;
-      --ring: 358 72% 46%;
+      --border: 248 30% 94% / 0.07;
+      --input: 248 30% 94% / 0.06;
+      --ring: 252 95% 68%;
 
-      --crimson: 358 72% 46%;
-      --gold: 40 80% 42%;
-      --bone: 40 33% 94%;
+      /* ── Brand Aliases ───────────────────────────────────────── */
+      --crimson: 252 95% 68%;
+      --gold: 193 100% 50%;
+      --bone: 248 30% 94%;
 
       /* Semantic Premium Colors (Dark) */
-      --emerald: 160 84% 45%;
-      --indigo: 239 84% 75%;
-      --amber: 38 92% 55%;
-      --rose: 350 89% 65%;
-      --slate: 215 20% 65%;
-      --ocean: 199 89% 48%;
+      --emerald: 158 70% 48%;
+      --indigo: 252 95% 72%;
+      --amber: 38 90% 58%;
+      --rose: 355 80% 65%;
+      --slate: 246 15% 60%;
+      --ocean: 193 100% 52%;
 
-      --card-bg: 0 0% 7%;
-      --dark-bg: 0 0% 4%;
-      --sidebar-background: 0 0% 7%;
-      --sidebar-foreground: 40 33% 94%;
-      --sidebar-primary: 358 72% 46%;
+      --card-bg: 246 22% 8%;
+      --dark-bg: 246 20% 4%;
+      --sidebar-background: 246 22% 8%;
+      --sidebar-foreground: 248 30% 94%;
+      --sidebar-primary: 252 95% 68%;
       --sidebar-primary-foreground: 0 0% 100%;
-      --sidebar-accent: 40 75% 52%;
-      --sidebar-accent-foreground: 40 33% 94%;
-      --sidebar-border: 0 0% 100% / 0.07;
-      --sidebar-ring: 358 72% 46%;
+      --sidebar-accent: 193 100% 50%;
+      --sidebar-accent-foreground: 248 30% 94%;
+      --sidebar-border: 248 30% 94% / 0.07;
+      --sidebar-ring: 252 95% 68%;
 
-      --glass-bg: rgba(17, 17, 17, 0.7);
-      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-bg: rgba(10, 10, 18, 0.72);
+      --glass-border: rgba(124, 92, 252, 0.15);
 
       color-scheme: dark;
     }
 
     .dark ::selection {
-      background: hsl(var(--crimson) / 0.2);
-      color: hsl(40 33% 94%);
+      background: hsl(252 95% 68% / 0.22);
+      color: hsl(248 30% 94%);
     }
 
     * {
@@ -129,8 +133,8 @@
       -moz-osx-font-smoothing: grayscale;
     }
     ::selection {
-      background: hsl(var(--crimson) / 0.2);
-      color: hsl(220 15% 15%);
+      background: hsl(252 95% 68% / 0.18);
+      color: hsl(246 20% 12%);
     }
 
     .section-fade-top {
@@ -233,10 +237,10 @@
 
   @keyframes glow {
     0%, 100% {
-      box-shadow: 0 0 20px rgba(212, 137, 26, 0.15);
+      box-shadow: 0 0 20px rgba(124, 92, 252, 0.18);
     }
     50% {
-      box-shadow: 0 0 40px rgba(212, 137, 26, 0.3);
+      box-shadow: 0 0 45px rgba(124, 92, 252, 0.38);
     }
   }
 
@@ -269,7 +273,8 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(212, 137, 26, 0.05) 50%,
+      rgba(124, 92, 252, 0.07) 40%,
+      rgba(0, 212, 255, 0.07) 60%,
       transparent 100%
     );
     background-size: 1000px 100%;
@@ -303,9 +308,9 @@
     padding: 1px;
     background: linear-gradient(
       135deg,
-      rgba(196, 30, 58, 0.3),
-      rgba(212, 137, 26, 0.3),
-      rgba(196, 30, 58, 0.3)
+      rgba(124, 92, 252, 0.35),
+      rgba(0, 212, 255, 0.35),
+      rgba(124, 92, 252, 0.35)
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
@@ -321,6 +326,6 @@
   .premium-card:hover {
     transform: translateY(-8px);
     box-shadow:
-      0 20px 40px rgba(0, 0, 0, 0.1),
-      0 0 60px rgba(212, 137, 26, 0.15);
+      0 20px 40px rgba(0, 0, 0, 0.12),
+      0 0 60px rgba(124, 92, 252, 0.18);
   }

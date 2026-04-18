@@ -54,7 +54,7 @@ const TerminalPanel = ({
   side: 'left' | 'right';
   title: string;
 }) => {
-  const ac = isDark ? 'rgba(232,168,32,' : 'rgba(192,39,45,';
+  const ac = isDark ? 'rgba(0,212,255,' : 'rgba(124,92,252,';
   const tx = isDark ? 'rgba(245,240,232,' : 'rgba(30,30,30,';
   const bg = isDark ? 'rgba(12,12,12,' : 'rgba(255,255,255,';
 
@@ -152,7 +152,7 @@ const TerminalPanel = ({
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 const StatRow = ({ isDark }: { isDark: boolean }) => {
-  const ac = isDark ? 'rgba(232,168,32,' : 'rgba(192,39,45,';
+  const ac = isDark ? 'rgba(0,212,255,' : 'rgba(124,92,252,';
   const tx = isDark ? 'rgba(245,240,232,' : 'rgba(30,30,30,';
   const bg = isDark ? 'rgba(12,12,12,' : 'rgba(255,255,255,';
 
@@ -220,7 +220,7 @@ const StatRow = ({ isDark }: { isDark: boolean }) => {
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 const AmbientRings = ({ isDark }: { isDark: boolean }) => {
-  const ac = isDark ? 'rgba(232,168,32,' : 'rgba(192,39,45,';
+  const ac = isDark ? 'rgba(0,212,255,' : 'rgba(124,92,252,';
 
   return (
     <svg
@@ -290,7 +290,7 @@ const MaskTransition = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  const ac = isDark ? 'rgba(232,168,32,' : 'rgba(192,39,45,';
+  const ac = isDark ? 'rgba(0,212,255,' : 'rgba(124,92,252,';
   const tx = isDark ? 'rgba(245,240,232,' : 'rgba(30,30,30,';
 
   /* ─── Mouse tilt (single rAF, no React state) ─── */
@@ -570,8 +570,8 @@ const MaskTransition = () => {
                   zIndex: -1,
                   borderRadius: '50%',
                   background: isDark
-                    ? 'radial-gradient(circle, rgba(232,168,32,0.05) 0%, transparent 65%)'
-                    : 'radial-gradient(circle, rgba(192,39,45,0.04) 0%, transparent 65%)',
+                    ? 'radial-gradient(circle, rgba(0,212,255,0.06) 0%, transparent 65%)'
+                    : 'radial-gradient(circle, rgba(124,92,252,0.05) 0%, transparent 65%)',
                   pointerEvents: 'none',
                 }}
               />

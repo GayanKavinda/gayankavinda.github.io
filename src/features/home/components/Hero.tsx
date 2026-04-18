@@ -9,10 +9,10 @@ import { useTheme } from '@app/providers/theme-provider';
 gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
-  const heroRef   = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
   const dancerRef = useRef<HTMLImageElement>(null);
   const { theme } = useTheme();
-  const isDark    = theme === 'dark';
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -36,11 +36,11 @@ const Hero = () => {
         ScrollTrigger.create({
           trigger: heroRef.current!,
           start: 'center top',
-          end:   'bottom top',
+          end: 'bottom top',
           scrub: 1.5,
           onUpdate: self => {
             gsap.set(dancerRef.current!, {
-              x:       -self.progress * 250,
+              x: -self.progress * 250,
               opacity: 1 - self.progress,
             });
           },
@@ -97,8 +97,8 @@ const Hero = () => {
           'md:left-0 md:translate-x-0 md:h-[92vh] md:opacity-100 md:z-0',
         ].join(' ')}
         style={{
-          mixBlendMode:  isDark ? 'screen'   : 'multiply',
-          filter:        `drop-shadow(40px 0px 70px hsla(var(--crimson), 0.2))`,
+          mixBlendMode: isDark ? 'screen' : 'multiply',
+          filter: `drop-shadow(40px 0px 70px hsla(var(--crimson), 0.2))`,
         }}
       />
 
@@ -170,7 +170,7 @@ const Hero = () => {
                       max-w-[340px] md:max-w-[440px] backdrop-blur-[2px]"
           style={{
             background: 'hsla(var(--muted), 0.5)',
-            border:     '1px solid hsla(var(--border), 0.5)',
+            border: '1px solid hsla(var(--border), 0.5)',
           }}
         >
           <pre className="font-mono text-[11px] md:text-[13px] leading-relaxed overflow-x-auto">
