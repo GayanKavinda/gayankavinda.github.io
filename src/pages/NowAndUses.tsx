@@ -13,7 +13,7 @@ const LAST_UPDATED = 'March 2026';
 const NOW_ITEMS = [
   {
     tag:   'Work',
-    color: '#C41E3A',
+    color: '#7C5CFC',
     title: 'Building a distributed rate-limiter',
     body:  'Designing a token-bucket rate limiter that coordinates across Go pods via Redis Lua scripts. The tricky part: making it survive Redis failover without dropping valid requests.',
   },
@@ -25,7 +25,7 @@ const NOW_ITEMS = [
   },
   {
     tag:   'Reading',
-    color: '#C41E3A',
+    color: '#7C5CFC',
     title: 'Designing Data-Intensive Applications — again',
     body:  'Third read of Kleppmann\'s book. Every re-read surfaces something the previous pass missed. This time I\'m focused on the replication and consensus chapters.',
   },
@@ -37,7 +37,7 @@ const NOW_ITEMS = [
   },
   {
     tag:   'Life',
-    color: '#C41E3A',
+    color: '#7C5CFC',
     title: 'Getting back into traditional drumming',
     body:  'Took up Kandyan drum lessons. There\'s a precision-under-pressure element that maps surprisingly well onto incident response.',
   },
@@ -73,10 +73,10 @@ export const Now = () => {
         <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8A820] mb-3">// Now</p>
         <h1 className="font-playfair font-black text-[clamp(36px,6vw,56px)] text-foreground leading-tight tracking-tight">
           What I'm doing{' '}
-          <em className="italic text-[#C41E3A]">right now</em>
+          <em className="italic text-[#7C5CFC]">right now</em>
         </h1>
         <div className="flex items-center gap-3 mt-4 mb-3">
-          <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#C41E3A]" />
+          <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#7C5CFC]" />
           <div className="w-1.5 h-1.5 rounded-full bg-[#D4891A]" />
         </div>
         <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground/30 mb-10">
@@ -138,7 +138,7 @@ export const Uses = () => {
   const SECTIONS = [
     {
       title: 'Editor & Terminal',
-      color: '#C41E3A',
+      color: '#7C5CFC',
       items: [
         { name: 'Neovim',          note: 'My daily driver. lua config, lazy.nvim, nvim-cmp. The muscle memory is unbeatable.' },
         { name: 'VS Code',         note: 'For TypeScript and anything needing a proper debugger.' },
@@ -159,7 +159,7 @@ export const Uses = () => {
     },
     {
       title: 'Infrastructure',
-      color: '#C41E3A',
+      color: '#7C5CFC',
       items: [
         { name: 'Kubernetes',   note: 'Production workloads. EKS in AWS, k3s locally.' },
         { name: 'Terraform',    note: 'All infra as code. Atlantis for PR-based plan/apply.' },
@@ -180,7 +180,7 @@ export const Uses = () => {
     },
     {
       title: 'Hardware',
-      color: '#C41E3A',
+      color: '#7C5CFC',
       items: [
         { name: 'MacBook Pro M3 Max 16"', note: '36GB unified memory. Local Docker clusters without fans spinning up.' },
         { name: 'LG UltraWide 34"',       note: 'Three tmux panes, docs, and Slack side by side.' },
@@ -218,10 +218,10 @@ export const Uses = () => {
         {/* Header */}
         <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8A820] mb-3">// Setup</p>
         <h1 className="font-playfair font-black text-[clamp(36px,6vw,56px)] text-foreground leading-tight tracking-tight">
-          What I <em className="italic text-[#C41E3A]">use</em>
+          What I <em className="italic text-[#7C5CFC]">use</em>
         </h1>
         <div className="flex items-center gap-3 mt-4 mb-6">
-          <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#C41E3A]" />
+          <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#7C5CFC]" />
           <div className="w-1.5 h-1.5 rounded-full bg-[#D4891A]" />
         </div>
         <p className="font-sans text-[15px] text-foreground/55 leading-relaxed max-w-[540px] mb-12">

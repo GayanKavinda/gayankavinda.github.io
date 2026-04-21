@@ -1,6 +1,6 @@
 // src/pages/ProjectDetail.tsx
 // Case Study page — matches existing Gara Yaka design system exactly.
-// Crimson #C41E3A · Gold #D4891A · Playfair headings · DM Mono labels · Jakarta body
+// Violet #7C5CFC · Cyan #00D4FF · Playfair headings · DM Mono labels · Jakarta body
 // GSAP ScrollTrigger reveals · full dark/light theme via CSS vars
 
 import { useEffect, useRef } from 'react';
@@ -78,18 +78,18 @@ interface CaseStudy {
 // ── Section divider (matches all other sections) ─────────────────────────────
 const SectionHead = ({ tag, title, accent }: { tag: string; title: string; accent: string }) => (
   <div className="mb-10 md:mb-14">
-    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#D4891A] mb-3">{tag}</p>
+    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#00D4FF] mb-3">{tag}</p>
     <h2 className="font-jakarta font-extrabold text-[clamp(26px,4vw,40px)] text-foreground tracking-tight">
       {title.split('__').map((part, i) =>
         i % 2 === 1
-          ? <em key={i} className="font-playfair italic font-medium text-[#C41E3A]">{accent}</em>
+          ? <em key={i} className="font-playfair italic font-medium text-[#7C5CFC]">{accent}</em>
           : <span key={i}>{part}</span>
       )}
     </h2>
     <div className="flex items-center gap-3 mt-4">
-      <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#C41E3A]" />
-      <div className="w-1.5 h-1.5 rounded-full bg-[#D4891A]" />
-      <div className="w-10 h-px bg-gradient-to-l from-transparent to-[#C41E3A]" />
+      <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#7C5CFC]" />
+      <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF]" />
+      <div className="w-10 h-px bg-gradient-to-l from-transparent to-[#7C5CFC]" />
     </div>
   </div>
 );
@@ -144,7 +144,7 @@ const ProjectDetail = () => {
           {/* Back */}
           <button
             onClick={() => navigate('/#projects')}
-            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground/40 hover:text-[#D4891A] transition-colors mb-8 group"
+            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground/40 hover:text-[#00D4FF] transition-colors mb-8 group"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="group-hover:-translate-x-1 transition-transform">
               <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -184,7 +184,7 @@ const ProjectDetail = () => {
               <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-foreground/35 mb-1">Stack</p>
               <div className="flex gap-1.5 flex-wrap">
                 {project.tags.map(t => (
-                  <span key={t} className="font-mono text-[10px] text-[#C41E3A] border border-[#C41E3A]/25 bg-[#C41E3A]/[0.08] px-2.5 py-0.5 rounded-[3px]">{t}</span>
+                  <span key={t} className="font-mono text-[10px] text-[#7C5CFC] border border-[#7C5CFC]/25 bg-[#7C5CFC]/[0.08] px-2.5 py-0.5 rounded-[3px]">{t}</span>
                 ))}
               </div>
             </div>
@@ -193,7 +193,7 @@ const ProjectDetail = () => {
           {/* CTA links */}
           <div className="flex gap-3 mt-8">
             <a href={project.links.live}
-              className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] bg-[#C41E3A] text-white px-5 py-2.5 rounded hover:brightness-110 transition-all">
+              className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] bg-[#7C5CFC] text-white px-5 py-2.5 rounded hover:brightness-110 transition-all">
               ↗ Live Demo
             </a>
             <a href={project.links.github}
@@ -209,9 +209,9 @@ const ProjectDetail = () => {
         <div className="w-full rounded-2xl overflow-hidden border border-border"
           style={{ aspectRatio: '16/7', background: `linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--card)) 50%, hsl(var(--muted)) 100%)` }}>
           <div className="w-full h-full flex items-center justify-center relative">
-            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(rgba(196,30,58,0.15) 1px,transparent 1px),linear-gradient(90deg,rgba(196,30,58,0.15) 1px,transparent 1px)', backgroundSize: '24px 24px' }} />
+            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(rgba(124,92,252,0.15) 1px,transparent 1px),linear-gradient(90deg,rgba(124,92,252,0.15) 1px,transparent 1px)', backgroundSize: '24px 24px' }} />
             <span className="font-mono text-[13px] text-foreground/20 relative z-10">[ Project Screenshot / Demo GIF ]</span>
-            <div className="absolute bottom-4 right-6 font-playfair text-[80px] font-black text-[#C41E3A]/[0.05] leading-none select-none">01</div>
+            <div className="absolute bottom-4 right-6 font-playfair text-[80px] font-black text-[#7C5CFC]/[0.05] leading-none select-none">01</div>
           </div>
         </div>
       </div>
@@ -223,7 +223,7 @@ const ProjectDetail = () => {
         <div className="cs-metrics grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
           {project.metrics.map((m, i) => (
             <div key={i} className="cs-block elevation-card rounded-xl border border-border bg-card p-5 text-center relative overflow-hidden group hover:-translate-y-[2px] transition-all duration-200">
-              <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: i % 2 === 0 ? '#C41E3A' : '#D4891A' }} />
+              <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: i % 2 === 0 ? '#7C5CFC' : '#00D4FF' }} />
               <p className="font-playfair font-black text-[clamp(28px,4vw,40px)] leading-none text-foreground tracking-tighter">{m.value}</p>
               <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-foreground/75 mt-2">{m.label}</p>
             </div>
@@ -244,8 +244,8 @@ const ProjectDetail = () => {
 
         {/* Overview */}
         <div className="cs-reveal mb-20 rounded-2xl border border-border bg-card p-8 md:p-10 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-[3px] h-full bg-gradient-to-b from-[#C41E3A] to-[#D4891A]" />
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#D4891A] mb-3 ml-4">// Overview</p>
+          <div className="absolute top-0 left-0 w-[3px] h-full bg-gradient-to-b from-[#7C5CFC] to-[#00D4FF]" />
+          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#00D4FF] mb-3 ml-4">// Overview</p>
           <p className="font-sans text-[15px] md:text-[16px] leading-[1.85] text-foreground/70 ml-4 max-w-[700px]">{project.overview}</p>
         </div>
 
@@ -258,7 +258,7 @@ const ProjectDetail = () => {
                 {/* Left: phase number + connector */}
                 <div className="flex flex-col items-center gap-0 flex-shrink-0 w-8">
                   <div className="w-7 h-7 rounded-full border-2 flex items-center justify-center font-mono text-[9px] font-bold transition-all duration-200 mt-0.5"
-                    style={{ borderColor: i % 2 === 0 ? '#C41E3A' : '#D4891A', color: i % 2 === 0 ? '#C41E3A' : '#D4891A', background: `${i % 2 === 0 ? '#C41E3A' : '#D4891A'}12` }}>
+                    style={{ borderColor: i % 2 === 0 ? '#7C5CFC' : '#00D4FF', color: i % 2 === 0 ? '#7C5CFC' : '#00D4FF', background: `${i % 2 === 0 ? '#7C5CFC' : '#00D4FF'}12` }}>
                     {String(i + 1).padStart(2, '0')}
                   </div>
                   {i < project.timeline.length - 1 && (
@@ -269,7 +269,7 @@ const ProjectDetail = () => {
                 <div className="pb-8 flex-1">
                   <div className="flex items-center gap-3 mb-1.5">
                     <h3 className="font-jakarta font-bold text-[16px] text-foreground">{t.phase}</h3>
-                    <span className="font-mono text-[9px] px-2 py-0.5 rounded-full bg-[#D4891A]/10 text-[#D4891A] border border-[#D4891A]/20 uppercase tracking-[0.08em]">{t.duration}</span>
+                    <span className="font-mono text-[9px] px-2 py-0.5 rounded-full bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20 uppercase tracking-[0.08em]">{t.duration}</span>
                   </div>
                   <p className="font-sans text-[14px] text-foreground/55 leading-relaxed">{t.desc}</p>
                 </div>
@@ -283,9 +283,9 @@ const ProjectDetail = () => {
           <SectionHead tag="// Engineering" title="Tech __Breakdown__" accent="Breakdown" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {project.techBreakdown.map((t, i) => (
-              <div key={i} className="rounded-lg border border-border bg-card elevation-card p-4 hover:border-[#D4891A]/40 hover:-translate-y-[2px] transition-all duration-200 group">
+              <div key={i} className="rounded-lg border border-border bg-card elevation-card p-4 hover:border-[#00D4FF]/40 hover:-translate-y-[2px] transition-all duration-200 group">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="font-mono text-[12px] font-semibold text-[#C41E3A]">{t.name}</span>
+                  <span className="font-mono text-[12px] font-semibold text-[#7C5CFC]">{t.name}</span>
                 </div>
                 <p className="font-sans text-[12px] text-foreground/50 leading-relaxed">{t.role}</p>
               </div>
@@ -298,8 +298,8 @@ const ProjectDetail = () => {
           <SectionHead tag="// Retrospective" title="Key __Learnings__" accent="Learnings" />
           <div className="space-y-3">
             {project.learnings.map((l, i) => (
-              <div key={i} className="flex items-start gap-4 rounded-lg border border-border bg-card elevation-card px-5 py-4 hover:border-[#C41E3A]/30 transition-colors">
-                <span className="font-mono text-[11px] text-[#C41E3A] mt-0.5 flex-shrink-0">
+              <div key={i} className="flex items-start gap-4 rounded-lg border border-border bg-card elevation-card px-5 py-4 hover:border-[#7C5CFC]/30 transition-colors">
+                <span className="font-mono text-[11px] text-[#7C5CFC] mt-0.5 flex-shrink-0">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <p className="font-sans text-[14px] text-foreground/65 leading-relaxed">{l}</p>
@@ -316,7 +316,7 @@ const ProjectDetail = () => {
           </h3>
           <div className="flex gap-3 justify-center flex-wrap">
             <button onClick={() => navigate('/#contact')}
-              className="inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.1em] bg-[#C41E3A] text-white px-7 py-3 rounded hover:brightness-110 transition-all">
+              className="inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.1em] bg-[#7C5CFC] text-white px-7 py-3 rounded hover:brightness-110 transition-all">
               Start a conversation
             </button>
             <button onClick={() => navigate('/projects')}

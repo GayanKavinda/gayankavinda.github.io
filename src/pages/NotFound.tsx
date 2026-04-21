@@ -16,7 +16,7 @@ const NotFound = () => {
         style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '32px 32px' }} />
       
       <div className="relative z-10 text-center px-6">
-        <p className="font-mono text-[12px] uppercase tracking-[0.3em] text-[#C41E3A] mb-4">// System.Error: 404</p>
+        <p className="font-mono text-[12px] uppercase tracking-[0.3em] text-[#7C5CFC] mb-4">// System.Error: 404</p>
         <h1 className="font-playfair font-black text-[clamp(80px,15vw,160px)] leading-none text-foreground tracking-tighter mb-4 opacity-10">404</h1>
         
         <div className="max-w-[400px] mx-auto bg-card border border-border rounded-2xl p-8 elevation-card relative -mt-12 md:-mt-20">
@@ -26,7 +26,7 @@ const NotFound = () => {
           </p>
           <a
             href="/"
-            className="inline-flex items-center justify-center w-full bg-foreground text-background font-mono text-[12px] uppercase tracking-wider py-4 rounded hover:bg-[#C41E3A] hover:text-white transition-all"
+            className="inline-flex items-center justify-center w-full bg-foreground text-background font-mono text-[12px] uppercase tracking-wider py-4 rounded hover:bg-[#7C5CFC] hover:text-white transition-all"
           >
             Return to Cluster Root
           </a>

@@ -70,7 +70,7 @@ export const TestingMockup = () => {
         <g key={i} className="tst-row">
           <circle
             cx="22" cy={r.y + 6} r="6"
-            fill={r.pass ? '#22c55e' : '#C41E3A'}
+            fill={r.pass ? '#22c55e' : '#7C5CFC'}
             opacity={r.pass ? 0.8 : 0.85}
           />
           {r.pass ? (
@@ -91,7 +91,7 @@ export const TestingMockup = () => {
             fill="#d0d0d0" opacity="0.85" />
           <rect x={r.w + 44} y={r.y + 2}
             width={r.pass ? 30 : 48} height="6" rx="2"
-            fill={r.pass ? '#D4891A' : '#C41E3A'} opacity="0.4" />
+            fill={r.pass ? '#00D4FF' : '#7C5CFC'} opacity="0.4" />
           <rect x="236" y={r.y + 2} width="34" height="6" rx="2" fill="#e8e8e8" />
         </g>
       ))}
@@ -103,7 +103,7 @@ export const TestingMockup = () => {
         fill="#22c55e" opacity="0.55" />
 
       <rect x="12" y="140" width="40" height="5" rx="2" fill="#22c55e" opacity="0.4" />
-      <rect x="58" y="140" width="30" height="5" rx="2" fill="#C41E3A" opacity="0.4" />
+      <rect x="58" y="140" width="30" height="5" rx="2" fill="#7C5CFC" opacity="0.4" />
       <rect x="94" y="140" width="50" height="5" rx="2" fill="#d0d0d0" />
     </svg>
   );

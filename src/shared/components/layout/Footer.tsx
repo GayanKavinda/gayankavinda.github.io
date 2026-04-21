@@ -11,8 +11,8 @@ import { QRCode } from '@shared/components/ui/qr-code';
 gsap.registerPlugin(ScrollTrigger);
 
 // ── Static design tokens ───────────────────────────────────────────────────────
-const CRIMSON = '#C41E3A';
-const GOLD    = '#D4891A';
+const CRIMSON = '#7C5CFC';
+const GOLD    = '#00D4FF';
 const YEAR    = new Date().getFullYear();
 
 // ── Data ───────────────────────────────────────────────────────────────────────

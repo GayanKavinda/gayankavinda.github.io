@@ -97,7 +97,7 @@ export const PreLoader = ({ children }: { children: React.ReactNode }) => {
               initial={{ width: 0, opacity: 0 }}
               animate={{ width: "120px", opacity: 0.6 }}
               transition={{ delay: 2.2, duration: 1, ease: "easeInOut" }}
-              className="h-[1.5px] bg-[#C41E3A] mt-6 relative z-20 mb-8" /* Portfolio Crimson */
+              className="h-[1.5px] bg-[#7C5CFC] mt-6 relative z-20 mb-8" /* Portfolio Violet */
             />
 
             {/* Realtime Terminal Logs */}
@@ -116,7 +116,7 @@ export const PreLoader = ({ children }: { children: React.ReactNode }) => {
               <motion.div 
                 animate={{ opacity: logs.includes('> SYSTEM READY.') ? 0 : [1, 0] }}
                 transition={{ duration: 0.8, repeat: Infinity }}
-                className="w-2 h-3 bg-[#C41E3A]/80 mt-1"
+                className="w-2 h-3 bg-[#7C5CFC]/80 mt-1"
               />
             </div>
           </motion.div>

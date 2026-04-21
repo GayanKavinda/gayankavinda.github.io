@@ -80,8 +80,8 @@ function inputCls(isDark: boolean) {
     'border focus-visible:outline-none focus-visible:ring-0',
     'placeholder:text-foreground/30',
     isDark
-      ? 'bg-[hsl(0_0%_10%)] border-[hsl(0_0%_100%/0.10)] text-[hsl(40_33%_94%)] focus-visible:border-[#C41E3A]/70 focus-visible:shadow-[inset_3px_0_0_#C41E3A]'
-      : 'bg-white border-[hsl(220_15%_15%/0.14)] text-[hsl(220_15%_15%)] focus-visible:border-[#C41E3A]/60 focus-visible:shadow-[inset_3px_0_0_#C41E3A]',
+      ? 'bg-[hsl(0_0%_10%)] border-[hsl(0_0%_100%/0.10)] text-[hsl(248_30%_94%)] focus-visible:border-[#7C5CFC]/70 focus-visible:shadow-[inset_3px_0_0_#7C5CFC]'
+      : 'bg-white border-[hsl(246_20%_12%/0.14)] text-[hsl(246_20%_12%)] focus-visible:border-[#7C5CFC]/60 focus-visible:shadow-[inset_3px_0_0_#7C5CFC]',
   ].join(' ');
 }
 
@@ -162,7 +162,7 @@ const FieldRow = ({
     </Label>
     {children}
     {error && (
-      <p className="font-sans text-[11px] text-[#C41E3A] flex items-center gap-1.5 mt-0.5">
+      <p className="font-sans text-[11px] text-[#7C5CFC] flex items-center gap-1.5 mt-0.5">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
           <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1" />
           <path

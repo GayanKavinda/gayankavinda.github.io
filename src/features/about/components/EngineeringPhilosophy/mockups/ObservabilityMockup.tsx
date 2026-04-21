@@ -86,22 +86,22 @@ export const ObservabilityMockup = () => {
       <rect y="18" width="280" height="10" fill="#fff" />
       <circle
         cx="16" cy="14" r="4"
-        fill="#C41E3A" opacity="0.7"
+        fill="#7C5CFC" opacity="0.7"
         className="obs-dot"
       />
       <rect x="26" y="10" width="50" height="8" rx="3" fill="#ececec" />
-      <rect x="218" y="10" width="44" height="8" rx="3" fill="#D4891A" opacity="0.22" />
+      <rect x="218" y="10" width="44" height="8" rx="3" fill="#00D4FF" opacity="0.22" />
 
       {/* Stat cards */}
       <rect x="10" y="36" width="72" height="30" rx="6"
         fill="#fff" stroke="#ececec" strokeWidth="0.8" />
       <rect x="14" y="42" width="28" height="4" rx="2" fill="#ddd" />
-      <rect x="14" y="50" width="44" height="8" rx="3" fill="#C41E3A" opacity="0.72" />
+      <rect x="14" y="50" width="44" height="8" rx="3" fill="#7C5CFC" opacity="0.72" />
 
       <rect x="92" y="36" width="72" height="30" rx="6"
         fill="#fff" stroke="#ececec" strokeWidth="0.8" />
       <rect x="96" y="42" width="28" height="4" rx="2" fill="#ddd" />
-      <rect x="96" y="50" width="44" height="8" rx="3" fill="#D4891A" opacity="0.62" />
+      <rect x="96" y="50" width="44" height="8" rx="3" fill="#00D4FF" opacity="0.62" />
 
       <rect x="174" y="36" width="72" height="30" rx="6"
         fill="#fff" stroke="#ececec" strokeWidth="0.8" />
@@ -128,7 +128,7 @@ export const ObservabilityMockup = () => {
           width="16"
           height={bar.h}
           rx="2"
-          fill="#C41E3A"
+          fill="#7C5CFC"
           opacity={bar.opacity}
           style={{
             transformOrigin: `${bar.x + 8}px ${bar.y + bar.h}px`,
@@ -140,7 +140,7 @@ export const ObservabilityMockup = () => {
       <polyline
         className="obs-sparkline"
         points="20,130 46,118 72,110 98,115 124,105 150,112 176,98 202,106 228,94 254,100"
-        stroke="#D4891A"
+        stroke="#00D4FF"
         strokeWidth="1.5"
         fill="none"
         strokeLinecap="round"
@@ -149,7 +149,7 @@ export const ObservabilityMockup = () => {
       <polyline
         className="obs-sparkline"
         points="20,136 46,132 72,128 98,130 124,124 150,128 176,120 202,124 228,118 254,121"
-        stroke="#D4891A"
+        stroke="#00D4FF"
         strokeWidth="1"
         fill="none"
         strokeLinecap="round"

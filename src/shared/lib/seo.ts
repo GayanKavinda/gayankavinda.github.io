@@ -63,7 +63,7 @@ export function setSEO(meta: SEOMeta = {}): void {
   setMetaName('description',      d);
   setMetaName('author',           'Gara Yaka');
   setMetaName('robots',           'index, follow');
-  setMetaName('theme-color',      '#C41E3A');
+  setMetaName('theme-color',      '#7C5CFC');
 
   // ── Open Graph ────────────────────────────────────────────────────────────
   setMetaProp('og:title',         t);

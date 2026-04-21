@@ -99,7 +99,7 @@ export const ProjectViz = ({ viz, idx, accentColor }: { viz?: VizType, idx: numb
   // Use HSL if accentColor is provided, else fallback to crimson/gold toggle
   const accent = accentColor 
     ? `hsla(${accentColor}, 70%, 50%, 0.8)`
-    : (idx % 2 === 0 ? '#C41E3A' : '#D4891A');
+    : (idx % 2 === 0 ? '#7C5CFC' : '#00D4FF');
 
   if (viz === 'nodes') return <VizNodes accent={accent} />;
   if (viz === 'chart') return <VizChart accent={accent} idx={idx} />;

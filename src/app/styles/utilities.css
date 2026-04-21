@@ -231,8 +231,8 @@ select:focus-visible {
 .text-gradient {
   background: linear-gradient(
     135deg,
-    hsl(var(--primary)) 0%,
-    hsl(var(--secondary)) 100%
+    #7C5CFC 0%,
+    #00D4FF 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -243,9 +243,9 @@ select:focus-visible {
 .text-gradient-gold {
   background: linear-gradient(
     90deg,
-    hsl(var(--secondary)) 0%,
-    hsl(var(--primary)) 50%,
-    hsl(var(--secondary)) 100%
+    #00D4FF 0%,
+    #7C5CFC 50%,
+    #00D4FF 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;

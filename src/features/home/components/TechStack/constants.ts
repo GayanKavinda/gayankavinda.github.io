@@ -1,9 +1,9 @@
 //src/components/sections/TechStack/constants.ts
 
-export const CR  = '#C41E3A';
-export const GD  = '#D4891A';
-export const CRP = 'rgba(196,30,58,';
-export const GDP = 'rgba(212,137,26,';
+export const CR  = '#7C5CFC';
+export const GD  = '#00D4FF';
+export const CRP = 'rgba(124,92,252,';
+export const GDP = 'rgba(0,212,255,';
 
 export const CAT_META: Record<string, { label: string; color: string; pfx: string }> = {
   fe:    { label: 'Frontend',       color: GD, pfx: GDP },

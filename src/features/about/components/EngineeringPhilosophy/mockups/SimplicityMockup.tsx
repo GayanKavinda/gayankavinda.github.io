@@ -61,26 +61,26 @@ export const SimplicityMockup = () => {
       <rect x="96" y="8" width="88" height="8" rx="3" fill="#32334a" />
 
       <g className="sim-line">
-        <rect x="14" y="33" width="18" height="6" rx="2" fill="#C41E3A" opacity="0.85" />
-        <rect x="38" y="33" width="50" height="6" rx="2" fill="#D4891A" opacity="0.8" />
+        <rect x="14" y="33" width="18" height="6" rx="2" fill="#7C5CFC" opacity="0.85" />
+        <rect x="38" y="33" width="50" height="6" rx="2" fill="#00D4FF" opacity="0.8" />
         <rect x="94" y="33" width="34" height="6" rx="2" fill="#7ec8a0" opacity="0.7" />
       </g>
       <g className="sim-line">
         <rect x="24" y="47" width="14" height="6" rx="2" fill="#7ec8a0" opacity="0.6" />
         <rect x="44" y="47" width="70" height="6" rx="2" fill="#8888b0" />
-        <rect x="120" y="47" width="28" height="6" rx="2" fill="#C41E3A" opacity="0.55" />
+        <rect x="120" y="47" width="28" height="6" rx="2" fill="#7C5CFC" opacity="0.55" />
       </g>
       <g className="sim-line">
         <rect x="24" y="61" width="90" height="6" rx="2" fill="#8888b0" />
-        <rect x="120" y="61" width="46" height="6" rx="2" fill="#D4891A" opacity="0.6" />
+        <rect x="120" y="61" width="46" height="6" rx="2" fill="#00D4FF" opacity="0.6" />
       </g>
       <g className="sim-line">
         <rect x="14" y="75" width="14" height="6" rx="2" fill="#7ec8a0" opacity="0.6" />
         <rect x="34" y="75" width="38" height="6" rx="2" fill="#8888b0" />
       </g>
       <g className="sim-line">
-        <rect x="14" y="89" width="18" height="6" rx="2" fill="#C41E3A" opacity="0.7" />
-        <rect x="38" y="89" width="56" height="6" rx="2" fill="#D4891A" opacity="0.65" />
+        <rect x="14" y="89" width="18" height="6" rx="2" fill="#7C5CFC" opacity="0.7" />
+        <rect x="38" y="89" width="56" height="6" rx="2" fill="#00D4FF" opacity="0.65" />
         <rect x="100" y="89" width="40" height="6" rx="2" fill="#8888b0" />
       </g>
       <g className="sim-line">
@@ -88,8 +88,8 @@ export const SimplicityMockup = () => {
         <rect x="110" y="103" width="22" height="6" rx="2" fill="#7ec8a0" opacity="0.6" />
       </g>
 
-      <rect x="160" y="101" width="100" height="14" rx="5" fill="#D4891A" opacity="0.12" />
-      <rect x="166" y="104" width="60" height="5" rx="2" fill="#D4891A" opacity="0.5" />
+      <rect x="160" y="101" width="100" height="14" rx="5" fill="#00D4FF" opacity="0.12" />
+      <rect x="166" y="104" width="60" height="5" rx="2" fill="#00D4FF" opacity="0.5" />
       <rect
         className="sim-cursor"
         x="134" y="103" width="2" height="8" rx="1"

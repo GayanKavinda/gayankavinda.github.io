@@ -10,7 +10,7 @@ import { FailureMockup } from './mockups/FailureMockup';
 const PRINCIPLES = [
   {
     num: 'STEP 1',
-    color: '#C41E3A',
+    color: '#7C5CFC',
     title: 'Observability-first',
     body: "If you can't measure it, you can't improve it. I instrument from day one. Distributed traces, structured logs, Prometheus metrics, so production is never a black box.",
     tags: ['Distributed traces', 'Prometheus metrics', 'Dashboards first'],
@@ -18,7 +18,7 @@ const PRINCIPLES = [
   },
   {
     num: 'STEP 2',
-    color: '#D4891A',
+    color: '#00D4FF',
     title: 'Simplicity over cleverness',
     body: "The best code is what your team can debug at 3am in an incident. Boring technology for boring problems. Complexity only where it genuinely earns its place.",
     tags: ['Readable over clever', 'Boring tech', 'Team-debuggable'],
@@ -26,7 +26,7 @@ const PRINCIPLES = [
   },
   {
     num: 'STEP 3',
-    color: '#C41E3A',
+    color: '#7C5CFC',
     title: 'Test at the boundaries',
     body: "Integration tests over unit tests for distributed systems. Mock at the network boundary, not inside your domain. Fast feedback loops that catch production bugs early.",
     tags: ['Integration tests', 'Network mocks', 'Fast feedback'],
@@ -34,7 +34,7 @@ const PRINCIPLES = [
   },
   {
     num: 'STEP 4',
-    color: '#D4891A',
+    color: '#00D4FF',
     title: 'Design for failure',
     body: "Every external call can fail. Circuit breakers, bulkheads, retry budgets, and graceful degradation are first-class architectural concerns, never afterthoughts.",
     tags: ['Circuit breakers', 'Retry budgets', 'Graceful degradation'],
@@ -77,7 +77,7 @@ const EngineeringPhilosophy = () => {
           className="text-center mb-16 md:mb-20"
         >
           <div className="inline-flex items-center gap-2 bg-muted/50 border border-border/50 rounded-full px-5 py-2 mb-6 backdrop-blur-sm">
-            <span className="text-[10px] font-mono tracking-widest text-[#D4891A]">
+            <span className="text-[10px] font-mono tracking-widest text-[#00D4FF]">
               ▶▶
             </span>
             <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-muted-foreground font-medium">
@@ -86,7 +86,7 @@ const EngineeringPhilosophy = () => {
           </div>
           <h2 className="font-jakarta font-extrabold text-[clamp(34px,6vw,54px)] text-foreground leading-[1.1] tracking-tight">
             The Engineering{' '}
-            <span className="font-playfair italic font-medium text-[#C41E3A]">
+            <span className="font-playfair italic font-medium text-[#7C5CFC]">
               Mindset
             </span>
           </h2>
@@ -106,7 +106,7 @@ const EngineeringPhilosophy = () => {
           {PRINCIPLES.map((p) => (
             <motion.div key={p.num} variants={itemVariants} className="flex flex-col gap-5 group">
               <div
-                className="w-full rounded-2xl overflow-hidden border border-border/50 bg-muted/10 backdrop-blur-sm group-hover:border-crimson/30 transition-colors duration-500 shadow-sm"
+                className="w-full rounded-2xl overflow-hidden glass-sm shimmer-border elevation-card group-hover:border-primary/30 transition-all duration-500"
                 style={{ aspectRatio: '4/3' }}
               >
                 <p.Mockup />

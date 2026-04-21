@@ -51,7 +51,7 @@ const NodeBox = ({
       'rounded-xl border px-3 py-2.5 min-w-[80px] md:min-w-[100px]',
       'transition-all duration-200 cursor-pointer',
       active
-        ? 'border-[#C41E3A] bg-[rgba(196,30,58,0.07)] scale-[1.03]'
+        ? 'border-[#7C5CFC] bg-[rgba(124,92,252,0.07)] scale-[1.03]'
         : 'border-border bg-muted hover:border-border/70 hover:bg-card',
     ].join(' ')}
   >
@@ -62,7 +62,7 @@ const NodeBox = ({
       {node.sublabel}
     </span>
     {node.badge && (
-      <span className="mt-1.5 font-mono text-[8px] px-1.5 py-[2px] rounded border border-[rgba(196,30,58,0.25)] bg-[rgba(196,30,58,0.08)] text-[#C41E3A]">
+      <span className="mt-1.5 font-mono text-[8px] px-1.5 py-[2px] rounded border border-[rgba(124,92,252,0.25)] bg-[rgba(124,92,252,0.08)] text-[#7C5CFC]">
         {node.badge}
       </span>
     )}
@@ -117,7 +117,7 @@ export const ArchDiagram = () => {
                 'rounded-xl border px-2.5 md:px-4 py-2.5 min-w-[70px] md:min-w-[88px]',
                 'transition-all duration-200 cursor-pointer',
                 active === 'workers'
-                  ? 'border-[#C41E3A] bg-[rgba(196,30,58,0.07)]'
+                  ? 'border-[#7C5CFC] bg-[rgba(124,92,252,0.07)]'
                   : 'border-border bg-muted hover:border-border/70 hover:bg-card',
               ].join(' ')}
             >
@@ -141,7 +141,7 @@ export const ArchDiagram = () => {
       >
         {active && NODES[active] ? (
           <p className="font-mono text-[10px] md:text-[11px] text-muted-foreground leading-relaxed">
-            <span className="text-[#C41E3A] mr-2">›</span>
+            <span className="text-[#7C5CFC] mr-2">›</span>
             {NODES[active].desc}
           </p>
         ) : (

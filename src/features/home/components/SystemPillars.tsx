@@ -22,10 +22,10 @@ const PILLARS: Pillar[] = [
   {
     name: 'Scalability',
     mission: 'Handle 10M+ events per day',
-    color: '#C41E3A',
+    color: '#7C5CFC',
     tags: ['Kafka', 'Kubernetes', 'Go', 'Redis', 'gRPC', 'Horizontal Scaling'],
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C41E3A" strokeWidth="1.5" strokeLinecap="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.5" strokeLinecap="round">
         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
       </svg>
     ),
@@ -33,10 +33,10 @@ const PILLARS: Pillar[] = [
   {
     name: 'Observability',
     mission: 'See everything, miss nothing',
-    color: '#D4891A',
+    color: '#00D4FF',
     tags: ['Prometheus', 'Grafana', 'OpenTelemetry', 'Jaeger', 'Loki', 'SLOs'],
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4891A" strokeWidth="1.5" strokeLinecap="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00D4FF" strokeWidth="1.5" strokeLinecap="round">
         <circle cx="12" cy="12" r="3" />
         <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
       </svg>
@@ -45,10 +45,10 @@ const PILLARS: Pillar[] = [
   {
     name: 'Security',
     mission: 'Zero-trust by default',
-    color: '#C41E3A',
+    color: '#7C5CFC',
     tags: ['OAuth 2.0', 'JWT', 'mTLS', 'HashiCorp Vault', 'SAST', 'RBAC'],
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C41E3A" strokeWidth="1.5" strokeLinecap="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" strokeWidth="1.5" strokeLinecap="round">
         <rect x="3" y="11" width="18" height="11" rx="2" />
         <path d="M7 11V7a5 5 0 0110 0v4" />
       </svg>
@@ -57,10 +57,10 @@ const PILLARS: Pillar[] = [
   {
     name: 'Reliability',
     mission: '99.99% uptime — engineered in',
-    color: '#D4891A',
+    color: '#00D4FF',
     tags: ['Circuit Breaker', 'Chaos Engineering', 'Bulkhead', 'PagerDuty', 'SLAs', 'DR'],
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4891A" strokeWidth="1.5" strokeLinecap="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00D4FF" strokeWidth="1.5" strokeLinecap="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
       </svg>
     ),
