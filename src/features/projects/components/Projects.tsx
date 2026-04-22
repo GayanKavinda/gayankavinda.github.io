@@ -27,12 +27,12 @@ const ProjectCard = React.memo(({
   index: number;
 }) => (
   <div className="group flex-shrink-0 w-[340px] will-change-transform">
-    <div className="h-full rounded-3xl border border-black/5 dark:border-white/5 bg-card/70 dark:bg-zinc-900/80 shadow-sm dark:shadow-none hover:bg-card/90 dark:hover:bg-card/80 hover:border-black/10 dark:hover:border-white/10 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:hover:shadow-black/40 hover:-translate-y-1.5 transition-all duration-500 ease-out cursor-pointer overflow-hidden">
+    <div className="h-full rounded-2xl border border-white/5 bg-card/70 dark:bg-zinc-900/80 elevation-card shimmer-border group-hover:-translate-y-2 transition-all duration-500 ease-out cursor-pointer overflow-hidden">
 
       {/* Viz area */}
       <div className="h-[175px] relative overflow-hidden bg-black/20">
         {/* Top accent line */}
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-crimson via-gold to-crimson opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#7C5CFC] via-[#00D4FF] to-[#7C5CFC] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
 
         <ProjectViz viz={project.viz} idx={index} accentColor={project.accentColor} />
 
@@ -50,7 +50,7 @@ const ProjectCard = React.memo(({
 
       {/* Body */}
       <div className="p-5">
-        <h3 className="font-jakarta font-bold text-[17px] tracking-tight text-foreground group-hover:text-gold transition-colors duration-300 leading-snug">
+        <h3 className="font-jakarta font-bold text-[17px] tracking-tight text-foreground group-hover:text-[#00D4FF] transition-colors duration-300 leading-snug">
           {project.name}
         </h3>
         <p className="text-[13px] text-foreground/50 mt-2 leading-relaxed line-clamp-2">
@@ -79,16 +79,16 @@ const ProjectCard = React.memo(({
                 key={m}
                 className="font-mono text-[10px] px-2 py-0.5 rounded-full border"
                 style={{
-                   color: 'hsl(var(--gold))',
-                   borderColor: 'hsla(var(--gold) / 0.25)',
-                   background: 'hsla(var(--gold) / 0.08)',
+                  color: 'hsl(var(--gold))',
+                  borderColor: 'hsla(var(--gold) / 0.25)',
+                  background: 'hsla(var(--gold) / 0.08)',
                 }}
               >
                 {m}
               </span>
             ))}
           </div>
-          <span className="font-mono text-[11px] text-crimson group-hover:text-gold group-hover:translate-x-1 transition-all duration-300 inline-flex items-center gap-1">
+          <span className="font-mono text-[11px] text-[#7C5CFC] group-hover:text-[#00D4FF] group-hover:translate-x-1 transition-all duration-300 inline-flex items-center gap-1">
             Explore <span>→</span>
           </span>
         </div>
@@ -126,9 +126,9 @@ const Projects = () => {
       {/* Ambient blobs - reduced complexity */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-2xl opacity-50 will-change-transform"
-          style={{ background: 'hsl(358 72% 46% / 0.03)' }} />
+          style={{ background: 'hsla(var(--primary-hsl), 0.03)' }} />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full blur-2xl opacity-50 will-change-transform"
-          style={{ background: 'hsl(40 80% 42% / 0.03)' }} />
+          style={{ background: 'hsla(var(--secondary-hsl), 0.03)' }} />
       </div>
 
       {/* Header */}
@@ -138,19 +138,24 @@ const Projects = () => {
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
-        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-gold mb-3">
-          <span className="text-crimson">/</span> Featured Work
-        </p>
+        <div className="inline-flex items-center gap-2 bg-muted/50 border border-border/50 rounded-full px-5 py-2 mb-6 backdrop-blur-sm">
+          <span className="text-[10px] font-mono tracking-widest text-[#00D4FF]">
+            ///
+          </span>
+          <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-muted-foreground font-medium">
+            Featured Work
+          </span>
+        </div>
         <h2 className="font-jakarta font-extrabold text-[clamp(34px,6vw,50px)] tracking-tight text-foreground">
           Selected{' '}
-          <span className="font-playfair italic font-medium bg-gradient-to-r from-crimson to-gold bg-clip-text text-transparent">
+          <span className="font-playfair italic font-medium text-[#7C5CFC]">
             Projects
           </span>
         </h2>
         <div className="flex items-center justify-center gap-3 mt-5">
-          <div className="w-12 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(358 72% 46% / 0.5))' }} />
-          <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-crimson to-gold" />
-          <div className="w-12 h-px" style={{ background: 'linear-gradient(270deg, transparent, hsl(40 80% 42% / 0.5))' }} />
+          <div className="w-12 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsla(var(--primary-hsl), 0.5))' }} />
+          <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-[#7C5CFC] to-[#00D4FF]" />
+          <div className="w-12 h-px" style={{ background: 'linear-gradient(270deg, transparent, hsla(var(--secondary-hsl), 0.5))' }} />
         </div>
       </motion.div>
 
@@ -165,7 +170,8 @@ const Projects = () => {
           WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'
         }}
       >
-        <style dangerouslySetInnerHTML={{__html: `
+        <style dangerouslySetInnerHTML={{
+          __html: `
           @keyframes scrollProjects {
             from { transform: translateX(0); }
             to { transform: translateX(-${totalPx}px); }
@@ -204,7 +210,7 @@ const Projects = () => {
       >
         <button
           onClick={() => navigate('/projects')}
-          className="group font-mono text-[12px] tracking-wide text-crimson border border-crimson/30 px-10 py-4 rounded-full hover:border-gold/50 hover:text-gold hover:bg-gold/5 hover:shadow-xl hover:shadow-gold/10 transition-all duration-500 hover:scale-105"
+          className="group font-mono text-[12px] tracking-wide text-[#7C5CFC] border border-[#7C5CFC]/30 px-10 py-4 rounded-full hover:border-[#00D4FF]/50 hover:text-[#00D4FF] hover:bg-[#00D4FF]/5 hover:shadow-xl hover:shadow-[#00D4FF]/10 transition-all duration-500 hover:scale-105"
         >
           <span className="inline-flex items-center gap-2">
             View All Projects

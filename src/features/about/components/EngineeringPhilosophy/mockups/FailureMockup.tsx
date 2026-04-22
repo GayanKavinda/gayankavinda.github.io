@@ -73,18 +73,18 @@ export const FailureMockup = () => {
         </marker>
       </defs>
 
-      <rect width="280" height="160" rx="10" fill="#fff9f7" />
-      <rect width="280" height="26" rx="10" fill="#fff" />
-      <rect y="16" width="280" height="10" fill="#fff" />
-      <rect x="12" y="9" width="72" height="7" rx="3" fill="#ffe0d4" />
+      <rect width="280" height="160" rx="10" className="mockup-bg" />
+      <rect width="280" height="26" rx="10" className="mockup-panel" />
+      <rect y="16" width="280" height="10" className="mockup-panel" />
+      <rect x="12" y="9" width="72" height="7" rx="3" fill="currentColor" className="text-foreground/5 opacity-50" />
       <rect x="238" y="7" width="32" height="12" rx="5" fill="#7C5CFC" opacity="0.12" />
       <rect x="244" y="10" width="20" height="5" rx="2" fill="#7C5CFC" opacity="0.45" />
 
       {/* Node A */}
       <rect x="12" y="42" width="64" height="36" rx="7"
-        fill="#fff" stroke="#00D4FF" strokeWidth="1.2" />
+        className="mockup-panel" stroke="#00D4FF" strokeWidth="1.2" />
       <rect x="18" y="50" width="40" height="5" rx="2" fill="#00D4FF" opacity="0.45" />
-      <rect x="18" y="60" width="28" height="5" rx="2" fill="#e0e0e0" />
+      <rect x="18" y="60" width="28" height="5" rx="2" fill="currentColor" className="text-foreground/10" />
 
       {/* Arrow A→B */}
       <line className="fail-arrow" x1="78" y1="60" x2="102" y2="60"
@@ -94,9 +94,9 @@ export const FailureMockup = () => {
       {/* Node B — broken */}
       <g className="fail-broken" opacity="0.85">
         <rect x="104" y="42" width="64" height="36" rx="7"
-          fill="#fff5f5" stroke="#7C5CFC" strokeWidth="1.2" strokeDasharray="4 2" />
+          fill="rgba(124, 92, 252, 0.05)" stroke="#7C5CFC" strokeWidth="1.2" strokeDasharray="4 2" />
         <rect x="110" y="50" width="40" height="5" rx="2" fill="#7C5CFC" opacity="0.45" />
-        <rect x="110" y="60" width="28" height="5" rx="2" fill="#e0e0e0" />
+        <rect x="110" y="60" width="28" height="5" rx="2" fill="currentColor" className="text-foreground/10" />
         <text x="157" y="51" fontSize="11" fill="#7C5CFC" fontFamily="monospace">✕</text>
       </g>
 
@@ -107,9 +107,9 @@ export const FailureMockup = () => {
 
       {/* Node C — fallback */}
       <rect x="196" y="42" width="72" height="36" rx="7"
-        fill="#f6fff6" stroke="#22c55e" strokeWidth="1.2" />
+        fill="rgba(34, 197, 94, 0.05)" stroke="#22c55e" strokeWidth="1.2" />
       <rect x="202" y="50" width="44" height="5" rx="2" fill="#22c55e" opacity="0.45" />
-      <rect x="202" y="60" width="28" height="5" rx="2" fill="#e0e0e0" />
+      <rect x="202" y="60" width="28" height="5" rx="2" fill="currentColor" className="text-foreground/10" />
       <text x="252" y="51" fontSize="11" fill="#22c55e" fontFamily="monospace">↩</text>
 
       {/* Badges */}
@@ -132,8 +132,8 @@ export const FailureMockup = () => {
       {/* Status row */}
       <rect x="12" y="122" width="16" height="16" rx="4" fill="#22c55e" opacity="0.15" />
       <rect x="14" y="126" width="10" height="5" rx="2" fill="#22c55e" opacity="0.6" />
-      <rect x="36" y="124" width="80" height="5" rx="2" fill="#e0e0e0" />
-      <rect x="36" y="133" width="60" height="5" rx="2" fill="#eee" />
+      <rect x="36" y="124" width="80" height="5" rx="2" fill="currentColor" className="text-foreground/10" />
+      <rect x="36" y="133" width="60" height="5" rx="2" fill="currentColor" className="text-foreground/5" />
       <rect x="202" y="122" width="66" height="16" rx="6" fill="#7C5CFC" opacity="0.07" />
       <rect x="208" y="127" width="48" height="5" rx="2" fill="#7C5CFC" opacity="0.3" />
     </svg>

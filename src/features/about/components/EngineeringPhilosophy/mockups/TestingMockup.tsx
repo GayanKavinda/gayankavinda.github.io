@@ -59,10 +59,10 @@ export const TestingMockup = () => {
       xmlns="http://www.w3.org/2000/svg"
       className="w-full h-full block"
     >
-      <rect width="280" height="160" rx="10" fill="#f6faf6" />
-      <rect width="280" height="26" rx="10" fill="#fff" />
-      <rect y="16" width="280" height="10" fill="#fff" />
-      <rect x="12" y="9" width="60" height="7" rx="3" fill="#e0e0e0" />
+      <rect width="280" height="160" rx="10" className="mockup-bg" />
+      <rect width="280" height="26" rx="10" className="mockup-panel" />
+      <rect y="16" width="280" height="10" className="mockup-panel" />
+      <rect x="12" y="9" width="60" height="7" rx="3" fill="currentColor" className="text-foreground/5 opacity-50" />
       <rect x="202" y="8" width="66" height="10" rx="5" fill="#22c55e" opacity="0.18" />
       <rect x="214" y="10" width="42" height="5" rx="2" fill="#22c55e" opacity="0.7" />
 
@@ -88,23 +88,23 @@ export const TestingMockup = () => {
             </>
           )}
           <rect x="36" y={r.y + 2} width={r.w} height="6" rx="2"
-            fill="#d0d0d0" opacity="0.85" />
+            fill="currentColor" className="text-foreground/10" opacity="0.85" />
           <rect x={r.w + 44} y={r.y + 2}
             width={r.pass ? 30 : 48} height="6" rx="2"
             fill={r.pass ? '#00D4FF' : '#7C5CFC'} opacity="0.4" />
-          <rect x="236" y={r.y + 2} width="34" height="6" rx="2" fill="#e8e8e8" />
+          <rect x="236" y={r.y + 2} width="34" height="6" rx="2" fill="currentColor" className="text-foreground/5" />
         </g>
       ))}
 
       {/* Progress bar track */}
-      <rect x="12" y="128" width="256" height="6" rx="3" fill="#e8e8e8" />
+      <rect x="12" y="128" width="256" height="6" rx="3" fill="currentColor" className="text-foreground/5" />
       <rect className="tst-progress"
         x="12" y="128" width="200" height="6" rx="3"
         fill="#22c55e" opacity="0.55" />
 
       <rect x="12" y="140" width="40" height="5" rx="2" fill="#22c55e" opacity="0.4" />
       <rect x="58" y="140" width="30" height="5" rx="2" fill="#7C5CFC" opacity="0.4" />
-      <rect x="94" y="140" width="50" height="5" rx="2" fill="#d0d0d0" />
+      <rect x="94" y="140" width="50" height="5" rx="2" fill="currentColor" className="text-foreground/10" />
     </svg>
   );
 };

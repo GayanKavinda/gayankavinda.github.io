@@ -52,13 +52,13 @@ export const SimplicityMockup = () => {
       xmlns="http://www.w3.org/2000/svg"
       className="w-full h-full block"
     >
-      <rect width="280" height="160" rx="10" fill="#1a1b26" />
-      <rect width="280" height="24" rx="10" fill="#24253a" />
-      <rect y="14" width="280" height="10" fill="#24253a" />
+      <rect width="280" height="160" rx="10" className="mockup-bg" />
+      <rect width="280" height="24" rx="10" className="mockup-panel" />
+      <rect y="14" width="280" height="10" className="mockup-panel" />
       <circle cx="18" cy="12" r="4" fill="#ff5f57" />
       <circle cx="32" cy="12" r="4" fill="#febc2e" />
       <circle cx="46" cy="12" r="4" fill="#28c840" />
-      <rect x="96" y="8" width="88" height="8" rx="3" fill="#32334a" />
+      <rect x="96" y="8" width="88" height="8" rx="3" fill="currentColor" className="text-foreground/5 opacity-50" />
 
       <g className="sim-line">
         <rect x="14" y="33" width="18" height="6" rx="2" fill="#7C5CFC" opacity="0.85" />
@@ -93,9 +93,9 @@ export const SimplicityMockup = () => {
       <rect
         className="sim-cursor"
         x="134" y="103" width="2" height="8" rx="1"
-        fill="#fff" opacity="0.7"
+        fill="currentColor" className="text-foreground" opacity="0.7"
       />
-      <rect x="0" y="148" width="280" height="12" fill="#1e1f30" />
+      <rect x="0" y="148" width="280" height="12" className="mockup-panel" />
       <rect x="10" y="151" width="30" height="5" rx="2" fill="#22c55e" opacity="0.45" />
       <rect x="220" y="151" width="44" height="5" rx="2" fill="#8888b0" opacity="0.5" />
     </svg>

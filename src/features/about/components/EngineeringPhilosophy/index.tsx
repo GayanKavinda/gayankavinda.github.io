@@ -55,8 +55,8 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { y: 25, opacity: 0 },
-  visible: { 
-    y: 0, 
+  visible: {
+    y: 0,
     opacity: 1,
     transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
   }
@@ -69,7 +69,7 @@ const EngineeringPhilosophy = () => {
     <section id="philosophy" ref={ref} className="relative py-[100px] md:py-[140px] bg-background">
       <div className="max-w-[1200px] mx-auto px-6 md:px-10">
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -91,12 +91,12 @@ const EngineeringPhilosophy = () => {
             </span>
           </h2>
           <p className="text-[15px] md:text-[16px] text-muted-foreground mt-5 max-w-[500px] mx-auto leading-relaxed font-medium">
-            Standardizing technical excellence through production-tested 
+            Standardizing technical excellence through production-tested
             principles and systemic rigor.
           </p>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

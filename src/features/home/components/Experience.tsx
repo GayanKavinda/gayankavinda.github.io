@@ -106,7 +106,7 @@ const Stat = ({ value, label }: { value: string; label: string }) => (
 const ArrowIcon = () => (
   <svg
     width="11" height="11" viewBox="0 0 12 12" fill="none"
-    className="shrink-0 mt-[4px] text-[hsl(var(--crimson))]"
+    className="shrink-0 mt-[4px] text-[#7C5CFC]"
   >
     <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" strokeWidth="1.4"
       strokeLinecap="round" strokeLinejoin="round" />
@@ -127,7 +127,7 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
   const rotateX = useSpring(0, springCfg);
   const rotateY = useSpring(0, springCfg);
 
-  const spotlightBg = useMotionTemplate`radial-gradient(380px circle at ${mouseX}px ${mouseY}px, hsl(var(--crimson) / 0.07), transparent 40%)`;
+  const spotlightBg = useMotionTemplate`radial-gradient(380px circle at ${mouseX}px ${mouseY}px, hsla(var(--primary-hsl), 0.07), transparent 40%)`;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -150,12 +150,12 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
       className="relative"
     >
       {/* Timeline connector dot — sits to the left, lines up with the spine */}
-      <div className="absolute -left-[41px] top-7 flex flex-col items-center gap-1 hidden md:flex">
+      <div className="absolute -left-[46px] top-7 flex flex-col items-center gap-1 hidden md:flex">
         <div
           className={`
             w-3 h-3 rounded-full border-2 transition-all duration-300
             ${entry.current
-              ? 'bg-[hsl(var(--crimson))] border-[hsl(var(--crimson))] shadow-[0_0_10px_hsl(var(--crimson)/0.5)]'
+              ? 'bg-[#7C5CFC] border-[#7C5CFC] shadow-[0_0_10px_rgba(124,92,252,0.5)]'
               : 'bg-background border-white/20 group-hover:border-white/40'
             }
           `}
@@ -173,10 +173,9 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
         style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
         className={`
           relative overflow-hidden rounded-2xl cursor-pointer
-          border transition-all duration-400
-          bg-white/60 dark:bg-white/[0.03]
+          border transition-all duration-400 glass shimmer-border elevation-card
           ${hovered
-            ? 'border-black/12 dark:border-white/12 shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] -translate-y-1'
+            ? 'border-black/12 dark:border-white/12 shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] -translate-y-1.5'
             : 'border-black/[0.07] dark:border-white/[0.06] shadow-sm dark:shadow-none'
           }
         `}
@@ -188,9 +187,9 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
           style={{ background: spotlightBg, opacity: hovered ? 1 : 0 }}
         />
 
-        {/* Gold top-edge accent on current role */}
+        {/* Cyan/Violet top-edge accent on current role */}
         {entry.current && (
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[hsl(var(--crimson))] via-[hsl(var(--gold))] to-transparent" />
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#7C5CFC] via-[#00D4FF] to-transparent" />
         )}
 
         <div className="relative z-10 p-6 md:p-7">
@@ -200,12 +199,12 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
             <div className="flex-1 min-w-0">
               {/* Year + current badge */}
               <div className="flex items-center gap-2.5 mb-1.5">
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[hsl(var(--gold)/0.7)]">
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#00D4FF]/70">
                   {entry.year}
                 </span>
                 {entry.current && (
-                  <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-[hsl(var(--crimson))]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--crimson))] animate-pulse" />
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-[#7C5CFC]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#7C5CFC] animate-pulse" />
                     Now
                   </span>
                 )}
@@ -238,17 +237,17 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
                 <motion.svg
                   animate={{ rotate: isExpanded ? 180 : 0 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  width="14" height="14" viewBox="0 0 24 24" fill="none" 
+                  width="14" height="14" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
                   className="text-foreground/20"
                 >
                   <polyline points="6 9 12 15 18 9" />
                 </motion.svg>
               </div>
-              
+
               <div className="w-16 h-1 rounded-full bg-white/8 dark:bg-white/[0.06] overflow-hidden">
                 <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-[hsl(var(--crimson))] to-[hsl(var(--gold))]"
+                  className="h-full rounded-full bg-gradient-to-r from-[#7C5CFC] to-[#00D4FF]"
                   initial={{ width: 0 }}
                   whileInView={{ width: `${pct}%` }}
                   viewport={{ once: true }}
@@ -261,7 +260,7 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
           {/* ── Expandable Details ── */}
           <motion.div
             initial={false}
-            animate={{ 
+            animate={{
               height: isExpanded ? 'auto' : 0,
               opacity: isExpanded ? 1 : 0,
               marginTop: isExpanded ? 20 : 0
@@ -321,8 +320,8 @@ const Experience = () => {
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 900px' }}
     >
       {/* Ambient glow — tighter, more intentional */}
-      <div className="absolute top-1/4 left-0 w-[480px] h-[480px] bg-[hsl(var(--crimson)/0.04)] rounded-full blur-[100px] pointer-events-none -translate-x-1/2" />
-      <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-[hsl(var(--gold)/0.04)] rounded-full blur-[100px] pointer-events-none translate-x-1/2" />
+      <div className="absolute top-1/4 left-0 w-[480px] h-[480px] bg-hsla(var(--primary-hsl), 0.04) rounded-full blur-[100px] pointer-events-none -translate-x-1/2" />
+      <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-hsla(var(--secondary-hsl), 0.04) rounded-full blur-[100px] pointer-events-none translate-x-1/2" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8">
 
@@ -339,12 +338,17 @@ const Experience = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.55 }}
             >
-              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[hsl(var(--gold)/0.6)] mb-4">
-                <span className="text-[hsl(var(--crimson))]">///</span> Timeline
-              </p>
-              <h2 className="font-display font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
+              <div className="inline-flex items-center gap-2 bg-muted/50 border border-border/50 rounded-full px-5 py-2 mb-6 backdrop-blur-sm">
+                <span className="text-[10px] font-mono tracking-widest text-[#00D4FF]">
+                  ///
+                </span>
+                <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-muted-foreground font-medium">
+                  Timeline
+                </span>
+              </div>
+              <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
                 Professional{' '}
-                <span className="font-playfair italic font-medium text-[hsl(var(--crimson))]">
+                <span className="font-playfair italic font-medium text-[#7C5CFC]">
                   Experience
                 </span>
               </h2>
@@ -370,7 +374,7 @@ const Experience = () => {
 
             {/* Divider */}
             <motion.div
-              className="h-px bg-gradient-to-r from-[hsl(var(--gold)/0.2)] to-transparent"
+              className="h-px bg-gradient-to-r from-[#00D4FF]/20 to-transparent"
               initial={{ scaleX: 0, originX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
@@ -386,7 +390,7 @@ const Experience = () => {
               transition={{ duration: 0.5, delay: 0.25 }}
             >
               <div className="flex items-center gap-2.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-[hsl(var(--crimson))] shadow-[0_0_8px_hsl(var(--crimson)/0.5)]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#7C5CFC] shadow-[0_0_8px_rgba(124,92,252,0.5)]" />
                 <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/40">Current role</span>
               </div>
               <div className="flex items-center gap-2.5">
@@ -394,7 +398,7 @@ const Experience = () => {
                 <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/40">Past role</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-1 rounded-full bg-gradient-to-r from-[hsl(var(--crimson))] to-[hsl(var(--gold))]" />
+                <div className="w-8 h-1 rounded-full bg-gradient-to-r from-[#7C5CFC] to-[#00D4FF]" />
                 <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/40">Tenure length</span>
               </div>
             </motion.div>
@@ -404,7 +408,7 @@ const Experience = () => {
           <div className="relative md:pl-10">
 
             {/* Vertical spine — only visible on md+ */}
-            <div className="absolute left-0 top-4 bottom-4 w-px bg-gradient-to-b from-[hsl(var(--gold)/0.15)] via-white/[0.06] to-transparent hidden md:block" />
+            <div className="absolute left-0 top-4 bottom-4 w-px bg-gradient-to-b from-[#00D4FF]/15 via-white/[0.06] to-transparent hidden md:block" />
 
             <div className="flex flex-col gap-5">
               {entries.map((entry, i) => (

@@ -79,38 +79,38 @@ export const ObservabilityMockup = () => {
       className="w-full h-full block"
     >
       {/* Background */}
-      <rect width="280" height="160" rx="10" fill="#f9f9fb" />
+      <rect width="280" height="160" rx="10" className="mockup-bg" />
 
       {/* Top bar */}
-      <rect width="280" height="28" rx="10" fill="#fff" />
-      <rect y="18" width="280" height="10" fill="#fff" />
+      <rect width="280" height="28" rx="10" className="mockup-panel" />
+      <rect y="18" width="280" height="10" className="mockup-panel" />
       <circle
         cx="16" cy="14" r="4"
         fill="#7C5CFC" opacity="0.7"
         className="obs-dot"
       />
-      <rect x="26" y="10" width="50" height="8" rx="3" fill="#ececec" />
+      <rect x="26" y="10" width="50" height="8" rx="3" fill="currentColor" className="text-foreground/5 opacity-50" />
       <rect x="218" y="10" width="44" height="8" rx="3" fill="#00D4FF" opacity="0.22" />
 
       {/* Stat cards */}
       <rect x="10" y="36" width="72" height="30" rx="6"
-        fill="#fff" stroke="#ececec" strokeWidth="0.8" />
-      <rect x="14" y="42" width="28" height="4" rx="2" fill="#ddd" />
+        className="mockup-panel" strokeWidth="0.8" />
+      <rect x="14" y="42" width="28" height="4" rx="2" fill="currentColor" className="text-foreground/10" />
       <rect x="14" y="50" width="44" height="8" rx="3" fill="#7C5CFC" opacity="0.72" />
 
       <rect x="92" y="36" width="72" height="30" rx="6"
-        fill="#fff" stroke="#ececec" strokeWidth="0.8" />
-      <rect x="96" y="42" width="28" height="4" rx="2" fill="#ddd" />
+        className="mockup-panel" strokeWidth="0.8" />
+      <rect x="96" y="42" width="28" height="4" rx="2" fill="currentColor" className="text-foreground/10" />
       <rect x="96" y="50" width="44" height="8" rx="3" fill="#00D4FF" opacity="0.62" />
 
       <rect x="174" y="36" width="72" height="30" rx="6"
-        fill="#fff" stroke="#ececec" strokeWidth="0.8" />
-      <rect x="178" y="42" width="28" height="4" rx="2" fill="#ddd" />
+        className="mockup-panel" strokeWidth="0.8" />
+      <rect x="178" y="42" width="28" height="4" rx="2" fill="currentColor" className="text-foreground/10" />
       <rect x="178" y="50" width="44" height="8" rx="3" fill="#22c55e" opacity="0.62" />
 
       {/* Chart area */}
       <rect x="10" y="76" width="260" height="72" rx="6"
-        fill="#fff" stroke="#ececec" strokeWidth="0.8" />
+        className="mockup-panel" strokeWidth="0.8" />
 
       {/* Bars — GSAP animated via class */}
       {[

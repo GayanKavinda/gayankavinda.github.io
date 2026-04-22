@@ -98,7 +98,7 @@ const Hero = () => {
         ].join(' ')}
         style={{
           mixBlendMode: isDark ? 'screen' : 'multiply',
-          filter: `drop-shadow(40px 0px 70px hsla(var(--crimson), 0.2))`,
+          filter: `drop-shadow(40px 0px 70px hsla(var(--primary-hsl), 0.2))`,
         }}
       />
 
@@ -115,7 +115,7 @@ const Hero = () => {
         ].join(' ')}
       >
         {/* Eyebrow */}
-        <p className="hero-text-anim font-mono text-[10px] md:text-[11px] uppercase tracking-[0.15em] text-gold">
+        <p className="hero-text-anim font-mono text-[10px] md:text-[11px] uppercase tracking-[0.15em] text-[#00D4FF]">
           // Senior Software Engineer
           <span style={{ animation: 'blink 0.8s infinite' }}>|</span>
         </p>
@@ -127,7 +127,7 @@ const Hero = () => {
         </h1>
 
         {/* Tagline */}
-        <h2 className="hero-text-anim font-jakarta font-bold leading-none text-crimson
+        <h2 className="hero-text-anim font-jakarta font-bold leading-none text-[#7C5CFC]
                         text-[clamp(28px,7vw,70px)] tracking-tight">
           Crafting <em className="font-playfair italic font-medium">Systems</em>.
         </h2>
@@ -143,9 +143,10 @@ const Hero = () => {
         {/* CTA buttons */}
         <div className="hero-text-anim flex gap-3 mt-6 md:mt-8 flex-wrap">
           <button
-            className="font-mono text-[12px] md:text-[13px] bg-crimson text-white
-                        px-6 md:px-7 py-2.5 md:py-3 rounded
-                        hover:brightness-110 transition-all"
+            className="font-mono text-[12px] md:text-[13px] bg-[#7C5CFC] text-white
+                        px-6 md:px-10 py-2.5 md:py-3.5 rounded-full
+                        hover:brightness-110 hover:shadow-[0_0_20px_rgba(124,92,252,0.3)] 
+                        transition-all duration-300"
             onClick={() =>
               document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
             }
@@ -153,9 +154,9 @@ const Hero = () => {
             View My Work
           </button>
           <button
-            className="font-mono text-[12px] md:text-[13px] border border-foreground/40
-                        text-foreground px-6 md:px-7 py-2.5 md:py-3 rounded
-                        transition-all hover:border-foreground/50"
+            className="font-mono text-[12px] md:text-[13px] border border-foreground/20
+                        text-foreground px-6 md:px-10 py-2.5 md:py-3.5 rounded-full
+                        transition-all duration-300 hover:border-[#00D4FF]/50 hover:bg-[#00D4FF]/5"
             onClick={() =>
               document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
             }
@@ -166,20 +167,16 @@ const Hero = () => {
 
         {/* Code block — slightly smaller on mobile */}
         <div
-          className="hero-text-anim mt-6 md:mt-8 rounded-lg p-3.5 md:p-4
-                      max-w-[340px] md:max-w-[440px] backdrop-blur-[2px]"
-          style={{
-            background: 'hsla(var(--muted), 0.5)',
-            border: '1px solid hsla(var(--border), 0.5)',
-          }}
+          className="hero-text-anim mt-6 md:mt-8 rounded-2xl p-4 md:p-5
+                      max-w-[340px] md:max-w-[440px] glass elevation-md"
         >
           <pre className="font-mono text-[11px] md:text-[13px] leading-relaxed overflow-x-auto">
-            <span className="text-crimson">const</span>{' '}
-            <span className="text-amber-500">engineer</span>{' '}
-            <span className="text-foreground/60">=</span>
+            <span className="text-[#7C5CFC]">const</span>{' '}
+            <span className="text-[#00D4FF]">engineer</span>{' '}
+            <span className="text-foreground/40">=</span>
             {' {\n'}
             {'  '}
-            <span className="text-indigo-500">stack</span>
+            <span className="text-indigo-400">stack</span>
             {': ['}
             <span className="text-emerald-500">"TypeScript"</span>
             {', '}
@@ -188,7 +185,7 @@ const Hero = () => {
             <span className="text-emerald-500">"Go"</span>
             {'],\n'}
             {'  '}
-            <span className="text-rose-500">focus</span>
+            <span className="text-pink-400">focus</span>
             {': '}
             <span className="text-emerald-500">"distributed systems"</span>
             {',\n'}

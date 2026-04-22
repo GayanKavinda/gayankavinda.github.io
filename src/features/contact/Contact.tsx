@@ -80,8 +80,8 @@ function inputCls(isDark: boolean) {
     'border focus-visible:outline-none focus-visible:ring-0',
     'placeholder:text-foreground/30',
     isDark
-      ? 'bg-[hsl(0_0%_10%)] border-[hsl(0_0%_100%/0.10)] text-[hsl(248_30%_94%)] focus-visible:border-[#7C5CFC]/70 focus-visible:shadow-[inset_3px_0_0_#7C5CFC]'
-      : 'bg-white border-[hsl(246_20%_12%/0.14)] text-[hsl(246_20%_12%)] focus-visible:border-[#7C5CFC]/60 focus-visible:shadow-[inset_3px_0_0_#7C5CFC]',
+      ? 'bg-[hsl(0_0%_10%)] border-[hsl(0_0%_100%/0.10)] text-[hsl(248_30%_94%)] focus-visible:border-[#7C5CFC]/70 focus-visible:ring-1 focus-visible:ring-[#7C5CFC]/30'
+      : 'bg-white border-[hsl(246_20%_12%/0.14)] text-[hsl(246_20%_12%)] focus-visible:border-[#7C5CFC]/60 focus-visible:ring-1 focus-visible:ring-[#7C5CFC]/20',
   ].join(' ');
 }
 
@@ -112,20 +112,19 @@ function ChipGroup({
             className="font-sans text-[11px] px-3 py-1.5 rounded-lg transition-all duration-150 cursor-pointer select-none"
             style={{
               background: active
-                ? 'hsl(var(--crimson)/0.12)'
+                ? 'rgba(124, 92, 252, 0.12)'
                 : isDark
                   ? 'hsl(0 0% 10%)'
                   : 'hsl(0 0% 97%)',
               color: active
-                ? 'hsl(var(--crimson))'
+                ? '#7C5CFC'
                 : 'hsl(var(--foreground)/0.50)',
-              border: `1px solid ${
-                active
-                  ? 'hsl(var(--crimson)/0.30)'
+              border: `1px solid ${active
+                  ? 'rgba(124, 92, 252, 0.30)'
                   : isDark
                     ? 'hsl(0 0% 100% / 0.07)'
                     : 'hsl(220 15% 15% / 0.08)'
-              }`,
+                }`,
               fontWeight: active ? 600 : 400,
             }}
           >
@@ -214,9 +213,9 @@ const FileChip = ({
         className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 font-mono text-[9px] font-bold"
         style={{
           background: isImg
-            ? 'hsl(var(--crimson)/0.10)'
-            : 'hsl(var(--gold)/0.12)',
-          color: isImg ? 'hsl(var(--crimson))' : 'hsl(var(--gold))',
+            ? 'rgba(124, 92, 252, 0.10)'
+            : 'rgba(0, 212, 255, 0.12)',
+          color: isImg ? '#7C5CFC' : '#00D4FF',
         }}
       >
         {isImg ? '⎋' : ext.slice(0, 3)}
@@ -233,7 +232,7 @@ const FileChip = ({
         type="button"
         onClick={onRemove}
         aria-label={`Remove ${af.file.name}`}
-        className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-[#C41E3A]/10 transition-colors text-foreground/30 hover:text-[#C41E3A]"
+        className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-[#7C5CFC]/10 transition-colors text-foreground/30 hover:text-[#7C5CFC]"
       >
         <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
           <line
@@ -284,9 +283,9 @@ const UploadZone = ({
         <span
           className="font-mono text-[9px] px-2 py-0.5 rounded-full"
           style={{
-            background: 'hsl(var(--gold)/0.12)',
-            color: 'hsl(var(--gold))',
-            border: '1px solid hsl(var(--gold)/0.22)',
+            background: 'rgba(0, 212, 255, 0.12)',
+            color: '#00D4FF',
+            border: '1px solid rgba(0, 212, 255, 0.22)',
           }}
         >
           optional
@@ -308,13 +307,13 @@ const UploadZone = ({
         className="w-full rounded-xl border-2 border-dashed cursor-pointer flex items-center gap-3 px-4 py-3 transition-all duration-150"
         style={{
           borderColor: error
-            ? 'hsl(var(--crimson)/0.4)'
+            ? 'rgba(124, 92, 252, 0.4)'
             : drag
-              ? 'hsl(var(--crimson)/0.5)'
+              ? 'rgba(124, 92, 252, 0.5)'
               : isDark
                 ? 'hsl(0 0% 100%/0.09)'
                 : 'hsl(220 15% 15%/0.12)',
-          background: drag ? 'hsl(var(--crimson)/0.04)' : 'transparent',
+          background: drag ? 'rgba(124, 92, 252, 0.04)' : 'transparent',
         }}
         aria-label="Upload files"
       >
@@ -322,7 +321,7 @@ const UploadZone = ({
           className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
           style={{
             background: drag
-              ? 'hsl(var(--crimson)/0.10)'
+              ? 'rgba(124, 92, 252, 0.10)'
               : isDark
                 ? 'hsl(0 0% 14%)'
                 : 'hsl(220 14% 96%)',
@@ -333,7 +332,7 @@ const UploadZone = ({
               d="M8 11V3M8 3L5 6M8 3L11 6"
               stroke={
                 drag
-                  ? 'hsl(var(--crimson))'
+                  ? '#7C5CFC'
                   : 'hsl(var(--foreground)/0.45)'
               }
               strokeWidth="1.5"
@@ -344,7 +343,7 @@ const UploadZone = ({
               d="M2.5 13h11"
               stroke={
                 drag
-                  ? 'hsl(var(--crimson))'
+                  ? '#7C5CFC'
                   : 'hsl(var(--foreground)/0.25)'
               }
               strokeWidth="1.5"
@@ -355,7 +354,7 @@ const UploadZone = ({
         <div className="flex-1 min-w-0">
           <p className="font-sans text-[12px] text-foreground/65">
             Drop files or{' '}
-            <span style={{ color: 'hsl(var(--crimson))' }}>browse</span>
+            <span style={{ color: '#7C5CFC' }}>browse</span>
           </p>
           <p className="font-mono text-[10px] text-foreground/30 mt-0.5">
             PDF · DOCX · PNG · JPG · ZIP — max 10 MB
@@ -441,7 +440,7 @@ const MapHeader = ({ isDark }: { isDark: boolean }) => {
         <div className="relative flex flex-col items-center">
           <div
             className="w-4 h-4 rounded-full border-2 border-white shadow-lg flex items-center justify-center"
-            style={{ background: 'hsl(var(--crimson))' }}
+            style={{ background: '#7C5CFC' }}
             aria-label="Colombo location marker"
           >
             <div className="w-1 h-1 rounded-full bg-white/90" />
@@ -450,7 +449,7 @@ const MapHeader = ({ isDark }: { isDark: boolean }) => {
             className="w-[2px] h-2.5 -mt-[1px]"
             style={{
               background:
-                'linear-gradient(to bottom, hsl(var(--crimson)), transparent)',
+                'linear-gradient(to bottom, #7C5CFC, transparent)',
             }}
           />
         </div>
@@ -709,7 +708,7 @@ const InfoPanel = ({ isDark }: { isDark: boolean }) => {
           </p>
           <a
             href={`mailto:${import.meta.env.VITE_CONTACT_EMAIL || 'hello@yourdomain.com'}`}
-            className="font-mono text-[12px] transition-colors hover:text-[hsl(var(--crimson))] break-all"
+            className="font-mono text-[12px] transition-colors hover:text-[#7C5CFC] break-all"
             style={{ color: 'hsl(var(--foreground)/0.70)' }}
           >
             {import.meta.env.VITE_CONTACT_EMAIL || 'hello@yourdomain.com'}
@@ -738,7 +737,7 @@ const InfoPanel = ({ isDark }: { isDark: boolean }) => {
                 }}
                 aria-label={`Visit ${s.label} profile`}
               >
-                <span className="font-mono text-[9px] font-bold transition-colors text-foreground/40 group-hover:text-[hsl(var(--gold))]">
+                <span className="font-mono text-[9px] font-bold transition-colors text-foreground/40 group-hover:text-[#00D4FF]">
                   {s.abbr}
                 </span>
                 <span className="font-sans text-[11px] text-foreground/50 group-hover:text-foreground/80 transition-colors">

@@ -83,17 +83,40 @@ select:focus-visible {
 
 /* ── Glassmorphism ──────────────────────────────────────────────────────── */
 .glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid var(--glass-border);
+  background: hsla(var(--background-hsl), 0.7);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border: 1px solid hsla(var(--border-hsl), 0.3);
 }
 
 .glass-sm {
-  background: var(--glass-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
+  background: hsla(var(--background-hsl), 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsla(var(--border-hsl), 0.2);
+}
+
+/* ── Themed Mockup Backgrounds ───────────────────────────────────────── */
+.mockup-bg {
+  fill: #f9f9fb;
+  stroke: #ececec;
+  transition: all 0.3s ease;
+}
+
+.dark .mockup-bg {
+  fill: #0d0d0f;
+  stroke: rgba(255, 255, 255, 0.05);
+}
+
+.mockup-panel {
+  fill: #ffffff;
+  stroke: #ececec;
+  transition: all 0.3s ease;
+}
+
+.dark .mockup-panel {
+  fill: #16161a;
+  stroke: rgba(255, 255, 255, 0.08);
 }
 
 /* ── Elevation System ───────────────────────────────────────────────────── */
