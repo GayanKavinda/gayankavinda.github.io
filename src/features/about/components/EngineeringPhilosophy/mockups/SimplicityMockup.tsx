@@ -91,9 +91,9 @@ export const SimplicityMockup = () => {
       <rect x="160" y="101" width="100" height="14" rx="5" fill="#00D4FF" opacity="0.12" />
       <rect x="166" y="104" width="60" height="5" rx="2" fill="#00D4FF" opacity="0.5" />
       <rect
-        className="sim-cursor"
+        className="sim-cursor text-foreground"
         x="134" y="103" width="2" height="8" rx="1"
-        fill="currentColor" className="text-foreground" opacity="0.7"
+        fill="currentColor" opacity="0.7"
       />
       <rect x="0" y="148" width="280" height="12" className="mockup-panel" />
       <rect x="10" y="151" width="30" height="5" rx="2" fill="#22c55e" opacity="0.45" />

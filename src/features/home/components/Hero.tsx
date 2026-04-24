@@ -1,207 +1,355 @@
 // src/features/home/components/Hero/Hero.tsx
-
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import dancerImg from '@shared/assets/dancer human+robot.png';
 import { useTheme } from '@app/providers/theme-provider';
+import morningVideo from '@shared/assets/morning.mp4';
+import nightVideo from '@shared/assets/night.mp4';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
-  const dancerRef = useRef<HTMLImageElement>(null);
+  const morningVideoRef = useRef<HTMLVideoElement>(null);
+  const nightVideoRef = useRef<HTMLVideoElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
-  const isDark = theme === 'dark';
+  const [videosReady, setVideosReady] = useState({ morning: false, night: false });
 
+  // ── Preload both videos on mount for instant switching ─────────
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const isMobile = window.innerWidth < 768;
+    const preloadVideo = (video: HTMLVideoElement | null, key: 'morning' | 'night') => {
+      if (!video) return;
+      video.load();
+      video.onloadeddata = () => {
+        setVideosReady(prev => ({ ...prev, [key]: true }));
+        video.pause();
+        video.currentTime = 0;
+      };
+      video.onerror = () => {
+        console.warn(`Failed to preload ${key} video`);
+        setVideosReady(prev => ({ ...prev, [key]: true })); // Fallback: proceed anyway
+      };
+    };
+    preloadVideo(morningVideoRef.current, 'morning');
+    preloadVideo(nightVideoRef.current, 'night');
+  }, []);
 
-      // Text entrance — runs on all breakpoints
-      gsap.from('.hero-text-anim', {
-        y: 40, opacity: 0,
-        stagger: 0.12, duration: 0.9,
-        ease: 'power2.out', delay: 0.2,
+  // ── Instant video crossfade on theme change ───────────────────
+  useEffect(() => {
+    const morning = morningVideoRef.current;
+    const night = nightVideoRef.current;
+    
+    if (!morning || !night) return;
+
+    const duration = 0.35;
+    const ease = 'power2.inOut';
+
+    if (theme === 'dark') {
+      gsap.to(morning, { opacity: 0, duration, ease });
+      gsap.to(night, { 
+        opacity: 1, 
+        duration, 
+        ease, 
+        onStart: () => { 
+          night.play().catch(() => {}); 
+        } 
+      });
+    } else {
+      gsap.to(night, { opacity: 0, duration, ease });
+      gsap.to(morning, { 
+        opacity: 1, 
+        duration, 
+        ease, 
+        onStart: () => { 
+          morning.play().catch(() => {}); 
+        } 
+      });
+    }
+  }, [theme]);
+
+  // ── Initialize animations when videos are ready ───────────────
+  useEffect(() => {
+    if (!videosReady.morning && !videosReady.night) return;
+
+    const ctx = gsap.context(() => {
+      gsap.set(contentRef.current, { opacity: 0, y: 20 });
+
+      const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      
+      timeline
+        .to(contentRef.current, { opacity: 1, y: 0, duration: 0.3 }, 0)
+        .from('.hero-eyebrow', { y: 25, opacity: 0, duration: 0.7 }, 0.1)
+        .from('.hero-name', { y: 35, opacity: 0, duration: 0.9, ease: 'power4.out' }, 0.25)
+        .from('.hero-tagline', { y: 25, opacity: 0, duration: 0.8 }, 0.4)
+        .from('.hero-description', { y: 20, opacity: 0, duration: 0.7 }, 0.55)
+        .from('.hero-cta-group', { y: 15, opacity: 0, duration: 0.6 }, 0.7)
+        .from('.hero-scroll-indicator', { opacity: 0, scale: 0.9, duration: 0.5 }, 0.9);
+
+      // Subtle parallax on scroll
+      ScrollTrigger.create({
+        trigger: heroRef.current,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+        onUpdate: (self) => {
+          gsap.set(contentRef.current, {
+            y: self.progress * 60,
+            opacity: 1 - self.progress * 0.25,
+          });
+        },
       });
 
-      if (!isMobile) {
-        // Desktop: dancer slides in from the left
-        gsap.from(dancerRef.current!, {
-          x: -180, opacity: 0,
-          duration: 1.4, ease: 'power3.out', delay: 0.5,
-        });
+      // Floating scroll indicator
+      gsap.to('.hero-scroll-indicator svg', {
+        y: 6,
+        duration: 1.6,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
 
-        // Desktop: dancer drifts out on scroll
-        ScrollTrigger.create({
-          trigger: heroRef.current!,
-          start: 'center top',
-          end: 'bottom top',
-          scrub: 1.5,
-          onUpdate: self => {
-            gsap.set(dancerRef.current!, {
-              x: -self.progress * 250,
-              opacity: 1 - self.progress,
-            });
-          },
-        });
-      } else {
-        // Mobile: dancer fades in subtly
-        gsap.from(dancerRef.current!, {
-          opacity: 0, duration: 1.8, ease: 'power2.out', delay: 0.6,
-        });
-      }
     }, heroRef);
 
-    return () => ctx.revert();
-  }, []);
+    return () => {
+      ctx.revert();
+    };
+  }, [videosReady]);
+
+  // ── Dynamic text styles for maximum contrast ──────────────────
+  const textStyles = useMemo(() => {
+    const isDark = theme === 'dark';
+    return {
+      eyebrow: {
+        color: isDark ? 'rgba(0, 212, 255, 0.95)' : 'rgba(26, 25, 28, 0.9)',
+        textShadow: isDark 
+          ? '0 2px 12px rgba(0, 0, 0, 0.4)' 
+          : '0 2px 10px rgba(245, 245, 250, 0.6)',
+      },
+      name: {
+        color: isDark ? '#ffffff' : '#171621',
+        textShadow: isDark 
+          ? '0 4px 24px rgba(0, 0, 0, 0.5), 0 0 40px rgba(124, 92, 252, 0.25)' 
+          : '0 3px 16px rgba(0, 0, 0, 0.15)',
+      },
+      tagline: {
+        color: isDark ? '#00D4FF' : '#7C5CFC',
+        textShadow: isDark 
+          ? '0 2px 14px rgba(0, 0, 0, 0.45)' 
+          : '0 2px 12px rgba(245, 245, 250, 0.7)',
+      },
+      description: {
+        color: isDark ? 'rgba(238, 237, 248, 0.95)' : 'rgba(23, 22, 33, 0.92)',
+        textShadow: isDark 
+          ? '0 2px 10px rgba(0, 0, 0, 0.35)' 
+          : '0 1px 6px rgba(245, 245, 250, 0.5)',
+      },
+      ctaPrimary: {
+        background: isDark 
+          ? 'linear-gradient(135deg, #7C5CFC, #5A3FD4)' 
+          : 'linear-gradient(135deg, #7C5CFC, #00D4FF)',
+        textShadow: '0 1px 4px rgba(0, 0, 0, 0.2)',
+      },
+      ctaSecondary: {
+        borderColor: isDark ? 'rgba(238, 237, 248, 0.35)' : 'rgba(23, 22, 33, 0.25)',
+        color: isDark ? 'rgba(238, 237, 248, 0.95)' : 'rgba(23, 22, 33, 0.9)',
+        background: isDark 
+          ? 'rgba(16, 16, 25, 0.45)' 
+          : 'rgba(245, 245, 250, 0.55)',
+        backdropFilter: 'blur(8px)',
+      },
+      scrollText: {
+        color: isDark ? 'rgba(238, 237, 248, 0.7)' : 'rgba(23, 22, 33, 0.65)',
+        textShadow: isDark ? '0 1px 6px rgba(0,0,0,0.4)' : '0 1px 4px rgba(255,255,255,0.6)',
+      },
+      scrollIcon: {
+        stroke: isDark ? 'rgba(238, 237, 248, 0.75)' : 'rgba(23, 22, 33, 0.7)',
+        filter: isDark ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))' : 'none',
+      },
+      accent: {
+        violet: isDark ? 'rgba(124, 92, 252, 0.6)' : 'rgba(124, 92, 252, 0.4)',
+        cyan: isDark ? 'rgba(0, 212, 255, 0.6)' : 'rgba(0, 212, 255, 0.4)',
+        glowViolet: isDark ? '0 0 12px rgba(124, 92, 252, 0.5)' : 'none',
+        glowCyan: isDark ? '0 0 12px rgba(0, 212, 255, 0.5)' : 'none',
+      }
+    };
+  }, [theme]);
 
   return (
     <section
       ref={heroRef}
-      className="h-screen overflow-hidden relative"
-      style={{ background: 'hsl(var(--background))' }}
+      className="relative h-screen w-full overflow-hidden"
+      aria-label="Hero section"
     >
-      {/* ── Decorative cobra SVG ────────────────────────────────────
-          Desktop: top-right large
-          Mobile:  top-right small, reduced opacity              */}
-      <svg
-        className="absolute top-16 right-5 md:right-20 w-16 h-16 md:w-32 md:h-32 opacity-10 md:opacity-20 pointer-events-none"
-        style={{ animation: 'float 4s ease-in-out infinite' }}
-        viewBox="0 0 100 100"
-        fill="none"
-      >
-        <path
-          d="M50 10 C30 25 20 50 35 70 C40 78 50 85 50 90 C50 85 60 78 65 70 C80 50 70 25 50 10Z"
-          stroke="hsl(var(--crimson))" strokeWidth="0.5"
+      {/* ── Dual Video Background — Instant Crossfade ─────────── */}
+      <div className="absolute inset-0 -z-10">
+        {/* Morning Video Layer */}
+        <video
+          ref={morningVideoRef}
+          src={morningVideo}
+          autoPlay={theme !== 'dark'}
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: theme === 'dark' ? 0 : 1 }}
+          aria-hidden="true"
         />
-        <circle cx="42" cy="45" r="2" fill="hsl(var(--crimson))" opacity="0.5" />
-        <circle cx="58" cy="45" r="2" fill="hsl(var(--crimson))" opacity="0.5" />
-      </svg>
+        
+        {/* Night Video Layer */}
+        <video
+          ref={nightVideoRef}
+          src={nightVideo}
+          autoPlay={theme === 'dark'}
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: theme === 'dark' ? 1 : 0 }}
+          aria-hidden="true"
+        />
+        
+        {/* Bottom Fade to blend seamlessly with the next section */}
+        <div 
+          className="absolute inset-x-0 bottom-0 h-[35vh] pointer-events-none"
+          style={{
+            background: `
+              linear-gradient(to bottom, 
+                transparent 0%, 
+                ${theme === 'dark' ? 'rgba(9, 9, 16, 0.5)' : 'rgba(245, 245, 250, 0.5)'} 50%,
+                ${theme === 'dark' ? '#090910' : '#F5F5FA'} 100%
+              )
+            `,
+          }}
+        />
+      </div>
 
-      {/* ── Dancer image ─────────────────────────────────────────────
-          Mobile:  absolute, centered, bottom-anchored, small + faint
-                   sits BEHIND text via z-index
-          Desktop: absolute left-0 bottom-0, full height, original    */}
-      <img
-        ref={dancerRef}
-        src={dancerImg}
-        alt=""
-        aria-hidden
-        className={[
-          // shared
-          'absolute bottom-0 object-contain pointer-events-none select-none',
-          // mobile — centered ghost behind text
-          'left-1/2 -translate-x-1/2 h-[52vh] w-auto opacity-30 z-0',
-          // desktop — original position, full opacity handled by GSAP
-          'md:left-0 md:translate-x-0 md:h-[92vh] md:opacity-100 md:z-0',
-        ].join(' ')}
-        style={{
-          mixBlendMode: isDark ? 'screen' : 'multiply',
-          filter: `drop-shadow(40px 0px 70px hsla(var(--primary-hsl), 0.2))`,
-        }}
-      />
-
-      {/* ── Text content ─────────────────────────────────────────────
-          Mobile:  full-width, left-aligned, starts near top
-          Desktop: right 55 %, original padding                      */}
-      <div
-        className={[
-          'relative z-10 h-full flex flex-col justify-start',
-          // mobile: full width, horizontal padding
-          'w-full px-7 pt-[18vh]',
-          // desktop: right 55 %, original right padding
-          'md:ml-auto md:w-[55%] md:px-0 md:pr-[max(60px,6vw)]',
-        ].join(' ')}
+      {/* ── Centered Content — Proper Z-Index Layering ───────── */}
+      <div 
+        ref={contentRef}
+        className="relative z-20 h-full flex flex-col items-center justify-center px-6 text-center"
       >
         {/* Eyebrow */}
-        <p className="hero-text-anim font-mono text-[10px] md:text-[11px] uppercase tracking-[0.15em] text-[#00D4FF]">
-          // Senior Software Engineer
-          <span style={{ animation: 'blink 0.8s infinite' }}>|</span>
+        <p 
+          className="hero-eyebrow font-mono text-[10px] md:text-[11px] uppercase tracking-[0.25em]"
+          style={textStyles.eyebrow}
+        >
+          Senior Software Engineer
         </p>
 
         {/* Name */}
-        <h1 className="hero-text-anim font-jakarta font-extrabold leading-none mt-4 text-foreground
-                        text-[clamp(52px,12vw,72px)] tracking-tight">
+        <h1 
+          className="hero-name font-jakarta font-extrabold leading-none mt-3 md:mt-4 
+                     text-[clamp(48px,11vw,84px)] tracking-tight"
+          style={textStyles.name}
+        >
           Gara Yaka
         </h1>
 
         {/* Tagline */}
-        <h2 className="hero-text-anim font-jakarta font-bold leading-none text-[#7C5CFC]
-                        text-[clamp(28px,7vw,70px)] tracking-tight">
-          Crafting <em className="font-playfair italic font-medium">Systems</em>.
+        <h2 
+          className="hero-tagline font-jakarta font-semibold leading-none mt-3 md:mt-4 
+                     text-[clamp(24px,6vw,42px)] tracking-tight"
+          style={textStyles.tagline}
+        >
+          Building <em className="not-italic font-playfair">systems that scale</em>.
         </h2>
 
-        {/* Description — shorter on mobile to avoid overflow */}
-        <p className="hero-text-anim font-sans leading-[1.7] mt-4 text-foreground/85
-                       text-[14px] max-w-[320px]
-                       md:text-[16px] md:max-w-[480px]">
-          Building scalable distributed systems and elegant interfaces. Passionate about
-          clean architecture, performance optimization, and developer experience.
+        {/* Description */}
+        <p 
+          className="hero-description font-sans leading-relaxed mt-4 md:mt-5 
+                     max-w-[520px] text-[15px] md:text-[17px]"
+          style={textStyles.description}
+        >
+          Crafting distributed architectures and intuitive interfaces with precision. 
+          Passionate about clean code, performance, and meaningful developer experiences.
         </p>
 
-        {/* CTA buttons */}
-        <div className="hero-text-anim flex gap-3 mt-6 md:mt-8 flex-wrap">
+        {/* CTA Buttons */}
+        <div className="hero-cta-group flex flex-wrap justify-center gap-4 mt-7 md:mt-9">
           <button
-            className="font-mono text-[12px] md:text-[13px] bg-[#7C5CFC] text-white
-                        px-6 md:px-10 py-2.5 md:py-3.5 rounded-full
-                        hover:brightness-110 hover:shadow-[0_0_20px_rgba(124,92,252,0.3)] 
-                        transition-all duration-300"
+            className="group relative font-mono text-[13px] md:text-[14px] 
+                       text-white px-8 py-3.5 rounded-full overflow-hidden
+                       transition-all duration-300 focus:outline-none focus:ring-2 
+                       focus:ring-[#7C5CFC]/60 hover:shadow-lg"
+            style={{
+              ...textStyles.ctaPrimary,
+              boxShadow: theme === 'dark' 
+                ? '0 8px 32px rgba(124, 92, 252, 0.35)' 
+                : '0 6px 24px rgba(124, 92, 252, 0.25)',
+            }}
             onClick={() =>
               document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
             }
+            aria-label="View my projects"
           >
-            View My Work
+            <span className="relative z-10">Explore My Work</span>
+            <span className="absolute inset-0 bg-gradient-to-r from-[#00D4FF] to-[#7C5CFC] 
+                           opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </button>
+          
           <button
-            className="font-mono text-[12px] md:text-[13px] border border-foreground/20
-                        text-foreground px-6 md:px-10 py-2.5 md:py-3.5 rounded-full
-                        transition-all duration-300 hover:border-[#00D4FF]/50 hover:bg-[#00D4FF]/5"
+            className="font-mono text-[13px] md:text-[14px] px-8 py-3.5 rounded-full 
+                       backdrop-blur-md transition-all duration-300 
+                       focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/40
+                       hover:shadow-md"
+            style={{
+              ...textStyles.ctaSecondary,
+              boxShadow: theme === 'dark'
+                ? '0 4px 20px rgba(0, 0, 0, 0.25)'
+                : '0 4px 16px rgba(0, 0, 0, 0.08)',
+            }}
             onClick={() =>
               document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
             }
+            aria-label="Contact me"
           >
-            Let's Talk
+            Let's Connect
           </button>
         </div>
 
-        {/* Code block — slightly smaller on mobile */}
-        <div
-          className="hero-text-anim mt-6 md:mt-8 rounded-2xl p-4 md:p-5
-                      max-w-[340px] md:max-w-[440px] glass elevation-md"
-        >
-          <pre className="font-mono text-[11px] md:text-[13px] leading-relaxed overflow-x-auto">
-            <span className="text-[#7C5CFC]">const</span>{' '}
-            <span className="text-[#00D4FF]">engineer</span>{' '}
-            <span className="text-foreground/40">=</span>
-            {' {\n'}
-            {'  '}
-            <span className="text-indigo-400">stack</span>
-            {': ['}
-            <span className="text-emerald-500">"TypeScript"</span>
-            {', '}
-            <span className="text-emerald-500">"React"</span>
-            {', '}
-            <span className="text-emerald-500">"Go"</span>
-            {'],\n'}
-            {'  '}
-            <span className="text-pink-400">focus</span>
-            {': '}
-            <span className="text-emerald-500">"distributed systems"</span>
-            {',\n'}
-            {'  '}
-            <span className="text-indigo-500">coffee</span>
-            {': '}
-            <span className="text-amber-500">Infinity</span>
-            {'\n}'}
-            {';'}
-          </pre>
+        {/* Scroll Indicator */}
+        <div className="hero-scroll-indicator absolute bottom-8 md:bottom-10 flex flex-col items-center gap-2">
+          <span 
+            className="font-mono text-[10px] uppercase tracking-wider"
+            style={textStyles.scrollText}
+          >
+            Scroll
+          </span>
+          <svg 
+            width="24" height="24" viewBox="0 0 24 24" 
+            fill="none" 
+            style={textStyles.scrollIcon}
+            aria-hidden="true"
+          >
+            <path 
+              d="M12 5v14M5 12l7 7 7-7" 
+              strokeWidth="1.5" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
       </div>
 
-      {/* ── Section Fades ────────────────────────────────────────── */}
-      <div className="section-fade-top" />
-      <div className="section-fade-bottom" />
+      {/* ── Minimal Decorative Accents ───────────────────────── */}
+      <div 
+        className="absolute top-6 left-6 w-1 h-1 rounded-full z-10 animate-hero-pulse"
+        style={{ 
+          background: textStyles.accent.violet,
+          boxShadow: textStyles.accent.glowViolet,
+        }} 
+      />
+      <div 
+        className="absolute top-6 right-6 w-1 h-1 rounded-full z-10 animate-pulse"
+        style={{ 
+          background: textStyles.accent.cyan,
+          boxShadow: textStyles.accent.glowCyan,
+          animationDelay: '0.5s'
+        }} 
+      />
     </section>
   );
 };

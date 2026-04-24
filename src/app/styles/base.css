@@ -329,3 +329,108 @@
       0 20px 40px rgba(0, 0, 0, 0.12),
       0 0 60px rgba(124, 92, 252, 0.18);
   }
+
+  /* ═══════════════════════════════════════════════════════════════
+   HERO SECTION — Video & Layering Fixes
+   ═══════════════════════════════════════════════════════════════ */
+
+/* GPU-accelerated video transitions */
+video {
+  will-change: opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  transition: opacity 0.35s ease;
+}
+
+/* Ensure proper layering for Alt+Tab visibility */
+section[aria-label="Hero section"] {
+  isolation: isolate;
+  contain: layout paint style;
+}
+
+/* Prevent content from being buried under overlays */
+section[aria-label="Hero section"] > div.relative.z-20 {
+  position: relative;
+  z-index: 20 !important;
+}
+
+/* Smooth pulse animation for decorative accents */
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 0.6; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.2); 
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACCESSIBILITY & REDUCED MOTION
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  video {
+    transition: none !important;
+  }
+  
+  .hero-eyebrow,
+  .hero-name,
+  .hero-tagline,
+  .hero-description,
+  .hero-cta-group,
+  .hero-scroll-indicator {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Focus visible for keyboard navigation */
+button:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TEXT RENDERING OPTIMIZATIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+.hero-name,
+.hero-tagline {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure text shadows don't cause performance issues */
+@media (prefers-reduced-transparency: reduce) {
+  .hero-name,
+  .hero-tagline,
+  .hero-description {
+    text-shadow: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VIDEO OVERLAY GRADIENTS — Fallback for older browsers
+   ═══════════════════════════════════════════════════════════════ */
+
+@supports not (background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0.9) 100%)) {
+  [style*="radial-gradient"] {
+    background: rgba(9, 9, 16, 0.85) !important;
+  }
+}

@@ -6,21 +6,21 @@ import { ModeToggle } from '@shared/components/common/ThemeToggle';
 import { useTheme } from '@app/providers/theme-provider';
 
 const navLinks = [
-  { label: 'Home',       id: 'home',       sub: 'Start here',       icon: (c:string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg> },
-  { label: 'Projects',   id: 'projects',   sub: 'Selected work',    icon: (c:string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg> },
-  { label: 'Skills',     id: 'skills',     sub: 'The stack',        icon: (c:string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> },
-  { label: 'Experience', id: 'experience', sub: 'Career timeline',  icon: (c:string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg> },
-  { label: 'About',      id: 'about',      sub: 'I code with intent', icon: (c:string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> },
-  { label: 'Contact',    id: 'contact',    sub: "Let's build",      icon: (c:string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> },
+  { label: 'Home', id: 'home', sub: 'Start here', icon: (c: string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" /><path d="M9 21V12h6v9" /></svg> },
+  { label: 'Projects', id: 'projects', sub: 'Selected work', icon: (c: string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 21h8M12 17v4" /></svg> },
+  { label: 'Skills', id: 'skills', sub: 'The stack', icon: (c: string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg> },
+  { label: 'Experience', id: 'experience', sub: 'Career timeline', icon: (c: string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" /></svg> },
+  { label: 'About', id: 'about', sub: 'I code with intent', icon: (c: string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg> },
+  { label: 'Contact', id: 'contact', sub: "Let's build", icon: (c: string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg> },
 ];
 
 const Navbar = () => {
-  const [scrolled, setScrolled]   = useState(false);
-  const [menuOpen, setMenuOpen]   = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  const navigate  = useNavigate();
-  const location  = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 80);
@@ -72,7 +72,7 @@ const Navbar = () => {
           DESKTOP NAVBAR
       ════════════════════════════════════════ */}
       <div className="hidden lg:block fixed z-[999] top-0 left-0 right-0 pointer-events-none">
-        
+
         {/* ── SCROLLED STATE ── */}
         <nav
           style={{
@@ -129,8 +129,8 @@ const Navbar = () => {
                 background: 'rgba(124,92,252,0.06)', cursor: 'pointer',
                 transition: 'all 0.2s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background='rgba(124,92,252,0.10)'; e.currentTarget.style.borderColor='rgba(124,92,252,0.55)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background='rgba(124,92,252,0.06)'; e.currentTarget.style.borderColor='rgba(124,92,252,0.30)'; }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(124,92,252,0.10)'; e.currentTarget.style.borderColor = 'rgba(124,92,252,0.55)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(124,92,252,0.06)'; e.currentTarget.style.borderColor = 'rgba(124,92,252,0.30)'; }}
             >
               ↓ Resume
             </button>
@@ -201,8 +201,8 @@ const Navbar = () => {
               background: 'rgba(124,92,252,0.06)', cursor: 'pointer',
               transition: 'all 0.2s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.background='rgba(124,92,252,0.10)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background='rgba(124,92,252,0.06)'; }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(124,92,252,0.10)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(124,92,252,0.06)'; }}
           >
             ↓ Resume
           </button>
@@ -352,7 +352,7 @@ const Navbar = () => {
             {/* Bottom Stack: Resume & Socials */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28 }}>
               <button
-                onClick={() => { setMenuOpen(false); window.open('/resume.pdf','_blank'); }}
+                onClick={() => { setMenuOpen(false); window.open('/resume.pdf', '_blank'); }}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 10,
                   background: 'none', border: '1px solid rgba(124,92,252,0.28)',
@@ -365,17 +365,17 @@ const Navbar = () => {
                 onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(124,92,252,0.28)'; }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
                 </svg>
                 Resume
               </button>
-              
+
               <div style={{ display: 'flex', gap: 24 }}>
                 <a href="https://github.com" target="_blank" rel="noreferrer" style={{ color: textMuted, transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = textActive} onMouseLeave={e => e.currentTarget.style.color = textMuted}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22" /></svg>
                 </a>
                 <a href="https://linkedin.com" target="_blank" rel="noreferrer" style={{ color: textMuted, transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = textActive} onMouseLeave={e => e.currentTarget.style.color = textMuted}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" /><circle cx="4" cy="4" r="2" /></svg>
                 </a>
               </div>
             </div>
