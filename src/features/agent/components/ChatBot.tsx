@@ -6,7 +6,7 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { useChat } from '../hooks/useChat';
 import type { ChatMessage } from '../services/ai-service';
-import maskImg from '@shared/assets/mask.png';
+import maskImg from '@shared/assets/images/mask.png';
 
 const GaraYakaMask = ({ size = 24 }: { size?: number }) => (
   <img 

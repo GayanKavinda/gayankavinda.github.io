@@ -3,8 +3,8 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTheme } from '@app/providers/theme-provider';
-import morningVideo from '@shared/assets/morning.mp4';
-import nightVideo from '@shared/assets/night.mp4';
+import morningVideo from '@shared/assets/videos/demonSlayerInosuke-Morning.mp4';
+import nightVideo from '@shared/assets/videos/demonSlayerInosuke-Night.mp4';
 
 gsap.registerPlugin(ScrollTrigger);
 

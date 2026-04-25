@@ -9,7 +9,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion } from 'framer-motion';
-import maskImg from '@shared/assets/mask.png';
+import maskImg from '@shared/assets/images/mask.png';
 import { useTheme } from '@app/providers/theme-provider';
 
 // Impact-driven stats

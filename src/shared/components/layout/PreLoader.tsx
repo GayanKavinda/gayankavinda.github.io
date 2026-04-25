@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Signature } from '@shared/registry/spell-ui/signature';
-import maskImg from '@shared/assets/cyberpunk-design-mask.png';
+import maskImg from '@shared/assets/images/cyberpunk-design-mask.png';
 
 export const PreLoader = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);

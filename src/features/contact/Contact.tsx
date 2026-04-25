@@ -11,10 +11,10 @@ import { Input } from '@shared/components/ui/input';
 import { Label } from '@shared/components/ui/label';
 import { Textarea } from '@shared/components/ui/textarea';
 
-import maskImg from '@shared/assets/mask.png';
-import dancerImg from '@shared/assets/dancer.png';
-import mapDark from '@shared/assets/map-dark.webp';
-import mapWhite from '@shared/assets/map-white.webp';
+import maskImg from '@shared/assets/images/mask.png';
+import dancerImg from '@shared/assets/images/dancer.png';
+import mapDark from '@shared/assets/images/map-dark.webp';
+import mapWhite from '@shared/assets/images/map-white.webp';
 import { useTheme } from '@app/providers/theme-provider';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
