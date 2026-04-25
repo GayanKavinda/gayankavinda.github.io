@@ -254,7 +254,7 @@
 
 /* ── Theme Toggle — Instant snap ────────────────────────────────────────── */
 /* Scoped to color/bg only. Never pauses transform-based animations. */
-.theme-snap *,
+/* .theme-snap *,
 .theme-snap *::before,
 .theme-snap *::after {
   transition:
@@ -263,7 +263,7 @@
     border-color     0ms,
     fill             0ms,
     stroke           0ms !important;
-}
+} */
 
 /* ── Reduced Motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

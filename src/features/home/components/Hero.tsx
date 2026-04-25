@@ -133,10 +133,22 @@ const Hero = () => {
           : '0 3px 16px rgba(0, 0, 0, 0.15)',
       },
       tagline: {
-        color: isDark ? '#00D4FF' : '#7C5CFC',
+        color: isDark ? 'rgba(255, 255, 255, 0.95)' : 'rgba(23, 22, 33, 0.9)',
         textShadow: isDark 
-          ? '0 2px 14px rgba(0, 0, 0, 0.45)' 
-          : '0 2px 12px rgba(245, 245, 250, 0.7)',
+          ? '0 2px 10px rgba(0, 0, 0, 0.5)' 
+          : '0 2px 10px rgba(245, 245, 250, 0.8)',
+      },
+      taglineHighlight: {
+        backgroundImage: isDark 
+          ? 'linear-gradient(to right, #00D4FF 0%, #7C5CFC 50%, #00D4FF 100%)' 
+          : 'linear-gradient(to right, #7C5CFC 0%, #FF007A 50%, #7C5CFC 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+        color: 'transparent',
+        filter: isDark 
+          ? 'drop-shadow(0 0 16px rgba(124, 92, 252, 0.5))' 
+          : 'drop-shadow(0 4px 12px rgba(124, 92, 252, 0.25))',
       },
       description: {
         color: isDark ? 'rgba(238, 237, 248, 0.95)' : 'rgba(23, 22, 33, 0.92)',
@@ -254,7 +266,15 @@ const Hero = () => {
                      text-[clamp(24px,6vw,42px)] tracking-tight"
           style={textStyles.tagline}
         >
-          Building <em className="not-italic font-playfair">systems that scale</em>.
+          Building <em 
+            className="italic font-normal gradient-animation" 
+            style={{ 
+              ...textStyles.taglineHighlight,
+              fontFamily: "'Instrument Serif', serif", 
+              paddingRight: '0.05em',
+              display: 'inline-block'
+            }}
+          >systems that scale</em>.
         </h2>
 
         {/* Description */}

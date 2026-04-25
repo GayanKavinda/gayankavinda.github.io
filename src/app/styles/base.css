@@ -1,5 +1,5 @@
 /* src/app/styles/base.css */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
   @tailwind base;
   @tailwind components;
@@ -157,6 +157,19 @@
       pointer-events: none;
       z-index: 30;
       background: linear-gradient(to top, hsl(var(--background)), transparent);
+    }
+
+    .theme-transition, 
+    .theme-transition body,
+    .theme-transition main,
+    .theme-transition section,
+    .theme-transition header,
+    .theme-transition nav,
+    .theme-transition footer,
+    .theme-transition .premium-card {
+      transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                  border-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                  color 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
   }
 
