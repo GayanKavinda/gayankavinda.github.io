@@ -52,11 +52,11 @@ const Navbar = () => {
   // ─── Theme-aware style tokens ─────────────────────────────────────────────
   const pillBase: React.CSSProperties = {
     display: 'flex', alignItems: 'center',
-    background: isDark ? 'rgba(17,17,17,0.90)' : 'rgba(255,255,255,0.90)',
+    background: isDark ? 'rgba(17,17,17,0.70)' : 'rgba(255,255,255,0.70)',
     border: isDark ? '1px solid rgba(255,255,255,0.09)' : '1px solid rgba(0,0,0,0.09)',
     borderRadius: 50,
-    backdropFilter: 'blur(24px)',
-    WebkitBackdropFilter: 'blur(24px)',
+    backdropFilter: 'blur(12px)',
+    WebkitBackdropFilter: 'blur(12px)',
     boxShadow: isDark ? '0 2px 20px rgba(0,0,0,0.4)' : '0 2px 20px rgba(0,0,0,0.08)',
   };
   const textMuted = isDark ? 'rgba(245,240,232,0.45)' : 'rgba(26,26,46,0.72)';

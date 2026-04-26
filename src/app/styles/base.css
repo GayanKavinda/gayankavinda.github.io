@@ -1,5 +1,30 @@
 /* src/app/styles/base.css */
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* ── Custom Display Fonts ─────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Praktika Rounded';
+  src: url('/fonts/praktika-rounded-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Winner Sans';
+  src: url('/fonts/winner-sans-bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Audiowide';
+  src: url('/fonts/Audiowide-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
   @tailwind base;
   @tailwind components;
@@ -344,7 +369,7 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════
-   HERO SECTION — Video & Layering Fixes
+   HERO SECTION — Video & Layering
    ═══════════════════════════════════════════════════════════════ */
 
 /* GPU-accelerated video transitions */
@@ -355,16 +380,9 @@ video {
   transition: opacity 0.35s ease;
 }
 
-/* Ensure proper layering for Alt+Tab visibility */
+/* Layering only — no contain (causes visual wash artifacts) */
 section[aria-label="Hero section"] {
   isolation: isolate;
-  contain: layout paint style;
-}
-
-/* Prevent content from being buried under overlays */
-section[aria-label="Hero section"] > div.relative.z-20 {
-  position: relative;
-  z-index: 20 !important;
 }
 
 /* Smooth pulse animation for decorative accents */

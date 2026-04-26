@@ -377,8 +377,8 @@ const MaskTransition = () => {
               // Fade in 0→0.3, full 0.3→0.7, fade out 0.7→1
               const op =
                 p < 0.3 ? p / 0.3 :
-                p < 0.7 ? 1 :
-                (1 - p) / 0.3;
+                  p < 0.7 ? 1 :
+                    (1 - p) / 0.3;
               maskWrapRef.current.style.opacity = String(Math.max(0, Math.min(1, op)));
             },
           },

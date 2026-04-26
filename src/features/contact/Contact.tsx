@@ -120,10 +120,10 @@ function ChipGroup({
                 ? '#7C5CFC'
                 : 'hsl(var(--foreground)/0.50)',
               border: `1px solid ${active
-                  ? 'rgba(124, 92, 252, 0.30)'
-                  : isDark
-                    ? 'hsl(0 0% 100% / 0.07)'
-                    : 'hsl(220 15% 15% / 0.08)'
+                ? 'rgba(124, 92, 252, 0.30)'
+                : isDark
+                  ? 'hsl(0 0% 100% / 0.07)'
+                  : 'hsl(220 15% 15% / 0.08)'
                 }`,
               fontWeight: active ? 600 : 400,
             }}

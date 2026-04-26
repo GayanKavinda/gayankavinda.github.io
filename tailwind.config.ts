@@ -16,6 +16,11 @@ export default {
         mono: ['"DM Mono"', 'monospace'],
         sans: ['"Instrument Sans"', 'sans-serif'],
         jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
+        praktika: ['"Praktika Rounded"', 'sans-serif'],
+        winner: ['"Winner Sans"', 'sans-serif'],
+        syne: ['Syne', 'sans-serif'],
+        bangers: ['Bangers', 'cursive'],
+        audiowide: ['Audiowide', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
