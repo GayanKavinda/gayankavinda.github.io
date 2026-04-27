@@ -1,38 +1,36 @@
-# Portfolio Standardization — TODO
+# Portfolio Framer Motion Enhancement
 
-## Phase 1: Core Layout & Hero
+## Global & Shared
+- [x] Remove Anime HUD and Glitch effects from all sections
+- [x] Fix `App.tsx` page transitions (AnimatePresence)
+- [x] Ensure `Magnetic.tsx` is clean and optimized
 
-- [x] Standardize Hero CTA Buttons (mapping to Violet/Cyan, consistent padding)
-- [x] Modernize Hero Code Block (glassmorphism, themed syntax highlighting)
-- [x] Align Hero Header typography with global standards
+## Hero Section
+- [x] Remove scanlines and HUD markers
+- [x] Convert GSAP entrance to Framer Motion
+- [x] Implement staggered character reveal for name
+- [x] Apply `Magnetic` to buttons
 
-## Phase 2: Projects Section Refinement
+## Navigation
+- [x] Implement `layoutId` active indicators in `Navbar.tsx`
 
-- [x] Refactor `ProjectCard` to use `.elevation-card` and `.shimmer-border`
-- [x] Standardize `Projects` header and ambient blobs (Violet/Cyan)
-- [x] Global color audit for hardcoded HSL values in Projects
+## Projects
+- [/] Implement 3D Hover perspective tilt in `ProjectCard.tsx` (In progress)
 
-## Phase 3: Experience & Timeline
+## Tech Stack
+- [x] Implement staggered reveal for categories
+- [x] Add hover-scale and glow-drift effects to skill chips
 
-- [x] Standardize `Experience` header column
-- [x] Re-theme timeline spine and connector dots (Violet/Cyan)
-- [x] Apply `elevation-card` to `ExperienceCard`
+## Experience
+- [x] Refine 3D card tilt with smoother lerping
+- [x] Add scroll-linked progress indicator for the timeline spine
 
-## Phase 4: Contact & Engagement
+## Engineering Philosophy
+- [x] Trigger mockup animations with `useInView`
+- [x] Remove [ DATA_STREAM ] labels and corner brackets
 
-- [x] Modernize `Contact` form inputs (focus rings, offsets)
-- [x] Re-theme chip selectors and upload zone
-- [x] Refactor info panel with consistent glassmorphism
+## Contact
+- [x] Add float-in animations for form fields
+- [x] Apply `Magnetic` to send button
+- [x] Remove [ SOURCE_INFO ] labels and corner brackets
 
-## Phase 5: Philosophy Mockups
-
-- [x] Update `ObservabilityMockup` with themed backgrounds (Light/Dark)
-- [x] Update `SimplicityMockup` with themed backgrounds (Light/Dark)
-- [x] Update `TestingMockup` with themed backgrounds (Light/Dark)
-- [x] Update `FailureMockup` with themed backgrounds (Light/Dark)
-
-## Phase 6: Final Verification
-
-- [x] Visual sweep in Browser across both themes
-- [x] Mobile responsive check
-- [x] Build & Test pass

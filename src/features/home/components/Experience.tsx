@@ -1,6 +1,6 @@
 // src/features/about/components/Experience.tsx
 
-import { motion, useMotionValue, useMotionTemplate, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useMotionTemplate, useSpring, useScroll, useTransform } from 'framer-motion';
 import React, { useRef, useState } from 'react';
 import { Badge } from '@shared/components/ui/badge';
 
@@ -123,7 +123,7 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const springCfg = { damping: 22, stiffness: 280 };
+  const springCfg = { damping: 28, stiffness: 220 };
   const rotateX = useSpring(0, springCfg);
   const rotateY = useSpring(0, springCfg);
 
@@ -211,7 +211,7 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
               </div>
 
               {/* Role */}
-              <h3 className="font-display font-medium text-base md:text-[18px] text-foreground/80 dark:text-foreground tracking-tight leading-tight">
+              <h3 className="font-jakarta font-semibold text-base md:text-[18px] text-foreground/80 dark:text-foreground tracking-tight leading-tight">
                 {entry.role}
               </h3>
 
@@ -311,6 +311,14 @@ ExperienceCard.displayName = 'ExperienceCard';
 
 const Experience = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll progress for the timeline spine
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start center", "end center"]
+  });
+  
+  const spineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
     <section
@@ -338,14 +346,6 @@ const Experience = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.55 }}
             >
-              <div className="inline-flex items-center gap-2 bg-muted/50 border border-border/50 rounded-full px-5 py-2 mb-6 backdrop-blur-sm">
-                <span className="text-[10px] font-mono tracking-widest text-[#00D4FF]">
-                  ///
-                </span>
-                <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-muted-foreground font-medium">
-                  Timeline
-                </span>
-              </div>
               <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
                 Professional{' '}
                 <span className="font-playfair italic font-medium text-[#7C5CFC]">
@@ -408,7 +408,12 @@ const Experience = () => {
           <div className="relative md:pl-10">
 
             {/* Vertical spine — only visible on md+ */}
-            <div className="absolute left-0 top-4 bottom-4 w-px bg-gradient-to-b from-[#00D4FF]/15 via-white/[0.06] to-transparent hidden md:block" />
+            <div className="absolute left-0 top-4 bottom-4 w-[2px] bg-white/[0.06] hidden md:block">
+              <motion.div 
+                className="w-full bg-gradient-to-b from-[#7C5CFC] via-[#00D4FF] to-transparent origin-top"
+                style={{ height: spineHeight }}
+              />
+            </div>
 
             <div className="flex flex-col gap-5">
               {entries.map((entry, i) => (

@@ -20,6 +20,36 @@ import ScrollToTop from "@shared/components/layout/ScrollToTop";
 
 const queryClient = new QueryClient();
 
+import { AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
+
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        {/* Core */}
+        <Route path="/" element={<Home />} />
+        <Route path="/projects" element={<AllProjects />} />
+        <Route path="/projects/:slug" element={<ProjectDetail />} />
+
+        {/* Redirects for direct section access — ensures /experience etc don't 404 */}
+        <Route path="/experience" element={<Navigate to="/#experience" replace />} />
+        <Route path="/about" element={<Navigate to="/#about" replace />} />
+        <Route path="/contact" element={<Navigate to="/#contact" replace />} />
+        <Route path="/skills" element={<Navigate to="/#skills" replace />} />
+
+        {/* Personal pages */}
+        <Route path="/now" element={<Now />} />
+        <Route path="/uses" element={<Uses />} />
+
+        {/* Catch-all */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
+
 const App = () => (
   <ThemeProvider defaultTheme="dark" storageKey="gy-theme">
     <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
@@ -34,26 +64,7 @@ const App = () => (
             }}
           >
             <ScrollToTop />
-            <Routes>
-              {/* Core */}
-              <Route path="/" element={<Home />} />
-              <Route path="/projects" element={<AllProjects />} />
-              <Route path="/projects/:slug" element={<ProjectDetail />} />
-
-              {/* Redirects for direct section access — ensures /experience etc don't 404 */}
-              <Route path="/experience" element={<Navigate to="/#experience" replace />} />
-              <Route path="/about" element={<Navigate to="/#about" replace />} />
-              <Route path="/contact" element={<Navigate to="/#contact" replace />} />
-              <Route path="/skills" element={<Navigate to="/#skills" replace />} />
-
-
-              {/* Personal pages */}
-              <Route path="/now" element={<Now />} />
-              <Route path="/uses" element={<Uses />} />
-
-              {/* Catch-all */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <AnimatedRoutes />
 
             {/* Portfolio Agent - Chatbot */}
             <ChatBot />

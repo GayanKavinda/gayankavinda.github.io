@@ -60,6 +60,7 @@ const TerminalPanel = ({
 
   return (
     <div
+      className="hidden lg:block"
       style={{
         position: 'absolute',
         [side]: 'clamp(20px, 4vw, 60px)',
@@ -165,8 +166,12 @@ const StatRow = ({ isDark }: { isDark: boolean }) => {
         transform: 'translateX(-50%)',
         zIndex: 16,
         display: 'flex',
-        gap: 'clamp(8px, 2vw, 20px)',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: 'clamp(8px, 1.5vw, 20px)',
         pointerEvents: 'none',
+        width: '100%',
+        padding: '0 20px'
       }}
     >
       {STATS.map((stat) => (

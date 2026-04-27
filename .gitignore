@@ -32,3 +32,9 @@ dist-ssr
 # Opencode local settings
 .opencode/
 
+# AgentsAI local settings
+.agents/
+
+# Skills local settings
+.skills/
+

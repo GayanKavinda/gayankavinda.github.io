@@ -1,165 +1,134 @@
-// src/features/home/components/Hero.tsx
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
-import morningVideo from '@shared/assets/videos/demonSlayerInosuke-Morning.mp4';
-import nightVideo from '@shared/assets/videos/demonSlayerInosuke-Night.mp4';
+import lightHeroImg from '@shared/assets/images/hero/whitemode.png';
+import darkHeroImg from '@shared/assets/images/hero/darkmode.png';
+import Magnetic from '@shared/components/animations/Magnetic';
 
-gsap.registerPlugin(ScrollTrigger);
-
-// ── Per-character split for stagger animation ─────────────────────────────
-const SplitChars = ({ text, className = '' }: { text: string; className?: string }) => (
+// ── Per-character split ───────────────────────────────────────────────────────
+const MotionSplitChars = ({ text, delay = 0 }: { text: string; delay?: number }) => (
   <>
     {text.split('').map((char, i) => (
-      <span
+      <motion.span
         key={i}
-        className={`hero-char inline-block ${className}`}
-        aria-hidden="true"
-        style={{ display: char === ' ' ? 'inline' : 'inline-block' }}
+        initial={{ y: '110%', opacity: 0, rotateX: -90, filter: 'blur(4px)' }}
+        animate={{ y: 0, opacity: 1, rotateX: 0, filter: 'blur(0px)' }}
+        transition={{ duration: 0.9, delay: delay + i * 0.035, ease: [0.215, 0.61, 0.355, 1] }}
+        className="inline-block"
+        style={{ transformOrigin: 'bottom' }}
       >
         {char === ' ' ? '\u00A0' : char}
-      </span>
+      </motion.span>
     ))}
   </>
 );
 
-// ── Anime-style angular clip path for buttons ─────────────────────────────
-// ── Anime-style corner-cut clip path for buttons ─────────────────────────────
+// ── Floating Orb (atmospheric particle) ──────────────────────────────────────
+const FloatingOrb = ({
+  x, y, size, color, delay, duration,
+}: { x: string; y: string; size: number; color: string; delay: number; duration: number }) => (
+  <motion.div
+    className="absolute rounded-full pointer-events-none"
+    style={{ left: x, top: y, width: size, height: size, background: color, filter: 'blur(1px)' }}
+    animate={{ y: [0, -20, 0], opacity: [0.15, 0.55, 0.15], scale: [1, 1.3, 1] }}
+    transition={{ duration, delay, repeat: Infinity, ease: 'easeInOut' }}
+  />
+);
+
+// ── Glitch text effect ────────────────────────────────────────────────────────
+const GlitchEyebrow = ({ text, color }: { text: string; color: string }) => (
+  <div className="relative select-none" style={{ fontFamily: "'Audiowide', sans-serif" }}>
+    <motion.span
+      style={{ color, fontSize: 'clamp(9px, 1.1vw, 12px)', letterSpacing: '0.3em', textTransform: 'uppercase' }}
+      animate={{ opacity: [1, 0.85, 1] }}
+      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      {text}
+    </motion.span>
+    {/* Glitch clone */}
+    <motion.span
+      className="absolute inset-0 overflow-hidden"
+      style={{ color: '#00D4FF', fontSize: 'clamp(9px, 1.1vw, 12px)', letterSpacing: '0.3em', textTransform: 'uppercase', clipPath: 'inset(30% 0 50% 0)' }}
+      animate={{ x: [0, -3, 3, 0], opacity: [0, 0.5, 0] }}
+      transition={{ duration: 0.15, delay: 4, repeat: Infinity, repeatDelay: 6 }}
+    >
+      {text}
+    </motion.span>
+  </div>
+);
+
+// ── Anime clip path ───────────────────────────────────────────────────────────
 const CLIP_BTN = 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)';
+
+// ── Scroll indicator ──────────────────────────────────────────────────────────
+const ScrollIndicator = ({ color }: { color: string }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 1, delay: 2.2 }}
+    className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+  >
+    <span style={{ fontFamily: "'Audiowide', sans-serif", fontSize: 8, letterSpacing: '0.35em', color, textTransform: 'uppercase' }}>
+      Scroll
+    </span>
+    {/* Orb-trail scroll indicator */}
+    <div className="relative w-4 h-10 flex justify-center">
+      <div className="absolute inset-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-current to-transparent" style={{ color }} />
+      {[0, 1, 2].map(i => (
+        <motion.div
+          key={i}
+          className="absolute w-[3px] h-[3px] rounded-full"
+          style={{ background: '#7C5CFC', left: 'calc(50% - 1.5px)' }}
+          animate={{ y: [0, 36], opacity: [0, 1, 0] }}
+          transition={{ duration: 1.5, delay: i * 0.5, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      ))}
+    </div>
+  </motion.div>
+);
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
-  const morningVideoRef = useRef<HTMLVideoElement>(null);
-  const nightVideoRef = useRef<HTMLVideoElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
-  const [videosReady, setVideosReady] = useState({ morning: false, night: false });
-
-  // ── Video Playback Management ──────────────────────────────────────────
-  useEffect(() => {
-    const morning = morningVideoRef.current;
-    const night = nightVideoRef.current;
-    if (!morning || !night) return;
-
-    const handlePlay = async (vid: HTMLVideoElement) => {
-      try {
-        if (vid.paused) {
-          await vid.play();
-        }
-      } catch (err) {
-        console.warn("Video playback was interrupted or blocked:", err);
-      }
-    };
-
-    if (theme === 'dark') {
-      morning.pause();
-      handlePlay(night);
-      gsap.to(morning, { opacity: 0, duration: 0.8 });
-      gsap.to(night, { opacity: 1, duration: 0.8 });
-    } else {
-      night.pause();
-      handlePlay(morning);
-      gsap.to(night, { opacity: 0, duration: 0.8 });
-      gsap.to(morning, { opacity: 1, duration: 0.8 });
-    }
-  }, [theme, videosReady]);
-
-  // Preload status for entrance animation
-  useEffect(() => {
-    const checkReady = () => {
-      const m = morningVideoRef.current;
-      const n = nightVideoRef.current;
-      if (m?.readyState >= 3 && n?.readyState >= 3) {
-        setVideosReady({ morning: true, night: true });
-      }
-    };
-
-    const m = morningVideoRef.current;
-    const n = nightVideoRef.current;
-    if (m && n) {
-      m.addEventListener('canplay', checkReady);
-      n.addEventListener('canplay', checkReady);
-      if (m.readyState >= 3 && n.readyState >= 3) checkReady();
-    }
-
-    return () => {
-      m?.removeEventListener('canplay', checkReady);
-      n?.removeEventListener('canplay', checkReady);
-    };
-  }, []);
-
-  // ── Entrance + scroll animations ───────────────────────────────────────
-  useEffect(() => {
-    if (!videosReady.morning && !videosReady.night) return;
-
-    const ctx = gsap.context(() => {
-      gsap.set(contentRef.current, { opacity: 0 });
-
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-      tl
-        .to(contentRef.current, { opacity: 1, duration: 0.05 }, 0)
-        .from('.hero-eyebrow', { y: 14, opacity: 0, duration: 0.6 }, 0.1)
-        .from('.hero-rule', { scaleX: 0, duration: 0.8, transformOrigin: 'center', ease: 'expo.out' }, 0.25)
-        .from('.hero-char', {
-          y: 70, opacity: 0, rotateX: -40, duration: 0.85,
-          stagger: 0.025, ease: 'expo.out'
-        }, 0.35)
-        .from('.hero-tagline', { y: 18, opacity: 0, duration: 0.65 }, 0.85)
-        .from('.hero-description', { y: 12, opacity: 0, duration: 0.55 }, 1.0)
-        .from('.hero-cta-group', { y: 12, opacity: 0, duration: 0.55 }, 1.1)
-        .from('.hero-scroll-indicator', { opacity: 0, duration: 0.45 }, 1.3)
-        .from('.hero-meta', { opacity: 0, duration: 0.4 }, 1.35);
-
-      // Scroll parallax
-      ScrollTrigger.create({
-        trigger: heroRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true,
-        onUpdate: (self) => {
-          gsap.set(contentRef.current, {
-            y: self.progress * 60,
-            opacity: 1 - self.progress * 0.3,
-          });
-        },
-      });
-
-      // Floating scroll arrow
-      gsap.to('.hero-scroll-indicator svg', {
-        y: 5, duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut',
-      });
-    }, heroRef);
-
-    return () => ctx.revert();
-  }, [videosReady]);
-
-  // ── Theme tokens ───────────────────────────────────────────────────────
   const isDark = theme === 'dark';
 
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 80]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0]);
+  const bgY = useTransform(scrollYProgress, [0, 1], [0, 160]);
+
   const c = useMemo(() => ({
-    botFade: isDark ? '#090910' : '#F5F5FA',
-    rule: isDark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.08)',
-    meta: isDark ? 'rgba(255,255,255,0.20)' : 'rgba(0,0,0,0.16)',
-    name: isDark ? '#FFFFFF' : '#ffffffff', // Deep Crimson — Red Vibe for name only
-    eyebrow: isDark ? 'rgba(0,212,255,0.85)' : 'rgba(124,92,252,0.75)',
-    tagline: isDark ? 'rgba(238,237,248,0.92)' : 'rgba(19,25,33,0.85)',
-    desc: isDark ? 'rgba(200,198,220,0.80)' : 'rgba(45,55,72,0.75)',
-    scroll: isDark ? 'rgba(255,255,255,0.30)' : 'rgba(0,0,0,0.24)',
-    nameGlow: isDark ? 'none' : '0.5px 0.5px 0px rgba(255,255,255,0.15)',
+    eyebrow: isDark ? '#00D4FF' : '#7C5CFC',
+    name: isDark ? '#FFFFFF' : '#1A1A1A',
+    nameGlow: isDark ? '0 0 40px rgba(0,212,255,0.25), 0 0 80px rgba(124,92,252,0.15)' : 'none',
+    tagline: isDark ? 'rgba(255,255,255,0.95)' : 'rgba(10,10,10,0.90)',
     gradText: isDark
-      ? 'linear-gradient(95deg, #00D4FF 0%, #A78BFA 50%, #FF6B9D 100%)'
-      : 'linear-gradient(95deg, #7C5CFC 0%, #5B21B6 50%, #DB2777 100%)',
+      ? 'linear-gradient(90deg, #00D4FF 0%, #7C5CFC 100%)'
+      : 'linear-gradient(90deg, #7C5CFC 0%, #00D4FF 100%)',
+    desc: isDark ? 'rgba(255,255,255,0.60)' : 'rgba(30,30,30,0.65)',
+    scroll: isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.25)',
     btnPrimary: isDark
       ? 'linear-gradient(135deg, #7C5CFC 0%, #00D4FF 100%)'
       : 'linear-gradient(135deg, #6B4EF0 0%, #00B8D9 100%)',
-    btnPrimaryGlow: 'none',
-    btnSecBorder: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.12)',
-    btnSecText: isDark ? 'rgba(238,237,248,0.88)' : 'rgba(19,25,33,0.82)',
-    btnSecBg: 'transparent',
-    vidFilter: isDark ? 'none' : 'brightness(0.92) contrast(1.05)',
-  }), [theme, isDark]);
+    btnSecBorder: isDark ? 'rgba(0,212,255,0.3)' : 'rgba(124,92,252,0.25)',
+    btnSecText: isDark ? '#FFFFFF' : '#1A1A1A',
+    rule: isDark ? 'rgba(0,212,255,0.25)' : 'rgba(124,92,252,0.20)',
+    vidFilter: isDark ? 'none' : 'brightness(0.95) contrast(1.05)',
+    ruleGrad: isDark
+      ? 'linear-gradient(to right, transparent, rgba(0,212,255,0.3), rgba(124,92,252,0.2), transparent)'
+      : 'linear-gradient(to left, rgba(124,92,252,0.3), transparent)',
+  }), [isDark]);
+
+  // Floating orbs data — positioned to match cosmic image theme
+  const orbs = useMemo(() => isDark ? [
+    { x: '62%', y: '15%', size: 6, color: 'rgba(0,212,255,0.9)', delay: 0, duration: 4.5 },
+    { x: '72%', y: '35%', size: 4, color: 'rgba(124,92,252,0.9)', delay: 1, duration: 5.5 },
+    { x: '80%', y: '55%', size: 5, color: 'rgba(0,212,255,0.7)', delay: 0.5, duration: 6 },
+    { x: '68%', y: '70%', size: 3, color: 'rgba(255,255,255,0.8)', delay: 2, duration: 4 },
+    { x: '88%', y: '25%', size: 4, color: 'rgba(124,92,252,0.8)', delay: 1.5, duration: 5 },
+    { x: '76%', y: '80%', size: 3, color: 'rgba(0,212,255,0.6)', delay: 3, duration: 7 },
+    { x: '92%', y: '60%', size: 5, color: 'rgba(255,255,255,0.5)', delay: 0.8, duration: 5.5 },
+  ] : [], [isDark]);
 
   return (
     <section
@@ -167,205 +136,197 @@ const Hero = () => {
       className="relative h-screen w-full overflow-hidden"
       aria-label="Hero section"
     >
-      {/* ── Video Background ──────────────────────────────────────── */}
-      <div className="absolute inset-0 -z-10 bg-black">
-        <video
-          ref={morningVideoRef}
-          src={morningVideo}
-          loop muted playsInline
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+      {/* ── Background Image ────────────────────────────────────────────────── */}
+      <motion.div style={{ y: bgY, willChange: 'transform' }} className="absolute inset-0 -z-10 bg-black">
+        <img
+          src={lightHeroImg} alt="" aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover object-[75%_center] sm:object-center transition-opacity duration-1000"
           style={{ opacity: isDark ? 0 : 1, filter: c.vidFilter }}
-          aria-hidden="true"
         />
-        <video
-          ref={nightVideoRef}
-          src={nightVideo}
-          loop muted playsInline
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+        <img
+          src={darkHeroImg} alt="" aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover object-[75%_center] sm:object-center transition-opacity duration-1000"
           style={{ opacity: isDark ? 1 : 0, filter: c.vidFilter }}
-          aria-hidden="true"
         />
-
-        {/* Bottom fade only — small and clean */}
+        {/* Depth vignette — pulls focus to content */}
         <div
-          className="absolute inset-x-0 bottom-0 h-[15vh] pointer-events-none"
+          className="absolute inset-0"
           style={{
-            background: `linear-gradient(to top, ${c.botFade} 0%, transparent 100%)`,
+            background: isDark
+              ? 'radial-gradient(ellipse 65% 100% at 75% 50%, transparent 0%, rgba(9,9,16,0.3) 70%, rgba(9,9,16,0.6) 100%)'
+              : 'radial-gradient(ellipse 65% 100% at 75% 50%, transparent 0%, rgba(245,245,250,0.2) 70%, rgba(245,245,250,0.5) 100%)',
           }}
         />
-      </div>
+      </motion.div>
 
-      {/* ── Bottom Metadata ───────────────────────────────────────── */}
-      <p
-        className="hero-meta absolute bottom-5 left-6 z-20 font-mono text-[9px] uppercase tracking-[0.2em] pointer-events-none"
-        style={{ color: c.meta }}
-      >
-        Portfolio · 2026
-      </p>
-      <p
-        className="hero-meta absolute bottom-5 right-6 z-20 font-mono text-[9px] uppercase tracking-[0.2em] pointer-events-none"
-        style={{ color: c.meta }}
-      >
-        GK ©
-      </p>
+      {/* ── Floating orbs ────────────────────────────────────────────────────── */}
+      {orbs.map((orb, i) => <FloatingOrb key={i} {...orb} />)}
 
-      {/* ── Centered Content — pushed down more to clear navbar decisive ── */}
+      {/* ── Bottom fade ──────────────────────────────────────────────────────── */}
       <div
-        ref={contentRef}
-        className="relative z-20 h-full flex flex-col items-center justify-center px-6 text-center"
-        style={{ paddingTop: '64px' }}
+        className="absolute inset-x-0 bottom-0 h-[15vh] z-10 pointer-events-none"
+        style={{ background: `linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)` }}
+      />
+
+      {/* ── Main content ─────────────────────────────────────────────────────── */}
+      <motion.div
+        style={{ y: contentY, opacity: contentOpacity, willChange: 'transform, opacity' }}
+        className="relative z-20 h-full flex flex-col items-center sm:items-end justify-center px-6 sm:pr-[clamp(24px,8vw,120px)] sm:pl-6 text-center sm:text-right"
       >
-        {/* Eyebrow — Audiowide (anime tech font) */}
-        <p
-          className="hero-eyebrow uppercase tracking-[0.3em] mb-4"
-          style={{
-            fontFamily: "'Audiowide', sans-serif",
-            fontSize: 'clamp(9px, 1.1vw, 12px)',
-            color: c.eyebrow,
-          }}
+        {/* Eyebrow with glitch */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex items-center gap-3 mb-4"
         >
-          Software Engineer
-        </p>
+          <GlitchEyebrow text="Software Engineer" color={c.eyebrow} />
+        </motion.div>
 
-        {/* Top Rule */}
-        <div
-          className="hero-rule h-px mb-5"
-          style={{
-            width: 'min(320px, 50vw)',
-            background: `linear-gradient(to right, transparent, ${c.rule} 25%, ${c.rule} 75%, transparent)`,
-          }}
+        {/* Top rule — animated shimmer */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="h-[1px] mb-6 sm:origin-right overflow-hidden"
+          style={{ width: 'clamp(100px, 20vw, 400px)' }}
+        >
+          <motion.div
+            className="h-full w-full"
+            style={{ background: c.ruleGrad }}
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+        </motion.div>
+
+        {/* Name block */}
+        <div className="relative">
+          <h1
+            className="select-none uppercase font-winner overflow-hidden"
+            style={{
+              fontSize: 'clamp(44px, 9.5vw, 96px)',
+              lineHeight: 0.88,
+              color: c.name,
+              letterSpacing: '0.05em',
+              textShadow: c.nameGlow,
+              perspective: '600px',
+              fontWeight: 700,
+            }}
+            aria-label="Gayan Kavinda"
+          >
+            <span className="block"><MotionSplitChars text="GAYAN" delay={0.6} /></span>
+            <span className="block mt-1"><MotionSplitChars text="KAVINDA" delay={0.82} /></span>
+          </h1>
+        </div>
+
+        {/* Bottom rule */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.9, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
+          className="h-[1px] mt-5 mb-5 sm:origin-right"
+          style={{ width: 'clamp(120px, 25vw, 500px)', background: c.ruleGrad }}
         />
 
-        {/* ── Name — Winner Sans (Professional bold geometric) ── */}
-        <h1
-          className="select-none uppercase font-winner"
-          style={{
-            fontSize: 'clamp(44px, 9.5vw, 92px)',
-            lineHeight: 0.9,
-            color: c.name,
-            letterSpacing: '0.04em',
-            textShadow: c.nameGlow,
-            perspective: '600px',
-            fontWeight: 700,
-          }}
-          aria-label="Gayan Kavinda"
-        >
-          <span className="block"><SplitChars text="GAYAN" /></span>
-          <span className="block mt-1"><SplitChars text="KAVINDA" /></span>
-        </h1>
-
-        {/* Bottom Rule */}
-        <div
-          className="hero-rule h-px mt-5 mb-4"
-          style={{
-            width: 'min(320px, 50vw)',
-            background: `linear-gradient(to right, transparent, ${c.rule} 25%, ${c.rule} 75%, transparent)`,
-          }}
-        />
-
-        {/* Tagline — Syne */}
-        <h2
-          className="hero-tagline font-syne font-semibold leading-snug"
-          style={{
-            fontSize: 'clamp(15px, 2.6vw, 24px)',
-            color: c.tagline,
-            letterSpacing: '-0.005em',
-          }}
+        {/* Tagline */}
+        <motion.h2
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.3 }}
+          className="font-syne font-semibold leading-snug"
+          style={{ fontSize: 'clamp(15px, 2.6vw, 26px)', color: c.tagline, letterSpacing: '-0.01em' }}
         >
           Architecting{' '}
           <em
             className="not-italic"
-            style={{
-              backgroundImage: c.gradText,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
+            style={{ backgroundImage: c.gradText, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
           >
             systems that scale
           </em>
-        </h2>
+        </motion.h2>
 
         {/* Description */}
-        <p
-          className="hero-description font-sans leading-relaxed mt-3 max-w-[440px]"
-          style={{ fontSize: 'clamp(12px, 1.3vw, 14px)', color: c.desc }}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.5 }}
+          className="font-sans leading-relaxed mt-3 max-w-[440px]"
+          style={{ fontSize: 'clamp(12px, 1.35vw, 14px)', color: c.desc, textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.6)' : 'none' }}
         >
-          Crafting distributed architectures and intuitive interfaces with precision.
-          Passionate about clean code, performance, and meaningful developer experiences.
-        </p>
+          Distributed systems architect. Premium digital experiences. Precision
+          engineering fused with clean, scalable architecture.
+        </motion.p>
 
-        {/* ── CTA Buttons — Anime angular clip-path ── */}
-        <div className="hero-cta-group flex flex-wrap justify-center gap-3 mt-7">
-          {/* Primary — angular shape */}
-          <button
-            className="group relative overflow-hidden text-white transition-all duration-300
-                       focus:outline-none focus:ring-2 focus:ring-[#7C5CFC]/50"
-            style={{
-              fontFamily: "'Audiowide', sans-serif",
-              fontSize: 'clamp(10px, 1vw, 12px)',
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              padding: '12px 36px',
-              background: c.btnPrimary,
-              boxShadow: c.btnPrimaryGlow,
-              clipPath: CLIP_BTN,
-            }}
-            onClick={() =>
-              document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
-            }
-            aria-label="View my projects"
+        {/* CTA Buttons */}
+        <div className="flex flex-wrap justify-center sm:justify-end gap-4 mt-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.7 }}
           >
-            <span className="relative z-10">Explore Work</span>
-            <span
-              className="absolute inset-0 bg-white/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{ clipPath: CLIP_BTN }}
-            />
-          </button>
+            <Magnetic strength={0.15}>
+              <button
+                className="group relative overflow-hidden text-white focus:outline-none focus:ring-2 focus:ring-[#7C5CFC]/50"
+                style={{
+                  fontFamily: "'Audiowide', sans-serif",
+                  fontSize: 'clamp(10px, 1vw, 11px)',
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  padding: '13px 38px',
+                  background: c.btnPrimary,
+                  clipPath: CLIP_BTN,
+                  boxShadow: isDark ? '0 0 30px rgba(124,92,252,0.3), 0 0 60px rgba(0,212,255,0.1)' : 'none',
+                  transition: 'box-shadow 0.3s ease, transform 0.2s ease',
+                }}
+                onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                <span className="relative z-10">Explore Work</span>
+                <motion.span
+                  className="absolute inset-0"
+                  style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 100%)' }}
+                  initial={{ x: '-100%' }}
+                  whileHover={{ x: '100%' }}
+                  transition={{ duration: 0.5 }}
+                />
+              </button>
+            </Magnetic>
+          </motion.div>
 
-          {/* Secondary — angular outline — no blur/mask */}
-          <button
-            className="transition-all duration-300 focus:outline-none focus:ring-2
-                       focus:ring-white/20 hover:shadow-md"
-            style={{
-              fontFamily: "'Audiowide', sans-serif",
-              fontSize: 'clamp(10px, 1vw, 12px)',
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              padding: '12px 36px',
-              border: `1.5px solid ${c.btnSecBorder}`,
-              color: c.btnSecText,
-              background: c.btnSecBg,
-              clipPath: CLIP_BTN,
-            }}
-            onClick={() =>
-              document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
-            }
-            aria-label="Contact me"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.8 }}
           >
-            Let's Connect
-          </button>
+            <Magnetic strength={0.15}>
+              <button
+                className="group relative focus:outline-none focus:ring-2 focus:ring-white/20"
+                style={{
+                  fontFamily: "'Audiowide', sans-serif",
+                  fontSize: 'clamp(10px, 1vw, 11px)',
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  padding: '13px 38px',
+                  border: `1.5px solid ${c.btnSecBorder}`,
+                  color: c.btnSecText,
+                  background: 'transparent',
+                  clipPath: CLIP_BTN,
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  transition: 'border-color 0.3s ease',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = c.eyebrow)}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = c.btnSecBorder)}
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Let's Connect
+              </button>
+            </Magnetic>
+          </motion.div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="hero-scroll-indicator absolute bottom-8 flex flex-col items-center gap-[5px]">
-          <span
-            className="font-mono text-[8px] uppercase tracking-[0.24em]"
-            style={{ color: c.scroll }}
-          >
-            Scroll
-          </span>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path
-              d="M8 2v12M2 8l6 6 6-6"
-              stroke={c.scroll}
-              strokeWidth="1"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-      </div>
+        {/* Scroll indicator */}
+        <ScrollIndicator color={c.scroll} />
+      </motion.div>
     </section>
   );
 };

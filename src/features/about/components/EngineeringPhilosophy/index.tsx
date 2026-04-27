@@ -1,5 +1,3 @@
-//src/components/sections/EngineeringPhilosophy/index.tsx
-
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ObservabilityMockup } from './mockups/ObservabilityMockup';
@@ -76,15 +74,7 @@ const EngineeringPhilosophy = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16 md:mb-20"
         >
-          <div className="inline-flex items-center gap-2 bg-muted/50 border border-border/50 rounded-full px-5 py-2 mb-6 backdrop-blur-sm">
-            <span className="text-[10px] font-mono tracking-widest text-[#00D4FF]">
-              ▶▶
-            </span>
-            <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-muted-foreground font-medium">
-              Architectural Core
-            </span>
-          </div>
-          <h2 className="font-jakarta font-extrabold text-[clamp(34px,6vw,54px)] text-foreground leading-[1.1] tracking-tight">
+          <h2 className="font-playfair text-[clamp(34px,6vw,54px)] font-bold text-foreground leading-[1.1] tracking-tight">
             The Engineering{' '}
             <span className="font-playfair italic font-medium text-[#7C5CFC]">
               Mindset
@@ -120,7 +110,7 @@ const EngineeringPhilosophy = () => {
                   {p.num}
                 </p>
 
-                <h3 className="font-jakarta text-[20px] font-bold text-foreground leading-snug tracking-tight group-hover:text-crimson transition-colors">
+                <h3 className="font-jakarta text-[20px] font-bold text-foreground leading-snug tracking-tight group-hover:text-primary transition-colors">
                   {p.title}
                 </h3>
 
@@ -133,7 +123,7 @@ const EngineeringPhilosophy = () => {
                 {p.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="text-[10px] font-mono tracking-wide text-foreground/50 border border-border/60 rounded-lg px-2.5 py-1 bg-muted/5 group-hover:border-crimson/10 transition-colors"
+                    className="text-[10px] font-mono tracking-wide text-foreground/50 border border-border/60 rounded-lg px-2.5 py-1 bg-muted/5 group-hover:border-primary/10 transition-colors"
                   >
                     {tag}
                   </span>
@@ -150,5 +140,3 @@ const EngineeringPhilosophy = () => {
 };
 
 export default EngineeringPhilosophy;
-
-

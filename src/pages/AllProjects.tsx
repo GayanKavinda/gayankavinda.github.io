@@ -68,27 +68,14 @@ const AllProjects = () => {
 
         {/* Header Section */}
         <header className="mb-20">
-           <motion.div
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ duration: 0.6 }}
-             className="flex items-center gap-3 mb-6"
-           >
-             <div className="w-10 h-px bg-crimson/40" />
-             <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-gold/80 flex items-center gap-2">
-               <Code2 className="w-3.5 h-3.5" />
-               Complete Archive
-             </span>
-           </motion.div>
-
            <motion.h1
              initial={{ opacity: 0, y: 20 }}
              animate={{ opacity: 1, y: 0 }}
              transition={{ duration: 0.6, delay: 0.1 }}
-             className="font-display font-extrabold text-6xl md:text-8xl tracking-tight text-foreground mb-8"
+             className="font-playfair font-bold text-6xl md:text-8xl tracking-tight text-foreground mb-8"
            >
              Selected{' '}
-             <span className="text-gradient">Projects</span>
+             <span className="font-playfair italic font-medium text-primary">Projects</span>
            </motion.h1>
 
            <motion.p

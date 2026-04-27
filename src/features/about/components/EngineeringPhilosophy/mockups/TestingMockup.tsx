@@ -1,47 +1,33 @@
-//src/components/sections/EngineeringPhilosophy/mockups/TestingMockup.tsx
-
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import { motion } from 'framer-motion';
 
 export const TestingMockup = () => {
-  const svgRef = useRef<SVGSVGElement>(null);
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      }
+    }
+  };
 
-  useEffect(() => {
-    const svg = svgRef.current;
-    if (!svg) return;
+  const rowVariants = {
+    hidden: { opacity: 0, x: -8 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: { duration: 0.4, ease: "easeOut" }
+    }
+  };
 
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: svg,
-          start: 'top 85%',
-          once: true,
-        },
-      });
-
-      // Test rows slide in
-      tl.from('.tst-row', {
-        opacity: 0,
-        x: -8,
-        duration: 0.35,
-        ease: 'power2.out',
-        stagger: 0.18,
-      }, 0);
-
-      // Progress bar grows
-      tl.from('.tst-progress', {
-        scaleX: 0,
-        duration: 0.8,
-        ease: 'power2.out',
-        transformOrigin: 'left center',
-      }, 0.6);
-    }, svgRef.current!);
-
-    return () => ctx.revert();
-  }, []);
+  const progressVariants = {
+    hidden: { scaleX: 0 },
+    visible: { 
+      scaleX: 1,
+      transition: { duration: 1, ease: "easeInOut", delay: 0.6 }
+    }
+  };
 
   const rows = [
     { y: 35,  pass: true,  w: 80 },
@@ -52,12 +38,15 @@ export const TestingMockup = () => {
   ];
 
   return (
-    <svg
-      ref={svgRef}
+    <motion.svg
       viewBox="0 0 280 160"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className="w-full h-full block"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
     >
       <rect width="280" height="160" rx="10" className="mockup-bg" />
       <rect width="280" height="26" rx="10" className="mockup-panel" />
@@ -67,25 +56,33 @@ export const TestingMockup = () => {
       <rect x="214" y="10" width="42" height="5" rx="2" fill="#22c55e" opacity="0.7" />
 
       {rows.map((r, i) => (
-        <g key={i} className="tst-row">
+        <motion.g key={i} variants={rowVariants}>
           <circle
             cx="22" cy={r.y + 6} r="6"
             fill={r.pass ? '#22c55e' : '#7C5CFC'}
             opacity={r.pass ? 0.8 : 0.85}
           />
           {r.pass ? (
-            <polyline
+            <motion.polyline
+              initial={{ pathLength: 0 }}
+              whileInView={{ pathLength: 1 }}
               points={`${18},${r.y + 6} ${21},${r.y + 9} ${26},${r.y + 3}`}
               stroke="#fff" strokeWidth="1.5" fill="none"
               strokeLinecap="round" strokeLinejoin="round"
+              transition={{ duration: 0.3, delay: 0.5 + i * 0.1 }}
             />
           ) : (
-            <>
+            <motion.g 
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 1 }}
+              transition={{ duration: 0.3, delay: 0.5 + i * 0.1 }}
+              style={{ transformOrigin: `22px ${r.y + 6}px` }}
+            >
               <line x1="18" y1={r.y + 3} x2="26" y2={r.y + 9}
                 stroke="#fff" strokeWidth="1.5" strokeLinecap="round" />
               <line x1="26" y1={r.y + 3} x2="18" y2={r.y + 9}
                 stroke="#fff" strokeWidth="1.5" strokeLinecap="round" />
-            </>
+            </motion.g>
           )}
           <rect x="36" y={r.y + 2} width={r.w} height="6" rx="2"
             fill="currentColor" className="text-foreground/10" opacity="0.85" />
@@ -93,19 +90,22 @@ export const TestingMockup = () => {
             width={r.pass ? 30 : 48} height="6" rx="2"
             fill={r.pass ? '#00D4FF' : '#7C5CFC'} opacity="0.4" />
           <rect x="236" y={r.y + 2} width="34" height="6" rx="2" fill="currentColor" className="text-foreground/5" />
-        </g>
+        </motion.g>
       ))}
 
       {/* Progress bar track */}
       <rect x="12" y="128" width="256" height="6" rx="3" fill="currentColor" className="text-foreground/5" />
-      <rect className="tst-progress"
+      <motion.rect
+        variants={progressVariants}
         x="12" y="128" width="200" height="6" rx="3"
-        fill="#22c55e" opacity="0.55" />
+        fill="#22c55e" opacity="0.55"
+        style={{ originX: 0 }}
+      />
 
       <rect x="12" y="140" width="40" height="5" rx="2" fill="#22c55e" opacity="0.4" />
       <rect x="58" y="140" width="30" height="5" rx="2" fill="#7C5CFC" opacity="0.4" />
       <rect x="94" y="140" width="50" height="5" rx="2" fill="currentColor" className="text-foreground/10" />
-    </svg>
+    </motion.svg>
   );
 };
 

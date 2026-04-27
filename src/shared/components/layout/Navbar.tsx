@@ -1,22 +1,22 @@
-//src/components/layout/Navbar.tsx
-
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ModeToggle } from '@shared/components/common/ThemeToggle';
 import { useTheme } from '@app/providers/theme-provider';
 
 const navLinks = [
-  { label: 'Home', id: 'home', sub: 'Start here', icon: (c: string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" /><path d="M9 21V12h6v9" /></svg> },
-  { label: 'Projects', id: 'projects', sub: 'Selected work', icon: (c: string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 21h8M12 17v4" /></svg> },
-  { label: 'Skills', id: 'skills', sub: 'The stack', icon: (c: string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg> },
-  { label: 'Experience', id: 'experience', sub: 'Career timeline', icon: (c: string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" /></svg> },
-  { label: 'About', id: 'about', sub: 'I code with intent', icon: (c: string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg> },
-  { label: 'Contact', id: 'contact', sub: "Let's build", icon: (c: string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg> },
+  { label: 'Home', id: 'home' },
+  { label: 'Projects', id: 'projects' },
+  { label: 'Skills', id: 'skills' },
+  { label: 'Experience', id: 'experience' },
+  { label: 'About', id: 'about' },
+  { label: 'Contact', id: 'contact' },
 ];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const navigate = useNavigate();
@@ -27,6 +27,26 @@ const Navbar = () => {
     window.addEventListener('scroll', fn, { passive: true });
     return () => window.removeEventListener('scroll', fn);
   }, []);
+
+  useEffect(() => {
+    if (location.pathname !== '/') return;
+    
+    const options = { threshold: 0.5, rootMargin: "-80px 0px -50% 0px" };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    }, options);
+
+    navLinks.forEach((link) => {
+      const el = document.getElementById(link.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [location.pathname]);
 
   // lock body scroll when mobile menu open
   useEffect(() => {
@@ -39,14 +59,19 @@ const Navbar = () => {
     if (id === 'home') {
       if (location.pathname !== '/') navigate('/');
       else window.scrollTo({ top: 0, behavior: 'smooth' });
+      setActiveSection('home');
       return;
     }
     if (location.pathname !== '/') {
       navigate('/');
-      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 120);
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
     } else {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     }
+    setActiveSection(id);
   };
 
   // ─── Theme-aware style tokens ─────────────────────────────────────────────
@@ -103,17 +128,23 @@ const Navbar = () => {
               <button
                 key={l.id}
                 onClick={() => go(l.id)}
-                className="nav-link"
+                className="relative py-1 group"
                 style={{
                   fontFamily: "'DM Mono',monospace", fontSize: 10,
-                  color: textMuted, letterSpacing: '0.18em',
+                  color: activeSection === l.id ? textActive : textMuted,
+                  letterSpacing: '0.18em',
                   textTransform: 'uppercase', background: 'none', border: 'none',
-                  cursor: 'pointer', transition: 'color 0.2s',
+                  cursor: 'pointer', transition: 'color 0.3s',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.color = textActive)}
-                onMouseLeave={e => (e.currentTarget.style.color = textMuted)}
               >
-                {l.label}
+                <span className="relative z-10">{l.label}</span>
+                {activeSection === l.id && (
+                  <motion.div
+                    layoutId="nav-active-scroll"
+                    className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-primary"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </button>
             ))}
           </div>
@@ -167,25 +198,24 @@ const Navbar = () => {
             <button
               key={l.id}
               onClick={() => go(l.id)}
+              className="relative px-3 py-1.5 group"
               style={{
                 fontFamily: "'DM Mono',monospace", fontSize: 10,
-                color: textMuted, letterSpacing: '0.14em',
-                textTransform: 'uppercase', padding: '6px 12px', borderRadius: 50,
-                border: '1px solid transparent', background: 'none',
-                cursor: 'pointer', transition: 'all 0.2s',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.color = textActive;
-                e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
-                e.currentTarget.style.borderColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.color = textMuted;
-                e.currentTarget.style.background = 'none';
-                e.currentTarget.style.borderColor = 'transparent';
+                color: activeSection === l.id ? textActive : textMuted,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase', borderRadius: 50,
+                border: 'none', background: 'none',
+                cursor: 'pointer', transition: 'color 0.3s',
               }}
             >
-              {l.label}
+              <span className="relative z-10">{l.label}</span>
+              {activeSection === l.id && (
+                <motion.div
+                  layoutId="nav-active-pill"
+                  className="absolute inset-0 bg-primary/10 border border-primary/20 rounded-full"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
             </button>
           ))}
           {/* Divider */}
@@ -379,7 +409,6 @@ const Navbar = () => {
                 </a>
               </div>
             </div>
-
           </div>
         </div>
       </div>
