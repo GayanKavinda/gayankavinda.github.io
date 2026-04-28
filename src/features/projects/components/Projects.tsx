@@ -7,6 +7,9 @@ import { Badge } from '@shared/components/ui/badge';
 import { allProjects } from '../data/projectData';
 import { ProjectViz } from './ProjectViz';
 import { Project } from '../types';
+import { useTheme } from '@app/providers/theme-provider';
+import bgDark from '@shared/assets/images/selected-projects/dark.jpeg';
+import bgWhite from '@shared/assets/images/selected-projects/white.png';
 
 const getTagColor = (tag: string): any => {
   const t = tag.toLowerCase();
@@ -107,6 +110,8 @@ const STRIDE = CARD_W + GAP; // 360px per card
 
 const Projects = () => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: false, margin: '-100px' });
 
@@ -123,45 +128,43 @@ const Projects = () => {
         containIntrinsicSize: '0 1000px'
       }}
     >
-      {/* Ambient blobs - reduced complexity */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-2xl opacity-50 will-change-transform"
-          style={{ background: 'hsla(var(--primary-hsl), 0.03)' }} />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full blur-2xl opacity-50 will-change-transform"
-          style={{ background: 'hsla(var(--secondary-hsl), 0.03)' }} />
+      {/* Background Image - Gojo */}
+      <div className="absolute inset-y-0 right-0 w-full md:w-3/4 pointer-events-none z-0 overflow-hidden">
+        <motion.img
+          key={isDark ? 'dark' : 'light'}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: isDark ? 0.55 : 0.45, x: 0 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          src={isDark ? bgDark : bgWhite}
+          alt=""
+          className="h-full w-full object-cover object-right"
+          style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
+        />
+        {/* Soft edge fade: fade out the left edge to blend with the background */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
       </div>
 
       {/* Header */}
       <motion.div
-        className="text-center mb-14 px-6"
+        className="relative z-10 text-center mb-14 px-6 flex flex-col items-center"
         initial={{ opacity: 0, y: 30 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="inline-flex items-center gap-2 bg-muted/50 border border-border/50 rounded-full px-5 py-2 mb-6 backdrop-blur-sm">
-          <span className="text-[10px] font-mono tracking-widest text-[#00D4FF]">
-            ///
-          </span>
-          <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-muted-foreground font-medium">
-            Featured Work
-          </span>
-        </div>
-        <h2 className="font-jakarta font-extrabold text-[clamp(34px,6vw,50px)] tracking-tight text-foreground">
+        <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
           Selected{' '}
           <span className="font-playfair italic font-medium text-[#7C5CFC]">
             Projects
           </span>
         </h2>
-        <div className="flex items-center justify-center gap-3 mt-5">
-          <div className="w-12 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsla(var(--primary-hsl), 0.5))' }} />
-          <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-[#7C5CFC] to-[#00D4FF]" />
-          <div className="w-12 h-px" style={{ background: 'linear-gradient(270deg, transparent, hsla(var(--secondary-hsl), 0.5))' }} />
-        </div>
+        <p className="text-sm text-foreground/50 dark:text-foreground/60 leading-relaxed max-w-[280px]">
+          Architecting scalable systems and refined sensory experiences across 10 years of engineering.
+        </p>
       </motion.div>
 
       {/* Single Row Marquee */}
       <motion.div
-        className="relative max-w-[1280px] mx-auto px-6 md:px-12 overflow-hidden"
+        className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-12 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : {}}
         transition={{ duration: 1, delay: 0.3 }}
@@ -203,7 +206,7 @@ const Projects = () => {
 
       {/* CTA */}
       <motion.div
-        className="text-center mt-16"
+        className="relative z-10 text-center mt-16"
         initial={{ opacity: 0, y: 20 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.7, delay: 0.5 }}

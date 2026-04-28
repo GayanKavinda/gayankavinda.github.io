@@ -847,21 +847,16 @@ const Contact = () => {
       <div className="max-w-[1140px] mx-auto px-4 sm:px-6 md:px-10">
 
         {/* Header */}
-        <div className="text-center mb-10 md:mb-14">
-          <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[hsl(var(--gold)/0.85)] mb-3">
-            // Get In Touch
-          </p>
-          <h2 className="font-display font-bold text-[clamp(28px,5vw,44px)] text-foreground tracking-tight">
-            Let&apos;s Build{' '}
-            <span className="font-display italic font-medium text-[hsl(var(--crimson))]">
-              Something
+        <div className="text-center mb-10 md:mb-14 flex flex-col items-center">
+          <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
+            Let&apos;s{' '}
+            <span className="font-playfair italic font-medium text-[#7C5CFC]">
+              Connect
             </span>
           </h2>
-          <div className="flex items-center justify-center gap-3 mt-4">
-            <div className="w-12 h-px bg-gradient-to-r from-transparent to-[hsl(var(--crimson))]" />
-            <div className="w-2 h-2 rounded-full bg-[hsl(var(--gold))]" />
-            <div className="w-12 h-px bg-gradient-to-l from-transparent to-[hsl(var(--crimson))]" />
-          </div>
+          <p className="text-sm text-foreground/50 dark:text-foreground/60 leading-relaxed max-w-[280px]">
+            Architecting scalable systems and refined sensory experiences across 10 years of engineering.
+          </p>
         </div>
 
         {/* Split layout — both cols same height via items-stretch */}

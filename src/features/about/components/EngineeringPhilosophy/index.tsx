@@ -72,17 +72,16 @@ const EngineeringPhilosophy = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16 md:mb-20"
+          className="text-center mb-16 md:mb-20 flex flex-col items-center"
         >
-          <h2 className="font-playfair text-[clamp(34px,6vw,54px)] font-bold text-foreground leading-[1.1] tracking-tight">
-            The Engineering{' '}
+          <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
+            Engineering{' '}
             <span className="font-playfair italic font-medium text-[#7C5CFC]">
-              Mindset
+              Philosophy
             </span>
           </h2>
-          <p className="text-[15px] md:text-[16px] text-muted-foreground mt-5 max-w-[500px] mx-auto leading-relaxed font-medium">
-            Standardizing technical excellence through production-tested
-            principles and systemic rigor.
+          <p className="text-sm text-foreground/40 leading-relaxed max-w-[280px]">
+            Architecting scalable systems and refined sensory experiences across 10 years of engineering.
           </p>
         </motion.div>
 

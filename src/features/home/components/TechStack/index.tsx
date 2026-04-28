@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useInView, animate, useMotionValue, useTransform } from 'framer-motion';
 import { SkillMarquee } from './SkillMarquee';
 import { SKILLS } from './constants';
+import { useTheme } from '@app/providers/theme-provider';
+import bgDark from '@shared/assets/images/skills/sakuna-dark.jpeg';
+import bgWhite from '@shared/assets/images/skills/sakuna-white.jpeg';
 
 // ── Animated count-up ────────────────────────────────────────────────────────
 function CountUp({ target, suffix = '' }: { target: number; suffix?: string }) {
@@ -20,6 +23,8 @@ function CountUp({ target, suffix = '' }: { target: number; suffix?: string }) {
 }
 
 const TechStack = () => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
@@ -44,7 +49,23 @@ const TechStack = () => {
   };
 
   return (
-    <section id="skills" ref={sectionRef} className="py-[80px] md:py-[100px] relative overflow-hidden">
+    <section id="skills" ref={sectionRef} className="py-[80px] md:py-[100px] relative overflow-hidden bg-background">
+      {/* Background Image - Sakuna */}
+      <div className="absolute inset-y-0 left-0 w-full md:w-3/4 pointer-events-none z-0 overflow-hidden">
+        <motion.img
+          key={isDark ? 'dark' : 'light'}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: isDark ? 0.55 : 0.45, x: 0 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          src={isDark ? bgDark : bgWhite}
+          alt=""
+          className="h-full w-full object-cover object-left"
+          style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
+        />
+        {/* Soft edge fade: fade out the right edge to blend with the background */}
+        <div className="absolute inset-0 bg-gradient-to-l from-background via-background/40 to-transparent" />
+      </div>
+
       <div className="max-w-[1280px] mx-auto px-6 md:px-12">
 
         {/* ── Header ────────────────────────────────────────────────── */}
@@ -52,13 +73,16 @@ const TechStack = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-10 md:mb-14"
+          className="relative z-10 text-center mb-10 md:mb-14 flex flex-col items-center"
         >
-          <h2 className="font-playfair text-[clamp(32px,5vw,56px)] font-bold text-foreground leading-tight">
-            The <em className="italic text-primary">Stack</em>
+          <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
+            Technical{' '}
+            <span className="font-playfair italic font-medium text-[#7C5CFC]">
+              Stack
+            </span>
           </h2>
-          <p className="text-[13px] md:text-[14px] text-muted-foreground mt-3 max-w-[360px] mx-auto leading-relaxed">
-            Technologies I use to build production-ready systems.
+          <p className="text-sm text-foreground/50 dark:text-foreground/60 leading-relaxed max-w-[280px]">
+            Architecting scalable systems and refined sensory experiences across 10 years of engineering.
           </p>
         </motion.div>
 
@@ -67,9 +91,9 @@ const TechStack = () => {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="flex justify-center mb-10 md:mb-14 px-6"
+          className="relative z-10 flex justify-center mb-10 md:mb-14 px-6"
         >
-          <div className="inline-flex border border-border rounded-2xl overflow-hidden divide-x divide-border bg-card/30 backdrop-blur-sm">
+          <div className="inline-flex border border-border rounded-2xl overflow-hidden divide-x divide-border bg-card/80 backdrop-blur-md shadow-xl shadow-background/20">
             {[
               { target: SKILLS.length, suffix: '+', label: 'Technologies'   },
               { target: 10,            suffix: '+', label: 'Years Experience' },
@@ -95,7 +119,7 @@ const TechStack = () => {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 1, delay: 0.5 }}
-          className="mb-8"
+          className="relative z-10 mb-8"
         >
           <SkillMarquee />
         </motion.div>

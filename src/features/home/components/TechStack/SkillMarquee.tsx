@@ -50,7 +50,7 @@ export const SkillMarquee = () => {
   return (
     <div 
       ref={containerRef}
-      className="w-full overflow-hidden py-16"
+      className="w-full overflow-hidden pt-16 pb-32"
       style={{
         maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
         WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',

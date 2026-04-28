@@ -17,7 +17,7 @@ export const SkillChip = ({ name, accentColor, description }: SkillChipProps) =>
         y: -4,
         transition: { type: "spring", stiffness: 400, damping: 25 }
       }}
-      className="group relative inline-flex items-center gap-2.5 px-4 py-2.5 bg-card/50 backdrop-blur-sm border border-border rounded-xl cursor-default select-none shrink-0 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 hover:z-50"
+      className="group relative inline-flex items-center gap-2.5 px-4 py-2.5 bg-card/90 backdrop-blur-md border border-border rounded-xl cursor-default select-none shrink-0 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 hover:z-50"
     >
       {/* Glow Drift Effect */}
       <motion.div

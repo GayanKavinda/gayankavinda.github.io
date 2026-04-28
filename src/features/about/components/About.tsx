@@ -91,11 +91,17 @@ const About = () => {
               }
             }}
           >
-            <motion.p variants={{ hidden: { opacity: 0, y: 15 }, visible: { opacity: 1, y: 0 } }} className="font-mono text-[11px] uppercase tracking-[0.3em] text-gold mb-4">// Technical Profile</motion.p>
-            <motion.h2 variants={{ hidden: { opacity: 0, y: 15 }, visible: { opacity: 1, y: 0 } }} className="font-jakarta font-extrabold text-[clamp(34px,5vw,50px)] text-foreground tracking-tight leading-[1.1]">
-              Engineering with <br />
-              <span className="font-playfair italic font-medium text-crimson">strategic intent</span>.
-            </motion.h2>
+            <motion.div variants={{ hidden: { opacity: 0, y: 15 }, visible: { opacity: 1, y: 0 } }} className="mb-8">
+              <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
+                About the{' '}
+                <span className="font-playfair italic font-medium text-[#7C5CFC]">
+                  Engineer
+                </span>
+              </h2>
+              <p className="text-sm text-foreground/50 dark:text-foreground/60 leading-relaxed max-w-[280px]">
+                Architecting scalable systems and refined sensory experiences across 10 years of engineering.
+              </p>
+            </motion.div>
 
             <motion.div variants={{ hidden: { opacity: 0, scaleX: 0 }, visible: { opacity: 1, scaleX: 1 } }} className="flex items-center gap-4 mt-7 origin-left">
               <div className="w-16 h-px bg-crimson" />
