@@ -3,6 +3,11 @@
 import { motion, useMotionValue, useMotionTemplate, useSpring, useScroll, useTransform } from 'framer-motion';
 import React, { useRef, useState } from 'react';
 import { Badge } from '@shared/components/ui/badge';
+import { useTheme } from '@app/providers/theme-provider';
+
+// Asset imports
+import yutaDark from '@shared/assets/images/experience/yuta-dark.jpeg';
+import yutaWhite from '@shared/assets/images/experience/yuta-white.jpeg';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -119,19 +124,28 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
   const [hovered, setHovered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(entry.current || index === 0);
   const cardRef = useRef<HTMLDivElement>(null);
+  const cardRect = useRef<DOMRect | null>(null);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const springCfg = { damping: 28, stiffness: 220 };
+  const springCfg = { damping: 30, stiffness: 150 };
   const rotateX = useSpring(0, springCfg);
   const rotateY = useSpring(0, springCfg);
 
   const spotlightBg = useMotionTemplate`radial-gradient(380px circle at ${mouseX}px ${mouseY}px, hsla(var(--primary-hsl), 0.07), transparent 40%)`;
 
+  const updateRect = () => {
+    if (cardRef.current) {
+      cardRect.current = cardRef.current.getBoundingClientRect();
+    }
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
+    if (!cardRect.current) updateRect();
+    const rect = cardRect.current;
+    if (!rect) return;
+
     mouseX.set(e.clientX - rect.left);
     mouseY.set(e.clientY - rect.top);
     const maxRot = 3;
@@ -148,6 +162,7 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.55, delay: index * 0.09, ease: [0.16, 1, 0.3, 1] }}
       className="relative"
+      style={{ willChange: 'transform, opacity' }}
     >
       {/* Timeline connector dot — sits to the left, lines up with the spine */}
       <div className="absolute -left-[46px] top-7 flex flex-col items-center gap-1 hidden md:flex">
@@ -167,15 +182,28 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
 
       <motion.div
         ref={cardRef}
+        layout="position"
         onMouseMove={handleMouseMove}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => { setHovered(false); rotateX.set(0); rotateY.set(0); }}
-        style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+        onMouseEnter={() => {
+          setHovered(true);
+          updateRect();
+        }}
+        onMouseLeave={() => {
+          setHovered(false);
+          rotateX.set(0);
+          rotateY.set(0);
+          cardRect.current = null;
+        }}
+        animate={{
+          y: hovered ? -6 : 0,
+        }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        style={{ rotateX, rotateY, transformStyle: 'preserve-3d', willChange: 'transform' }}
         className={`
           relative overflow-hidden rounded-2xl cursor-pointer
-          border transition-all duration-400 glass shimmer-border elevation-card
+          border transition-[border-color,box-shadow] duration-400 glass shimmer-border elevation-card
           ${hovered
-            ? 'border-black/12 dark:border-white/12 shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] -translate-y-1.5'
+            ? 'border-black/12 dark:border-white/12 shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)]'
             : 'border-black/[0.07] dark:border-white/[0.06] shadow-sm dark:shadow-none'
           }
         `}
@@ -266,7 +294,7 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
               marginTop: isExpanded ? 20 : 0
             }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden"
+            className="overflow-hidden will-change-[height,opacity]"
           >
             <div className="pt-4 border-t border-white/[0.08]">
               <ul className="space-y-3 mb-6">
@@ -311,13 +339,15 @@ ExperienceCard.displayName = 'ExperienceCard';
 
 const Experience = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   // Scroll progress for the timeline spine
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start center", "end center"]
   });
-  
+
   const spineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
@@ -328,8 +358,27 @@ const Experience = () => {
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 900px' }}
     >
       {/* Ambient glow — tighter, more intentional */}
-      <div className="absolute top-1/4 left-0 w-[480px] h-[480px] bg-hsla(var(--primary-hsl), 0.04) rounded-full blur-[100px] pointer-events-none -translate-x-1/2" />
-      <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-hsla(var(--secondary-hsl), 0.04) rounded-full blur-[100px] pointer-events-none translate-x-1/2" />
+      <div className="absolute top-1/4 left-0 w-[480px] h-[480px] bg-hsla(var(--primary-hsl), 0.04) rounded-full blur-[80px] pointer-events-none -translate-x-1/2 will-change-[filter]" />
+      <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-hsla(var(--secondary-hsl), 0.04) rounded-full blur-[80px] pointer-events-none translate-x-1/2 will-change-[filter]" />
+
+      {/* Yuta Background Artwork */}
+      <div className="absolute inset-y-0 right-0 w-full lg:w-[85%] pointer-events-none z-0 overflow-hidden">
+        <motion.img
+          key={isDark ? 'dark' : 'light'}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: isDark ? 0.55 : 0.45, x: 0 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          src={isDark ? yutaDark : yutaWhite}
+          alt="Experience Background"
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover object-right"
+          style={{ mixBlendMode: isDark ? 'screen' : 'multiply', willChange: 'opacity, transform' }}
+        />
+        {/* Soft fade gradients - Fading from the left so the character on the right remains visible */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
+      </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8">
 
@@ -408,9 +457,9 @@ const Experience = () => {
           <div className="relative md:pl-10">
 
             {/* Vertical spine — only visible on md+ */}
-            <div className="absolute left-0 top-4 bottom-4 w-[2px] bg-white/[0.06] hidden md:block">
-              <motion.div 
-                className="w-full bg-gradient-to-b from-[#7C5CFC] via-[#00D4FF] to-transparent origin-top"
+            <div className="absolute left-0 top-4 bottom-4 w-[2px] bg-white/[0.06] hidden md:block overflow-hidden">
+              <motion.div
+                className="w-full bg-gradient-to-b from-[#7C5CFC] via-[#00D4FF] to-transparent origin-top will-change-[height]"
                 style={{ height: spineHeight }}
               />
             </div>

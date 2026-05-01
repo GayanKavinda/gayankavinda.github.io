@@ -1,5 +1,8 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '@app/providers/theme-provider';
+import nezukoDark from '@shared/assets/images/philosophy/Nezuko_Kamado_dark.jpeg';
+import nezukoWhite from '@shared/assets/images/philosophy/Nezuko_Kamado_white.jpeg';
 import { ObservabilityMockup } from './mockups/ObservabilityMockup';
 import { SimplicityMockup } from './mockups/SimplicityMockup';
 import { TestingMockup } from './mockups/TestingMockup';
@@ -62,10 +65,31 @@ const itemVariants = {
 
 const EngineeringPhilosophy = () => {
   const ref = useRef<HTMLElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   return (
-    <section id="philosophy" ref={ref} className="relative py-[100px] md:py-[140px] bg-background">
-      <div className="max-w-[1200px] mx-auto px-6 md:px-10">
+    <section id="philosophy" ref={ref} className="relative py-[100px] md:py-[140px] bg-background overflow-hidden">
+      {/* Background Artwork */}
+      <div className="absolute inset-y-0 right-0 w-full lg:w-[85%] pointer-events-none z-0 overflow-hidden">
+        <motion.img
+          key={isDark ? 'dark' : 'light'}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: isDark ? 0.6 : 0.5, x: 0 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          src={isDark ? nezukoDark : nezukoWhite}
+          alt="Philosophy Background"
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover object-right"
+          style={{ mixBlendMode: isDark ? 'screen' : 'multiply', willChange: 'opacity, transform' }}
+        />
+        {/* Soft fade gradients */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
+      </div>
+
+      <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10">
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -30,7 +30,7 @@ const Navbar = () => {
 
   useEffect(() => {
     if (location.pathname !== '/') return;
-    
+
     const options = { threshold: 0.5, rootMargin: "-80px 0px -50% 0px" };
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {

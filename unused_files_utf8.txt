@@ -1,0 +1,126 @@
+﻿Unused files (56)
+playwright-fixture.ts                                        
+src/app/styles/App.css                                       
+src/shared/hooks/index.ts                                    
+src/shared/hooks/use-mobile.tsx                              
+src/shared/hooks/use-toast.ts                                
+src/shared/lib/index.ts                                      
+skills/skills/algorithmic-art/templates/generator_template.js
+src/features/home/components/ArchDiagram.tsx                 
+src/features/home/components/SystemPillars.tsx               
+src/shared/components/common/index.ts                        
+src/shared/components/common/NavLink.tsx                     
+src/shared/components/layout/index.ts                        
+src/shared/components/ui/accordion.tsx                       
+src/shared/components/ui/alert-dialog.tsx                    
+src/shared/components/ui/alert.tsx                           
+src/shared/components/ui/aspect-ratio.tsx                    
+src/shared/components/ui/avatar.tsx                          
+src/shared/components/ui/breadcrumb.tsx                      
+src/shared/components/ui/calendar.tsx                        
+src/shared/components/ui/carousel.tsx                        
+src/shared/components/ui/chart.tsx                           
+src/shared/components/ui/checkbox.tsx                        
+src/shared/components/ui/collapsible.tsx                     
+src/shared/components/ui/command.tsx                         
+src/shared/components/ui/context-menu.tsx                    
+src/shared/components/ui/dialog.tsx                          
+src/shared/components/ui/drawer.tsx                          
+src/shared/components/ui/dropdown-menu.tsx                   
+src/shared/components/ui/form.tsx                            
+src/shared/components/ui/hover-card.tsx                      
+src/shared/components/ui/index.ts                            
+src/shared/components/ui/input-otp.tsx                       
+src/shared/components/ui/marquee.tsx                         
+src/shared/components/ui/menubar.tsx                         
+src/shared/components/ui/navigation-menu.tsx                 
+src/shared/components/ui/pagination.tsx                      
+src/shared/components/ui/popover.tsx                         
+src/shared/components/ui/progress.tsx                        
+src/shared/components/ui/radio-group.tsx                     
+src/shared/components/ui/resizable.tsx                       
+src/shared/components/ui/scroll-area.tsx                     
+src/shared/components/ui/select.tsx                          
+src/shared/components/ui/separator.tsx                       
+src/shared/components/ui/sheet.tsx                           
+src/shared/components/ui/sidebar.tsx                         
+src/shared/components/ui/skeleton.tsx                        
+src/shared/components/ui/slider.tsx                          
+src/shared/components/ui/sonner.tsx                          
+src/shared/components/ui/table.tsx                           
+src/shared/components/ui/tabs.tsx                            
+src/shared/components/ui/toast.tsx                           
+src/shared/components/ui/toaster.tsx                         
+src/shared/components/ui/toggle-group.tsx                    
+src/shared/components/ui/toggle.tsx                          
+src/shared/components/ui/tracing-beam.tsx                    
+src/shared/components/ui/use-toast.ts                        
+Unused dependencies (35)
+@radix-ui/react-accordion        package.json:17:6
+@radix-ui/react-alert-dialog     package.json:18:6
+@radix-ui/react-aspect-ratio     package.json:19:6
+@radix-ui/react-avatar           package.json:20:6
+@radix-ui/react-checkbox         package.json:21:6
+@radix-ui/react-collapsible      package.json:22:6
+@radix-ui/react-context-menu     package.json:23:6
+@radix-ui/react-dialog           package.json:24:6
+@radix-ui/react-dropdown-menu    package.json:25:6
+@radix-ui/react-hover-card       package.json:26:6
+@radix-ui/react-menubar          package.json:28:6
+@radix-ui/react-navigation-menu  package.json:29:6
+@radix-ui/react-popover          package.json:30:6
+@radix-ui/react-progress         package.json:31:6
+@radix-ui/react-radio-group      package.json:32:6
+@radix-ui/react-scroll-area      package.json:33:6
+@radix-ui/react-select           package.json:34:6
+@radix-ui/react-separator        package.json:35:6
+@radix-ui/react-slider           package.json:36:6
+@radix-ui/react-tabs             package.json:39:6
+@radix-ui/react-toast            package.json:40:6
+@radix-ui/react-toggle           package.json:41:6
+@radix-ui/react-toggle-group     package.json:42:6
+@types/d3                        package.json:45:6
+cmdk                             package.json:49:6
+d3                               package.json:50:6
+date-fns                         package.json:51:6
+embla-carousel-react             package.json:52:6
+input-otp                        package.json:55:6
+next-themes                      package.json:59:6
+react-day-picker                 package.json:62:6
+react-resizable-panels           package.json:66:6
+recharts                         package.json:68:6
+sonner                           package.json:69:6
+vaul                             package.json:72:6
+Unused devDependencies (3)
+@tailwindcss/typography    package.json:78:6
+@testing-library/jest-dom  package.json:79:6
+@testing-library/react     package.json:80:6
+Unresolved imports (1)
+./src/test/setup.ts  vitest.config.ts
+Unused exports (18)
+Tooltip                           src/shared/components/ui/tooltip.tsx:28:10               
+TooltipTrigger                    src/shared/components/ui/tooltip.tsx:28:19               
+TooltipContent                    src/shared/components/ui/tooltip.tsx:28:35               
+useChat                           src/features/agent/index.ts:3:10                         
+searchPortfolio                   src/features/agent/index.ts:4:10                         
+buildPortfolioContext             src/features/agent/index.ts:4:27                         
+getByCategory                     src/features/agent/index.ts:4:50                         
+getFollowUpSuggestions            src/features/agent/index.ts:4:65                         
+portfolioKnowledge                src/features/agent/data/knowledge-base.ts:16:14          
+injectArticleSchema     function  src/shared/lib/seo.ts:130:17                             
+buttonVariants                    src/shared/components/ui/button.tsx:47:18                
+CardDescription                   src/shared/components/ui/card.tsx:43:51                  
+badgeVariants                     src/shared/components/ui/badge.tsx:52:17                 
+CR                                src/features/home/components/TechStack/constants.ts:3:14 
+GD                                src/features/home/components/TechStack/constants.ts:4:14 
+CRP                               src/features/home/components/TechStack/constants.ts:5:14 
+GDP                               src/features/home/components/TechStack/constants.ts:6:14 
+rm                                src/features/home/components/TechStack/constants.ts:15:14
+Unused exported types (6)
+Theme          type       src/app/providers/theme-provider.tsx:3:13 
+ChatMessage    type       src/features/agent/index.ts:5:15          
+SEOMeta        interface  src/shared/lib/seo.ts:5:18                
+ButtonProps    interface  src/shared/components/ui/button.tsx:33:18 
+BadgeProps     interface  src/shared/components/ui/badge.tsx:35:18  
+TextareaProps  interface  src/shared/components/ui/textarea.tsx:5:18
+Configuration hints (1)

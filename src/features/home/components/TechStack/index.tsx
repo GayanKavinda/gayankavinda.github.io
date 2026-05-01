@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion, useInView, animate, useMotionValue, useTransform } from 'framer-motion';
 import { SkillMarquee } from './SkillMarquee';
 import { SKILLS } from './constants';
@@ -49,31 +49,35 @@ const TechStack = () => {
   };
 
   return (
-    <section id="skills" ref={sectionRef} className="py-[80px] md:py-[100px] relative overflow-hidden bg-background">
-      {/* Background Image - Sakuna */}
-      <div className="absolute inset-y-0 left-0 w-full md:w-3/4 pointer-events-none z-0 overflow-hidden">
+    <section
+      id="skills"
+      ref={sectionRef}
+      className="py-[80px] md:py-[100px] relative overflow-hidden"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}
+    >
+      {/* Background Image - Sakuna (same structure as Projects/Gojo) */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <motion.img
           key={isDark ? 'dark' : 'light'}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: isDark ? 0.55 : 0.45, x: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, x: 40 }}
+          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
+          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
           src={isDark ? bgDark : bgWhite}
           alt=""
-          className="h-full w-full object-cover object-left"
-          style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
+          className="h-full w-full object-cover object-center"
         />
-        {/* Soft edge fade: fade out the right edge to blend with the background */}
-        <div className="absolute inset-0 bg-gradient-to-l from-background via-background/40 to-transparent" />
+        {/* Subtle fade to ensure text readability while keeping character visibility */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/10 to-background/60" />
       </div>
 
       <div className="max-w-[1280px] mx-auto px-6 md:px-12">
 
         {/* ── Header ────────────────────────────────────────────────── */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+        <motion.div
+          className="relative z-10 text-center mb-14 flex flex-col items-center"
+          initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="relative z-10 text-center mb-10 md:mb-14 flex flex-col items-center"
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
           <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
             Technical{' '}
@@ -87,7 +91,7 @@ const TechStack = () => {
         </motion.div>
 
         {/* ── Stat row ─────────────────── */}
-        <motion.div 
+        <motion.div
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
@@ -95,11 +99,11 @@ const TechStack = () => {
         >
           <div className="inline-flex border border-border rounded-2xl overflow-hidden divide-x divide-border bg-card/80 backdrop-blur-md shadow-xl shadow-background/20">
             {[
-              { target: SKILLS.length, suffix: '+', label: 'Technologies'   },
-              { target: 10,            suffix: '+', label: 'Years Experience' },
+              { target: SKILLS.length, suffix: '+', label: 'Technologies' },
+              { target: 10, suffix: '+', label: 'Years Experience' },
             ].map((s, i) => (
-              <motion.div 
-                key={i} 
+              <motion.div
+                key={i}
                 variants={itemVariants}
                 className="flex flex-col items-center justify-center px-8 md:px-12 py-4 md:py-5 min-w-[100px] md:min-w-[140px]"
               >
@@ -115,7 +119,7 @@ const TechStack = () => {
         </motion.div>
 
         {/* ── Marquee ───────────────────────────────────────────────── */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 1, delay: 0.5 }}

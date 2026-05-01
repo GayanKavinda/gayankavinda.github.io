@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import maskImg from '@shared/assets/images/mask.png';
+import mapDark from '@shared/assets/images/map-dark.webp';
+import mapWhite from '@shared/assets/images/map-white.webp';
 import { useTheme } from '@app/providers/theme-provider';
 import { QRCode } from '@shared/components/ui/qr-code';
 
@@ -40,11 +42,74 @@ const SOCIAL_LINKS = [
   },
 ];
 
+// ── Colombo clock hooks ───────────────────────────────────────────────────────
+
+function useColomboTime() {
+  const [time, setTime] = useState('');
+  useEffect(() => {
+    const fmt = () =>
+      new Date().toLocaleTimeString('en-US', {
+        timeZone: 'Asia/Colombo',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    setTime(fmt());
+    const t = setInterval(() => setTime(fmt()), 60000);
+    return () => clearInterval(t);
+  }, []);
+  return time;
+}
+
+function useColomboDate() {
+  const [date, setDate] = useState('');
+  useEffect(() => {
+    const fmt = () =>
+      new Date().toLocaleDateString('en-US', {
+        timeZone: 'Asia/Colombo',
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+      });
+    setDate(fmt());
+    const t = setInterval(() => setDate(fmt()), 60000);
+    return () => clearInterval(t);
+  }, []);
+  return date;
+}
+
+function getColomboHour() {
+  return parseInt(new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Colombo', hour12: false, hour: '2-digit' }));
+}
+
+// ── Components ────────────────────────────────────────────────────────────────
+
+const MapThumbnail = ({ isDark }: { isDark: boolean }) => (
+  <div 
+    className="relative w-[110px] h-[72px] rounded-lg overflow-hidden border group"
+    style={{ borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' }}
+  >
+    <img 
+      src={isDark ? mapDark : mapWhite} 
+      alt="Colombo, Sri Lanka" 
+      className="w-full h-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:scale-110"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+    {/* Animated marker */}
+    <div className="absolute left-[55%] top-[45%] -translate-x-1/2 -translate-y-1/2">
+      <span className="relative flex h-3 w-3">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00D4FF] opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-3 w-3 bg-[#00D4FF]"></span>
+      </span>
+    </div>
+  </div>
+);
+
 const Footer = () => {
   const { theme } = useTheme();
-  const isDark    = theme === 'dark';
+  const isDark = theme === 'dark';
   const footerRef = useRef<HTMLElement>(null);
-  const wmRef     = useRef<HTMLDivElement>(null);
+  const wmRef = useRef<HTMLDivElement>(null);
   const [hov, setHov] = useState<string | null>(null);
 
   const bg        = isDark ? '#0A0A0A'              : '#FFFFFF';
@@ -54,34 +119,6 @@ const Footer = () => {
   const t4        = isDark ? 'rgba(240,238,232,.25)' : 'rgba(12,12,14,.35)';
   const hairline  = isDark ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.08)';
   const iconBdr   = isDark ? 'rgba(255,255,255,.12)' : 'rgba(0,0,0,.12)';
-  const badgeBg   = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.04)';
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (wmRef.current) {
-        gsap.fromTo(wmRef.current, { y: 14 }, {
-          y: -14, ease: 'none',
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 0.5,
-          },
-        });
-      }
-    }, footerRef);
-    return () => ctx.revert();
-  }, []);
-
-  const linkStyle = (key: string): React.CSSProperties => ({
-    fontSize: '13px',
-    color: hov === key ? t1 : t2,
-    textDecoration: 'none',
-    transition: 'color 160ms',
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '4px',
-  });
 
   const colHead: React.CSSProperties = {
     display: 'block',
@@ -94,78 +131,61 @@ const Footer = () => {
     marginBottom: '18px',
   };
 
-  const footerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.1,
-        duration: 0.8,
-        ease: [0.16, 1, 0.3, 1]
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.6 } 
-    }
-  };
+  const linkStyle = (key: string): React.CSSProperties => ({
+    fontSize: '13px',
+    color: hov === key ? t1 : t2,
+    textDecoration: 'none',
+    transition: 'color 160ms',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+  });
 
   return (
-    <footer
+    <footer 
       ref={footerRef}
-      style={{
+      className="relative w-full border-t overflow-hidden"
+      style={{ 
         background: bg,
-        position: 'relative',
-        overflow: 'hidden',
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
+        borderColor: hairline
       }}
     >
-      <motion.div 
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={footerVariants}
-        style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          width: '100%',
-          padding: '80px 80px 40px',
+      {/* ── Background decoration ──────────────────────────────────────────────── */}
+      <div 
+        className="absolute bottom-0 right-0 w-[40vw] h-[40vw] -mr-[10vw] -mb-[10vw] opacity-[0.03] pointer-events-none"
+        style={{ 
+          background: `radial-gradient(circle, ${CRIMSON} 0%, transparent 70%)`,
+          filter: 'blur(100px)'
         }}
-      >
-        <motion.div
-          variants={itemVariants}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(280px, 1.4fr) minmax(140px, 1fr) minmax(140px, 1fr) minmax(240px, 1.2fr)',
-            width: '100%',
-          }}
+      />
+
+      <div style={{ padding: '100px 60px 60px' }}>
+        <motion.div 
+          initial={{ y: 40, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          style={{ display: 'flex', flexWrap: 'wrap', gap: '60px' }}
           className="footer-grid-container"
         >
-          {/* Column 1: Info */}
-          <div style={{ paddingRight: '46px', paddingBottom: '52px', borderRight: `1px solid ${hairline}` }} className="footer-col">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '16px' }}>
-              <img src={maskImg} alt="" style={{ width: '24px', height: '24px', mixBlendMode: isDark ? 'screen' : 'multiply', filter: isDark ? 'brightness(1.5)' : 'none' }} />
-              <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '18px', fontWeight: 700, color: t1, letterSpacing: '-0.02em' }}>Gara Yaka</span>
+          {/* Column 1: Brand */}
+          <div style={{ flex: '1 1 280px', minWidth: '240px' }} className="footer-col">
+            <div className="mb-8 flex items-center gap-4">
+               <img src={maskImg} alt="" style={{ width: '24px', height: '24px', mixBlendMode: isDark ? 'screen' : 'multiply', filter: isDark ? 'brightness(1.5)' : 'none' }} />
+               <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '18px', fontWeight: 700, color: t1, letterSpacing: '-0.02em' }}>Gara Yaka</span>
             </div>
             <p style={{ fontSize: '13px', color: t2, maxWidth: '210px', marginBottom: '24px', lineHeight: '1.6' }}>
               Architecting precision-driven digital systems where heritage meets modern engineering.
             </p>
             <div style={{ display: 'flex', gap: '8px' }}>
               {SOCIAL_LINKS.map(s => (
-                <a key={s.label} href={s.href} 
+                <a 
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noreferrer"
                   style={{ 
-                    width: '32px', height: '32px', borderRadius: '50%', border: `1px solid ${iconBdr}`, 
+                    width: '32px', height: '32px', borderRadius: '50%', border: `1px solid ${iconBdr}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', color: t2,
                     transition: 'all 0.2s ease',
                   }}
@@ -200,16 +220,79 @@ const Footer = () => {
              <p style={{ fontSize: '13px', color: t2, marginBottom: '24px', lineHeight: '1.6' }}>
                Ready to architect the future? Let's discuss your next breakthrough.
              </p>
-             <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                <QRCode value="https://garayaka.com" size={72} />
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <span style={{ fontSize: '10px', color: t4, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Direct Line</span>
-                  <a href="mailto:hello@garayaka.com" style={{ ...linkStyle('mail'), color: t1, fontWeight: 600, fontSize: '14px' }}>hello@garayaka.com</a>
+             <div className="flex flex-col gap-6">
+               <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                  <QRCode value="https://garayaka.com" size={72} />
+                  <MapThumbnail isDark={isDark} />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span style={{ fontSize: '10px', color: t4, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Direct Line</span>
+                    <a href="mailto:hello@garayaka.com" style={{ ...linkStyle('mail'), color: t1, fontWeight: 600, fontSize: '14px' }}>hello@garayaka.com</a>
+                  </div>
+               </div>
+
+                <div className="pt-6 border-t" style={{ borderColor: hairline }}>
+                  <div className="flex flex-col gap-4">
+                    {/* Time */}
+                    <div className="flex items-center gap-3">
+                      <div className="flex flex-col">
+                        <span className="font-mono text-[9px] uppercase tracking-widest text-[#00D4FF]">Local Time</span>
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="font-mono text-lg font-bold text-foreground tabular-nums">{useColomboTime()}</span>
+                          <span className="font-mono text-[9px] text-foreground/40">{useColomboDate()}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Status */}
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-3">
+                        <div className="relative flex-shrink-0">
+                          <span className="block w-2 h-2 rounded-full" 
+                            style={{ background: '#22c55e', boxShadow: '0 0 0 3px rgba(34,197,94,0.15)', animation: 'greenPulse 2s infinite' }} />
+                        </div>
+                        <p className="font-sans text-[11px] text-foreground/60 leading-tight">
+                           {import.meta.env.VITE_CONTACT_STATUS || 'Employed. open to the right thing.'}
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 pl-5">
+                        <span
+                          className="inline-flex items-center gap-1.5 font-mono text-[8px] px-2 py-0.5 rounded-full"
+                          style={{
+                            background: getColomboHour() >= 8 && getColomboHour() < 23 ? 'rgba(34,197,94,0.08)' : 'rgba(245,158,11,0.08)',
+                            color: getColomboHour() >= 8 && getColomboHour() < 23 ? '#22c55e' : '#f59e0b',
+                            border: getColomboHour() >= 8 && getColomboHour() < 23 ? '1px solid rgba(34,197,94,0.22)' : '1px solid rgba(245,158,11,0.22)',
+                          }}>
+                          <span className="w-1 h-1 rounded-full" style={{ background: getColomboHour() >= 8 && getColomboHour() < 23 ? '#22c55e' : '#f59e0b' }} />
+                          {getColomboHour() >= 8 && getColomboHour() < 23 ? 'At my desk' : 'Asleep — try tomorrow'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Open To */}
+                    <div className="flex flex-col gap-1.5">
+                      <span className="font-mono text-[9px] uppercase tracking-widest text-foreground/30">Open To</span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(import.meta.env.VITE_CONTACT_OPEN_TO || 'Full-time, Contract, Consulting').split(',').map((role: string) => (
+                          <span key={role}
+                            className="font-sans text-[9px] px-2 py-0.5 rounded-md border"
+                            style={{ 
+                              background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)', 
+                              color: t2,
+                              borderColor: hairline
+                            }}>
+                            {role.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
                 </div>
              </div>
           </div>
         </motion.div>
-      </motion.div>
+      </div>
 
       <motion.div 
         initial={{ opacity: 0 }}
@@ -255,7 +338,7 @@ const Footer = () => {
       </motion.div>
 
       <style>{`
-        @keyframes gyPulse {
+        @keyframes greenPulse {
           0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,.5); }
           50%      { box-shadow: 0 0 0 5px rgba(34,197,94,0); }
         }

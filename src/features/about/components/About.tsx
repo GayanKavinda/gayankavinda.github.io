@@ -5,11 +5,10 @@
 // - Full mobile: single-column stacked, photo first, bio below
 // - Photo placeholder with corner brackets preserved
 // - Typography tightened on mobile
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import maskImg from '@shared/assets/images/mask.png';
+import bgDark from '@shared/assets/images/about/nobara-dark.jpeg';
+import bgWhite from '@shared/assets/images/about/nobara-white.jpeg';
 import { useTheme } from '@app/providers/theme-provider';
 
 // Impact-driven stats
@@ -21,34 +20,26 @@ const stats = [
 
 const About = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const maskRef    = useRef<HTMLImageElement>(null);
   const { theme }  = useTheme();
   const isDark     = theme === 'dark';
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // KEEP GSAP ONLY FOR CONTINUOUS PARALLAX
-      gsap.to(maskRef.current!, {
-        y: -150,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current!,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      });
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section id="about" ref={sectionRef} className="py-[100px] md:py-[140px] relative overflow-hidden">
-      <img
-        ref={maskRef} src={maskImg} alt=""
-        className="absolute left-[-80px] top-1/2 -translate-y-1/2 h-[75%] md:h-[85%] w-auto opacity-[0.06] pointer-events-none z-0"
-        style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
-      />
+      {/* Background Image - Nobara */}
+      <div className="absolute inset-y-0 right-0 w-full md:w-[90%] pointer-events-none z-0 overflow-hidden">
+        <motion.img
+          key={isDark ? 'dark' : 'light'}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          src={isDark ? bgDark : bgWhite}
+          alt=""
+          className="h-full w-full object-cover object-center md:object-right"
+          style={{ mixBlendMode: isDark ? 'lighten' : 'darken' }}
+        />
+        {/* Minimal left edge fade so image is fully visible */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent" />
+      </div>
 
       <div className="relative z-[1] max-w-[1100px] mx-auto px-6 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">

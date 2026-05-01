@@ -3,14 +3,14 @@
 import { useEffect, useRef, useState } from 'react';
 
 const SECTIONS = [
-  { id: 'home',        label: 'Hero'          },
-  { id: 'projects',    label: 'Work'          },
-  { id: 'skills',      label: 'Stack'         },
-  { id: 'timeline',    label: 'Timeline'      },  // new
-  { id: 'experience',  label: 'Experience'    },
-  { id: 'about',       label: 'About'         },
-  { id: 'philosophy',  label: 'Philosophy'    },
-  { id: 'contact',     label: 'Contact'       },
+  { id: 'home', label: 'Hero' },
+  { id: 'projects', label: 'Work' },
+  { id: 'skills', label: 'Stack' },
+  { id: 'timeline', label: 'Timeline' },  // new
+  { id: 'experience', label: 'Experience' },
+  { id: 'about', label: 'About' },
+  { id: 'philosophy', label: 'Philosophy' },
+  { id: 'contact', label: 'Contact' },
 ];
 
 const SideNav = () => {

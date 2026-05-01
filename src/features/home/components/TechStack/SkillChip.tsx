@@ -12,8 +12,8 @@ interface SkillChipProps {
 export const SkillChip = ({ name, accentColor, description }: SkillChipProps) => {
   return (
     <motion.div
-      whileHover={{ 
-        scale: 1.05, 
+      whileHover={{
+        scale: 1.05,
         y: -4,
         transition: { type: "spring", stiffness: 400, damping: 25 }
       }}

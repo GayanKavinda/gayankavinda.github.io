@@ -83,14 +83,16 @@ class Petal {
     ctx.save()
     ctx.translate(this.x, this.y)
     ctx.rotate(this.rot)
-    ctx.globalAlpha = this.alpha * 0.88
+    ctx.globalAlpha = this.alpha * 0.8
+    
+    // Simplified petal shape: faster to draw than Bezier curves
     ctx.beginPath()
-    ctx.moveTo(0, -this.r)
-    ctx.bezierCurveTo(this.r * 0.6, -this.r * 0.3, this.r * 0.8, this.r * 0.5, 0, this.r)
-    ctx.bezierCurveTo(-this.r * 0.8, this.r * 0.5, -this.r * 0.6, -this.r * 0.3, 0, -this.r)
+    ctx.ellipse(0, 0, this.r * 0.8, this.r * 0.4, 0, 0, Math.PI * 2)
     ctx.fillStyle = this.color
     ctx.fill()
-    ctx.strokeStyle = "rgba(255,255,255,0.22)"
+    
+    // Minimal stroke
+    ctx.strokeStyle = "rgba(255,255,255,0.15)"
     ctx.lineWidth = 0.5
     ctx.stroke()
     ctx.restore()
@@ -201,15 +203,19 @@ function runWindTransition(
     drawWash(wCtx, toLight, washProgress, W, H)
 
     // Spawn particles
-    if (elapsed - lastSpawn > 20) {
+    // Spawn particles: reduced rate for better performance
+    if (elapsed - lastSpawn > 35) {
       lastSpawn = elapsed
-      const n = Math.floor(intensity * 6) + 1
+      // Dynamic count based on intensity
+      const n = Math.floor(intensity * 3) + 1
       for (let i = 0; i < n; i++) {
-        particles.push(
-          Math.random() < 0.38
-            ? new DustMote(toLight, W, H)
-            : new Petal(toLight, W, H)
-        )
+        if (particles.length < 450) { // Hard cap on particle count
+          particles.push(
+            Math.random() < 0.4
+              ? new DustMote(toLight, W, H)
+              : new Petal(toLight, W, H)
+          )
+        }
       }
     }
 
@@ -261,6 +267,7 @@ export function ThemeProvider({
     animating.current = true
 
     document.documentElement.classList.add("theme-transition")
+    document.documentElement.classList.add("is-switching-theme")
 
     runWindTransition(
       newTheme === "light",
@@ -273,9 +280,11 @@ export function ThemeProvider({
       },
       () => { 
         animating.current = false
+        // Snappy removal of transition class
         setTimeout(() => {
           document.documentElement.classList.remove("theme-transition")
-        }, 1000)
+          document.documentElement.classList.remove("is-switching-theme")
+        }, 500)
       }
     )
   }, [theme, storageKey])
