@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { ReactLenis } from 'lenis/react';
-import { TooltipProvider } from "@shared/components/ui/tooltip";
-import CustomCursor from "@shared/components/layout/CustomCursor";
+import { TooltipProvider } from "@components/ui/tooltip";
+import CustomCursor from "@components/layout/CustomCursor";
 import { ThemeProvider } from "@app/providers/theme-provider";
 import { ChatBot } from '@/features/agent';
 
@@ -14,9 +14,9 @@ import { Now } from "@pages/NowAndUses";       // NEW
 import { Uses } from "@pages/NowAndUses";       // NEW
 import NotFound from "@pages/NotFound";
 
-import { PreLoader } from "@shared/components/layout/PreLoader";
-import { CacheConsent } from "@shared/components/layout/CacheConsent";
-import ScrollToTop from "@shared/components/layout/ScrollToTop";
+import { PreLoader } from "@components/layout/PreLoader";
+import { CacheConsent } from "@components/layout/CacheConsent";
+import ScrollToTop from "@components/layout/ScrollToTop";
 
 const queryClient = new QueryClient();
 

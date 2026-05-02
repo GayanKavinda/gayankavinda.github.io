@@ -4,9 +4,9 @@
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '@shared/components/layout/Navbar';
-import Footer from '@shared/components/layout/Footer';
-import { setSEO } from '@shared/lib/seo';
+import Navbar from '@components/layout/Navbar';
+import Footer from '@components/layout/Footer';
+import { setSEO } from '@lib/seo';
 
 const LAST_UPDATED = 'March 2026';
 

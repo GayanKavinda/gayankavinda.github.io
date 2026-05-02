@@ -3,8 +3,8 @@ import { motion, useInView, animate, useMotionValue, useTransform } from 'framer
 import { SkillMarquee } from './SkillMarquee';
 import { SKILLS } from './constants';
 import { useTheme } from '@app/providers/theme-provider';
-import bgDark from '@shared/assets/images/skills/sakuna-dark.jpeg';
-import bgWhite from '@shared/assets/images/skills/sakuna-white.jpeg';
+import bgDark from '@assets/images/skills/sakuna-dark.jpeg';
+import bgWhite from '@assets/images/skills/sakuna-white.jpeg';
 
 // ── Animated count-up ────────────────────────────────────────────────────────
 function CountUp({ target, suffix = '' }: { target: number; suffix?: string }) {

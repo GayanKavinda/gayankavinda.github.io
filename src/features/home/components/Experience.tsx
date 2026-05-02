@@ -2,12 +2,12 @@
 
 import { motion, useMotionValue, useMotionTemplate, useSpring, useScroll, useTransform } from 'framer-motion';
 import React, { useRef, useState } from 'react';
-import { Badge } from '@shared/components/ui/badge';
+import { Badge } from '@components/ui/badge';
 import { useTheme } from '@app/providers/theme-provider';
 
 // Asset imports
-import yutaDark from '@shared/assets/images/experience/yuta-dark.jpeg';
-import yutaWhite from '@shared/assets/images/experience/yuta-white.jpeg';
+import yutaDark from '@assets/images/experience/yuta-dark.jpeg';
+import yutaWhite from '@assets/images/experience/yuta-white.jpeg';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 

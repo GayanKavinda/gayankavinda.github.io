@@ -6,7 +6,7 @@ import { motion, useMotionValue, useSpring, useMotionTemplate } from 'framer-mot
 import { Globe, Smartphone, Code2, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { Project } from '../types';
 import { ProjectViz } from './ProjectViz';
-import { Badge } from '@shared/components/ui/badge';
+import { Badge } from '@components/ui/badge';
 import { useTheme } from '@app/providers/theme-provider';
 
 const catIconMap: Record<string, React.FC<{ className?: string }>> = {

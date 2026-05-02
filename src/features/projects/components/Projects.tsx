@@ -3,13 +3,13 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
-import { Badge } from '@shared/components/ui/badge';
+import { Badge } from '@components/ui/badge';
 import { allProjects } from '../data/projectData';
 import { ProjectViz } from './ProjectViz';
 import { Project } from '../types';
 import { useTheme } from '@app/providers/theme-provider';
-import bgDark from '@shared/assets/images/selected-projects/dark.jpeg';
-import bgWhite from '@shared/assets/images/selected-projects/white.png';
+import bgDark from '@assets/images/selected-projects/dark.jpeg';
+import bgWhite from '@assets/images/selected-projects/white.png';
 
 const getTagColor = (tag: string): any => {
   const t = tag.toLowerCase();

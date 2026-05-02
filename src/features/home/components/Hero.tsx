@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
-import lightHeroImg from '@shared/assets/images/hero/whitemode_2.jpeg';
-import darkHeroImg from '@shared/assets/images/hero/darkmode.png';
-import Magnetic from '@shared/components/animations/Magnetic';
+import lightHeroImg from '@assets/images/hero/whitemode_2.jpeg';
+import darkHeroImg from '@assets/images/hero/darkmode.png';
+import Magnetic from '@components/animations/Magnetic';
 
 // ── Per-character split ───────────────────────────────────────────────────────
 const MotionSplitChars = ({ text, delay = 0 }: { text: string; delay?: number }) => (

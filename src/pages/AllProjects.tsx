@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { motion, LayoutGroup } from 'framer-motion';
 import { ChevronLeft, Code2 } from 'lucide-react';
 
-import Navbar from '@shared/components/layout/Navbar';
-import Footer from '@shared/components/layout/Footer';
-import { setSEO } from '@shared/lib/seo';
+import Navbar from '@components/layout/Navbar';
+import Footer from '@components/layout/Footer';
+import { setSEO } from '@lib/seo';
 
 import { allProjects } from '@features/projects/data/projectData';
 import { ProjectCategory } from '@features/projects/types';

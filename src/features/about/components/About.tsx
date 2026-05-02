@@ -7,8 +7,8 @@
 // - Typography tightened on mobile
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import bgDark from '@shared/assets/images/about/nobara-dark.jpeg';
-import bgWhite from '@shared/assets/images/about/nobara-white.jpeg';
+import bgDark from '@assets/images/about/nobara-dark.jpeg';
+import bgWhite from '@assets/images/about/nobara-white.jpeg';
 import { useTheme } from '@app/providers/theme-provider';
 
 // Impact-driven stats

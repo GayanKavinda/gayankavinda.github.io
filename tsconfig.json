@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "baseUrl": ".",
     "noImplicitAny": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
@@ -10,10 +11,18 @@
       "@app/*": ["./src/app/*"],
       "@features": ["./src/features"],
       "@features/*": ["./src/features/*"],
-      "@shared": ["./src/shared"],
-      "@shared/*": ["./src/shared/*"],
+      "@components": ["./src/components"],
+      "@components/*": ["./src/components/*"],
+      "@assets": ["./src/assets"],
+      "@assets/*": ["./src/assets/*"],
+      "@hooks": ["./src/hooks"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@lib": ["./src/lib"],
+      "@lib/*": ["./src/lib/*"],
       "@pages": ["./src/pages"],
-      "@pages/*": ["./src/pages/*"]
+      "@pages/*": ["./src/pages/*"],
+      "@registry": ["./src/registry"],
+      "@registry/*": ["./src/registry/*"]
     },
     "skipLibCheck": true,
     "strictNullChecks": false
@@ -21,10 +30,10 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.app.json"
+      "path": "./config/tsconfig.app.json"
     },
     {
-      "path": "./tsconfig.node.json"
+      "path": "./config/tsconfig.node.json"
     }
   ]
 }

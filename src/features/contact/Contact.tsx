@@ -5,13 +5,13 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { motion } from 'framer-motion';
-import { Button } from '@shared/components/ui/button';
-import { Input } from '@shared/components/ui/input';
-import { Label } from '@shared/components/ui/label';
-import { Textarea } from '@shared/components/ui/textarea';
+import { Button } from '@components/ui/button';
+import { Input } from '@components/ui/input';
+import { Label } from '@components/ui/label';
+import { Textarea } from '@components/ui/textarea';
 
-import yujiDark from '@shared/assets/images/contact/Yuji_Itadori_dark.jpeg';
-import yujiWhite from '@shared/assets/images/contact/Yuji_Itadori_white.jpeg';
+import yujiDark from '@assets/images/contact/Yuji_Itadori_dark.jpeg';
+import yujiWhite from '@assets/images/contact/Yuji_Itadori_white.jpeg';
 
 import { useTheme } from '@app/providers/theme-provider';
 import { useForm, Controller } from 'react-hook-form';
