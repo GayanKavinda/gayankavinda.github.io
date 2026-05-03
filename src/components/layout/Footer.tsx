@@ -144,10 +144,9 @@ const Footer = () => {
   return (
     <footer 
       ref={footerRef}
-      className="relative w-full border-t overflow-hidden"
+      className="relative w-full overflow-hidden"
       style={{ 
-        background: bg,
-        borderColor: hairline
+        background: bg
       }}
     >
       {/* ── Background decoration ──────────────────────────────────────────────── */}

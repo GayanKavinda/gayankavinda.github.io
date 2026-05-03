@@ -34,7 +34,9 @@
       "@registry": ["./src/registry"],
       "@registry/*": ["./src/registry/*"],
       "@pages": ["./src/pages"],
-      "@pages/*": ["./src/pages/*"]
+      "@pages/*": ["./src/pages/*"],
+      "@constants": ["./src/constants"],
+      "@constants/*": ["./src/constants/*"]
     },
     "skipLibCheck": true,
     "strict": false,

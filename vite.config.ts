@@ -24,6 +24,7 @@ export default defineConfig(({ mode }) => ({
       "@lib": path.resolve(__dirname, "src/lib"),
       "@registry": path.resolve(__dirname, "src/registry"),
       "@pages": path.resolve(__dirname, "src/pages"),
+      "@constants": path.resolve(__dirname, "src/constants"),
     },
   },
 }));

@@ -1,24 +1,68 @@
 // src/features/agent/components/ChatBot.tsx
 // ═══════════════════════════════════════════════════════════════════════════════
-// GARA YAKA — AGENT v8 · Clean Modern Design · High Contrast · Light/Dark
+// GARA YAKA — AGENT v9 · Premium Professional Design · Obsidian Violet
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { useChat } from '../hooks/useChat';
 import type { ChatMessage } from '../services/ai-service';
-import maskImg from '@assets/images/chatbot/Jujutsu Kaisen Cute Yuji Itadori Sticker.png';
 
-const GaraYakaMask = ({ size = 24 }: { size?: number }) => (
-  <img 
-    src={maskImg} 
-    alt="Gara Yaka Mask" 
-    style={{ 
-      width: size, 
-      height: size, 
-      objectFit: 'contain',
-      filter: 'drop-shadow(0 2px 10px var(--gy-c1))'
-    }}
-  />
+const RobotIcon = ({ size = 24, animated = false }: { size?: number; animated?: boolean }) => (
+  <div className={`relative ${animated ? 'animate-pulse' : ''}`} style={{
+    width: size, height: size,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  }}>
+    {/* Outer glow ring */}
+    <div className="absolute inset-0 rounded-full opacity-30"
+      style={{
+        background: 'conic-gradient(from 0deg, var(--gy-c1), var(--gy-c2), var(--gy-c1))',
+        animation: animated ? 'spin 3s linear infinite' : 'none',
+        filter: 'blur(8px)',
+      }}
+    />
+    {/* Inner gradient background */}
+    <div className="relative rounded-full flex items-center justify-center"
+      style={{
+        width: size * 0.85,
+        height: size * 0.85,
+        background: 'linear-gradient(135deg, var(--gy-c1) 0%, var(--gy-c2) 100%)',
+        boxShadow: '0 4px 20px color-mix(in srgb, var(--gy-c1) 40%, transparent), inset 0 2px 4px rgba(255,255,255,0.3)',
+        border: '2px solid rgba(255,255,255,0.2)',
+      }}
+    >
+      {/* Anime-style robot face */}
+      <svg width={size * 0.5} height={size * 0.5} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        {/* Eyes */}
+        <circle cx="8" cy="10" r="2.5" fill="rgba(255,255,255,0.9)" />
+        <circle cx="16" cy="10" r="2.5" fill="rgba(255,255,255,0.9)" />
+        {/* Eye shine */}
+        <circle cx="7" cy="9" r="0.8" fill="var(--gy-c1)" />
+        <circle cx="15" cy="9" r="0.8" fill="var(--gy-c1)" />
+        {/* Mouth */}
+        <path d="M8 16c0 0 2.5 1.5 4 0s2.5-1.5 4 0" strokeLinecap="round" />
+        {/* Antenna */}
+        <line x1="12" y1="4" x2="12" y2="1" />
+        <circle cx="12" cy="1" r="1.5" fill="var(--gy-c2)" />
+      </svg>
+    </div>
+    {/* Floating particles */}
+    {animated && (
+      <>
+        <div className="absolute w-1 h-1 rounded-full bg-white/60" style={{
+          top: '10%', left: '20%',
+          animation: 'float 2s ease-in-out infinite',
+        }} />
+        <div className="absolute w-1.5 h-1.5 rounded-full bg-white/40" style={{
+          top: '70%', right: '15%',
+          animation: 'float 2.5s ease-in-out infinite 0.5s',
+        }} />
+        <div className="absolute w-1 h-1 rounded-full bg-white/50" style={{
+          bottom: '20%', left: '25%',
+          animation: 'float 3s ease-in-out infinite 1s',
+        }} />
+      </>
+    )}
+  </div>
 );
 
 const Ic = ({ path, size = 15, className = '', sw = 1.75, style }: {
@@ -250,7 +294,7 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
     >
       {!isU && (
         <div className="flex-shrink-0 mt-1">
-          <GaraYakaMask size={24} />
+          <RobotIcon size={24} />
         </div>
       )}
 
@@ -336,14 +380,17 @@ const MsgBubble = ({ msg, idx, isLast, onRegen, onReact, onCopy }: {
 const TypingDots = () => (
   <div className="flex items-start gap-2" style={{ animation: 'gyFade .25s ease' }}>
     <div className="flex-shrink-0 mt-1">
-      <GaraYakaMask size={24} />
+      <RobotIcon size={24} />
     </div>
-    <div className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl rounded-tl-[4px]
-      bg-white dark:bg-[#1c1c20] border border-black/[0.06] dark:border-white/[0.06]"
-      style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+    <div className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl rounded-tl-[4px]"
+      style={{
+        background: 'var(--gy-bot-bg)',
+        border: '1px solid var(--gy-bot-border)',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+      }}>
       {[0, 1, 2].map(i => (
         <span key={i} className="w-1.5 h-1.5 rounded-full" style={{
-          background: 'var(--gy-c1)', opacity: 0.5,
+          background: 'var(--gy-c1)', opacity: 0.45,
           animation: `gyBounce 1.1s ease ${i * 0.16}s infinite`,
         }} />
       ))}
@@ -435,51 +482,48 @@ const ChatBot: React.FC = () => {
 
   return (
     <>
-      {/* CSS Variables for dark mode bot bubbles */}
-      <style>{`
-        .gy-code {
-          font-size: 10.5px; padding: 1px 6px; border-radius: 5px; font-family: 'DM Mono', monospace;
-          background: rgba(2,132,199,0.08); color: #0284c7;
-          border: 1px solid rgba(2,132,199,0.15); display: inline-block;
-        }
-        .dark .gy-code {
-          background: rgba(14,165,233,0.12); color: #38bdf8;
-          border-color: rgba(14,165,233,0.25);
-        }
-        :root {
-          --gy-bot-bg: #ffffff;
-          --gy-bot-text: #111827;
-          --gy-bot-border: rgba(0,0,0,0.08);
-        }
-        .dark {
-          --gy-bot-bg: #1c1c20;
-          --gy-bot-text: #f3f4f6;
-          --gy-bot-border: rgba(255,255,255,0.06);
-        }
-      `}</style>
+      {/* Removed inline style block as variables are now in chatbot.css */}
 
       {/* ── FAB LABEL ── */}
-      {!interacted && !isOpen && !mobile && (
-        <div className="fixed bottom-[28px] right-[75px] z-[9990] flex items-center justify-end
-          animate-in fade-in slide-in-from-right-4 duration-700 pointer-events-none">
-          <div className="bg-white/90 dark:bg-[#12121a]/90 text-black dark:text-white
-            border border-black/[0.08] dark:border-white/[0.08]
-            px-3 py-1.5 rounded-full text-[11px] font-bold tracking-widest uppercase
-            shadow-lg flex items-center gap-2 backdrop-blur-md">
-            <span>Agent</span>
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--gy-c1)', animation: 'gyPulse 2s infinite' }} />
-          </div>
-        </div>
-      )}
+      {/* Label removed as requested */}
+
 
       {/* ── FAB ── */}
-      <button onClick={toggleChat} aria-label="Toggle Yaka" className="gy-fab"
-        style={{ animation: !isOpen && !interacted ? 'gyFloat 3.5s ease infinite' : undefined }}>
-        {isOpen ? <Ic path={P.x} size={17} sw={2.2} className="text-[#ca2127]" /> : <GaraYakaMask size={48} />}
+      <button onClick={toggleChat} aria-label="Toggle AI Agent" className="gy-fab group relative"
+        style={{
+          animation: !isOpen && !interacted ? 'gyFloat 3.5s ease infinite' : undefined,
+          background: 'linear-gradient(135deg, var(--gy-c1) 0%, var(--gy-c2) 100%)',
+          boxShadow: '0 8px 32px color-mix(in srgb, var(--gy-c1) 35%, transparent), 0 0 0 0 rgba(var(--gy-c1), 0.4)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = '0 12px 40px color-mix(in srgb, var(--gy-c1) 45%, transparent), 0 0 0 4px rgba(var(--gy-c1), 0.2)';
+          e.currentTarget.style.transform = 'scale(1.05)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = '0 8px 32px color-mix(in srgb, var(--gy-c1) 35%, transparent), 0 0 0 0 rgba(var(--gy-c1), 0.4)';
+          e.currentTarget.style.transform = 'scale(1)';
+        }}>
+        {/* Ripple effect */}
+        <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{
+            background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
+          }}
+        />
+
+        {isOpen
+          ? <Ic path={P.x} size={16} sw={2.4} style={{ color: 'rgba(255,255,255,0.95)', position: 'relative', zIndex: 1 }} />
+          : <RobotIcon size={32} animated={!interacted} />}
+
         {unreadCount > 0 && !isOpen && (
-          <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 rounded-full
-            text-[8.5px] font-bold flex items-center justify-center border-[1.5px]
-            bg-gradient-to-br from-amber-500 to-orange-500 text-white border-white">
+          <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full
+            text-[8px] font-bold flex items-center justify-center
+            text-white border-2 border-white/20 animate-bounce"
+            style={{
+              background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+              zIndex: 2,
+              boxShadow: '0 2px 8px rgba(239, 68, 68, 0.4)',
+            }}>
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -513,22 +557,22 @@ const ChatBot: React.FC = () => {
 
               <div className="flex items-center gap-2.5">
                 <div className="relative">
-                  <GaraYakaMask size={32} />
-                  <span className="absolute -bottom-0.5 right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full
-                    border-2 border-white dark:border-[#18181c]"
-                    style={{ animation:'gyGlow 2.5s ease infinite' }} />
+                  <RobotIcon size={32} />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full
+                    border-[1.5px] border-white dark:border-[#090912]"
+                    style={{ background: '#22c55e', animation:'gyGlow 2.5s ease infinite' }} />
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
                     <p className="text-[13px] font-bold gy-name tracking-tight"
                       style={{ fontFamily:"'Plus Jakarta Sans',sans-serif" }}>Yaka</p>
-                    <span className="text-[7.5px] px-1.5 py-px rounded-md font-mono uppercase tracking-widest
-                      gy-accent-text gy-accent-bg-glow gy-accent-border border">agent</span>
+                    <span className="text-[7px] px-1.5 py-px rounded-md font-mono uppercase tracking-widest
+                      gy-accent-text gy-accent-bg-glow gy-accent-border border">AI</span>
                   </div>
                   <p className={`text-[8.5px] font-mono tracking-[.06em] ${isLoading ? 'gy-accent-text' : 'gy-text-muted'}`}>
                     {isLoading
                       ? <span style={{ animation:'gyGlow 1.5s ease infinite', display:'inline-block' }}>thinking…</span>
-                      : 'online · portfolio ai'}
+                      : 'online · portfolio assistant'}
                   </p>
                 </div>
               </div>

@@ -289,7 +289,7 @@ const Contact = () => {
 
   const ready = nameVal?.trim() && emailVal?.trim() && msgVal?.trim() && Object.keys(errors).length === 0;
 
-  const cardBg  = isDark ? 'hsl(0 0% 6%)'              : 'hsl(0 0% 100%)';
+  const cardBg  = isDark ? 'rgba(15, 15, 15, 0.45)' : 'rgba(255, 255, 255, 0.60)';
   const cardBdr = isDark ? 'hsl(0 0% 100% / 0.09)'     : 'hsl(220 15% 15% / 0.15)';
   const blockBdr= isDark ? 'hsl(0 0% 100% / 0.07)'     : 'hsl(220 15% 15% / 0.08)';
 
@@ -336,6 +336,8 @@ const Contact = () => {
           className="rounded-2xl p-5 sm:p-6 md:p-7"
           style={{
             background: cardBg,
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
             border: `1px solid ${cardBdr}`,
             boxShadow: isDark ? '0 20px 50px rgba(0,0,0,0.3)' : '0 20px 50px rgba(0,0,0,0.05)',
           }}
@@ -523,6 +525,10 @@ const Contact = () => {
           100% { background-position: 200% 0; }
         }
       `}</style>
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-[20vh] pointer-events-none z-30" 
+        style={{ background: `linear-gradient(to top, ${isDark ? '#0A0A0A' : '#FFFFFF'}, transparent)` }} 
+      />
     </section>
   );
 };
