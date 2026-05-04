@@ -29,6 +29,29 @@ const SplitChars = ({ text, delay = 0 }: { text: string; delay?: number }) => (
   </span>
 );
 
+const ScrambleText = ({ text, delay = 0 }: { text: string; delay?: number }) => {
+  const [displayText, setDisplayText] = useState(text);
+  const chars = "!<>-_\\/[]{}—=+*^?#________";
+  
+  useEffect(() => {
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplayText(prev => 
+        prev.split('').map((_, index) => {
+          if(index < iteration) return text[index];
+          return chars[Math.floor(Math.random() * chars.length)];
+        }).join('')
+      );
+      
+      if(iteration >= text.length) clearInterval(interval);
+      iteration += 1/3;
+    }, 30);
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return <span className="font-mono">{displayText}</span>;
+};
+
 // ── Sticky sidebar TOC ───────────────────────────────────────────────────────
 const SECTIONS = [
   { id: 'overview',  label: 'Overview'  },
@@ -38,48 +61,55 @@ const SECTIONS = [
   { id: 'debrief',   label: 'Debrief'   },
 ];
 
-const SidebarTOC = ({ active }: { active: string }) => (
-  <aside className="hidden xl:flex flex-col sticky top-32 w-[140px] shrink-0 self-start pt-4 border-l border-foreground/5 pl-6">
-    <div className="absolute left-0 top-4 bottom-0 w-px bg-foreground/5" />
-    <p
-      className="font-mono text-[9px] uppercase tracking-[0.2em] mb-6"
-      style={{ color: 'hsl(var(--foreground) / 0.2)' }}
-    >
-      // Project Index
-    </p>
-    <div className="flex flex-col gap-3">
-      {SECTIONS.map((s) => {
-        const isActive = active === s.id;
-        return (
-          <a
-            key={s.id}
-            href={`#${s.id}`}
-            style={{ textDecoration: 'none' }}
-            className="relative flex items-center group py-0.5"
-          >
-            {/* Active indicator track */}
-            {isActive && (
-              <motion.div
-                layoutId="active-toc-line"
-                className="absolute -left-[25px] w-[2px] h-full bg-slate-400"
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              />
-            )}
-            <span
-              className="font-mono text-[10px] uppercase tracking-widest transition-all duration-300"
-              style={{ 
-                color: isActive ? 'hsl(var(--foreground))' : 'hsl(var(--foreground) / 0.25)',
-                fontWeight: isActive ? 600 : 400
-              }}
+const SidebarTOC = ({ active }: { active: string }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
+  return (
+    <aside className="hidden xl:flex flex-col sticky top-32 w-[140px] shrink-0 self-start pt-4 border-l border-foreground/5 pl-6">
+      <div className="absolute left-0 top-4 bottom-0 w-px bg-foreground/5" />
+      <p
+        className="font-mono text-[9px] uppercase tracking-[0.25em] mb-6 flex items-center gap-2"
+        style={{ color: isDark ? 'hsl(var(--foreground) / 0.2)' : 'hsl(var(--foreground) / 0.55)' }}
+      >
+        <span className="w-1 h-1 rounded-full bg-foreground/20" />
+        PRJ_INDEX
+      </p>
+      <div className="flex flex-col gap-4">
+        {SECTIONS.map((s) => {
+          const isActive = active === s.id;
+          return (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              style={{ textDecoration: 'none' }}
+              className="relative flex items-center group py-0.5"
             >
-              {s.label}
-            </span>
-          </a>
-        );
-      })}
-    </div>
-  </aside>
-);
+              {/* Active indicator track */}
+              {isActive && (
+                <motion.div
+                  layoutId="active-toc-line"
+                  className="absolute -left-[25px] w-[3px] h-full bg-foreground/80"
+                  transition={{ type: 'spring', stiffness: 400, damping: 40 }}
+                />
+              )}
+              <span
+                className="font-mono text-[10px] uppercase tracking-[0.18em] transition-all duration-300 flex items-center gap-2"
+                style={{ 
+                  color: isActive ? 'hsl(var(--foreground))' : isDark ? 'hsl(var(--foreground) / 0.2)' : 'hsl(var(--foreground) / 0.5)',
+                  fontWeight: isActive ? 700 : 400
+                }}
+              >
+                <span className="opacity-30">//</span>
+                {s.label}
+              </span>
+            </a>
+          );
+        })}
+      </div>
+    </aside>
+  );
+};
 
 // ── System architecture map (bento grid layout) ───────────────────────────────
 const SystemMap = ({
@@ -89,6 +119,8 @@ const SystemMap = ({
   components: { name: string; role: string }[];
   description: string;
 }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [active, setActive] = useState<number | null>(null);
 
   return (
@@ -97,7 +129,7 @@ const SystemMap = ({
       
       <p
         className="text-[14px] leading-relaxed mb-10 font-medium"
-        style={{ color: 'hsl(var(--foreground) / 0.45)', maxWidth: 620 }}
+        style={{ color: isDark ? 'hsl(var(--foreground) / 0.45)' : 'hsl(var(--foreground) / 0.85)', maxWidth: 620 }}
       >
         {description}
       </p>
@@ -111,40 +143,45 @@ const SystemMap = ({
               key={idx}
               onHoverStart={() => setActive(idx)}
               onHoverEnd={() => setActive(null)}
-              className="relative p-6 bg-background group cursor-crosshair"
+              className="relative p-6 bg-background group cursor-crosshair transition-colors duration-300"
+              style={{
+                backgroundColor: isActive ? 'hsl(var(--foreground) / 0.015)' : 'hsl(var(--background))'
+              }}
             >
               <div className="relative z-10">
                 <div className="flex items-start justify-between mb-4">
-                  <p
-                    className="font-mono text-[11px] font-bold tracking-tight uppercase"
-                    style={{
-                      color: isActive ? 'hsl(var(--slate))' : 'hsl(var(--foreground) / 0.7)',
-                      transition: 'color 0.18s ease',
-                    }}
-                  >
-                    {comp.name}
-                  </p>
-                  <span className="font-mono text-[9px] text-foreground/10 group-hover:text-foreground/30 transition-colors">
-                    ID_{String(idx + 1).padStart(3, '0')}
-                  </span>
+                  <div className="flex flex-col gap-1">
+                    <span className={`font-mono text-[8px] ${isDark ? 'text-foreground/20' : 'text-foreground/55'}`}>UNIT_ID: {String(idx + 1).padStart(2, '0')}</span>
+                    <p
+                      className="font-mono text-[11px] font-black tracking-tight uppercase"
+                      style={{
+                        color: isActive ? 'hsl(var(--foreground))' : isDark ? 'hsl(var(--foreground) / 0.6)' : 'hsl(var(--foreground) / 0.9)',
+                        transition: 'color 0.18s ease',
+                      }}
+                    >
+                      {comp.name}
+                    </p>
+                  </div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-foreground/10 group-hover:bg-slate-400 transition-colors" />
                 </div>
                 
                 <p
-                  className="text-[12px] leading-[1.6]"
+                  className="text-[12px] leading-[1.6] font-medium"
                   style={{ color: 'hsl(var(--foreground) / 0.35)' }}
                 >
                   {comp.role}
                 </p>
               </div>
 
-              {/* Technical corner accents */}
-              <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-foreground/[0.03] group-hover:border-slate-500/20 transition-colors" />
+              {/* HUD Corner Accents */}
+              <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-foreground/10 group-hover:border-foreground/30 transition-colors" />
+              <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-foreground/10 group-hover:border-foreground/30 transition-colors" />
               
-              {/* Highlight background */}
+              {/* Focus Bar */}
               {isActive && (
                 <motion.div
-                  layoutId="system-map-hover"
-                  className="absolute inset-0 bg-slate-500/[0.02] z-0"
+                  layoutId="system-focus-bar"
+                  className="absolute left-0 top-0 bottom-0 w-1 bg-slate-500"
                   transition={{ duration: 0.2 }}
                 />
               )}
@@ -172,7 +209,7 @@ const ProjectDetail = () => {
   const hasDiagram = !!(project.diagramUrl && project.diagramUrl !== '#');
 
   const { scrollYProgress } = useScroll({ target: pageRef, offset: ['start start', 'end start'] });
-  const bgY = useTransform(scrollYProgress, [0, 1], [0, 90]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '10%']);
 
   // Scroll-spy for TOC
   useEffect(() => {
@@ -203,45 +240,43 @@ const ProjectDetail = () => {
         }}
       />
 
-      {/* Muted parallax BG */}
-      <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <img
-          src={isDark ? bgDark : bgWhite}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{
-            opacity: isDark ? 0.2 : 0.15,
-            mixBlendMode: isDark ? 'overlay' : 'soft-light',
-          }}
-        />
+      {/* Cinematic Parallax Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <motion.div 
+          style={{ y: bgY }} 
+          className="absolute inset-x-0 -top-[10%] -bottom-[10%] w-full h-[120%]"
+        >
+          <img
+            src={isDark ? bgDark : bgWhite}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover object-center"
+            style={{
+              opacity: isDark ? 0.35 : 0.45,
+              mixBlendMode: isDark ? 'overlay' : 'normal',
+              filter: isDark ? 'none' : 'contrast(1.1) brightness(1.05)',
+            }}
+          />
+        </motion.div>
         
-        {/* Technical Grid Overlay */}
-        <div 
-          className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" 
-          style={{ 
-            backgroundImage: `linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)`,
-            backgroundSize: '40px 40px'
-          }} 
-        />
-
-        {/* Mesh Gradient Polish */}
+        {/* Mesh Gradient Polish - Softened */}
         <div
           className="absolute inset-0"
           style={{
             background: isDark
-              ? 'radial-gradient(circle at 80% 20%, hsla(var(--slate-hsl), 0.08) 0%, transparent 50%), radial-gradient(circle at 20% 80%, hsla(var(--stone-hsl), 0.08) 0%, transparent 50%)'
-              : 'radial-gradient(circle at 80% 20%, hsla(var(--slate-hsl), 0.03) 0%, transparent 50%), radial-gradient(circle at 20% 80%, hsla(var(--stone-hsl), 0.03) 0%, transparent 50%)',
+              ? 'radial-gradient(circle at 80% 20%, hsla(var(--slate-hsl), 0.12) 0%, transparent 60%), radial-gradient(circle at 20% 80%, hsla(var(--stone-hsl), 0.1) 0%, transparent 60%)'
+              : 'radial-gradient(circle at 80% 20%, hsla(var(--slate-hsl), 0.05) 0%, transparent 60%), radial-gradient(circle at 20% 80%, hsla(var(--stone-hsl), 0.04) 0%, transparent 60%)',
           }}
         />
 
         <div
           className="absolute inset-0"
           style={{
-            background:
-              'radial-gradient(ellipse at 65% 20%, transparent 25%, hsl(var(--background)) 75%)',
+            background: isDark
+              ? 'radial-gradient(ellipse at 50% 50%, transparent 20%, hsl(var(--background)) 90%)'
+              : 'radial-gradient(ellipse at 50% 50%, transparent 30%, hsl(var(--background)) 100%)',
           }}
         />
-      </motion.div>
+      </div>
 
       <div className="relative z-10 pt-20 md:pt-28">
 
@@ -352,16 +387,16 @@ const ProjectDetail = () => {
                  transition={{ duration: 0.01, delay: 0.18 }}
                  className="mb-5"
                >
-                 <h1
-                   className="font-winner font-black tracking-tighter leading-[0.88] mb-2"
-                   style={{
-                     fontSize: 'clamp(48px, 8.5vw, 92px)',
-                     color: 'hsl(var(--foreground))',
-                     letterSpacing: '-0.04em'
-                   }}
-                 >
-                   <SplitChars text={project.title} delay={0.2} />
-                 </h1>
+                  <h1
+                    className="font-winner font-black tracking-tighter leading-[0.88] mb-2 uppercase"
+                    style={{
+                      fontSize: 'clamp(48px, 8.5vw, 92px)',
+                      color: 'hsl(var(--foreground))',
+                      letterSpacing: '-0.06em'
+                    }}
+                  >
+                    <ScrambleText text={project.title} />
+                  </h1>
                </motion.div>
 
                {/* Tagline */}
@@ -370,7 +405,7 @@ const ProjectDetail = () => {
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ duration: 0.45, delay: 0.9 }}
                  className="text-[15px] leading-relaxed mb-10"
-                 style={{ color: 'hsl(var(--foreground) / 0.42)', maxWidth: 600 }}
+                                   style={{ color: isDark ? 'hsl(var(--foreground) / 0.42)' : 'hsl(var(--foreground) / 0.85)', maxWidth: 600 }}
                >
                  {project.tagline}
                </motion.p>
@@ -379,24 +414,34 @@ const ProjectDetail = () => {
                <motion.div
                  initial={{ opacity: 0, y: 15 }}
                  animate={{ opacity: 1, y: 0 }}
-                 transition={{ duration: 0.5, delay: 1.0 }}
-                 className="glass-sm p-6 md:p-8 rounded-2xl mb-12 border-foreground/5 relative overflow-hidden"
+                 transition={{ duration: 0.5, delay: 0.8 }}
+                 className="p-6 md:p-8 rounded-xl mb-12 border border-foreground/5 relative overflow-hidden bg-foreground/[0.02]"
                >
-                 <div className="absolute top-0 right-0 p-4 font-mono text-[8px] text-foreground/10 uppercase tracking-widest select-none">
-                   Ref. {project.year} // Manifest
+                 {/* HUD Brackets */}
+                 <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-foreground/20" />
+                 <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-foreground/20" />
+                 <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-foreground/20" />
+                 <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-foreground/20" />
+
+                 <div className="absolute top-0 right-0 p-4 font-mono text-[8px] text-foreground/10 uppercase tracking-widest select-none flex items-center gap-2">
+                   <span className="w-1 h-1 rounded-full bg-slate-500 animate-pulse" />
+                   REVISION_{project.year}.04
                  </div>
                  
                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 relative z-10">
                    {[
-                     { label: 'System Role', val: project.role },
-                     { label: 'Lead Unit', val: project.team },
-                     { label: 'Deployment', val: project.duration },
+                     { label: 'System Role', val: project.role, id: 'SR-01' },
+                     { label: 'Lead Unit', val: project.team, id: 'LU-04' },
+                     { label: 'Deployment', val: project.duration, id: 'DP-99' },
                    ].map((m) => (
                      <div key={m.label} className="flex flex-col gap-2">
-                       <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-foreground/30">
-                         {m.label}
-                       </p>
-                       <p className="font-mono text-[14px] font-medium text-foreground">
+                       <div className="flex items-center gap-2">
+                          <span className={`font-mono text-[8px] ${isDark ? 'text-foreground/20' : 'text-foreground/50'}`}>[{m.id}]</span>
+                          <p className={`font-mono text-[9px] uppercase tracking-[0.25em] ${isDark ? 'text-foreground/40' : 'text-foreground/75'}`}>
+                            {m.label}
+                          </p>
+                       </div>
+                       <p className="font-mono text-[14px] font-bold text-foreground tracking-tight">
                          {m.val}
                        </p>
                      </div>
@@ -405,17 +450,12 @@ const ProjectDetail = () => {
 
                  <div className="mt-8 pt-8 border-t border-foreground/5 flex flex-wrap gap-2 items-center">
                    <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-foreground/30 mr-2">
-                     Stack
+                     Stack_Trace
                    </p>
                    {project.tags.map((tag) => (
                      <span
                        key={tag}
-                       className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-md"
-                       style={{
-                         color: 'hsl(var(--stone))',
-                         border: '1px solid hsl(var(--stone) / 0.15)',
-                         background: 'hsl(var(--stone) / 0.03)',
-                       }}
+                       className={`font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border ${isDark ? 'border-foreground/10 bg-foreground/[0.03] text-foreground/60' : 'border-foreground/20 bg-foreground/[0.05] text-foreground/80'}`}
                      >
                        {tag}
                      </span>
@@ -539,7 +579,7 @@ const ProjectDetail = () => {
                 <div className="flex items-center gap-4 mb-8">
                   <p
                     className="font-mono text-[9px] uppercase tracking-[0.22em]"
-                    style={{ color: 'hsl(var(--foreground) / 0.18)' }}
+                    style={{ color: isDark ? 'hsl(var(--foreground) / 0.18)' : 'hsl(var(--foreground) / 0.4)' }}
                   >
                     // 01 — Mission Parameters
                   </p>
@@ -547,31 +587,33 @@ const ProjectDetail = () => {
                 </div>
 
                 <div
-                  className="grid grid-cols-1 lg:grid-cols-2 bg-foreground/[0.02] border border-foreground/[0.04] rounded-2xl overflow-hidden"
+                  className="grid grid-cols-1 lg:grid-cols-2 bg-foreground/[0.01] border border-foreground/[0.08] rounded-xl overflow-hidden relative"
                 >
                   {/* Problem */}
-                  <div className="p-8 lg:p-10 lg:border-r border-foreground/[0.04]">
-                    <h4 className="font-mono text-[10px] uppercase tracking-widest text-slate-500 mb-6 flex items-center gap-2">
-                      <span className="w-1 h-1 rounded-full bg-slate-500" />
-                      Critical Friction
+                  <div className="p-8 lg:p-12 lg:border-r border-foreground/[0.08] relative group">
+                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-foreground/20 group-hover:border-slate-500 transition-colors" />
+                    <h4 className={`font-mono text-[10px] uppercase tracking-[0.25em] ${isDark ? 'text-foreground/30' : 'text-foreground/55'} mb-8 flex items-center gap-2`}>
+                      <span className="w-1 h-1 bg-slate-500" />
+                      CRITICAL_FRICTION
                     </h4>
                     <p
                       className="text-[15px] leading-[1.8] font-medium"
-                      style={{ color: 'hsl(var(--foreground) / 0.65)' }}
+                      style={{ color: isDark ? 'hsl(var(--foreground) / 0.7)' : 'hsl(var(--foreground) / 0.88)' }}
                     >
                       {project.problem}
                     </p>
                   </div>
 
                   {/* Solution */}
-                  <div className="p-8 lg:p-10">
-                    <h4 className="font-mono text-[10px] uppercase tracking-widest text-stone-500 mb-6 flex items-center gap-2">
-                      <span className="w-1 h-1 rounded-full bg-stone-500" />
-                      Engineering Fix
+                  <div className="p-8 lg:p-12 relative group">
+                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-foreground/20 group-hover:border-stone-500 transition-colors" />
+                    <h4 className={`font-mono text-[10px] uppercase tracking-[0.25em] ${isDark ? 'text-foreground/30' : 'text-foreground/55'} mb-8 flex items-center gap-2`}>
+                      <span className="w-1 h-1 bg-stone-500" />
+                      ENGINEERING_FIX
                     </h4>
                     <p
                       className="text-[15px] leading-[1.8] font-medium"
-                      style={{ color: 'hsl(var(--foreground) / 0.65)' }}
+                      style={{ color: isDark ? 'hsl(var(--foreground) / 0.7)' : 'hsl(var(--foreground) / 0.88)' }}
                     >
                       {project.solution}
                     </p>
@@ -590,18 +632,16 @@ const ProjectDetail = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
               >
-                <p
-                  className="font-mono text-[9px] uppercase tracking-[0.22em] mb-2"
-                  style={{ color: 'hsl(var(--foreground) / 0.18)' }}
-                >
-                  // 02 — System Architecture
-                </p>
-                <h2
-                  className="font-jakarta font-bold text-[20px] mb-8"
-                  style={{ color: 'hsl(var(--foreground))' }}
-                >
-                  How the system is built
-                </h2>
+                <div className="flex items-center gap-4 mb-8">
+                  <p
+                    className="font-mono text-[9px] uppercase tracking-[0.25em] flex items-center gap-2"
+                    style={{ color: isDark ? 'hsl(var(--foreground) / 0.18)' : 'hsl(var(--foreground) / 0.4)' }}
+                  >
+                    <span className="w-1.5 h-1.5 border border-foreground/30" />
+                    SYSTEM_ARCHITECTURE // TOPOLOGY
+                  </p>
+                  <div className="flex-1 h-px bg-foreground/[0.03]" />
+                </div>
 
                 <SystemMap
                   components={project.architecture.components}
@@ -622,17 +662,18 @@ const ProjectDetail = () => {
               >
                 <div className="flex items-center gap-4 mb-8">
                   <p
-                    className="font-mono text-[9px] uppercase tracking-[0.22em]"
+                    className="font-mono text-[9px] uppercase tracking-[0.25em] flex items-center gap-2"
                     style={{ color: 'hsl(var(--foreground) / 0.18)' }}
                   >
-                    // 03 — Execution Log
+                    <span className="w-1.5 h-1.5 border border-foreground/30 rotate-45" />
+                    EXECUTION_LOG // AUDIT_STAMP
                   </p>
                   <div className="flex-1 h-px bg-foreground/[0.03]" />
                 </div>
 
                 <div className="space-y-0 relative">
                   {/* Vertical line for the log */}
-                  <div className="absolute left-[3px] top-2 bottom-2 w-px bg-foreground/[0.05]" />
+                  <div className="absolute left-[3px] top-2 bottom-2 w-px bg-foreground/[0.08]" />
 
                   {project.timeline.map((item, i) => (
                     <motion.div
@@ -645,24 +686,33 @@ const ProjectDetail = () => {
                     >
                       {/* Log node */}
                       <div 
-                        className="absolute left-0 top-[6px] w-[7px] h-[7px] rounded-full bg-background border border-foreground/20 group-hover:border-slate-500 transition-colors z-10" 
+                        className="absolute left-0 top-[6px] w-[7px] h-[7px] bg-background border border-foreground/30 group-hover:border-slate-500 transition-colors z-10" 
                       />
                       
-                      <div className="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-6">
-                        <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/20 shrink-0 w-24">
-                          {item.duration}
+                      <div className="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-8">
+                        <span className={`font-mono text-[10px] uppercase tracking-widest ${isDark ? 'text-foreground/20' : 'text-foreground/65'} shrink-0 w-28 flex items-center gap-2`}>
+                           <span className="opacity-50">#</span>{item.duration}
                         </span>
                         <div className="flex-1">
-                          <h4 className="font-mono text-[12px] font-bold uppercase tracking-tight text-foreground/70 mb-2">
+                          <h4 className={`font-mono text-[12px] font-black uppercase tracking-tight ${isDark ? 'text-foreground/70' : 'text-foreground/90'} mb-2 flex items-center gap-3`}>
                             {item.phase}
+                            <span className="h-px flex-1 bg-foreground/[0.03] group-hover:bg-foreground/[0.08] transition-colors" />
                           </h4>
-                          <p className="text-[13px] leading-[1.6] text-foreground/40 max-w-[540px]">
+                          <p className={`text-[13px] leading-[1.6] ${isDark ? 'text-foreground/40' : 'text-foreground/85'} max-w-[540px] font-medium`}>
                             {item.desc}
                           </p>
                         </div>
                       </div>
                     </motion.div>
                   ))}
+
+                  {/* Terminal Marker */}
+                  <div className="relative pl-8 mt-4">
+                     <div className="absolute left-0 top-[6px] w-[7px] h-px bg-foreground/40" />
+                     <p className={`font-mono text-[9px] uppercase tracking-widest ${isDark ? 'text-foreground/20' : 'text-foreground/45'}`}>
+                       // EOF_EXECUTION
+                     </p>
+                  </div>
                 </div>
               </motion.div>
             </section>
@@ -677,52 +727,40 @@ const ProjectDetail = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
               >
-                <p
-                  className="font-mono text-[9px] uppercase tracking-[0.22em] mb-2"
-                  style={{ color: 'hsl(var(--foreground) / 0.18)' }}
-                >
-                  // 04 — Retrospective
-                </p>
-                <h2
-                  className="font-winner font-black text-[20px] mb-8"
-                  style={{ color: 'hsl(var(--foreground))' }}
-                >
-                  What I'd tell myself on day one
-                </h2>
+                <div className="flex items-center gap-4 mb-8">
+                  <p
+                    className="font-mono text-[9px] uppercase tracking-[0.25em]"
+                    style={{ color: isDark ? 'hsl(var(--foreground) / 0.18)' : 'hsl(var(--foreground) / 0.45)' }}
+                  >
+                    // 04 — RETROSPECTIVE // POST_MORTEM
+                  </p>
+                  <div className="flex-1 h-px bg-foreground/[0.03]" />
+                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-foreground/[0.05] border border-foreground/[0.05] rounded-xl overflow-hidden">
                   {project.learnings.map((learning, i) => (
                     <motion.div
                       key={i}
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.35, delay: i * 0.06 }}
-                      className="relative p-5 rounded-xl overflow-hidden"
-                      style={{
-                        border: '1px solid hsl(var(--foreground) / 0.04)',
-                        background: 'hsl(var(--card) / 0.2)',
-                      }}
+                      transition={{ duration: 0.4, delay: i * 0.08 }}
+                      className="relative p-8 bg-background group"
                     >
-                      {/* Watermark */}
+                      {/* Watermark ID */}
                       <span
-                        className="absolute -right-1 -top-2 font-playfair font-black leading-none select-none pointer-events-none"
-                        style={{
-                          fontSize: 64,
-                          color: 'hsl(var(--foreground) / 0.02)',
-                        }}
+                        className="absolute right-4 top-4 font-mono text-[10px] font-bold select-none pointer-events-none opacity-[0.03] group-hover:opacity-[0.08] transition-opacity"
                       >
-                        {i + 1}
+                        LOG_ENTRY_0{i + 1}
                       </span>
 
                       <div className="relative">
                         <div
-                          className="w-3 h-px mb-3"
-                          style={{ background: 'hsl(var(--stone) / 0.35)' }}
+                          className="w-4 h-px mb-6 bg-foreground/20 group-hover:w-8 transition-all duration-300"
                         />
                         <p
-                          className="text-[13px] leading-[1.78]"
-                          style={{ color: 'hsl(var(--foreground) / 0.45)' }}
+                          className="text-[14px] leading-[1.75] font-medium"
+                          style={{ color: 'hsl(var(--foreground) / 0.4)' }}
                         >
                           {learning}
                         </p>
@@ -764,7 +802,7 @@ const ProjectDetail = () => {
                   />
                   <p
                     className="font-mono text-[9px] uppercase tracking-[0.18em] mb-3"
-                    style={{ color: 'hsl(var(--foreground) / 0.2)' }}
+                    style={{ color: isDark ? 'hsl(var(--foreground) / 0.2)' : 'hsl(var(--foreground) / 0.45)' }}
                   >
                     // Colombo, LK
                   </p>
@@ -779,7 +817,7 @@ const ProjectDetail = () => {
                   </h3>
                   <p
                     className="text-[12px] leading-relaxed mb-5"
-                    style={{ color: 'hsl(var(--foreground) / 0.36)' }}
+                    style={{ color: isDark ? 'hsl(var(--foreground) / 0.36)' : 'hsl(var(--foreground) / 0.72)' }}
                   >
                     Full-time, contract, or consulting — distributed systems, frontend architecture, and AI-integrated products.
                   </p>
@@ -816,7 +854,7 @@ const ProjectDetail = () => {
                   >
                     <p
                       className="font-mono text-[9px] uppercase tracking-[0.2em]"
-                      style={{ color: 'hsl(var(--foreground) / 0.2)' }}
+                      style={{ color: isDark ? 'hsl(var(--foreground) / 0.2)' : 'hsl(var(--foreground) / 0.5)' }}
                     >
                       // More Projects
                     </p>
@@ -854,13 +892,13 @@ const ProjectDetail = () => {
                           </div>
                           <p
                             className="font-jakarta font-semibold text-[11px] mb-0.5"
-                            style={{ color: 'hsl(var(--foreground) / 0.4)' }}
+                            style={{ color: isDark ? 'hsl(var(--foreground) / 0.4)' : 'hsl(var(--foreground) / 0.8)' }}
                           >
                             View all →
                           </p>
                           <p
                             className="text-[10px]"
-                            style={{ color: 'hsl(var(--foreground) / 0.16)' }}
+                            style={{ color: isDark ? 'hsl(var(--foreground) / 0.16)' : 'hsl(var(--foreground) / 0.5)' }}
                           >
                             Explore full portfolio
                           </p>
@@ -876,11 +914,11 @@ const ProjectDetail = () => {
           </main>
         </div>
 
-        {/* Enhanced fade into footer */}
+        {/* Tactical Fade into Footer */}
         <div
-          className="h-24 mt-16"
+          className="h-64 relative z-10 -mt-32 pointer-events-none"
           style={{
-            background: 'linear-gradient(to bottom, transparent 0%, hsl(var(--background)) 50%, hsl(var(--background)) 100%)',
+            background: 'linear-gradient(to bottom, transparent, hsl(var(--background)) 50%, hsl(var(--background)))',
           }}
         />
 

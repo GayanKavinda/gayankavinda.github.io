@@ -112,13 +112,13 @@ const Footer = () => {
   const wmRef = useRef<HTMLDivElement>(null);
   const [hov, setHov] = useState<string | null>(null);
 
-  const bg        = isDark ? '#0A0A0A'              : '#FFFFFF';
-  const t1        = isDark ? '#F0EEE8'              : '#0C0C0E';
-  const t2        = isDark ? 'rgba(240,238,232,.45)' : 'rgba(12,12,14,.50)';
-  const t3        = isDark ? 'rgba(240,238,232,.35)' : 'rgba(12,12,14,.45)';
-  const t4        = isDark ? 'rgba(240,238,232,.25)' : 'rgba(12,12,14,.35)';
-  const hairline  = isDark ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.08)';
-  const iconBdr   = isDark ? 'rgba(255,255,255,.12)' : 'rgba(0,0,0,.12)';
+  const bg        = 'hsl(var(--background))';
+  const t1        = 'hsl(var(--foreground))';
+  const t2        = isDark ? 'hsl(var(--foreground) / 0.5)' : 'hsl(var(--foreground) / 0.82)';
+  const t3        = isDark ? 'hsl(var(--foreground) / 0.35)' : 'hsl(var(--foreground) / 0.65)';
+  const t4        = isDark ? 'hsl(var(--foreground) / 0.2)' : 'hsl(var(--foreground) / 0.45)';
+  const hairline  = 'hsl(var(--foreground) / 0.08)';
+  const iconBdr   = 'hsl(var(--foreground) / 0.12)';
 
   const colHead: React.CSSProperties = {
     display: 'block',

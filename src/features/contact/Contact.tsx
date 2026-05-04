@@ -525,9 +525,10 @@ const Contact = () => {
           100% { background-position: 200% 0; }
         }
       `}</style>
+      {/* Tactical Fade into Footer */}
       <div 
-        className="absolute bottom-0 left-0 right-0 h-[20vh] pointer-events-none z-30" 
-        style={{ background: `linear-gradient(to top, ${isDark ? '#0A0A0A' : '#FFFFFF'}, transparent)` }} 
+        className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none z-30" 
+        style={{ background: 'linear-gradient(to top, hsl(var(--background)), transparent)' }} 
       />
     </section>
   );
