@@ -17,4 +17,8 @@ export interface Project {
   viz?: VizType;
   githubUrl?: string;
   liveUrl?: string;
+  docUrl?: string; // Documentation link for projects without code
+  diagramUrl?: string; // Draw.io or other diagram links
+  hasCaseStudy?: boolean; // Flag for projects with detailed case studies
+  evidenceType?: 'code' | 'docs' | 'diagrams' | 'mixed'; // What evidence is available
 }

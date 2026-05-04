@@ -14,6 +14,10 @@ export const allProjects: Project[] = [
     accentColor: '262',
     metrics: ['1M jobs/day', '40% latency↓'],
     viz: 'nodes',
+    docUrl: '#', // Documentation link
+    diagramUrl: '#', // Draw.io architecture diagrams
+    hasCaseStudy: true,
+    evidenceType: 'docs', // Only documentation available
   },
   {
     slug: 'real-time-analytics',
@@ -25,6 +29,11 @@ export const allProjects: Project[] = [
     gradient: 'dark:from-cyan-900/40 from-cyan-100 dark:via-blue-900/25 via-blue-50',
     accentColor: '199',
     viz: 'chart',
+    githubUrl: '#', // GitHub link if available
+    docUrl: '#', // Documentation
+    diagramUrl: '#', // Architecture diagrams
+    hasCaseStudy: true,
+    evidenceType: 'mixed', // Both code and documentation
   },
   {
     slug: 'authshield-sdk',
@@ -36,6 +45,10 @@ export const allProjects: Project[] = [
     accentColor: '160',
     metrics: ['< 80ms auth', '0 breaches'],
     viz: 'rings',
+    githubUrl: '#', // Open source project
+    docUrl: '#', // API documentation
+    hasCaseStudy: true,
+    evidenceType: 'code', // Full code available
   },
   {
     slug: 'datapipe',
@@ -47,6 +60,10 @@ export const allProjects: Project[] = [
     accentColor: '30',
     metrics: ['1M rec/min'],
     viz: 'stream',
+    docUrl: '#', // Documentation only
+    diagramUrl: '#', // Data flow diagrams
+    hasCaseStudy: true,
+    evidenceType: 'docs', // Enterprise project, no code access
   },
   {
     slug: 'clouddash',
@@ -57,6 +74,10 @@ export const allProjects: Project[] = [
     gradient: 'dark:from-rose-900/40 from-rose-100 dark:via-pink-900/25 via-pink-50',
     accentColor: '350',
     viz: 'chart',
+    docUrl: '#', // Documentation
+    diagramUrl: '#', // System architecture diagrams
+    hasCaseStudy: true,
+    evidenceType: 'docs', // Enterprise project
   },
   {
     slug: 'apiforge',
@@ -68,6 +89,10 @@ export const allProjects: Project[] = [
     accentColor: '215',
     metrics: ['2ms p99'],
     viz: 'nodes',
+    githubUrl: '#', // Open source
+    docUrl: '#', // Documentation
+    hasCaseStudy: true,
+    evidenceType: 'code', // Open source project
   },
   {
     slug: 'mobiletrack',
@@ -75,10 +100,14 @@ export const allProjects: Project[] = [
     desc: 'Real-time GPS tracking with offline-first sync and sub-meter accuracy.',
     tags: ['React Native', 'Firebase', 'Maps API'],
     cat: 'Mobile',
-    featured: true, // Making this featured to balance the grid
+    featured: true,
     gradient: 'dark:from-lime-900/40 from-lime-100 dark:via-green-900/25 via-green-50',
     accentColor: '84',
     viz: 'rings',
+    docUrl: '#', // Documentation
+    diagramUrl: '#', // Architecture diagrams
+    hasCaseStudy: true,
+    evidenceType: 'docs', // Enterprise project
   },
   {
     slug: 'chatscale',
@@ -90,6 +119,10 @@ export const allProjects: Project[] = [
     accentColor: '217',
     metrics: ['10K concurrent'],
     viz: 'stream',
+    docUrl: '#', // Documentation
+    diagramUrl: '#', // Architecture diagrams
+    hasCaseStudy: true,
+    evidenceType: 'docs', // Enterprise project
   },
   {
     slug: 'devmetrics',
@@ -100,5 +133,9 @@ export const allProjects: Project[] = [
     gradient: 'dark:from-fuchsia-900/40 from-fuchsia-100 dark:via-purple-900/25 via-purple-50',
     accentColor: '300',
     viz: 'chart',
+    githubUrl: '#', // Open source
+    docUrl: '#', // Documentation
+    hasCaseStudy: true,
+    evidenceType: 'code', // Open source project
   },
 ];

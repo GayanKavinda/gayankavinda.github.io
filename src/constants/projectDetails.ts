@@ -12,13 +12,17 @@ export const PROJECT_DETAILS = {
     duration: '8 months',
     tags: ['Go', 'Kafka', 'Redis', 'Kubernetes', 'gRPC', 'PostgreSQL'],
     status: 'Production',
-    github: '#',
+    github: null, // Enterprise project - no public code
+    docUrl: '#', // Documentation link
+    diagramUrl: '#', // Draw.io diagrams
     overview:
       'A high-throughput, horizontally scalable task orchestration platform built to replace a brittle monolith that was dropping 3% of tasks under peak load.',
     problem:
       'The legacy cron-based system was processing tasks sequentially, causing cascading failures when any single worker went down. With 50K tasks/hour becoming 500K tasks/hour over 18 months, the architecture was fundamentally broken.',
     solution:
       'Re-architected the entire pipeline around an event-driven model. Kafka became the durable backbone, Go workers consumed from partitioned topics with consumer-group offsets, Redis handled distributed state and pub/sub coordination, and Kubernetes HPA scaled workers automatically.',
+    evidenceType: 'docs', // Documentation and diagrams only
+    hasCaseStudy: true,
     screenshots: [
       { caption: 'Dashboard overview showing real-time task processing metrics', placeholder: 'Dashboard View' },
       { caption: 'Kafka consumer group monitoring with lag visualization', placeholder: 'Consumer Monitoring' },
@@ -99,13 +103,17 @@ export const PROJECT_DETAILS = {
     duration: '6 months',
     tags: ['React', 'D3.js', 'Node.js', 'PostgreSQL', 'WebSocket'],
     status: 'Production',
-    github: '#',
+    github: '#', // Available code
+    docUrl: '#', // Documentation
+    diagramUrl: '#', // Architecture diagrams
     overview:
       'A real-time analytics dashboard that processes and visualizes data from 50K+ concurrent streams with sub-100ms latency.',
     problem:
       'The existing analytics platform had 5+ second latency and could only handle 5K concurrent users. Real-time decision making was impossible due to stale data.',
     solution:
       'Implemented WebSocket-based real-time data streaming with React and D3.js for visualization. Node.js backend with connection pooling and optimized query patterns reduced latency to under 100ms.',
+    evidenceType: 'mixed', // Both code and documentation
+    hasCaseStudy: true,
     screenshots: [
       { caption: 'Real-time dashboard with live data streams', placeholder: 'Dashboard View' },
       { caption: 'Data visualization with D3.js charts', placeholder: 'Charts View' },
@@ -186,13 +194,17 @@ export const PROJECT_DETAILS = {
     duration: '5 months',
     tags: ['TypeScript', 'OAuth', 'WebAuthn', 'FIDO2'],
     status: 'Open Source',
-    github: '#',
+    github: '#', // Open source project
+    docUrl: '#', // API documentation
+    diagramUrl: null, // No diagrams needed
     overview:
       'A comprehensive authentication SDK that provides zero-trust security with biometric authentication and FIDO2 compliance.',
     problem:
       'Existing authentication solutions were either too complex to integrate or lacked modern security features like biometric auth and FIDO2 support.',
     solution:
       'Built a modular TypeScript SDK with OAuth 2.0, WebAuthn, and biometric authentication support. Clean API design with comprehensive documentation and examples.',
+    evidenceType: 'code', // Full open source code
+    hasCaseStudy: true,
     screenshots: [
       { caption: 'SDK integration example', placeholder: 'Integration View' },
       { caption: 'Biometric authentication flow', placeholder: 'Biometric Flow' },

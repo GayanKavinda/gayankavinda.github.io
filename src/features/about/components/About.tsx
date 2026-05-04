@@ -99,7 +99,7 @@ const About = () => {
               <div className="w-2 h-2 rounded-full bg-gold" />
             </motion.div>
 
-            <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="mt-8 space-y-5 font-sans text-[15px] md:text-[17px] leading-[1.75] text-foreground/70 max-w-[500px]">
+            <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="mt-8 space-y-5 font-sans text-[14px] leading-[1.6] text-foreground/70 max-w-[460px]">
               <p>With over a decade of production experience, I've learned that elite engineering isn't just about syntax — it's about architecting systems that scale gracefully while remaining radically simple to maintain.</p>
               <p>I specialize in distributed systems and high-throughput cloud architectures. My focus is on the pivot between complex back-end engineering and pixel-perfect sensory experiences.</p>
             </motion.div>
@@ -108,9 +108,9 @@ const About = () => {
             <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="grid grid-cols-3 gap-3 md:gap-5 mt-10 pt-10 border-t border-black/5 dark:border-white/5">
               {stats.map(s => (
                 <div key={s.label} className="group">
-                  <p className="font-jakarta font-black text-[clamp(26px,4vw,38px)] text-crimson leading-none tracking-tighter group-hover:text-gold transition-colors duration-500">{s.num}</p>
-                  <p className="font-mono text-[9px] md:text-[11px] text-foreground/40 uppercase tracking-widest mt-2">{s.label}</p>
-                  <p className="font-sans text-[11px] md:text-[13px] text-foreground/60 mt-0.5">{s.sub}</p>
+                  <p className="font-jakarta font-black text-[28px] text-crimson leading-none tracking-tighter group-hover:text-gold transition-colors duration-500">{s.num}</p>
+                  <p className="font-mono text-[10px] text-foreground/40 uppercase tracking-widest mt-2">{s.label}</p>
+                  <p className="font-sans text-[12px] text-foreground/60 mt-0.5">{s.sub}</p>
                 </div>
               ))}
             </motion.div>

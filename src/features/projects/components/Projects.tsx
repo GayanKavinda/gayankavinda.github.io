@@ -91,9 +91,19 @@ const ProjectCard = React.memo(({
               </span>
             ))}
           </div>
-          <span className="font-mono text-[11px] text-[#7C5CFC] group-hover:text-[#00D4FF] group-hover:translate-x-1 transition-all duration-300 inline-flex items-center gap-1">
-            Explore <span>→</span>
-          </span>
+          <div className="flex items-center gap-2">
+            {/* Evidence type indicator */}
+            {project.evidenceType && (
+              <span className="font-mono text-[9px] px-2 py-0.5 rounded-full border border-white/10 text-foreground/40">
+                {project.evidenceType === 'code' ? '💻 Code' :
+                 project.evidenceType === 'docs' ? '📄 Docs' :
+                 project.evidenceType === 'diagrams' ? '📊 Diagrams' : '🔀 Mixed'}
+              </span>
+            )}
+            <span className="font-mono text-[11px] text-[#7C5CFC] group-hover:text-[#00D4FF] group-hover:translate-x-1 transition-all duration-300 inline-flex items-center gap-1">
+              Explore <span>→</span>
+            </span>
+          </div>
         </div>
       </div>
     </div>
