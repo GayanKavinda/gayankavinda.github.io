@@ -10,6 +10,9 @@ import Navbar from '@components/layout/Navbar';
 import Footer from '@components/layout/Footer';
 import { PROJECT_DETAILS } from '@constants/projectDetails';
 import LightRays from '@components/LightRays';
+import Aurora from '@components/Aurora';
+import BorderGlow from '@components/BorderGlow';
+import CircularGallery from '@components/CircularGallery';
 
 // ── Cursor follower ──────────────────────────────────────────────────────────
 const MagneticCursor = () => {
@@ -351,8 +354,17 @@ const ProjectDetail = () => {
   const pageRef = useRef<HTMLDivElement>(null);
   const [activeTOC, setActiveTOC] = useState('overview');
   const [tagHovered, setTagHovered] = useState<string | null>(null);
+  const [previewIndex, setPreviewIndex] = useState<number>(-1);
 
   const project = PROJECT_DETAILS[slug ?? ''] ?? PROJECT_DETAILS['distributed-task-engine'];
+
+  // Derive gallery images array once
+  const galleryImages = (project.screenshots ?? []).map(
+    (_: any, idx: number) => `https://picsum.photos/seed/${project.id}-${idx}/800/600`
+  );
+  const previewImage = previewIndex >= 0 ? galleryImages[previewIndex] : null;
+  const goNext = () => setPreviewIndex(i => (i + 1) % galleryImages.length);
+  const goPrev = () => setPreviewIndex(i => (i - 1 + galleryImages.length) % galleryImages.length);
 
   const hasCode    = !!(project.github && project.github !== '#' && project.github !== null);
   const hasDoc     = !!(project.docUrl && project.docUrl !== '#');
@@ -371,26 +383,48 @@ const ProjectDetail = () => {
     return () => obs.disconnect();
   }, []);
 
+  // Keyboard navigation for preview modal
+  useEffect(() => {
+    if (previewIndex < 0) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') goNext();
+      else if (e.key === 'ArrowLeft') goPrev();
+      else if (e.key === 'Escape') setPreviewIndex(-1);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [previewIndex, galleryImages.length]);
+
   return (
-    <div ref={pageRef} className="min-h-screen relative" style={{ background: 'hsl(var(--background))' }}>
+    <div ref={pageRef} className="min-h-screen relative" style={{ background: isDark ? 'hsl(var(--background))' : '#ffffff' }}>
       <MagneticCursor />
       <Navbar />
 
-      <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden" style={{ mixBlendMode: isDark ? 'screen' : 'normal', opacity: isDark ? 0.5 : 0.6 }}>
-        <LightRays
-          raysOrigin="top-center"
-          raysColor="#7c5cfc"
-          raysSpeed={1.2}
-          lightSpread={isDark ? 0.8 : 0.6}
-          rayLength={isDark ? 1.5 : 1.2}
-          followMouse={true}
-          mouseInfluence={0.15}
-          noiseAmount={isDark ? 0.05 : 0.02}
-          distortion={0.05}
-          fadeDistance={isDark ? 0.8 : 0.6}
-          pulsating={true}
-          className="w-full h-full"
-        />
+      <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden" style={{ mixBlendMode: isDark ? 'screen' : 'normal', opacity: isDark ? 0.4 : 0.5 }}>
+        {isDark ? (
+          <LightRays
+            raysOrigin="top-center"
+            raysColor="#7c5cfc"
+            raysSpeed={0.8}
+            lightSpread={0.5}
+            rayLength={1.2}
+            followMouse={false}
+            noiseAmount={0.02}
+            distortion={0.02}
+            fadeDistance={0.6}
+            pulsating={false}
+            className="w-full h-full"
+          />
+        ) : (
+          <div className="w-full h-full">
+            <Aurora
+              colorStops={["#64149f", "#be1868", "#0d5cab"]}
+              amplitude={1}
+              blend={0.5}
+              speed={0.5}
+            />
+          </div>
+        )}
       </div>
 
       {/* Reading progress — crimson thread */}
@@ -750,55 +784,59 @@ const ProjectDetail = () => {
                   <SectionLabel index="03" title="Visual Evidence" />
                   
                   {project.screenshots && project.screenshots.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                      {project.screenshots.map((shot: any, idx: number) => (
-                        <div key={idx} className={`relative rounded-xl overflow-hidden group ${isDark ? 'glow-card' : 'bg-foreground/[0.02] border border-foreground/[0.05]'}`} style={{ border: isDark ? 'none' : undefined }}>
-                          <div className="aspect-video overflow-hidden bg-foreground/[0.03]">
-                            <img 
-                              src={`https://picsum.photos/seed/${project.id}-${idx}/800/450`} 
-                              alt={shot.caption}
-                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            />
-                          </div>
-                          <div className="p-4 border-t border-foreground/[0.05]" style={{ background: 'hsl(var(--background) / 0.5)' }}>
-                            <p className="text-[13px] text-foreground/70 font-medium">
-                              {shot.caption}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="w-full h-[280px] md:h-[360px] relative mb-8">
+                      <CircularGallery
+                        items={project.screenshots.map((shot: any, idx: number) => ({
+                          image: `https://picsum.photos/seed/${project.id}-${idx}/800/600`,
+                          text: shot.caption || `Artifact ${idx + 1}`
+                        }))}
+                        bend={3}
+                        textColor={isDark ? '#ffffff' : '#000000'}
+                        borderRadius={0.05}
+                        onClick={(_img: string, idx: number) => setPreviewIndex(idx)}
+                      />
                     </div>
                   )}
 
                   {project.videoLinks && project.videoLinks.length > 0 && (
-                    <div className={`relative p-8 rounded-xl overflow-hidden group ${isDark ? 'glow-card' : 'bg-foreground/[0.02] border border-foreground/[0.05]'}`} style={{ border: isDark ? 'none' : undefined }}>
-                      <div className="flex items-center gap-3 mb-6">
-                        <div className="w-1.5 h-6 rounded-full shadow-[0_0_10px_rgba(124,92,252,0.8)]" style={{ background: 'hsl(var(--crimson))' }} />
-                        <h4 className="font-mono text-[14px] uppercase tracking-widest text-foreground/80">Video Demonstrations</h4>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {project.videoLinks.map((vid: any, idx: number) => (
-                          <a key={idx} href={vid.url} target="_blank" rel="noopener noreferrer" className={`relative rounded-xl overflow-hidden group/link block ${isDark ? 'bg-foreground/[0.02] border border-foreground/[0.05]' : 'bg-background border border-foreground/[0.08]'}`}>
-                            <div className="relative aspect-video overflow-hidden">
-                              <img 
-                                src={`https://picsum.photos/seed/video-${project.id}-${idx}/800/450`} 
-                                alt={vid.title}
-                                className="w-full h-full object-cover opacity-80 group-hover/link:opacity-100 transition-opacity duration-500"
-                              />
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-16 h-16 rounded-full bg-background/80 backdrop-blur-md flex items-center justify-center shadow-xl border border-foreground/10 group-hover/link:scale-110 transition-transform duration-300">
-                                  <div className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-crimson ml-1" />
+                    <BorderGlow
+                      glowColor="349 100 74"
+                      backgroundColor={isDark ? '#0f0c13' : '#ffffff'}
+                      borderRadius={16}
+                      glowRadius={30}
+                      animated={true}
+                      className="w-full mb-8"
+                      colors={isDark ? ['#c084fc', '#f472b6', '#38bdf8'] : ['#c084fc', '#93c5fd', '#fca5a5']}
+                    >
+                      <div className="p-8">
+                        <div className="flex items-center gap-3 mb-6">
+                          <div className="w-1.5 h-6 rounded-full shadow-[0_0_10px_rgba(124,92,252,0.8)]" style={{ background: 'hsl(var(--crimson))' }} />
+                          <h4 className="font-mono text-[14px] uppercase tracking-widest text-foreground/80">Video Demonstrations</h4>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {project.videoLinks.map((vid: any, idx: number) => (
+                            <a key={idx} href={vid.url} target="_blank" rel="noopener noreferrer" className={`relative rounded-xl overflow-hidden group/link block ${isDark ? 'bg-foreground/[0.02] border border-foreground/[0.05]' : 'bg-background border border-foreground/[0.08]'}`}>
+                              <div className="relative aspect-video overflow-hidden">
+                                <img 
+                                  src={`https://picsum.photos/seed/video-${project.id}-${idx}/800/450`} 
+                                  alt={vid.title}
+                                  className="w-full h-full object-cover opacity-80 group-hover/link:opacity-100 transition-opacity duration-500"
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <div className="w-16 h-16 rounded-full bg-background/80 backdrop-blur-md flex items-center justify-center shadow-xl border border-foreground/10 group-hover/link:scale-110 transition-transform duration-300">
+                                    <div className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-crimson ml-1" />
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className="p-4 border-t border-foreground/[0.05]">
-                              <p className="text-[15px] font-medium text-foreground/90 mb-1 group-hover/link:text-crimson transition-colors">{vid.title}</p>
-                              <p className="text-[13px] text-foreground/50">{vid.description}</p>
-                            </div>
-                          </a>
-                        ))}
+                              <div className="p-4 border-t border-foreground/[0.05]">
+                                <p className="text-[15px] font-medium text-foreground/90 mb-1 group-hover/link:text-crimson transition-colors">{vid.title}</p>
+                                <p className="text-[13px] text-foreground/50">{vid.description}</p>
+                              </div>
+                            </a>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    </BorderGlow>
                   )}
                 </motion.div>
               </section>
@@ -974,6 +1012,89 @@ const ProjectDetail = () => {
 
         <Footer />
       </div>
+
+      {/* ── Image Preview Modal ──────────────────────────────────────────── */}
+      <AnimatePresence>
+        {previewImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[999] flex items-center justify-center p-4 md:p-12 cursor-zoom-out"
+            style={{ background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(16px)' }}
+            onClick={() => setPreviewIndex(-1)}
+          >
+            {/* Close */}
+            <button
+              className="absolute top-5 right-5 w-11 h-11 flex items-center justify-center rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all z-10"
+              onClick={() => setPreviewIndex(-1)}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+
+            {/* Prev */}
+            {galleryImages.length > 1 && (
+              <button
+                className="absolute left-4 md:left-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-all z-10"
+                onClick={(e) => { e.stopPropagation(); goPrev(); }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+            )}
+
+            {/* Next */}
+            {galleryImages.length > 1 && (
+              <button
+                className="absolute right-4 md:right-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-all z-10"
+                onClick={(e) => { e.stopPropagation(); goNext(); }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            )}
+
+            {/* Image */}
+            <motion.img
+              key={previewIndex}
+              initial={{ scale: 0.9, opacity: 0, x: 30 }}
+              animate={{ scale: 1, opacity: 1, x: 0 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+              src={previewImage}
+              alt={`Screenshot ${previewIndex + 1}`}
+              className="max-w-full max-h-[82vh] object-contain rounded-2xl shadow-2xl"
+              style={{ boxShadow: '0 0 80px rgba(124,92,252,0.35)' }}
+              onClick={(e) => e.stopPropagation()}
+            />
+
+            {/* Counter */}
+            {galleryImages.length > 1 && (
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+                {galleryImages.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={(e) => { e.stopPropagation(); setPreviewIndex(i); }}
+                    className="transition-all"
+                    style={{
+                      width: i === previewIndex ? 20 : 6,
+                      height: 6,
+                      borderRadius: 3,
+                      background: i === previewIndex ? '#7c5cfc' : 'rgba(255,255,255,0.3)',
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
