@@ -37,21 +37,45 @@ const Navbar = () => {
   useEffect(() => {
     if (location.pathname !== '/') return;
 
-    const options = { threshold: 0.5, rootMargin: "-80px 0px -50% 0px" };
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
+    // Use a small timeout to ensure all components are mounted and have their IDs
+    const timer = setTimeout(() => {
+      // We observe multiple thresholds so we get updates as elements move through the viewport
+      const options = { 
+        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+        rootMargin: "-10% 0px -40% 0px" 
+      };
+      
+      let maxRatio = 0;
+      let currentActive = 'home';
+      let visibleSections = new Map();
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          visibleSections.set(entry.target.id, entry.intersectionRatio);
+        });
+
+        maxRatio = 0;
+        visibleSections.forEach((ratio, id) => {
+          if (ratio > maxRatio) {
+            maxRatio = ratio;
+            currentActive = id;
+          }
+        });
+
+        if (maxRatio > 0) {
+          setActiveSection(currentActive);
         }
+      }, options);
+
+      navLinks.forEach((link) => {
+        const el = document.getElementById(link.id);
+        if (el) observer.observe(el);
       });
-    }, options);
 
-    navLinks.forEach((link) => {
-      const el = document.getElementById(link.id);
-      if (el) observer.observe(el);
-    });
+      return () => observer.disconnect();
+    }, 100);
 
-    return () => observer.disconnect();
+    return () => clearTimeout(timer);
   }, [location.pathname]);
 
   // lock body scroll when mobile menu open
@@ -194,20 +218,20 @@ const Navbar = () => {
                 onClick={handleBackToProjects}
                 className="group"
                 style={{
-                   display: 'flex', alignItems: 'center', gap: 8,
-                   background: scrolledBg,
-                   border: `1px solid ${scrolledBorder}`,
-                   borderTop: 'none',
-                   padding: '6px 16px',
-                   borderRadius: '0 0 16px 16px',
-                   backdropFilter: 'blur(20px) saturate(180%)',
-                   WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                   cursor: 'pointer',
-                   boxShadow: isDark ? '0 4px 12px rgba(0,0,0,0.4)' : '0 4px 12px rgba(0,0,0,0.06)'
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  background: scrolledBg,
+                  border: `1px solid ${scrolledBorder}`,
+                  borderTop: 'none',
+                  padding: '6px 16px',
+                  borderRadius: '0 0 16px 16px',
+                  backdropFilter: 'blur(20px) saturate(180%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                  cursor: 'pointer',
+                  boxShadow: isDark ? '0 4px 12px rgba(0,0,0,0.4)' : '0 4px 12px rgba(0,0,0,0.06)'
                 }}
               >
-                 <span style={{ color: '#7C5CFC', fontSize: 12 }} className="group-hover:-translate-x-0.5 transition-transform">←</span>
-                 <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 9, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Back to Projects</span>
+                <span style={{ color: '#7C5CFC', fontSize: 12 }} className="group-hover:-translate-x-0.5 transition-transform">←</span>
+                <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 9, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Back to Projects</span>
               </button>
             </motion.div>
           )}
@@ -286,14 +310,14 @@ const Navbar = () => {
       </div>
 
       {/* ── MOBILE NAVBAR ── */}
-      <div 
+      <div
         className="lg:hidden fixed top-0 left-0 right-0 z-[999] pointer-events-none"
         style={{ paddingTop: 'env(safe-area-inset-top)' }}
       >
 
 
         {/* ── MOBILE HEADER (Unified Pill) ── */}
-        <div 
+        <div
           className="relative w-full h-14 mt-2 px-4 pointer-events-auto"
           style={{ touchAction: 'manipulation' }}
         >
@@ -304,14 +328,14 @@ const Navbar = () => {
               justifyContent: 'space-between',
               padding: '0 16px',
               display: 'flex', alignItems: 'center',
-              boxShadow: scrolled 
+              boxShadow: scrolled
                 ? (isDark ? '0 12px 40px rgba(0,0,0,0.6)' : '0 12px 40px rgba(0,0,0,0.12)')
                 : (isDark ? '0 8px 32px rgba(0,0,0,0.37)' : '0 8px 32px rgba(31,38,135,0.07)'),
               transition: 'box-shadow 0.4s ease',
             }}
           >
-            <button 
-              onClick={() => go('home')} 
+            <button
+              onClick={() => go('home')}
               aria-label="Go to home"
               style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0' }}
             >
@@ -351,20 +375,20 @@ const Navbar = () => {
                     onClick={handleBackToProjects}
                     aria-label="Back to projects"
                     style={{
-                       display: 'flex', alignItems: 'center', gap: 6,
-                       background: isDark ? 'rgba(15, 15, 15, 0.65)' : 'rgba(255, 255, 255, 0.65)',
-                       border: `1px solid ${dividerColor}`,
-                       borderTop: 'none', padding: '6px 14px',
-                       borderRadius: '0 0 14px 14px',
-                       backdropFilter: 'blur(20px) saturate(180%)',
-                       WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                       cursor: 'pointer',
-                       boxShadow: isDark ? '0 4px 16px rgba(0,0,0,0.45)' : '0 4px 16px rgba(0,0,0,0.08)',
-                       transition: 'background-color 0.3s, border-color 0.3s, box-shadow 0.3s',
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      background: isDark ? 'rgba(15, 15, 15, 0.65)' : 'rgba(255, 255, 255, 0.65)',
+                      border: `1px solid ${dividerColor}`,
+                      borderTop: 'none', padding: '6px 14px',
+                      borderRadius: '0 0 14px 14px',
+                      backdropFilter: 'blur(20px) saturate(180%)',
+                      WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                      cursor: 'pointer',
+                      boxShadow: isDark ? '0 4px 16px rgba(0,0,0,0.45)' : '0 4px 16px rgba(0,0,0,0.08)',
+                      transition: 'background-color 0.3s, border-color 0.3s, box-shadow 0.3s',
                     }}
                   >
-                     <span style={{ color: '#7C5CFC', fontSize: 12 }}>←</span>
-                     <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 8, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600 }}>Projects</span>
+                    <span style={{ color: '#7C5CFC', fontSize: 12 }}>←</span>
+                    <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 8, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600 }}>Projects</span>
                   </button>
                 </motion.div>
               )}
@@ -392,7 +416,7 @@ const Navbar = () => {
           <div style={{ padding: '36px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
             {/* Ultra-Clean Link List */}
-            <div 
+            <div
               style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28, touchAction: 'manipulation' }}
             >
               {navLinks.map((l) => (
