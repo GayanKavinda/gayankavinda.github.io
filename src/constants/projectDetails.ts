@@ -24,10 +24,23 @@ export const PROJECT_DETAILS = {
     evidenceType: 'docs', // Documentation and diagrams only
     hasCaseStudy: true,
     screenshots: [
-      { caption: 'Dashboard overview showing real-time task processing metrics', placeholder: 'Dashboard View' },
-      { caption: 'Kafka consumer group monitoring with lag visualization', placeholder: 'Consumer Monitoring' },
-      { caption: 'Kubernetes HPA configuration based on consumer lag', placeholder: 'Auto-scaling Config' },
-      { caption: 'Distributed tracing view showing end-to-end request flow', placeholder: 'Request Tracing' },
+      { 
+        caption: 'Zen-engine real-time observability dashboard with Kafka lag metrics', 
+        image: '/src/assets/images/project_details/distributed-task-engine/dashboard.png',
+        lightImage: '/src/assets/images/project_details/distributed-task-engine/dashboard-light.png'
+      },
+      { 
+        caption: 'Kafka consumer group monitoring with sub-100ms latency visualization', 
+        image: '/src/assets/images/project_details/distributed-task-engine/kafka.png' 
+      },
+      { 
+        caption: 'Distributed microservices topology with gRPC mesh health indicators', 
+        image: '/src/assets/images/project_details/distributed-task-engine/k8s.png' 
+      },
+      { 
+        caption: 'Horizontal Pod Autoscaler (HPA) scaling logic for peak load orchestration', 
+        image: '/src/assets/images/project_details/distributed-task-engine/hpa.png' 
+      },
     ],
     videoLinks: [
       { title: 'Project Demo', url: '#', description: 'Watch the full project walkthrough' },

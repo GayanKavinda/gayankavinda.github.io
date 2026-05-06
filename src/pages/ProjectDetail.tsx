@@ -1,8 +1,7 @@
 // src/pages/ProjectDetail.tsx
-// Redesign: Editorial dossier — dense, layered, ink-meets-digital craft.
-// No wasted air. Every element earns its place.
+// Zen Redesign: Minimal • Spacious • Intentional • Calm
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
@@ -12,14 +11,64 @@ import { PROJECT_DETAILS } from '@constants/projectDetails';
 import LightRays from '@components/LightRays';
 import Aurora from '@components/Aurora';
 import BorderGlow from '@components/BorderGlow';
-import CircularGallery from '@components/CircularGallery';
+import { CardStack } from '@components/ui/card-stack';
+import ScrollImageSequence from '@components/animations/ScrollImageSequence';
 
-// ── Cursor follower ──────────────────────────────────────────────────────────
+// ── Reduced Motion Hook ─────────────────────────────────────────────────────
+const useReducedMotion = () => {
+  const [reducedMotion, setReducedMotion] = useState(false);
+  
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(mediaQuery.matches);
+    
+    const listener = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mediaQuery.addEventListener('change', listener);
+    return () => mediaQuery.removeEventListener('change', listener);
+  }, []);
+
+  return reducedMotion;
+};
+
+
+// ── Animated Section Wrapper ────────────────────────
+const AnimatedSection = ({ 
+  id, 
+  children, 
+  delay = 0,
+  direction = 'up' 
+}: { 
+  id: string; 
+  children: React.ReactNode; 
+  delay?: number;
+  direction?: 'up' | 'left' | 'right'
+}) => {
+  const initial = {
+    up:    { opacity: 0, y: 50 },
+    left:  { opacity: 0, x: -30 },
+    right: { opacity: 0, x: 30 },
+  }[direction];
+
+  return (
+    <motion.section
+      id={id}
+      initial={initial}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
+      viewport={{ once: true, amount: 0.12, margin: "0px 0px -10% 0px" }}
+      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
+      className="min-h-[100px]"
+    >
+      {children}
+    </motion.section>
+  );
+};
+
+// ── Magnetic Cursor (Subtle Zen version) ───────────────────────────────
 const MagneticCursor = () => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const springX = useSpring(x, { stiffness: 200, damping: 20 });
-  const springY = useSpring(y, { stiffness: 200, damping: 20 });
+  const springX = useSpring(x, { stiffness: 150, damping: 25 });
+  const springY = useSpring(y, { stiffness: 150, damping: 25 });
   const [label, setLabel] = useState('');
 
   useEffect(() => {
@@ -30,8 +79,11 @@ const MagneticCursor = () => {
     };
     window.addEventListener('mousemove', move);
     window.addEventListener('mouseover', enter);
-    return () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseover', enter); };
-  }, []);
+    return () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseover', enter);
+    };
+  }, [x, y]);
 
   return (
     <motion.div
@@ -39,17 +91,40 @@ const MagneticCursor = () => {
       style={{ x: springX, y: springY, translateX: '-50%', translateY: '-50%' }}
     >
       <motion.div
-        className="rounded-full bg-white flex items-center justify-center overflow-hidden"
-        animate={{ width: label ? 72 : 10, height: label ? 72 : 10 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+        className="rounded-full border border-white/40 flex items-center justify-center"
+        animate={{ width: label ? 64 : 6, height: label ? 64 : 6 }}
+        transition={{ type: 'spring', stiffness: 280, damping: 22 }}
       >
-        {label && (
-          <span className="font-mono text-[11px] uppercase tracking-widest text-black whitespace-nowrap px-2">
-            {label}
-          </span>
-        )}
+        {label && <span className="font-mono text-[10px] uppercase tracking-widest text-white">{label}</span>}
       </motion.div>
     </motion.div>
+  );
+};
+
+// ── Mouse Proximity Glow Text Effect ─────────────────────────────────────
+const GlowText = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setMousePos({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
+  };
+
+  return (
+    <div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      className={`relative transition-all duration-700 ${className}`}
+      style={{
+        background: `radial-gradient(circle 240px at ${mousePos.x}% ${mousePos.y}%, hsla(var(--crimson), 0.08), transparent 70%)`,
+      }}
+    >
+      {children}
+    </div>
   );
 };
 
@@ -96,14 +171,19 @@ const Redacted = ({ children }: { children: string }) => {
   );
 };
 
-// ── Section label ────────────────────────────────────────────────────────────
-const SectionLabel = ({ index, title }: { index: string; title: string }) => (
-  <div className="flex items-center gap-4 mb-10">
-    <span className="font-mono text-[12px] text-foreground/40 tracking-[0.3em] select-none">{index}</span>
-    <div className="h-px flex-1 bg-foreground/[0.06]" />
-    <span className="font-mono text-[12px] uppercase tracking-[0.2em] text-foreground/50">{title}</span>
-    <div className="w-1.5 h-1.5 border border-foreground/20 rotate-45 flex-shrink-0" />
-  </div>
+// ── Section Label (Zen) ───────────────────────────────────────────────────
+const SectionLabel = ({ num, title }: { num: string; title: string }) => (
+  <motion.div 
+    className="flex items-center gap-6 mb-16"
+    initial={{ opacity: 0, x: -20 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5, ease: 'easeOut' }}
+  >
+    <span className="font-mono text-xs tracking-[0.125em] text-foreground/40">{num}</span>
+    <div className="h-px flex-1 bg-foreground/10" />
+    <span className="font-mono uppercase text-sm tracking-[0.1em] text-foreground/60">{title}</span>
+  </motion.div>
 );
 
 // ── Pulse dot ───────────────────────────────────────────────────────────────
@@ -117,91 +197,54 @@ const PulseDot = ({ color = 'crimson' }: { color?: string }) => (
   </span>
 );
 
-// ── System architecture — horizontal scroll bento ────────────────────────────
-const SystemMap = ({
-  components,
-  description,
-}: {
-  components: { name: string; role: string }[];
+// ── Real-time Streaming Architecture (Zen) ──────────────────────────────────
+const StreamingArchitecture = ({ components, description }: { 
+  components: { name: string; role: string; detail?: string }[];
   description: string;
 }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  const [active, setActive] = useState<number | null>(null);
-
-  const COLORS = [
-    { bg: 'hsl(var(--crimson) / 0.06)', border: 'hsl(var(--crimson) / 0.25)', accent: 'hsl(var(--crimson))' },
-    { bg: 'hsl(var(--gold) / 0.06)',    border: 'hsl(var(--gold) / 0.25)',    accent: 'hsl(var(--gold))'    },
-    { bg: 'hsl(var(--foreground) / 0.03)', border: 'hsl(var(--foreground) / 0.12)', accent: 'hsl(var(--foreground) / 0.6)' },
-    { bg: 'hsl(var(--crimson) / 0.04)', border: 'hsl(var(--crimson) / 0.18)', accent: 'hsl(var(--crimson) / 0.7)' },
-  ];
 
   return (
-    <div>
-      <p className="text-[15px] leading-[1.8] text-foreground/70 mb-8 max-w-[560px] font-medium">
-        {description}
-      </p>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-        {components.map((comp, idx) => {
-          const c = COLORS[idx % COLORS.length];
-          const isActive = active === idx;
-          return (
-            <motion.div
-              key={idx}
-              onHoverStart={() => setActive(idx)}
-              onHoverEnd={() => setActive(null)}
-              data-cursor="DETAIL"
-              className={`relative p-5 rounded-xl cursor-crosshair ${isDark ? 'glow-card' : ''}`}
-              style={{
-                background: isActive ? c.bg : undefined,
-                border: isActive ? `1px solid ${c.border}` : undefined,
-                boxShadow: isActive ? `0 0 20px ${c.accent}20` : undefined,
-              }}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <span className="font-mono text-[12px] text-foreground/40 tracking-widest">
-                  {String(idx + 1).padStart(2, '0')}
-                </span>
-                <motion.div
-                  className="w-1.5 h-1.5 rounded-full"
-                  animate={{ background: isActive ? c.accent : 'hsl(var(--foreground) / 0.1)' }}
-                />
-              </div>
-              <p
-                className="font-mono text-[13px] font-bold uppercase tracking-tight mb-2"
-                style={{ color: isActive ? c.accent : 'hsl(var(--foreground) / 0.7)' }}
-              >
-                {comp.name}
-              </p>
-              <p className="text-[14px] leading-[1.6] text-foreground/60 font-medium">
-                {comp.role}
-              </p>
-              {isActive && (
-                <motion.div
-                  layoutId="arch-accent"
-                  className="absolute bottom-0 left-0 right-0 h-0.5"
-                  style={{ background: c.accent }}
-                  transition={{ duration: 0.15 }}
-                />
-              )}
-            </motion.div>
-          );
-        })}
+    <div className="max-w-3xl mx-auto space-y-20">
+      <div className="text-center">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-foreground/10 mb-6">
+          <span className="text-[10px] font-mono tracking-widest text-crimson font-bold uppercase">Technical Schema</span>
+        </div>
+        <h3 className="text-4xl font-light tracking-tight">{description}</h3>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8">
+        {components.map((comp, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            className="group p-8 rounded-3xl border border-foreground/10 hover:border-foreground/20 transition-all duration-500 hover:-translate-y-1"
+          >
+            <div className={`w-2 h-2 rounded-full mb-6 transition-all group-hover:scale-125 ${isDark ? 'bg-white' : 'bg-foreground'}`} />
+            <h4 className="text-xl font-medium mb-3">{comp.name}</h4>
+            <p className="text-foreground/70 leading-relaxed font-medium">{comp.role}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="pt-8 border-t border-foreground/10 text-center text-[11px] font-mono text-foreground/40 tracking-widest uppercase">
+        Engineered for performance • Zero-downtime scalability
       </div>
     </div>
   );
 };
 
-// ── Timeline — vertical log ──────────────────────────────────────────────────
+// ── Timeline — Zen version ──────────────────────────────────────────────────
 const Timeline = ({ items }: { items: { duration: string; phase: string; desc: string }[] }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
   return (
     <div className="relative pl-6">
-      {/* Vertical thread */}
       <div className="absolute left-0 top-2 bottom-2 w-px bg-foreground/[0.08]" />
-
       {items.map((item, i) => (
         <motion.div
           key={i}
@@ -209,85 +252,103 @@ const Timeline = ({ items }: { items: { duration: string; phase: string; desc: s
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.35, delay: i * 0.07 }}
-          className="relative pb-8 last:pb-0 group"
+          className="relative pb-16 last:pb-0 group"
         >
-          {/* Node */}
           <div
-            className="absolute -left-[25px] top-[7px] w-[9px] h-[9px] border border-foreground/20 group-hover:border-crimson transition-colors duration-300 rotate-45"
-            style={{ background: 'hsl(var(--background))' }}
+            className={`absolute -left-[25px] top-[7px] w-2 h-2 rounded-full transition-colors duration-300 ${isDark ? 'bg-foreground/20' : 'bg-foreground/40'}`}
+            style={{ background: isDark ? 'hsl(var(--background))' : '#ffffff' }}
           />
-          {/* Phase duration */}
-          <div className="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-6">
-            <span className="font-mono text-[12px] uppercase tracking-widest text-foreground/50 shrink-0 w-24 flex items-center gap-1.5">
-              <span className="text-foreground/30">/</span>{item.duration}
+          <div className="flex flex-col gap-2">
+            <span className={`font-mono text-[11px] uppercase tracking-widest ${isDark ? 'text-foreground/40' : 'text-foreground/50'}`}>
+              {item.duration}
             </span>
-            <div>
-              <h5 className="font-mono text-[14px] font-bold uppercase tracking-tight text-foreground/80 group-hover:text-foreground/100 transition-colors mb-1.5">
-                {item.phase}
-              </h5>
-              <p className="text-[15px] leading-[1.8] text-foreground/60 font-medium max-w-[500px]">
-                {item.desc}
-              </p>
-            </div>
+            <h5 className="text-xl font-medium tracking-tight mb-2">
+              {item.phase}
+            </h5>
+            <p className={`text-[16px] leading-[1.8] font-medium max-w-[640px] ${isDark ? 'text-foreground/60' : 'text-foreground/70'}`}>
+              {item.desc}
+            </p>
           </div>
         </motion.div>
       ))}
-
-      <div className="relative pl-0 pt-2">
-        <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-foreground/30 flex items-center gap-2">
-          <span className="w-2 h-px bg-foreground/20" />
-          eof
-        </span>
-      </div>
     </div>
   );
 };
 
-// ── Debrief — alternating pull quotes ───────────────────────────────────────
-const Debrief = ({ learnings }: { learnings: string[] }) => (
-  <div className="space-y-px">
-    {learnings.map((learning, i) => (
-      <motion.div
-        key={i}
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4, delay: i * 0.06 }}
-        className="group relative flex gap-5 py-5 px-5 rounded-lg hover:bg-foreground/[0.02] transition-colors border border-transparent hover:border-foreground/[0.06]"
-      >
-        <div className="flex-shrink-0 flex flex-col items-center pt-1 gap-2">
-          <span className="font-mono text-[12px] text-foreground/40 tracking-widest">{String(i + 1).padStart(2, '0')}</span>
-          <div
-            className="w-px flex-1 min-h-[24px]"
-            style={{ background: i % 2 === 0 ? 'hsl(var(--crimson) / 0.2)' : 'hsl(var(--gold) / 0.2)' }}
-          />
-        </div>
-        <p className="text-[15px] leading-[1.8] text-foreground/70 font-medium group-hover:text-foreground/90 transition-colors">
-          {learning}
-        </p>
-        <div
-          className="absolute top-5 left-0 w-0.5 h-5 opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
-          style={{ background: i % 2 === 0 ? 'hsl(var(--crimson))' : 'hsl(var(--gold))' }}
-        />
-      </motion.div>
-    ))}
-  </div>
-);
+// ── Debrief — Zen alternating pull quotes ───────────────────────────────────────
+const Debrief = ({ learnings }: { learnings: string[] }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  return (
+    <div className="space-y-12">
+      {learnings.map((learning, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: i * 0.06 }}
+          className="group relative"
+        >
+          <GlowText className="p-8 rounded-3xl border border-foreground/5 hover:border-foreground/10 transition-all duration-700 bg-white shadow-sm dark:bg-transparent">
+             <div className="flex gap-6">
+               <span className="font-mono text-[11px] text-foreground/30 mt-1.5 uppercase tracking-widest font-bold">Point {String(i + 1).padStart(2, '0')}</span>
+               <p className={`text-xl leading-relaxed font-medium transition-colors ${isDark ? 'text-foreground/70 group-hover:text-foreground/90' : 'text-foreground/80 group-hover:text-foreground/100'}`}>
+                 {learning}
+               </p>
+             </div>
+          </GlowText>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
+// ── New Impact Metrics Section ──────────────────────────────────────────────
+const ImpactMetrics = ({ metrics }: { metrics: Array<{ label: string; value: string; suffix?: string }> }) => {
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+      {metrics.map((metric, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: i * 0.1 }}
+          className="bg-foreground/[0.03] border border-foreground/[0.08] rounded-2xl p-6 text-center group hover:border-crimson/30 transition-all"
+        >
+          <div className="font-mono text-4xl md:text-5xl font-bold text-crimson mb-2 tabular-nums">
+            {metric.value}{metric.suffix}
+          </div>
+          <p className="text-[11px] uppercase tracking-[0.25em] text-foreground/50 font-bold group-hover:text-foreground/70 transition-colors">
+            {metric.label}
+          </p>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
 
 // ── Sticky TOC — left rail ───────────────────────────────────────────────────
 const SECTIONS = [
-  { id: 'overview',  label: 'OVERVIEW',  num: '00' },
+  { id: 'overview',  label: 'ZEN',       num: '00' },
   { id: 'problem',   label: 'MISSION',   num: '01' },
-  { id: 'system',    label: 'ARCH',      num: '02' },
-  { id: 'evidence',  label: 'EVIDENCE',  num: '03' },
-  { id: 'timeline',  label: 'LOG',       num: '04' },
-  { id: 'debrief',   label: 'DEBRIEF',   num: '05' },
+  { id: 'system',    label: 'SCHEMA',    num: '02' },
+  { id: 'impact',    label: 'IMPACT',    num: '03' },
+  { id: 'evidence',  label: 'VIEW',      num: '04' },
+  { id: 'timeline',  label: 'LOG',       num: '05' },
+  { id: 'debrief',   label: 'WRAP',      num: '06' },
 ];
 
-const SidebarTOC = ({ active }: { active: string }) => (
-  <aside className="hidden xl:flex flex-col sticky top-32 w-[80px] shrink-0 self-start">
-    <div className="flex flex-col gap-1">
-      {SECTIONS.map((s) => {
+const SidebarTOC = ({ active }: { active: string }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  return (
+    <aside className="hidden xl:flex flex-col sticky top-32 w-[80px] shrink-0 self-start">
+      <div className="flex flex-col gap-1">
+        {SECTIONS.map((s) => {
         const isActive = active === s.id;
         return (
           <a
@@ -298,7 +359,7 @@ const SidebarTOC = ({ active }: { active: string }) => (
           >
             <span
               className="font-mono text-[11px] transition-colors"
-              style={{ color: isActive ? 'hsl(var(--crimson))' : 'hsl(var(--foreground) / 0.35)' }}
+              style={{ color: isActive ? 'hsl(var(--crimson))' : (isDark ? 'hsl(var(--foreground) / 0.35)' : 'hsl(var(--foreground) / 0.5)') }}
             >
               {s.num}
             </span>
@@ -306,21 +367,22 @@ const SidebarTOC = ({ active }: { active: string }) => (
               className="h-px transition-all"
               animate={{
                 width: isActive ? 20 : 8,
-                background: isActive ? 'hsl(var(--crimson))' : 'hsl(var(--foreground) / 0.12)',
+                background: isActive ? 'hsl(var(--crimson))' : (isDark ? 'hsl(var(--foreground) / 0.12)' : 'hsl(var(--foreground) / 0.2)'),
               }}
             />
             <span
               className="font-mono text-[11px] uppercase tracking-[0.15em] transition-colors font-medium"
-              style={{ color: isActive ? 'hsl(var(--foreground) / 0.9)' : 'hsl(var(--foreground) / 0.4)' }}
+              style={{ color: isActive ? (isDark ? 'hsl(var(--foreground) / 0.9)' : 'hsl(var(--foreground))') : (isDark ? 'hsl(var(--foreground) / 0.4)' : 'hsl(var(--foreground) / 0.6)') }}
             >
               {s.label}
             </span>
           </a>
         );
-      })}
-    </div>
-  </aside>
-);
+        })}
+      </div>
+    </aside>
+  );
+};
 
 // ── Dynamic Tag Colors ───────────────────────────────────────────────────────
 const getTagColors = (tag: string, isDark: boolean) => {
@@ -346,32 +408,96 @@ const getTagColors = (tag: string, isDark: boolean) => {
 };
 
 // ── Main component ───────────────────────────────────────────────────────────
+// ── Action Links (Zen Style) ─────────────────────────────────────────────
+const ProjectActions = ({ project, hasCode, hasDoc, hasLive }: any) => {
+  return (
+    <div className="flex flex-wrap gap-3 justify-center mt-12">
+      {hasCode && (
+        <a
+          href={project.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cursor="SOURCE"
+          className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl border border-foreground/20 hover:border-foreground/40 transition-all group"
+        >
+          <span className="font-mono text-sm uppercase tracking-widest">View Source</span>
+          <span className="text-xl group-hover:rotate-12 transition-transform">↗</span>
+        </a>
+      )}
+
+      {hasDoc && (
+        <a
+          href={project.docUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cursor="DOCS"
+          className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl border border-foreground/20 hover:border-foreground/40 transition-all"
+        >
+          <span className="font-mono text-sm uppercase tracking-widest">Case Study</span>
+        </a>
+      )}
+
+      {project.liveUrl && (
+        <a
+          href={project.liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cursor="LIVE"
+          className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-foreground text-background hover:bg-crimson transition-all font-medium"
+        >
+          See Live Demo →
+        </a>
+      )}
+    </div>
+  );
+};
+
+// ── Main component ───────────────────────────────────────────────────────────
 const ProjectDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const reducedMotion = useReducedMotion();
   const pageRef = useRef<HTMLDivElement>(null);
   const [activeTOC, setActiveTOC] = useState('overview');
-  const [tagHovered, setTagHovered] = useState<string | null>(null);
   const [previewIndex, setPreviewIndex] = useState<number>(-1);
+
+  // Responsive card sizing — CardStack uses fixed pixel widths
+  const [cardDims, setCardDims] = useState({ w: 420, h: 280 });
+  const [isTouch, setIsTouch] = useState(false);
+  useEffect(() => {
+    const compute = () => {
+      const vw = window.innerWidth;
+      setIsTouch(window.matchMedia('(pointer: coarse)').matches);
+      if (vw < 480)      setCardDims({ w: Math.min(300, vw - 40), h: 200 });
+      else if (vw < 768) setCardDims({ w: Math.min(360, vw - 60), h: 240 });
+      else               setCardDims({ w: 420, h: 280 });
+    };
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, []);
 
   const project = PROJECT_DETAILS[slug ?? ''] ?? PROJECT_DETAILS['distributed-task-engine'];
 
   // Derive gallery images array once
   const galleryImages = (project.screenshots ?? []).map(
-    (_: any, idx: number) => `https://picsum.photos/seed/${project.id}-${idx}/800/600`
+    (shot: any, idx: number) => {
+      const img = isDark ? shot.image : (shot.lightImage || shot.image);
+      return img || `https://picsum.photos/seed/${project.id}-${idx}/900/600`;
+    }
   );
   const previewImage = previewIndex >= 0 ? galleryImages[previewIndex] : null;
   const goNext = () => setPreviewIndex(i => (i + 1) % galleryImages.length);
   const goPrev = () => setPreviewIndex(i => (i - 1 + galleryImages.length) % galleryImages.length);
 
-  const hasCode    = !!(project.github && project.github !== '#' && project.github !== null);
-  const hasDoc     = !!(project.docUrl && project.docUrl !== '#');
-  const hasDiagram = !!(project.diagramUrl && project.diagramUrl !== '#');
+  const hasCode = !!(project.github && project.github !== '#' && project.github !== null);
+  const hasDoc  = !!(project.docUrl && project.docUrl !== '#');
+  const hasLive = !!(project.liveUrl);
 
   const { scrollYProgress } = useScroll({ target: pageRef, offset: ['start start', 'end end'] });
-  const progressScaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30 });
+  const progressScaleX = useSpring(scrollYProgress, { stiffness: 180, damping: 28 });
 
   useEffect(() => {
     const els = SECTIONS.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
@@ -396,702 +522,353 @@ const ProjectDetail = () => {
   }, [previewIndex, galleryImages.length]);
 
   return (
-    <div ref={pageRef} className="min-h-screen relative" style={{ background: isDark ? 'hsl(var(--background))' : '#ffffff' }}>
-      <MagneticCursor />
+    <div ref={pageRef} className="min-h-screen relative" style={{ background: isDark ? '#0a0a0a' : '#f8f7f4' }}>
+      {!reducedMotion && !isTouch && <MagneticCursor />}
       <Navbar />
 
-      <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden" style={{ mixBlendMode: isDark ? 'screen' : 'normal', opacity: isDark ? 0.4 : 0.5 }}>
-        {isDark ? (
-          <LightRays
-            raysOrigin="top-center"
-            raysColor="#7c5cfc"
-            raysSpeed={0.8}
-            lightSpread={0.5}
-            rayLength={1.2}
-            followMouse={false}
-            noiseAmount={0.02}
-            distortion={0.02}
-            fadeDistance={0.6}
-            pulsating={false}
-            className="w-full h-full"
-          />
-        ) : (
-          <div className="w-full h-full">
-            <Aurora
-              colorStops={["#64149f", "#be1868", "#0d5cab"]}
-              amplitude={1}
-              blend={0.5}
-              speed={0.5}
-            />
-          </div>
-        )}
+      {/* Progress Bar (Zen) */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-px bg-gradient-to-r from-crimson via-purple-500 to-gold z-[200] origin-left"
+        style={{ scaleX: progressScaleX }}
+      />
+
+      {/* Immersive Background */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <ScrollImageSequence opacity={isDark ? 0.25 : 0.15} />
+        <div className="absolute inset-0 opacity-30">
+          {isDark ? (
+             <LightRays raysColor="#4f46e5" raysSpeed={0.45} noiseAmount={0.01} />
+          ) : (
+             <Aurora amplitude={0.18} speed={0.35} colorStops={["#ddd6fe", "#fecdd3", "#fed7aa"]} />
+          )}
+        </div>
       </div>
 
-      {/* Reading progress — crimson thread */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 z-[200] origin-left h-[2px]"
-        style={{
-          scaleX: progressScaleX,
-          background: 'linear-gradient(to right, hsl(var(--crimson)), hsl(var(--gold)))',
-        }}
-      />
+      <div className="relative z-10 pt-28 pb-32 max-w-4xl mx-auto px-6 md:px-8">
+        
+        {/* Back Button */}
+        <motion.button
+          onClick={() => navigate('/projects')}
+          data-cursor="BACK"
+          className="flex items-center gap-2 text-sm font-mono tracking-widest text-foreground/50 hover:text-foreground mb-16 group"
+        >
+          ← <span className="group-hover:underline">All Projects</span>
+        </motion.button>
 
-      {/* Subtle paper texture overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0 opacity-[0.015]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
-          backgroundSize: '200px 200px',
-        }}
-      />
+        {/* Hero */}
+        <div className="text-center mb-24">
+          <div className="flex justify-center gap-4 mb-6">
+            <PulseDot color={project.status === 'Production' ? 'crimson' : 'gold'} />
+            <span className="font-mono text-xs tracking-[3px] text-foreground/50">{project.year} • {project.status}</span>
+          </div>
 
-      <div className="relative z-10 pt-20 md:pt-24">
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="font-light text-7xl md:text-8xl leading-none tracking-tighter mb-8"
+          >
+            {project.title}
+          </motion.h1>
 
-        {/* ── Ticker tape ───────────────────────────────────────── */}
-        <TickerTape items={[project.title, project.role, project.year, project.status, ...project.tags]} />
-
-        {/* ── Layout shell ──────────────────────────────────────── */}
-        <div className="flex gap-8 xl:gap-24 px-5 md:px-10 max-w-[1240px] mx-auto pt-12 relative z-10">
-          <SidebarTOC active={activeTOC} />
-
-          <main className="flex-1 min-w-0">
-
-            {/* ════════════════════════════════════════════
-                00  OVERVIEW
-            ════════════════════════════════════════════ */}
-            <section id="overview" className="mb-24">
-
-              {/* Back nav */}
-              <motion.button
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.35 }}
-                onClick={() => navigate('/projects')}
-                data-cursor="BACK"
-                className="inline-flex items-center gap-2 mb-12 group cursor-pointer"
-                style={{ background: 'none', border: 'none', padding: 0 }}
-              >
-                <div className="flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-[0.18em] text-foreground/50 group-hover:text-foreground/90 transition-colors">
-                  <svg width="8" height="8" viewBox="0 0 14 14" fill="none" className="group-hover:-translate-x-0.5 transition-transform">
-                    <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  Projects
-                </div>
-              </motion.button>
-
-              {/* Status row */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.1, duration: 0.4 }}
-                className="flex flex-wrap items-center gap-3 mb-6"
-              >
-                <div className="flex items-center gap-2">
-                  <PulseDot color={project.status === 'Production' ? 'crimson' : 'gold'} />
-                  <span className="font-mono text-[12px] uppercase tracking-widest text-foreground/60">
-                    {project.status}
-                  </span>
-                </div>
-                <span className="font-mono text-[12px] text-foreground/30">·</span>
-                <span className="font-mono text-[12px] uppercase tracking-widest text-foreground/50">{project.year}</span>
-                {!hasCode && (
-                  <>
-                    <span className="font-mono text-[12px] text-foreground/30">·</span>
-                    <span
-                      className="font-mono text-[11px] px-2.5 py-0.5 uppercase tracking-widest"
-                      style={{
-                        border: '1px solid hsl(var(--foreground) / 0.15)',
-                        color: 'hsl(var(--foreground) / 0.5)',
-                        borderRadius: 4,
-                      }}
-                    >
-                      Private
-                    </span>
-                  </>
-                )}
-              </motion.div>
-
-              {/* Title — tight, compressed */}
-              <div className="overflow-hidden mb-2">
-                <motion.h1
-                  initial={{ y: '105%' }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-                  className={`font-winner uppercase leading-[0.9] tracking-tighter text-foreground ${isDark ? 'font-black' : 'font-semibold'}`}
-                  style={{ fontSize: 'clamp(52px, 9vw, 104px)', letterSpacing: '-0.04em' }}
-                >
-                  {project.title}
-                </motion.h1>
-              </div>
-
-              {/* Tagline */}
-              <motion.p
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.55 }}
-                className={`text-[16px] leading-[1.8] mb-10 max-w-[560px] ${isDark ? 'text-foreground/70 font-medium' : 'text-foreground/70 font-normal'}`}
-              >
-                {project.tagline}
-              </motion.p>
-
-              {/* Meta strip — horizontal, compact */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.65 }}
-                className="flex flex-col sm:flex-row sm:items-stretch gap-px mb-10 rounded-lg overflow-hidden border border-foreground/[0.07]"
-              >
-                {[
-                  { label: 'Role', val: project.role },
-                  { label: 'Team', val: project.team },
-                  { label: 'Span', val: project.duration },
-                ].map((m, i) => (
-                  <div
-                    key={m.label}
-                    className="flex-1 px-4 py-3 flex flex-col gap-1"
-                    style={{
-                      background: i === 1 ? 'hsl(var(--foreground) / 0.02)' : 'hsl(var(--foreground) / 0.015)',
-                      borderRight: i < 2 ? '1px solid hsl(var(--foreground) / 0.05)' : 'none',
-                    }}
-                  >
-                    <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground/50">{m.label}</span>
-                    <span className={`font-mono text-[14px] text-foreground/90 ${isDark ? 'font-bold' : 'font-medium'}`}>{m.val}</span>
-                  </div>
-                ))}
-
-                {/* Stack inline */}
-                <div
-                  className="flex-[2] px-4 py-3 flex flex-col gap-2"
-                  style={{ background: 'hsl(var(--foreground) / 0.01)', borderLeft: '1px solid hsl(var(--foreground) / 0.05)' }}
-                >
-                  <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground/50">Stack</span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {project.tags.map((tag) => {
-                      const colors = getTagColors(tag, isDark);
-                      return (
-                        <span
-                          key={tag}
-                          onMouseEnter={() => setTagHovered(tag)}
-                          onMouseLeave={() => setTagHovered(null)}
-                          className="font-mono text-[12px] px-4 py-1.5 uppercase tracking-widest transition-all cursor-default rounded-full"
-                          style={{
-                            color: colors.color,
-                            backgroundColor: colors.background,
-                            borderColor: colors.borderColor,
-                            boxShadow: colors.boxShadow,
-                            borderWidth: '1px',
-                            borderStyle: 'solid',
-                            opacity: tagHovered && tagHovered !== tag ? 0.5 : 1,
-                            transform: tagHovered === tag ? 'translateY(-1px)' : 'none',
-                          }}
-                        >
-                          {tag}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Action links */}
-              <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.78 }}
-                className="flex flex-wrap items-center gap-2 mb-10"
-              >
-                {hasCode && (
-                  <a
-                    href={project.github!}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    data-cursor="OPEN"
-                    className="inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.1em] px-5 py-2.5 rounded transition-all"
-                    style={{
-                      background: 'hsl(var(--foreground))',
-                      color: 'hsl(var(--background))',
-                    }}
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
-                    </svg>
-                    Source Code
-                  </a>
-                )}
-                {hasDoc && (
-                  <a
-                    href={project.docUrl!}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    data-cursor="READ"
-                    className="inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.1em] px-5 py-2.5 rounded transition-all hover:bg-foreground/[0.04]"
-                    style={{ border: '1px solid hsl(var(--foreground) / 0.15)', color: 'hsl(var(--foreground) / 0.6)' }}
-                  >
-                    Docs →
-                  </a>
-                )}
-                {hasDiagram && (
-                  <a
-                    href={project.diagramUrl!}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    data-cursor="VIEW"
-                    className="inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.1em] px-5 py-2.5 rounded transition-all hover:bg-foreground/[0.04]"
-                    style={{ border: '1px solid hsl(var(--foreground) / 0.15)', color: 'hsl(var(--foreground) / 0.6)' }}
-                  >
-                    Diagrams →
-                  </a>
-                )}
-                {!hasCode && !hasDoc && !hasDiagram && (
-                  <span className="font-mono text-[12px] text-foreground/40 italic">
-                    Source restricted. Artifacts available on request.
-                  </span>
-                )}
-              </motion.div>
-
-              {/* Resource links */}
-              {([...project.videoLinks, ...project.extraLinks]).length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  className="flex flex-wrap items-center gap-2"
-                >
-                  <span className="font-mono text-[11px] uppercase tracking-widest text-foreground/50 mr-1">
-                    Resources /
-                  </span>
-                  {[...project.videoLinks, ...project.extraLinks].map((link, i) => (
-                    <a
-                      key={i}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-cursor="OPEN"
-                      className="inline-flex items-center gap-1.5 font-mono text-[12px] px-4 py-1.5 rounded-full transition-all border hover:border-foreground/30"
-                      style={{
-                        border: '1px solid hsl(var(--foreground) / 0.1)',
-                        color: 'hsl(var(--foreground) / 0.5)',
-                      }}
-                    >
-                      {link.title}
-                      <svg width="7" height="7" viewBox="0 0 12 12" fill="none">
-                        <path d="M2 10L10 2M10 2H5M10 2v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </a>
-                  ))}
-                </motion.div>
-              )}
-            </section>
-
-            {/* ════════════════════════════════════════════
-                01  MISSION PARAMETERS
-            ════════════════════════════════════════════ */}
-            <section id="problem" className="mb-24">
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-              >
-                <SectionLabel index="01" title="Mission Parameters" />
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                  {/* Problem */}
-                  <div
-                    className={`relative p-8 rounded-xl overflow-hidden group ${isDark ? 'glow-card' : ''}`}
-                  >
-                    <div className="flex items-center gap-2 mb-5">
-                      <div
-                        className="w-1.5 h-6 rounded-full shadow-[0_0_10px_rgba(124,92,252,0.8)]"
-                        style={{ background: 'hsl(var(--crimson))' }}
-                      />
-                      <span className="font-mono text-[12px] uppercase tracking-[0.25em] text-foreground/60 font-medium">
-                        Critical Friction
-                      </span>
-                    </div>
-                    <p className="text-[15px] leading-[1.8] text-foreground/70 font-medium">
-                      {project.problem}
-                    </p>
-                    {/* Corner accent */}
-                    <div
-                      className="absolute bottom-0 right-0 w-8 h-8 opacity-10 group-hover:opacity-25 transition-opacity"
-                      style={{
-                        borderTop: '1px solid hsl(var(--crimson))',
-                        borderLeft: '1px solid hsl(var(--crimson))',
-                        transform: 'rotate(180deg)',
-                      }}
-                    />
-                  </div>
-
-                  {/* Solution */}
-                  <div
-                    className={`relative p-8 rounded-xl overflow-hidden group ${isDark ? 'glow-card' : ''}`}
-                  >
-                    <div className="flex items-center gap-2 mb-5">
-                      <div
-                        className="w-1.5 h-6 rounded-full shadow-[0_0_10px_rgba(0,212,255,0.8)]"
-                        style={{ background: 'hsl(var(--gold))' }}
-                      />
-                      <span className="font-mono text-[12px] uppercase tracking-[0.25em] text-foreground/60 font-medium">
-                        Engineering Fix
-                      </span>
-                    </div>
-                    <p className="text-[15px] leading-[1.8] text-foreground/70 font-medium">
-                      {project.solution}
-                    </p>
-                    <div
-                      className="absolute bottom-0 right-0 w-8 h-8 opacity-10 group-hover:opacity-25 transition-opacity"
-                      style={{
-                        borderTop: '1px solid hsl(var(--gold))',
-                        borderLeft: '1px solid hsl(var(--gold))',
-                        transform: 'rotate(180deg)',
-                      }}
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            </section>
-
-            {/* ════════════════════════════════════════════
-                02  SYSTEM ARCHITECTURE
-            ════════════════════════════════════════════ */}
-            <section id="system" className="mb-24">
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-              >
-                <SectionLabel index="02" title="System Architecture" />
-                <SystemMap
-                  components={project.architecture.components}
-                  description={project.architecture.description}
-                />
-              </motion.div>
-            </section>
-
-            {/* ════════════════════════════════════════════
-                03  EVIDENCE & ARTIFACTS
-            ════════════════════════════════════════════ */}
-            {(project.screenshots?.length > 0 || project.videoLinks?.length > 0) && (
-              <section id="evidence" className="mb-24">
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <SectionLabel index="03" title="Visual Evidence" />
-                  
-                  {project.screenshots && project.screenshots.length > 0 && (
-                    <div className="w-full h-[280px] md:h-[360px] relative mb-8">
-                      <CircularGallery
-                        items={project.screenshots.map((shot: any, idx: number) => ({
-                          image: `https://picsum.photos/seed/${project.id}-${idx}/800/600`,
-                          text: shot.caption || `Artifact ${idx + 1}`
-                        }))}
-                        bend={3}
-                        textColor={isDark ? '#ffffff' : '#000000'}
-                        borderRadius={0.05}
-                        onClick={(_img: string, idx: number) => setPreviewIndex(idx)}
-                      />
-                    </div>
-                  )}
-
-                  {project.videoLinks && project.videoLinks.length > 0 && (
-                    <BorderGlow
-                      glowColor="349 100 74"
-                      backgroundColor={isDark ? '#0f0c13' : '#ffffff'}
-                      borderRadius={16}
-                      glowRadius={30}
-                      animated={true}
-                      className="w-full mb-8"
-                      colors={isDark ? ['#c084fc', '#f472b6', '#38bdf8'] : ['#c084fc', '#93c5fd', '#fca5a5']}
-                    >
-                      <div className="p-8">
-                        <div className="flex items-center gap-3 mb-6">
-                          <div className="w-1.5 h-6 rounded-full shadow-[0_0_10px_rgba(124,92,252,0.8)]" style={{ background: 'hsl(var(--crimson))' }} />
-                          <h4 className="font-mono text-[14px] uppercase tracking-widest text-foreground/80">Video Demonstrations</h4>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {project.videoLinks.map((vid: any, idx: number) => (
-                            <a key={idx} href={vid.url} target="_blank" rel="noopener noreferrer" className={`relative rounded-xl overflow-hidden group/link block ${isDark ? 'bg-foreground/[0.02] border border-foreground/[0.05]' : 'bg-background border border-foreground/[0.08]'}`}>
-                              <div className="relative aspect-video overflow-hidden">
-                                <img 
-                                  src={`https://picsum.photos/seed/video-${project.id}-${idx}/800/450`} 
-                                  alt={vid.title}
-                                  className="w-full h-full object-cover opacity-80 group-hover/link:opacity-100 transition-opacity duration-500"
-                                />
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                  <div className="w-16 h-16 rounded-full bg-background/80 backdrop-blur-md flex items-center justify-center shadow-xl border border-foreground/10 group-hover/link:scale-110 transition-transform duration-300">
-                                    <div className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-crimson ml-1" />
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="p-4 border-t border-foreground/[0.05]">
-                                <p className="text-[15px] font-medium text-foreground/90 mb-1 group-hover/link:text-crimson transition-colors">{vid.title}</p>
-                                <p className="text-[13px] text-foreground/50">{vid.description}</p>
-                              </div>
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    </BorderGlow>
-                  )}
-                </motion.div>
-              </section>
-            )}
-
-            {/* ════════════════════════════════════════════
-                04  EXECUTION LOG
-            ════════════════════════════════════════════ */}
-            <section id="timeline" className="mb-24">
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-              >
-                <SectionLabel index="04" title="Execution Log" />
-                <Timeline items={project.timeline} />
-              </motion.div>
-            </section>
-
-            {/* ════════════════════════════════════════════
-                05  DEBRIEF
-            ════════════════════════════════════════════ */}
-            <section id="debrief" className="mb-24">
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-              >
-                <SectionLabel index="05" title="Retrospective" />
-                <Debrief learnings={project.learnings} />
-              </motion.div>
-            </section>
-
-            {/* ════════════════════════════════════════════
-                CTA STRIP + MORE PROJECTS
-            ════════════════════════════════════════════ */}
-            <section className="mb-0">
-              <div className="grid grid-cols-1 lg:grid-cols-5 gap-2">
-
-                {/* CTA */}
-                <motion.div
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.45 }}
-                  className="lg:col-span-2 relative p-6 rounded-lg overflow-hidden"
-                  style={{
-                    background: isDark
-                      ? 'hsl(var(--crimson) / 0.06)'
-                      : 'hsl(var(--crimson) / 0.03)',
-                    border: '1px solid hsl(var(--crimson) / 0.15)',
-                  }}
-                >
-                  <span
-                    className="font-mono text-[11px] uppercase tracking-[0.2em] mb-3 block"
-                    style={{ color: 'hsl(var(--crimson) / 0.7)' }}
-                  >
-                    Colombo, LK
-                  </span>
-                  <h3
-                    className="font-winner font-black leading-tight mb-2 uppercase"
-                    style={{
-                      fontSize: 'clamp(16px, 2vw, 20px)',
-                      color: 'hsl(var(--foreground))',
-                    }}
-                  >
-                    Open to the right opportunity.
-                  </h3>
-                  <p className="text-[14px] leading-relaxed text-foreground/70 mb-5">
-                    Full-time, contract, or consulting.
-                  </p>
-                  <button
-                    onClick={() => navigate('/#contact')}
-                    data-cursor="GO"
-                    className="inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.12em] px-5 py-2.5 rounded transition-all"
-                    style={{
-                      background: 'hsl(var(--crimson))',
-                      color: '#fff',
-                    }}
-                  >
-                    Get in touch
-                    <svg width="9" height="9" viewBox="0 0 14 14" fill="none">
-                      <path d="M1 7H13M13 7L8 2M13 7L8 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-
-                  {/* Decorative mask silhouette hint */}
-                  <div
-                    className="absolute bottom-0 right-0 w-20 h-20 opacity-[0.04]"
-                    style={{
-                      background: 'hsl(var(--crimson))',
-                      clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                    }}
-                  />
-                </motion.div>
-
-                {/* More projects ticker */}
-                <motion.div
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.45, delay: 0.08 }}
-                  className="lg:col-span-3 rounded-lg overflow-hidden"
-                  style={{
-                    border: '1px solid hsl(var(--foreground) / 0.07)',
-                    background: isDark ? 'hsl(var(--foreground) / 0.015)' : 'hsl(var(--foreground) / 0.01)',
-                  }}
-                >
-                  <div
-                    className="px-4 py-2.5 flex items-center justify-between"
-                    style={{ borderBottom: '1px solid hsl(var(--foreground) / 0.05)' }}
-                  >
-                    <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground/50">
-                      More Projects
-                    </span>
-                    <button
-                      onClick={() => navigate('/projects')}
-                      className="font-mono text-[11px] uppercase tracking-widest text-foreground/50 hover:text-foreground/90 transition-colors"
-                    >
-                      View All →
-                    </button>
-                  </div>
-                  <div className="relative overflow-hidden py-3">
-                    <style>{`
-                      @keyframes moreScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-                      .more-scroll { animation: moreScroll 20s linear infinite; }
-                      .more-scroll:hover { animation-play-state: paused; }
-                    `}</style>
-                    <div
-                      className="flex more-scroll gap-2 cursor-pointer"
-                      onClick={() => navigate('/projects')}
-                      style={{ width: 'fit-content' }}
-                    >
-                      {[...Array(8)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="flex-shrink-0 w-36 p-3 rounded-lg hover:-translate-y-0.5 transition-transform"
-                          style={{
-                            border: '1px solid hsl(var(--foreground) / 0.06)',
-                            background: isDark ? 'hsl(var(--foreground) / 0.03)' : 'hsl(var(--foreground) / 0.025)',
-                          }}
-                        >
-                          <div
-                            className="aspect-video rounded-md mb-2 flex items-center justify-center"
-                            style={{ background: 'hsl(var(--foreground) / 0.03)' }}
-                          >
-                            <span className="font-mono text-[11px] text-foreground/30">
-                              {String((i % 4) + 1).padStart(2, '0')}
-                            </span>
-                          </div>
-                          <p className="font-mono text-[11px] font-semibold text-foreground/60">View all →</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-
-              </div>
-            </section>
-
-          </main>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-2xl text-foreground/70 max-w-2xl mx-auto leading-tight font-light"
+          >
+            {project.tagline}
+          </motion.p>
         </div>
 
-        {/* Footer fade */}
-        <div
-          className="h-48 relative z-10 -mt-24 pointer-events-none"
-          style={{
-            background: 'linear-gradient(to bottom, transparent, hsl(var(--background)) 60%)',
-          }}
-        />
+        {/* Meta Info */}
+        <div className="flex flex-wrap justify-center gap-x-12 gap-y-8 text-center mb-20 text-sm">
+          <div>
+            <div className="text-foreground/40 text-xs tracking-widest mb-1 uppercase font-bold">Role</div>
+            <div className="font-medium">{project.role}</div>
+          </div>
+          <div>
+            <div className="text-foreground/40 text-xs tracking-widest mb-1 uppercase font-bold">Team</div>
+            <div className="font-medium">{project.team}</div>
+          </div>
+          <div>
+            <div className="text-foreground/40 text-xs tracking-widest mb-1 uppercase font-bold">Duration</div>
+            <div className="font-medium">{project.duration}</div>
+          </div>
+        </div>
 
-        <Footer />
+        {/* Project Actions */}
+        <ProjectActions project={project} hasCode={hasCode} hasDoc={hasDoc} hasLive={hasLive} />
+
+        {/* Tags */}
+        <div className="flex flex-wrap justify-center gap-2 mt-10">
+          {project.tags.map((tag: string) => (
+            <span key={tag} className="px-4 py-1.5 text-xs font-mono border border-foreground/10 rounded-full text-foreground/60">
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <main className="mt-32 space-y-48">
+          {/* ════════════════════════════════════════════
+              00  ZEN OVERVIEW
+          ════════════════════════════════════════════ */}
+          <AnimatedSection id="overview" direction="up">
+            <SectionLabel num="00" title="Overview" />
+            <GlowText className="text-2xl leading-relaxed text-center text-foreground/80 font-light">
+              {project.problem}
+            </GlowText>
+          </AnimatedSection>
+
+          {/* ════════════════════════════════════════════
+              01  THE MISSION
+          ════════════════════════════════════════════ */}
+          <AnimatedSection id="problem" direction="left" delay={0.05}>
+            <SectionLabel num="01" title="The Mission" />
+            <GlowText className="text-xl md:text-2xl leading-relaxed text-center max-w-3xl mx-auto italic font-medium">
+              {project.solution}
+            </GlowText>
+          </AnimatedSection>
+
+          {/* ════════════════════════════════════════════
+              02  REAL-TIME ARCHITECTURE
+          ════════════════════════════════════════════ */}
+          <AnimatedSection id="system" direction="up" delay={0.05}>
+            <SectionLabel num="02" title="Real-time Architecture" />
+            <StreamingArchitecture 
+              components={project.architecture.components}
+              description={project.architecture.description}
+            />
+          </AnimatedSection>
+
+          {/* ════════════════════════════════════════════
+              03  IMPACT
+          ════════════════════════════════════════════ */}
+          {project.metrics && (
+            <AnimatedSection id="impact" direction="right" delay={0.05}>
+              <SectionLabel num="03" title="Impact" />
+              <ImpactMetrics metrics={project.metrics} />
+            </AnimatedSection>
+          )}
+
+          {/* ════════════════════════════════════════════
+              04  VISUAL EVIDENCE
+          ════════════════════════════════════════════ */}
+          <AnimatedSection id="evidence" direction="up">
+            <SectionLabel num="04" title="Visual Evidence" />
+
+            {/* Video Thumbnails */}
+            {project.videoLinks?.length > 0 && (
+              <BorderGlow glowColor="124 92 252" className="mb-20 rounded-[32px] overflow-hidden" borderRadius={32}>
+                <div className="p-8 md:p-12">
+                  <h4 className="font-mono uppercase tracking-widest text-sm mb-8 text-center text-foreground/40">Demonstrations</h4>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {project.videoLinks.map((vid: any, i: number) => (
+                      <a key={i} href={vid.url} target="_blank" rel="noopener noreferrer" className="group block">
+                        <div className="relative aspect-video rounded-3xl overflow-hidden bg-black/10">
+                          <img 
+                            src={`https://picsum.photos/seed/video-${project.id}-${i}/800/450`} 
+                            className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-all duration-500 group-hover:scale-105" 
+                            alt={vid.title}
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform">
+                              <div className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-white ml-1" />
+                            </div>
+                          </div>
+                        </div>
+                        <p className="mt-4 text-center font-medium group-hover:text-crimson transition-colors">{vid.title}</p>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </BorderGlow>
+            )}
+
+            {/* Screenshot Gallery */}
+            {project.screenshots?.length > 0 && (
+              <div className="flex justify-center mt-24">
+                <CardStack
+                  items={project.screenshots.map((shot: any, idx: number) => ({
+                    id: idx,
+                    title: shot.caption || `Artifact ${idx + 1}`,
+                    imageSrc: (isDark ? shot.image : (shot.lightImage || shot.image)) || `https://picsum.photos/seed/${project.id}-${idx}/900/600`,
+                  }))}
+                  cardWidth={cardDims.w}
+                  cardHeight={cardDims.h}
+                  autoAdvance
+                  intervalMs={4500}
+                  renderCard={(item) => (
+                    <div 
+                      className="relative h-full w-full overflow-hidden rounded-[32px] cursor-zoom-in group shadow-2xl" 
+                      onClick={() => setPreviewIndex(item.id as number)}
+                    >
+                      <img 
+                        src={item.imageSrc} 
+                        className={`w-full h-full object-cover transition-all duration-700 ${!isDark && !project.screenshots[item.id as number].lightImage ? 'invert-[0.9] hue-rotate-180 contrast-125' : 'grayscale-[0.4] group-hover:grayscale-0'}`} 
+                        alt={item.title} 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="absolute bottom-6 left-6 text-white opacity-0 group-hover:opacity-100 transition-opacity font-mono text-xs tracking-widest">
+                        {item.title}
+                      </div>
+                    </div>
+                  )}
+                />
+              </div>
+            )}
+          </AnimatedSection>
+
+          {/* ════════════════════════════════════════════
+              05  EXECUTION LOG
+          ════════════════════════════════════════════ */}
+          <AnimatedSection id="timeline" direction="left" delay={0.05}>
+            <SectionLabel num="05" title="Execution Log" />
+            <Timeline items={project.timeline} />
+          </AnimatedSection>
+
+          {/* ════════════════════════════════════════════
+              06  RETROSPECTIVE
+          ════════════════════════════════════════════ */}
+          <AnimatedSection id="debrief" direction="up" delay={0.05}>
+            <SectionLabel num="06" title="Retrospective" />
+            <Debrief learnings={project.learnings} />
+          </AnimatedSection>
+        </main>
+
+        {/* Final CTA (Zen) */}
+        <div className="mt-64 text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[4px] text-foreground/30 mb-8 font-bold">Colombo, Sri Lanka</p>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/#contact')}
+            className="inline-block px-16 py-8 border border-foreground/10 hover:border-foreground/30 rounded-full text-xl font-light transition-all shadow-sm hover:shadow-md bg-white dark:bg-transparent"
+          >
+            Start a Conversation
+          </motion.button>
+        </div>
       </div>
 
-      {/* ── Image Preview Modal ──────────────────────────────────────────── */}
+      <Footer />
+
+      {/* ── Image Expand Modal ───────────────────────────────────────────── */}
       <AnimatePresence>
         {previewImage && (
           <motion.div
+            key="modal-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[999] flex items-center justify-center p-4 md:p-12 cursor-zoom-out"
-            style={{ background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(16px)' }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[999] flex items-center justify-center p-0 md:p-16"
+            style={{ background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
             onClick={() => setPreviewIndex(-1)}
           >
-            {/* Close */}
-            <button
-              className="absolute top-5 right-5 w-11 h-11 flex items-center justify-center rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all z-10"
-              onClick={() => setPreviewIndex(-1)}
+            {/* ── Close button ─────────────────────────────── */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ delay: 0.1, duration: 0.2 }}
+              className="absolute top-4 right-4 z-20 flex items-center gap-2 px-4 py-2 rounded-full text-white/80 hover:text-white transition-all"
+              style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)' }}
+              onClick={(e) => { e.stopPropagation(); setPreviewIndex(-1); }}
+              aria-label="Close"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
-            </button>
+              <span className="font-mono text-[11px] uppercase tracking-widest">Close</span>
+              <span className="font-mono text-[10px] text-white/40 ml-0.5">ESC</span>
+            </motion.button>
 
-            {/* Prev */}
+            {/* ── Prev / Next ───────────────────────────────── */}
             {galleryImages.length > 1 && (
-              <button
-                className="absolute left-4 md:left-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-all z-10"
+              <motion.button
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -12 }}
+                transition={{ delay: 0.12, duration: 0.2 }}
+                className="absolute left-4 md:left-6 z-20 w-11 h-11 flex items-center justify-center rounded-full text-white/70 hover:text-white transition-all"
+                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
                 onClick={(e) => { e.stopPropagation(); goPrev(); }}
+                aria-label="Previous"
               >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="15 18 9 12 15 6"></polyline>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6" />
                 </svg>
-              </button>
+              </motion.button>
             )}
-
-            {/* Next */}
             {galleryImages.length > 1 && (
-              <button
-                className="absolute right-4 md:right-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-all z-10"
+              <motion.button
+                initial={{ opacity: 0, x: 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 12 }}
+                transition={{ delay: 0.12, duration: 0.2 }}
+                className="absolute right-4 md:right-6 z-20 w-11 h-11 flex items-center justify-center rounded-full text-white/70 hover:text-white transition-all"
+                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
                 onClick={(e) => { e.stopPropagation(); goNext(); }}
+                aria-label="Next"
               >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="9 18 15 12 9 6"></polyline>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6" />
                 </svg>
-              </button>
+              </motion.button>
             )}
 
-            {/* Image */}
-            <motion.img
+            {/* ── Expanded image ────────────────────────────── */}
+            <motion.div
               key={previewIndex}
-              initial={{ scale: 0.9, opacity: 0, x: 30 }}
-              animate={{ scale: 1, opacity: 1, x: 0 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-              src={previewImage}
-              alt={`Screenshot ${previewIndex + 1}`}
-              className="max-w-full max-h-[82vh] object-contain rounded-2xl shadow-2xl"
-              style={{ boxShadow: '0 0 80px rgba(124,92,252,0.35)' }}
+              drag={!reducedMotion ? "y" : false}
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={0.5}
+              onDragEnd={(_, info) => {
+                if (Math.abs(info.offset.y) > 150) setPreviewIndex(-1);
+              }}
+              initial={{ opacity: 0, scale: 0.88, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: -12 }}
+              transition={{ type: 'spring', stiffness: 340, damping: 30 }}
+              className="relative w-full md:max-w-full h-full md:h-auto md:max-h-[84vh] rounded-none md:rounded-2xl overflow-hidden cursor-grab active:cursor-grabbing"
+              style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.06), 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(124,92,252,0.25)' }}
               onClick={(e) => e.stopPropagation()}
-            />
-
-            {/* Counter */}
-            {galleryImages.length > 1 && (
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
-                {galleryImages.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={(e) => { e.stopPropagation(); setPreviewIndex(i); }}
-                    className="transition-all"
-                    style={{
-                      width: i === previewIndex ? 20 : 6,
-                      height: 6,
-                      borderRadius: 3,
-                      background: i === previewIndex ? '#7c5cfc' : 'rgba(255,255,255,0.3)',
-                    }}
-                  />
-                ))}
-              </div>
-            )}
+            >
+              <img
+                src={previewImage!}
+                alt={`Screenshot ${previewIndex + 1}`}
+                className={`block w-full h-full md:max-h-[84vh] object-contain md:object-contain transition-all duration-500 ${!isDark && !project.screenshots[previewIndex].lightImage ? 'invert-[0.9] hue-rotate-180 contrast-125' : ''}`}
+                draggable={false}
+              />
+              {/* Bottom info bar */}
+              {galleryImages.length > 1 && (
+                <div
+                  className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-5 py-3"
+                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)' }}
+                >
+                  <span className="font-mono text-[12px] text-white/60 uppercase tracking-widest">
+                    {previewIndex + 1} / {galleryImages.length}
+                  </span>
+                  {/* Dot strip */}
+                  <div className="flex items-center gap-1.5">
+                    {galleryImages.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={(e) => { e.stopPropagation(); setPreviewIndex(i); }}
+                        style={{
+                          width: i === previewIndex ? 18 : 5,
+                          height: 5,
+                          borderRadius: 3,
+                          background: i === previewIndex ? '#7c5cfc' : 'rgba(255,255,255,0.25)',
+                          transition: 'all 0.25s ease',
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
