@@ -21,6 +21,12 @@ const Navbar = () => {
   const isDark = theme === 'dark';
   const navigate = useNavigate();
   const location = useLocation();
+  const isProjectDetail = location.pathname.startsWith('/projects/') && location.pathname !== '/projects';
+
+  const handleBackToProjects = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate('/projects');
+  };
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 80);
@@ -77,19 +83,19 @@ const Navbar = () => {
   // ─── Theme-aware style tokens ─────────────────────────────────────────────
   const pillBase: React.CSSProperties = {
     display: 'flex', alignItems: 'center',
-    background: isDark ? 'rgba(17,17,17,0.70)' : 'rgba(255,255,255,0.70)',
-    border: isDark ? '1px solid rgba(255,255,255,0.09)' : '1px solid rgba(0,0,0,0.09)',
+    background: isDark ? 'rgba(15, 15, 15, 0.45)' : 'rgba(255, 255, 255, 0.45)',
+    border: isDark ? '1px solid rgba(255, 255, 255, 0.12)' : '1px solid rgba(255, 255, 255, 0.5)',
     borderRadius: 50,
-    backdropFilter: 'blur(12px)',
-    WebkitBackdropFilter: 'blur(12px)',
-    boxShadow: isDark ? '0 2px 20px rgba(0,0,0,0.4)' : '0 2px 20px rgba(0,0,0,0.08)',
+    backdropFilter: 'blur(20px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+    boxShadow: isDark ? '0 8px 32px 0 rgba(0, 0, 0, 0.37)' : '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
   };
   const textMuted = isDark ? 'rgba(245,240,232,0.45)' : 'rgba(26,26,46,0.72)';
   const textActive = isDark ? 'rgba(245,240,232,0.9)' : '#0a0a14';
-  const scrolledBg = isDark ? 'rgba(10,10,10,0.97)' : 'rgba(250,250,250,0.97)';
-  const scrolledBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
-  const dropdownBg = isDark ? 'rgba(17,17,17,0.98)' : 'rgba(250,250,250,0.98)';
-  const dividerColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+  const scrolledBg = isDark ? 'rgba(10, 10, 10, 0.65)' : 'rgba(255, 255, 255, 0.65)';
+  const scrolledBorder = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+  const dropdownBg = isDark ? 'rgba(15, 15, 15, 0.75)' : 'rgba(255, 255, 255, 0.75)';
+  const dividerColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)';
 
   return (
     <>
@@ -104,8 +110,8 @@ const Navbar = () => {
             position: 'absolute', top: 0, left: 0, right: 0,
             background: scrolledBg,
             borderBottom: `1px solid ${scrolledBorder}`,
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
+            backdropFilter: 'blur(28px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(28px) saturate(180%)',
             display: 'flex', alignItems: 'center',
             justifyContent: 'space-between',
             height: 56, padding: '0 40px',
@@ -118,7 +124,8 @@ const Navbar = () => {
           {/* Logo */}
           <button
             onClick={() => go('home')}
-            style={{ fontFamily: "'Playfair Display',serif", fontSize: 18, color: '#7C5CFC', fontWeight: 900, cursor: 'pointer', background: 'none', border: 'none' }}
+            aria-label="Go to home"
+            style={{ fontFamily: "'Playfair Display',serif", fontSize: 18, color: '#7C5CFC', fontWeight: 900, cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
           >
             GY.
           </button>
@@ -134,7 +141,7 @@ const Navbar = () => {
                   color: activeSection === l.id ? textActive : textMuted,
                   letterSpacing: '0.18em',
                   textTransform: 'uppercase', background: 'none', border: 'none',
-                  cursor: 'pointer', transition: 'color 0.3s',
+                  cursor: 'pointer', transition: 'color 0.3s ease',
                 }}
               >
                 <span className="relative z-10">{l.label}</span>
@@ -152,13 +159,14 @@ const Navbar = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <button
               onClick={() => window.open('/resume.pdf', '_blank')}
+              aria-label="Download resume"
               style={{
                 fontFamily: "'DM Mono',monospace", fontSize: 10,
                 color: '#7C5CFC', letterSpacing: '0.15em', textTransform: 'uppercase',
                 padding: '6px 18px', borderRadius: 50,
                 border: '1px solid rgba(124,92,252,0.30)',
                 background: 'rgba(124,92,252,0.06)', cursor: 'pointer',
-                transition: 'all 0.2s',
+                transition: 'background-color 0.2s, border-color 0.2s',
               }}
               onMouseEnter={e => { e.currentTarget.style.background = 'rgba(124,92,252,0.10)'; e.currentTarget.style.borderColor = 'rgba(124,92,252,0.55)'; }}
               onMouseLeave={e => { e.currentTarget.style.background = 'rgba(124,92,252,0.06)'; e.currentTarget.style.borderColor = 'rgba(124,92,252,0.30)'; }}
@@ -168,6 +176,42 @@ const Navbar = () => {
             <ModeToggle />
           </div>
         </nav>
+
+        {/* ── Docked Back Button (Desktop) ── */}
+        <AnimatePresence>
+          {scrolled && isProjectDetail && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              style={{
+                position: 'absolute', top: 56, left: 40,
+                zIndex: -1, // Behind the main navbar but above content
+                pointerEvents: 'auto'
+              }}
+            >
+              <button
+                onClick={handleBackToProjects}
+                className="group"
+                style={{
+                   display: 'flex', alignItems: 'center', gap: 8,
+                   background: scrolledBg,
+                   border: `1px solid ${scrolledBorder}`,
+                   borderTop: 'none',
+                   padding: '6px 16px',
+                   borderRadius: '0 0 16px 16px',
+                   backdropFilter: 'blur(20px) saturate(180%)',
+                   WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                   cursor: 'pointer',
+                   boxShadow: isDark ? '0 4px 12px rgba(0,0,0,0.4)' : '0 4px 12px rgba(0,0,0,0.06)'
+                }}
+              >
+                 <span style={{ color: '#7C5CFC', fontSize: 12 }} className="group-hover:-translate-x-0.5 transition-transform">←</span>
+                 <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 9, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Back to Projects</span>
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* ── PILL STATE ── */}
         <nav
@@ -241,101 +285,91 @@ const Navbar = () => {
         </nav>
       </div>
 
-      {/* ════════════════════════════════════════
-          MOBILE NAVBAR
-      ════════════════════════════════════════ */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-[999] pointer-events-none">
+      {/* ── MOBILE NAVBAR ── */}
+      <div 
+        className="lg:hidden fixed top-0 left-0 right-0 z-[999] pointer-events-none"
+        style={{ paddingTop: 'env(safe-area-inset-top)' }}
+      >
 
-        {/* ── SCROLLED STATE ── */}
-        <div
-          style={{
-            position: 'absolute', top: 0, left: 0, right: 0,
-            background: scrolledBg,
-            borderBottom: `1px solid ${scrolledBorder}`,
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            display: 'flex', alignItems: 'center',
-            justifyContent: 'space-between',
-            height: 56, padding: '0 16px',
-            opacity: scrolled ? 1 : 0,
-            transform: scrolled ? 'translateY(0)' : 'translateY(-10px)',
-            transition: 'opacity 0.4s ease, transform 0.4s ease',
-            pointerEvents: scrolled ? 'auto' : 'none',
-          }}
+
+        {/* ── MOBILE HEADER (Unified Pill) ── */}
+        <div 
+          className="relative w-full h-14 mt-2 px-4 pointer-events-auto"
+          style={{ touchAction: 'manipulation' }}
         >
-          {/* Logo */}
-          <button
-            onClick={() => go('home')}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
+          <motion.div
+            style={{
+              ...pillBase,
+              position: 'absolute', inset: '0 16px',
+              justifyContent: 'space-between',
+              padding: '0 16px',
+              display: 'flex', alignItems: 'center',
+              boxShadow: scrolled 
+                ? (isDark ? '0 12px 40px rgba(0,0,0,0.6)' : '0 12px 40px rgba(0,0,0,0.12)')
+                : (isDark ? '0 8px 32px rgba(0,0,0,0.37)' : '0 8px 32px rgba(31,38,135,0.07)'),
+              transition: 'box-shadow 0.4s ease',
+            }}
           >
-            <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, color: '#7C5CFC', fontWeight: 900 }}>GY.</span>
-            <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: textMuted, letterSpacing: '0.05em' }}>Gara Yaka</span>
-          </button>
-
-          {/* Right: toggle + hamburger */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <ModeToggle />
-            <button
-              onClick={() => setMenuOpen(o => !o)}
-              aria-label="Toggle menu"
-              style={{
-                width: 38, height: 38, borderRadius: '50%',
-                border: '1px solid transparent',
-                background: menuOpen ? 'rgba(124,92,252,0.08)' : 'transparent',
-                display: 'flex', flexDirection: 'column', alignItems: 'center',
-                justifyContent: 'center', gap: 5, cursor: 'pointer',
-                transition: 'all 0.3s',
-              }}
+            <button 
+              onClick={() => go('home')} 
+              aria-label="Go to home"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0' }}
             >
-              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#7C5CFC' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(45deg) translate(3px, 4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
-              <span style={{ display: 'block', width: menuOpen ? 0 : 10, height: 1, background: textActive, borderRadius: 1, transition: 'width 0.3s', opacity: menuOpen ? 0 : 1 }} />
-              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#7C5CFC' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(-45deg) translate(3px, -4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
+              <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, color: '#7C5CFC', fontWeight: 900 }}>GY.</span>
+              <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: textMuted, letterSpacing: '0.05em' }}>Gara Yaka</span>
             </button>
-          </div>
-        </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <ModeToggle />
+              <button
+                onClick={() => setMenuOpen(o => !o)}
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                style={{
+                  width: 42, height: 42, borderRadius: '50%',
+                  border: `1px solid ${dividerColor}`,
+                  background: menuOpen ? 'rgba(124,92,252,0.08)' : (isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'),
+                  display: 'flex', flexDirection: 'column', alignItems: 'center',
+                  justifyContent: 'center', gap: 5, cursor: 'pointer',
+                  transition: 'background-color 0.3s, border-color 0.3s',
+                }}
+              >
+                <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#7C5CFC' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(45deg) translate(3px, 4px)' : 'none', transition: 'transform 0.3s' }} />
+                <span style={{ display: 'block', width: menuOpen ? 0 : 10, height: 1, background: textActive, borderRadius: 1, transition: 'width 0.3s', opacity: menuOpen ? 0 : 1 }} />
+                <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#7C5CFC' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(-45deg) translate(3px, -4px)' : 'none', transition: 'transform 0.3s' }} />
+              </button>
+            </div>
 
-        {/* ── PILL STATE ── */}
-        <div
-          style={{
-            ...pillBase,
-            position: 'absolute', top: 12, left: 16, right: 16,
-            justifyContent: 'space-between',
-            padding: '10px 16px',
-            transform: `scale(${scrolled ? 0.95 : 1})`,
-            opacity: scrolled ? 0 : 1,
-            transition: 'opacity 0.4s ease, transform 0.4s ease',
-            pointerEvents: scrolled ? 'none' : 'auto',
-          }}
-        >
-          {/* Logo */}
-          <button
-            onClick={() => go('home')}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
-          >
-            <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, color: '#7C5CFC', fontWeight: 900 }}>GY.</span>
-            <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: textMuted, letterSpacing: '0.05em' }}>Gara Yaka</span>
-          </button>
-
-          {/* Right: toggle + hamburger */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <ModeToggle />
-            <button
-              onClick={() => setMenuOpen(o => !o)}
-              aria-label="Toggle menu"
-              style={{
-                width: 38, height: 38, borderRadius: '50%',
-                border: `1px solid ${dividerColor}`,
-                background: menuOpen ? 'rgba(124,92,252,0.08)' : (isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'),
-                display: 'flex', flexDirection: 'column', alignItems: 'center',
-                justifyContent: 'center', gap: 5, cursor: 'pointer',
-                transition: 'all 0.3s',
-              }}
-            >
-              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#7C5CFC' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(45deg) translate(3px, 4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
-              <span style={{ display: 'block', width: menuOpen ? 0 : 10, height: 1, background: textActive, borderRadius: 1, transition: 'width 0.3s', opacity: menuOpen ? 0 : 1 }} />
-              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#7C5CFC' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(-45deg) translate(3px, -4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
-            </button>
-          </div>
+            {/* Back Button (Only on Project Detail + Scrolled) */}
+            <AnimatePresence>
+              {scrolled && isProjectDetail && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  style={{ position: 'absolute', top: '100%', left: 24, zIndex: -1 }}
+                >
+                  <button
+                    onClick={handleBackToProjects}
+                    aria-label="Back to projects"
+                    style={{
+                       display: 'flex', alignItems: 'center', gap: 6,
+                       background: isDark ? 'rgba(15, 15, 15, 0.65)' : 'rgba(255, 255, 255, 0.65)',
+                       border: `1px solid ${dividerColor}`,
+                       borderTop: 'none', padding: '6px 14px',
+                       borderRadius: '0 0 14px 14px',
+                       backdropFilter: 'blur(20px) saturate(180%)',
+                       WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                       cursor: 'pointer',
+                       boxShadow: isDark ? '0 4px 16px rgba(0,0,0,0.45)' : '0 4px 16px rgba(0,0,0,0.08)',
+                       transition: 'background-color 0.3s, border-color 0.3s, box-shadow 0.3s',
+                    }}
+                  >
+                     <span style={{ color: '#7C5CFC', fontSize: 12 }}>←</span>
+                     <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 8, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600 }}>Projects</span>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </div>
 
         {/* Dropdown menu */}
@@ -345,28 +379,32 @@ const Navbar = () => {
           background: dropdownBg,
           border: `1px solid ${scrolledBorder}`,
           borderRadius: 24,
-          backdropFilter: 'blur(32px)',
-          WebkitBackdropFilter: 'blur(32px)',
+          backdropFilter: 'blur(40px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
           overflow: 'hidden',
           maxHeight: menuOpen ? 600 : 0,
           opacity: menuOpen ? 1 : 0,
           transform: menuOpen ? 'translateY(0)' : 'translateY(-10px)',
-          transition: 'all 0.4s cubic-bezier(0.16,1,0.3,1)',
+          transition: 'transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease, max-height 0.4s ease',
           boxShadow: isDark ? '0 24px 48px -12px rgba(0,0,0,0.5)' : '0 24px 48px -12px rgba(0,0,0,0.12)',
+          overscrollBehavior: 'contain'
         }}>
           <div style={{ padding: '36px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
             {/* Ultra-Clean Link List */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28 }}>
+            <div 
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28, touchAction: 'manipulation' }}
+            >
               {navLinks.map((l) => (
                 <button
                   key={l.id}
                   onClick={() => go(l.id)}
+                  aria-label={`Go to ${l.label}`}
                   style={{
                     fontFamily: "'DM Mono',monospace", fontSize: 13,
                     color: isDark ? 'rgba(245,240,232,0.55)' : 'rgba(26,26,46,0.55)', letterSpacing: '0.25em',
                     textTransform: 'uppercase', background: 'none', border: 'none',
-                    cursor: 'pointer', transition: 'color 0.2s', padding: '4px'
+                    cursor: 'pointer', transition: 'color 0.2s ease', padding: '8px 16px'
                   }}
                   onMouseEnter={e => e.currentTarget.style.color = textActive}
                   onMouseLeave={e => e.currentTarget.style.color = isDark ? 'rgba(245,240,232,0.55)' : 'rgba(26,26,46,0.55)'}
@@ -383,18 +421,19 @@ const Navbar = () => {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28 }}>
               <button
                 onClick={() => { setMenuOpen(false); window.open('/resume.pdf', '_blank'); }}
+                aria-label="Download resume"
                 style={{
                   display: 'flex', alignItems: 'center', gap: 10,
                   background: 'none', border: '1px solid rgba(124,92,252,0.28)',
                   borderRadius: 50, cursor: 'pointer',
                   fontFamily: "'DM Mono',monospace", fontSize: 11,
                   color: '#7C5CFC', letterSpacing: '0.15em', textTransform: 'uppercase',
-                  padding: '10px 24px', transition: 'all 0.2s',
+                  padding: '10px 24px', transition: 'background-color 0.2s, border-color 0.2s',
                 }}
                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(124,92,252,0.08)'; e.currentTarget.style.borderColor = 'rgba(124,92,252,0.55)'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(124,92,252,0.28)'; }}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
                   <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
                 </svg>
                 Resume

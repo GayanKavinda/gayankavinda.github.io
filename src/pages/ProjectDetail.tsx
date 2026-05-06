@@ -9,10 +9,10 @@ import Navbar from '@components/layout/Navbar';
 import Footer from '@components/layout/Footer';
 import { PROJECT_DETAILS } from '@constants/projectDetails';
 import LightRays from '@components/LightRays';
-import Aurora from '@components/Aurora';
+import LightPillar from '@components/LightPillar';
 import BorderGlow from '@components/BorderGlow';
 import { CardStack } from '@components/ui/card-stack';
-import ScrollImageSequence from '@components/animations/ScrollImageSequence';
+// import ScrollImageSequence from '@components/animations/ScrollImageSequence';
 
 // ── Reduced Motion Hook ─────────────────────────────────────────────────────
 const useReducedMotion = () => {
@@ -103,25 +103,29 @@ const MagneticCursor = () => {
 
 // ── Mouse Proximity Glow Text Effect ─────────────────────────────────────
 const GlowText = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+  const ref = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setMousePos({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
+    ref.current.style.setProperty('--mouse-x', `${Math.max(0, Math.min(100, x))}%`);
+    ref.current.style.setProperty('--mouse-y', `${Math.max(0, Math.min(100, y))}%`);
   };
 
   return (
     <div
       ref={ref}
       onMouseMove={handleMouseMove}
-      className={`relative transition-all duration-700 ${className}`}
+      className={`relative transition-[background-color,shadow,transform] duration-700 ${className}`}
       style={{
-        background: `radial-gradient(circle 240px at ${mousePos.x}% ${mousePos.y}%, hsla(var(--crimson), 0.08), transparent 70%)`,
-      }}
+        background: isDark 
+          ? `radial-gradient(circle 240px at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(var(--crimson), 0.08), transparent 70%)`
+          : `radial-gradient(circle 300px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0,0,0,0.02), transparent 70%)`,
+      } as any}
     >
       {children}
     </div>
@@ -180,9 +184,9 @@ const SectionLabel = ({ num, title }: { num: string; title: string }) => (
     viewport={{ once: true }}
     transition={{ duration: 0.5, ease: 'easeOut' }}
   >
-    <span className="font-mono text-xs tracking-[0.125em] text-foreground/40">{num}</span>
-    <div className="h-px flex-1 bg-foreground/10" />
-    <span className="font-mono uppercase text-sm tracking-[0.1em] text-foreground/60">{title}</span>
+    <span className="font-mono text-[10px] tracking-[0.2em] text-foreground/30 font-bold">{num}</span>
+    <div className="h-[0.5px] flex-1 bg-foreground/5" />
+    <span className="font-mono uppercase text-[11px] tracking-[0.15em] text-foreground/40 font-medium">{title}</span>
   </motion.div>
 );
 
@@ -211,7 +215,7 @@ const StreamingArchitecture = ({ components, description }: {
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-foreground/10 mb-6">
           <span className="text-[10px] font-mono tracking-widest text-crimson font-bold uppercase">Technical Schema</span>
         </div>
-        <h3 className="text-4xl font-light tracking-tight">{description}</h3>
+        <h3 className="text-4xl font-light tracking-tight" style={{ textWrap: 'balance' }}>{description}</h3>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8">
@@ -221,11 +225,11 @@ const StreamingArchitecture = ({ components, description }: {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="group p-8 rounded-3xl border border-foreground/10 hover:border-foreground/20 transition-all duration-500 hover:-translate-y-1"
+            className={`group p-8 rounded-3xl border transition-[transform,border-color,box-shadow,background-color] duration-500 hover:-translate-y-1 ${isDark ? 'border-foreground/10 hover:border-foreground/20' : 'border-foreground/10 bg-foreground/[0.01] hover:border-foreground/15 shadow-sm hover:shadow-md'}`}
           >
-            <div className={`w-2 h-2 rounded-full mb-6 transition-all group-hover:scale-125 ${isDark ? 'bg-white' : 'bg-foreground'}`} />
-            <h4 className="text-xl font-medium mb-3">{comp.name}</h4>
-            <p className="text-foreground/70 leading-relaxed font-medium">{comp.role}</p>
+            <div className={`w-1.5 h-1.5 rounded-full mb-6 transition-all group-hover:scale-125 ${isDark ? 'bg-white' : 'bg-foreground/40'}`} />
+            <h4 className="text-xl font-medium mb-3 tracking-tight">{comp.name}</h4>
+            <p className="text-foreground/70 leading-relaxed font-light">{comp.role}</p>
           </motion.div>
         ))}
       </div>
@@ -255,8 +259,8 @@ const Timeline = ({ items }: { items: { duration: string; phase: string; desc: s
           className="relative pb-16 last:pb-0 group"
         >
           <div
-            className={`absolute -left-[25px] top-[7px] w-2 h-2 rounded-full transition-colors duration-300 ${isDark ? 'bg-foreground/20' : 'bg-foreground/40'}`}
-            style={{ background: isDark ? 'hsl(var(--background))' : '#ffffff' }}
+            className={`absolute -left-[25px] top-[7px] w-2 h-2 rounded-full transition-colors duration-300 border ${isDark ? 'bg-foreground/20 border-white/10' : 'bg-foreground/10 border-foreground/5'}`}
+            style={{ background: isDark ? 'hsl(var(--background))' : '#fafafa' }}
           />
           <div className="flex flex-col gap-2">
             <span className={`font-mono text-[11px] uppercase tracking-widest ${isDark ? 'text-foreground/40' : 'text-foreground/50'}`}>
@@ -291,10 +295,10 @@ const Debrief = ({ learnings }: { learnings: string[] }) => {
           transition={{ duration: 0.4, delay: i * 0.06 }}
           className="group relative"
         >
-          <GlowText className="p-8 rounded-3xl border border-foreground/5 hover:border-foreground/10 transition-all duration-700 bg-white shadow-sm dark:bg-transparent">
+          <GlowText className={`p-8 rounded-3xl border transition-[border-color,background-color,box-shadow] duration-700 ${isDark ? 'border-foreground/5 hover:border-foreground/10 bg-transparent' : 'border-foreground/[0.05] hover:border-foreground/[0.1] bg-foreground/[0.01] shadow-sm'}`}>
              <div className="flex gap-6">
-               <span className="font-mono text-[11px] text-foreground/30 mt-1.5 uppercase tracking-widest font-bold">Point {String(i + 1).padStart(2, '0')}</span>
-               <p className={`text-xl leading-relaxed font-medium transition-colors ${isDark ? 'text-foreground/70 group-hover:text-foreground/90' : 'text-foreground/80 group-hover:text-foreground/100'}`}>
+               <span className="font-mono text-[10px] text-foreground/20 mt-2 uppercase tracking-[0.2em] font-bold">Log {String(i + 1).padStart(2, '0')}</span>
+               <p className={`text-xl leading-relaxed font-light transition-colors ${isDark ? 'text-foreground/70 group-hover:text-foreground/90' : 'text-foreground/70 group-hover:text-foreground/100'}`}>
                  {learning}
                </p>
              </div>
@@ -307,6 +311,8 @@ const Debrief = ({ learnings }: { learnings: string[] }) => {
 
 // ── New Impact Metrics Section ──────────────────────────────────────────────
 const ImpactMetrics = ({ metrics }: { metrics: Array<{ label: string; value: string; suffix?: string }> }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
       {metrics.map((metric, i) => (
@@ -316,12 +322,12 @@ const ImpactMetrics = ({ metrics }: { metrics: Array<{ label: string; value: str
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: i * 0.1 }}
-          className="bg-foreground/[0.03] border border-foreground/[0.08] rounded-2xl p-6 text-center group hover:border-crimson/30 transition-all"
+          className={`rounded-2xl p-6 text-center group transition-[border-color,background-color,transform,box-shadow] duration-500 ${isDark ? 'bg-foreground/[0.03] border border-foreground/[0.08] hover:border-crimson/30' : 'bg-foreground/[0.01] border border-foreground/[0.06] hover:border-foreground/15 shadow-sm'}`}
         >
-          <div className="font-mono text-4xl md:text-5xl font-bold text-crimson mb-2 tabular-nums">
+          <div className={`font-mono text-4xl md:text-5xl font-bold mb-2 tabular-nums ${isDark ? 'text-crimson' : 'text-foreground/80'}`}>
             {metric.value}{metric.suffix}
           </div>
-          <p className="text-[11px] uppercase tracking-[0.25em] text-foreground/50 font-bold group-hover:text-foreground/70 transition-colors">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/30 font-bold group-hover:text-foreground/50 transition-colors">
             {metric.label}
           </p>
         </motion.div>
@@ -371,8 +377,8 @@ const SidebarTOC = ({ active }: { active: string }) => {
               }}
             />
             <span
-              className="font-mono text-[11px] uppercase tracking-[0.15em] transition-colors font-medium"
-              style={{ color: isActive ? (isDark ? 'hsl(var(--foreground) / 0.9)' : 'hsl(var(--foreground))') : (isDark ? 'hsl(var(--foreground) / 0.4)' : 'hsl(var(--foreground) / 0.6)') }}
+              className="font-mono text-[10px] uppercase tracking-[0.2em] transition-colors font-bold"
+              style={{ color: isActive ? (isDark ? 'hsl(var(--foreground) / 0.9)' : 'hsl(var(--foreground) / 0.8)') : (isDark ? 'hsl(var(--foreground) / 0.4)' : 'hsl(var(--foreground) / 0.3)') }}
             >
               {s.label}
             </span>
@@ -410,6 +416,8 @@ const getTagColors = (tag: string, isDark: boolean) => {
 // ── Main component ───────────────────────────────────────────────────────────
 // ── Action Links (Zen Style) ─────────────────────────────────────────────
 const ProjectActions = ({ project, hasCode, hasDoc, hasLive }: any) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   return (
     <div className="flex flex-wrap gap-3 justify-center mt-12">
       {hasCode && (
@@ -418,10 +426,10 @@ const ProjectActions = ({ project, hasCode, hasDoc, hasLive }: any) => {
           target="_blank"
           rel="noopener noreferrer"
           data-cursor="SOURCE"
-          className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl border border-foreground/20 hover:border-foreground/40 transition-all group"
+          className={`inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-2xl border transition-all group ${isDark ? 'border-foreground/20 hover:border-foreground/40' : 'border-foreground/10 bg-white/50 hover:border-foreground/20 shadow-sm hover:shadow-md'}`}
         >
-          <span className="font-mono text-sm uppercase tracking-widest">View Source</span>
-          <span className="text-xl group-hover:rotate-12 transition-transform">↗</span>
+          <span className="font-mono text-xs uppercase tracking-[0.15em] font-bold">Source Code</span>
+          <span className="text-xl group-hover:rotate-12 transition-transform opacity-50">↗</span>
         </a>
       )}
 
@@ -431,9 +439,9 @@ const ProjectActions = ({ project, hasCode, hasDoc, hasLive }: any) => {
           target="_blank"
           rel="noopener noreferrer"
           data-cursor="DOCS"
-          className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl border border-foreground/20 hover:border-foreground/40 transition-all"
+          className={`inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-2xl border transition-all ${isDark ? 'border-foreground/20 hover:border-foreground/40' : 'border-foreground/10 bg-white/50 hover:border-foreground/20 shadow-sm hover:shadow-md'}`}
         >
-          <span className="font-mono text-sm uppercase tracking-widest">Case Study</span>
+          <span className="font-mono text-xs uppercase tracking-[0.15em] font-bold">Case Study</span>
         </a>
       )}
 
@@ -443,9 +451,9 @@ const ProjectActions = ({ project, hasCode, hasDoc, hasLive }: any) => {
           target="_blank"
           rel="noopener noreferrer"
           data-cursor="LIVE"
-          className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-foreground text-background hover:bg-crimson transition-all font-medium"
+          className={`inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-2xl transition-all font-bold ${isDark ? 'bg-foreground text-background hover:bg-crimson' : 'bg-foreground text-background hover:opacity-90 shadow-lg hover:shadow-xl'}`}
         >
-          See Live Demo →
+          <span className="font-mono text-xs uppercase tracking-[0.15em]">Live Demo →</span>
         </a>
       )}
     </div>
@@ -522,24 +530,43 @@ const ProjectDetail = () => {
   }, [previewIndex, galleryImages.length]);
 
   return (
-    <div ref={pageRef} className="min-h-screen relative" style={{ background: isDark ? '#0a0a0a' : '#f8f7f4' }}>
+    <div ref={pageRef} className="min-h-screen relative overflow-x-hidden" style={{ background: isDark ? '#0a0a0a' : '#fafafa' }}>
       {!reducedMotion && !isTouch && <MagneticCursor />}
       <Navbar />
 
       {/* Progress Bar (Zen) */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-px bg-gradient-to-r from-crimson via-purple-500 to-gold z-[200] origin-left"
+        className={`fixed top-0 left-0 right-0 h-[2px] z-[200] origin-left ${isDark ? 'bg-gradient-to-r from-crimson via-purple-500 to-gold' : 'bg-foreground/10'}`}
         style={{ scaleX: progressScaleX }}
       />
 
       {/* Immersive Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <ScrollImageSequence opacity={isDark ? 0.25 : 0.15} />
+        {!isDark && (
+          <>
+            {/* <ScrollImageSequence opacity={0.55} /> */}
+            <div 
+              className="absolute inset-0" 
+              style={{ 
+                background: 'radial-gradient(circle at center, transparent 20%, #fafafa 100%)',
+                opacity: 0.4
+              }} 
+            />
+          </>
+        )}
         <div className="absolute inset-0 opacity-30">
-          {isDark ? (
-             <LightRays raysColor="#4f46e5" raysSpeed={0.45} noiseAmount={0.01} />
-          ) : (
-             <Aurora amplitude={0.18} speed={0.35} colorStops={["#ddd6fe", "#fecdd3", "#fed7aa"]} />
+          {isDark && (
+             <>
+               <LightRays raysColor="#4f46e5" raysSpeed={0.45} noiseAmount={0.01} />
+               <LightPillar 
+                 topColor="#7C5CFC" 
+                 bottomColor="#00D4FF" 
+                 intensity={0.6} 
+                 pillarWidth={2.5} 
+                 glowAmount={0.003} 
+                 noiseIntensity={0.2}
+               />
+             </>
           )}
         </div>
       </div>
@@ -566,7 +593,7 @@ const ProjectDetail = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="font-light text-7xl md:text-8xl leading-none tracking-tighter mb-8"
+            className="font-light text-4xl sm:text-6xl md:text-8xl leading-tight md:leading-none tracking-tighter mb-8 break-words"
           >
             {project.title}
           </motion.h1>
@@ -659,30 +686,67 @@ const ProjectDetail = () => {
 
             {/* Video Thumbnails */}
             {project.videoLinks?.length > 0 && (
-              <BorderGlow glowColor="124 92 252" className="mb-20 rounded-[32px] overflow-hidden" borderRadius={32}>
-                <div className="p-8 md:p-12">
-                  <h4 className="font-mono uppercase tracking-widest text-sm mb-8 text-center text-foreground/40">Demonstrations</h4>
+              isDark ? (
+                <BorderGlow 
+                  glowColor="124 92 252" 
+                  className="mb-20 rounded-[40px] overflow-hidden" 
+                  borderRadius={40}
+                >
+                  <div className="p-8 md:p-12">
+                    <h4 className="font-mono uppercase tracking-widest text-sm mb-8 text-center text-foreground/40">Demonstrations</h4>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {project.videoLinks.map((vid: any, i: number) => (
+                        <a key={i} href={vid.url} target="_blank" rel="noopener noreferrer" className="group block">
+                          <div className={`relative aspect-video rounded-3xl overflow-hidden ${isDark ? 'bg-black/10' : 'bg-foreground/[0.03]'}`}>
+                            <img 
+                              src={`https://picsum.photos/seed/video-${project.id}-${i}/800/450`} 
+                              className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-all duration-500 group-hover:scale-105" 
+                              alt={vid.title}
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div 
+                                className={`w-16 h-16 rounded-full flex items-center justify-center border transition-all duration-500 group-hover:scale-110 ${isDark ? 'bg-white/10 border-white/30 backdrop-blur-md' : 'bg-foreground/5 border-foreground/10 backdrop-blur-xl'}`}
+                              >
+                                <div 
+                                  className={`w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent ml-1 ${isDark ? 'border-l-white' : 'border-l-foreground/60'}`} 
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <p className="mt-4 text-center font-medium group-hover:text-crimson transition-colors">{vid.title}</p>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </BorderGlow>
+              ) : (
+                <div className="mb-20 rounded-[40px] overflow-hidden bg-foreground/[0.02] border border-foreground/[0.08] p-8 md:p-12 shadow-sm">
+                  <h4 className="font-mono uppercase tracking-widest text-sm mb-8 text-center text-foreground/30">Demonstrations</h4>
                   <div className="grid md:grid-cols-2 gap-6">
                     {project.videoLinks.map((vid: any, i: number) => (
                       <a key={i} href={vid.url} target="_blank" rel="noopener noreferrer" className="group block">
-                        <div className="relative aspect-video rounded-3xl overflow-hidden bg-black/10">
+                        <div className="relative aspect-video rounded-3xl overflow-hidden bg-foreground/[0.03]">
                           <img 
                             src={`https://picsum.photos/seed/video-${project.id}-${i}/800/450`} 
-                            className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-all duration-500 group-hover:scale-105" 
+                            className="w-full h-full object-cover opacity-85 group-hover:opacity-100 transition-all duration-500 group-hover:scale-105" 
                             alt={vid.title}
                           />
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform">
-                              <div className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-white ml-1" />
+                            <div 
+                              className="w-16 h-16 rounded-full flex items-center justify-center border border-foreground/10 bg-white/40 backdrop-blur-xl transition-all duration-500 group-hover:scale-110"
+                            >
+                              <div 
+                                className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-foreground/40 ml-1" 
+                              />
                             </div>
                           </div>
                         </div>
-                        <p className="mt-4 text-center font-medium group-hover:text-crimson transition-colors">{vid.title}</p>
+                        <p className="mt-4 text-center font-medium text-foreground/70 group-hover:text-crimson transition-colors tracking-tight">{vid.title}</p>
                       </a>
                     ))}
                   </div>
                 </div>
-              </BorderGlow>
+              )
             )}
 
             {/* Screenshot Gallery */}
@@ -705,7 +769,7 @@ const ProjectDetail = () => {
                     >
                       <img 
                         src={item.imageSrc} 
-                        className={`w-full h-full object-cover transition-all duration-700 ${!isDark && !project.screenshots[item.id as number].lightImage ? 'invert-[0.9] hue-rotate-180 contrast-125' : 'grayscale-[0.4] group-hover:grayscale-0'}`} 
+                        className={`w-full h-full object-cover transition-all duration-700 ${isDark ? 'grayscale-[0.4] group-hover:grayscale-0' : 'grayscale-[0.1] group-hover:grayscale-0'}`} 
                         alt={item.title} 
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
