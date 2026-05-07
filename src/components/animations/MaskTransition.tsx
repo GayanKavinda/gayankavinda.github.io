@@ -193,6 +193,18 @@ export default function MaskTransition() {
   return (
     <div ref={containerRef} style={{ height: "450vh" }}>
       <div className="sticky top-0 h-screen overflow-hidden bg-[hsl(var(--background))]">
+        {/* ── Atmospheric Layer ───────────────────────────────────────────────────── */}
+        <div
+          className="absolute inset-0 pointer-events-none z-5"
+          style={{
+            background:
+              "radial-gradient(ellipse at 50% 40%, rgba(124, 92, 252, 0.015), transparent 60%), " +
+              "radial-gradient(ellipse at 80% 70%, rgba(0, 212, 255, 0.01), transparent 70%)",
+            mixBlendMode: "screen",
+            animation: "atmosphereShift 12s ease-in-out infinite alternate",
+          }}
+        />
+
         <Canvas
           camera={{
             fov: 22,
@@ -234,6 +246,18 @@ export default function MaskTransition() {
             </h1>
           </div>
         </div>
+
+        {/* ── Top Fade ─────────────────────────────────────────────────────────── */}
+        <div
+          className="absolute inset-x-0 top-0 h-[15vh] z-10 pointer-events-none"
+          style={{ background: `linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 100%)` }}
+        />
+
+        {/* ── Bottom Fade ──────────────────────────────────────────────────────── */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-[15vh] z-10 pointer-events-none"
+          style={{ background: `linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)` }}
+        />
       </div>
     </div>
   );
