@@ -33,7 +33,7 @@
   @layer base {
     :root {
       /* ── Light Mode: Obsidian Violet ─────────────────────────── */
-      --background: 240 10% 97%;          /* #F5F5FA — faint lilac off-white  */
+      --background: 0 0% 100%;          /* #FFFFFF — pure white */
       --foreground: 246 20% 12%;          /* #171621 — near-black with violet hint */
       --card: 0 0% 100%;
       --card-foreground: 246 20% 12%;
@@ -59,7 +59,7 @@
       --gold: 193 100% 45%;              /* kept alias pointing to cyan now    */
       --bone: 246 20% 12%;
       --card-bg: 0 0% 100%;
-      --dark-bg: 240 10% 97%;
+      --dark-bg: 0 0% 100%;
       --sidebar-background: 0 0% 100%;
       --sidebar-foreground: 246 20% 12%;
       --sidebar-primary: 252 95% 68%;
@@ -90,7 +90,7 @@
 
     .dark {
       /* ── Dark Mode: Deep Obsidian ────────────────────────────── */
-      --background: 246 20% 4%;           /* #090910 — deep obsidian            */
+      --background: 0 0% 0%;              /* #000000 — pure black */
       --foreground: 248 30% 94%;          /* #EEEDF8 — soft lavender-white      */
       --card: 246 22% 8%;                 /* #101019 — elevated obsidian surface */
       --card-foreground: 248 30% 94%;
@@ -124,7 +124,7 @@
       --ocean: 193 100% 52%;
 
       --card-bg: 246 22% 8%;
-      --dark-bg: 246 20% 4%;
+      --dark-bg: 0 0% 0%;
       --sidebar-background: 246 22% 8%;
       --sidebar-foreground: 248 30% 94%;
       --sidebar-primary: 252 95% 68%;
@@ -169,7 +169,7 @@
       right: 0;
       height: 20vh;
       pointer-events: none;
-      z-index: 30;
+      z-index: 50;
       background: linear-gradient(to bottom, hsl(var(--background)), transparent);
     }
 
@@ -180,7 +180,7 @@
       right: 0;
       height: 20vh;
       pointer-events: none;
-      z-index: 30;
+      z-index: 50;
       background: linear-gradient(to top, hsl(var(--background)), transparent);
     }
 

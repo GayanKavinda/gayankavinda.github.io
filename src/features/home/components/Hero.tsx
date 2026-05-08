@@ -153,8 +153,8 @@ const Hero = () => {
           className="absolute inset-0"
           style={{
             background: isDark
-              ? 'radial-gradient(ellipse 65% 100% at 75% 50%, transparent 0%, rgba(9,9,16,0.3) 70%, rgba(9,9,16,0.6) 100%)'
-              : 'radial-gradient(ellipse 65% 100% at 75% 50%, transparent 0%, rgba(245,245,250,0.2) 70%, rgba(245,245,250,0.5) 100%)',
+              ? 'radial-gradient(ellipse 65% 100% at 75% 50%, transparent 0%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.7) 100%)'
+              : 'radial-gradient(ellipse 65% 100% at 75% 50%, transparent 0%, rgba(255,255,255,0.1) 70%, rgba(255,255,255,0.2) 100%)',
           }}
         />
       </motion.div>
@@ -164,8 +164,11 @@ const Hero = () => {
 
       {/* ── Bottom fade ──────────────────────────────────────────────────────── */}
       <div
-        className="absolute inset-x-0 bottom-0 h-[15vh] z-10 pointer-events-none"
-        style={{ background: `linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)` }}
+        className="absolute inset-x-0 bottom-0 h-[15vh] pointer-events-none"
+        style={{
+          background: `linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)`,
+          zIndex: 50,
+        }}
       />
 
       {/* ── Main content ─────────────────────────────────────────────────────── */}

@@ -232,8 +232,8 @@ const Projects = () => {
         </button>
       </motion.div>
 
-      <div className="section-fade-top" />
-      <div className="section-fade-bottom" />
+      <div className="section-fade-top" style={{ zIndex: 50 }} />
+      <div className="section-fade-bottom" style={{ zIndex: 50 }} />
     </section>
   );
 };

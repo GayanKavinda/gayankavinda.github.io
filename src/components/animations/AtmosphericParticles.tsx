@@ -2,88 +2,119 @@ import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-export default function AtmosphericParticles() {
+export default function AtmosphericParticles({ isDark = true }: { isDark?: boolean }) {
   const particlesRef = useRef<THREE.Points>(null);
-  const timeRef = useRef(0);
+  
+  // Shooting stars state
+  const shootingStars = useMemo(() => {
+    return Array.from({ length: 8 }, () => ({
+      speed: 0.2 + Math.random() * 0.3,
+      delay: Math.random() * 10,
+      active: false,
+      startPos: new THREE.Vector3(),
+      currentPos: new THREE.Vector3(),
+    }));
+  }, []);
 
-  const { positions, colors, sizes } = useMemo(() => {
-    const count = 200;
+  const { positions, colors, sizes, initialPositions } = useMemo(() => {
+    const count = 1500; // Even more stars
     const positions = new Float32Array(count * 3);
+    const initialPositions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
 
     for (let i = 0; i < count; i++) {
-      // Spread particles in a sphere around the shrine
-      const radius = 6 + Math.random() * 10;
+      const radius = 5 + Math.random() * 30;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
 
-      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta) - 2;
-      positions[i * 3 + 2] = radius * Math.cos(phi);
+      const x = radius * Math.sin(phi) * Math.cos(theta);
+      const y = radius * Math.sin(phi) * Math.sin(theta) - 2;
+      const z = radius * Math.cos(phi);
 
-      // Subtle violet/cyan color variation
+      positions[i * 3] = initialPositions[i * 3] = x;
+      positions[i * 3 + 1] = initialPositions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = initialPositions[i * 3 + 2] = z;
+
       const colorChoice = Math.random();
-      if (colorChoice < 0.5) {
-        // Violet - softer
-        colors[i * 3] = 0.3;
-        colors[i * 3 + 1] = 0.2;
-        colors[i * 3 + 2] = 0.6;
+      if (isDark) {
+        if (colorChoice < 0.4) {
+          colors[i * 3] = 0.5; colors[i * 3 + 1] = 0.3; colors[i * 3 + 2] = 1.0;
+        } else if (colorChoice < 0.8) {
+          colors[i * 3] = 0.0; colors[i * 3 + 1] = 0.8; colors[i * 3 + 2] = 1.0;
+        } else {
+          colors[i * 3] = 1.0; colors[i * 3 + 1] = 1.0; colors[i * 3 + 2] = 1.0;
+        }
       } else {
-        // Cyan - softer
-        colors[i * 3] = 0;
-        colors[i * 3 + 1] = 0.5;
-        colors[i * 3 + 2] = 0.7;
+        if (colorChoice < 0.5) {
+          colors[i * 3] = 0.28; colors[i * 3 + 1] = 0.12; colors[i * 3 + 2] = 0.62;
+        } else {
+          colors[i * 3] = 0.08; colors[i * 3 + 1] = 0.22; colors[i * 3 + 2] = 0.72;
+        }
       }
 
-      // Random sizes for depth variation
-      sizes[i] = 0.5 + Math.random() * 0.5;
+      sizes[i] = 0.2 + Math.random() * 1.0;
     }
 
-    return { positions, colors, sizes };
-  }, []);
+    return { positions, colors, sizes, initialPositions };
+  }, [isDark]);
 
   useFrame((state) => {
     if (!particlesRef.current) return;
-
     const time = state.clock.getElapsedTime();
-    const delta = time - timeRef.current;
-    timeRef.current = time;
-
-    // Gentle floating animation - only rotate, don't update positions
+    const posAttr = particlesRef.current.geometry.attributes.position;
+    
+    // Base rotation
     particlesRef.current.rotation.y = time * 0.01;
     particlesRef.current.rotation.x = Math.sin(time * 0.05) * 0.01;
+
+    if (isDark) {
+      // Shooting stars logic integrated into the particle system
+      for (let i = 0; i < shootingStars.length; i++) {
+        const star = shootingStars[i];
+        const index = (1500 - 1 - i) * 3; // Use the last few particles as shooting stars
+        
+        const cycleTime = (time + star.delay) % 6;
+        if (cycleTime < 1.5) { // 1.5s dash
+          const progress = cycleTime / 1.5;
+          if (progress < 0.05) {
+            // Reset position at start of dash
+            star.startPos.set(
+              (Math.random() - 0.5) * 40,
+              10 + Math.random() * 10,
+              (Math.random() - 0.5) * 20
+            );
+          }
+          
+          const moveX = star.startPos.x - progress * 30;
+          const moveY = star.startPos.y - progress * 20;
+          
+          posAttr.array[index] = moveX;
+          posAttr.array[index + 1] = moveY;
+          posAttr.array[index + 2] = star.startPos.z;
+        } else {
+          // Hide far away when not active
+          posAttr.array[index] = 1000;
+        }
+      }
+      posAttr.needsUpdate = true;
+    }
   });
 
   return (
     <points ref={particlesRef}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={200}
-          array={positions}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-color"
-          count={200}
-          array={colors}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-size"
-          count={200}
-          array={sizes}
-          itemSize={1}
-        />
+        <bufferAttribute attach="attributes-position" count={1500} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-color" count={1500} array={colors} itemSize={3} />
+        <bufferAttribute attach="attributes-size" count={1500} array={sizes} itemSize={1} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.008}
-        sizeAttenuation={true}
+        size={0.007}
+        sizeAttenuation
         vertexColors
         transparent
-        opacity={0.3}
-        blending={THREE.AdditiveBlending}
+        opacity={isDark ? 0.8 : 0.4}
+        blending={isDark ? THREE.AdditiveBlending : THREE.NormalBlending}
         depthWrite={false}
       />
     </points>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, Suspense } from "react";
+import { useEffect, useRef, Suspense, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, Environment } from "@react-three/drei";
 import { EffectComposer, Bloom, DepthOfField, Vignette, ChromaticAberration } from "@react-three/postprocessing";
@@ -20,10 +20,10 @@ const clamp = (v: number, min = 0, max = 1) =>
 const MATERIAL_CONFIG = {
   baseRoughness: 0.45,
   baseMetalness: 0.3,
-  envMapIntensity: 1.4,
+  envMapIntensity: 2.5,
   aoMapIntensity: 1.2,
   emissiveColor: "#7C5CFC",
-  emissiveIntensity: 0.4,
+  emissiveIntensity: 0.8,
   glassTransmission: 1,
   glassRoughness: 0,
   glassThickness: 0.6,
@@ -37,9 +37,11 @@ const MATERIAL_CONFIG = {
 function ShrineScene({
   scrollProgress,
   directionalLightRef,
+  isDark,
 }: {
   scrollProgress: React.MutableRefObject<number>;
   directionalLightRef: React.RefObject<THREE.DirectionalLight>;
+  isDark: boolean;
 }) {
   const { scene } = useGLTF("/models/shrine.glb");
   const groupRef = useRef<THREE.Group>(null);
@@ -56,7 +58,8 @@ function ShrineScene({
   ============================================================ */
 
   useEffect(() => {
-    threeScene.fog = new THREE.FogExp2("#000000", 0.03);
+    // Removed fog to eliminate "smoke" effect
+    threeScene.fog = null;
 
     // Traverse and enhance all materials
     scene.traverse((child: any) => {
@@ -120,7 +123,7 @@ function ShrineScene({
         }
       }
     });
-  }, [scene, threeScene]);
+  }, [scene, threeScene, isDark]);
 
   useFrame(() => {
     if (!groupRef.current) return;
@@ -235,7 +238,9 @@ function ShrineScene({
     ============================================================ */
 
     if (directionalLightRef.current) {
-      const hue = THREE.MathUtils.lerp(260, 190, p);
+      const hue = isDark
+        ? THREE.MathUtils.lerp(260, 190, p)
+        : THREE.MathUtils.lerp(200, 30, p);
       const color = new THREE.Color(`hsl(${hue}, 90%, 65%)`);
       directionalLightRef.current.color.lerp(color, 0.05);
     }
@@ -279,13 +284,15 @@ export default function MaskTransition() {
   const previousProgress = useRef(0);
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const [isVisible, setIsVisible] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: containerRef.current,
-        start: "top top",
-        end: "bottom bottom",
+        start: "top bottom",
+        end: "bottom top",
         scrub: 1,
         onUpdate: (self) => {
           scrollProgress.current = self.progress;
@@ -293,7 +300,7 @@ export default function MaskTransition() {
           /* ── Velocity Driven Bloom Spike ───────────────────────────────────── */
           const velocity = Math.abs(self.getVelocity());
           if (bloomRef.current) {
-            bloomRef.current.intensity = 0.8 + velocity * 0.0003;
+            bloomRef.current.intensity = (isDark ? 0.6 : 0.3) + Math.min(velocity * 0.0001, 0.2);
           }
 
           /* ── Advanced DOF Reactive Focus ───────────────────────────────────── */
@@ -318,14 +325,6 @@ export default function MaskTransition() {
                 new THREE.Spherical().setFromVector3(
                   camera.position.clone()
                 );
-
-              console.log("Camera Position:", camera.position.toArray());
-              console.log("Camera Rotation:", camera.rotation.toArray());
-              console.log("Spherical:", {
-                radius: spherical.radius,
-                phi: spherical.phi,
-                theta: spherical.theta,
-              });
             }
           }
 
@@ -335,19 +334,47 @@ export default function MaskTransition() {
     }, containerRef);
 
     return () => ctx.revert();
+  }, [isDark]);
+
+  // Intersection Observer for viewport-based rendering
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            // Delay model loading slightly for smoother initial render
+            setTimeout(() => setIsLoaded(true), 100);
+          } else {
+            setIsVisible(false);
+          }
+        });
+      },
+      {
+        rootMargin: "10%",
+        threshold: 0.1,
+      }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
   }, []);
 
   return (
     <div ref={containerRef} style={{ height: "450vh" }}>
-      <div className="sticky top-0 h-screen overflow-hidden bg-[#000000]">
-        {/* ── Pure Black Background ───────────────────────────────────────────── */}
+      <div className="sticky top-0 h-screen overflow-hidden" style={{ background: isDark ? "#000000" : "#FFFFFF" }}>
+        {/* ── Background ───────────────────────────────────────────────────── */}
         <div
           className="absolute inset-0 pointer-events-none z-5"
           style={{
-            background: "#000000",
+            background: isDark ? "#000000" : "#FFFFFF",
           }}
         />
 
+        
         <Canvas
           shadows
           camera={{
@@ -356,73 +383,77 @@ export default function MaskTransition() {
             far: 200,
             position: [0, 2, 14],
           }}
-          gl={{ antialias: true }}
-          dpr={[1, 2]}
+          gl={{
+            antialias: false,
+            powerPreference: "high-performance",
+            alpha: false,
+              stencil: false,
+              depth: true
+          }}
+          dpr={Math.min(window.devicePixelRatio, 1)}
+          frameloop={isVisible ? "always" : "demand"}
+          performance={{ min: 0.5 }}
         >
-          <ambientLight intensity={isDark ? 0.4 : 0.8} />
+          <color attach="background" args={[isDark ? "#000000" : "#FFFFFF"]} />
+          <ambientLight intensity={isDark ? 0.8 : 1.2} />
           <directionalLight
             ref={directionalLightRef}
             castShadow
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
+            shadow-mapSize-width={128}
+            shadow-mapSize-height={128}
             shadow-bias={-0.0001}
+            shadow-camera-near={0.1}
+            shadow-camera-far={50}
+            shadow-camera-left={-10}
+            shadow-camera-right={10}
+            shadow-camera-top={10}
+            shadow-camera-bottom={-10}
             position={[5, 8, 5]}
-            intensity={2.2}
+            intensity={isDark ? 3.5 : 1.5}
           />
           <spotLight
-            castShadow
-            shadow-mapSize-width={1024}
-            shadow-mapSize-height={1024}
             position={[0, 5, 5]}
             angle={0.35}
             penumbra={0.8}
-            intensity={1.5}
+            intensity={isDark ? 2.5 : 1.0}
           />
 
-          <Suspense fallback={null}>
-            <ShrineScene
-              scrollProgress={scrollProgress}
-              directionalLightRef={directionalLightRef}
-            />
-            <Environment preset="sunset" />
-          </Suspense>
+          {isLoaded && (
+            <Suspense fallback={null}>
+              <ShrineScene
+                scrollProgress={scrollProgress}
+                directionalLightRef={directionalLightRef}
+                isDark={isDark}
+              />
+            </Suspense>
+          )}
 
           {/* Ground contact shadow for realism */}
-          <GroundShadow />
+          {isLoaded && <GroundShadow />}
 
           {/* Particles outside Suspense for consistent rendering */}
-          <AtmosphericParticles />
+          {isLoaded && <AtmosphericParticles isDark={isDark} />}
 
           {/* ── Post-Processing Effects ─────────────────────────────────────────── */}
-          <EffectComposer>
-            {/* Selective Bloom - Higher threshold prevents flat surfaces from glowing */}
-            <Bloom
-              ref={bloomRef}
-              intensity={0.8}
-              luminanceThreshold={0.6}
-              luminanceSmoothing={0.9}
-              mipmapBlur
-            />
-            <DepthOfField
-              ref={dofRef}
-              focusDistance={0.015}
-              focalLength={0.02}
-              bokehScale={1.5}
-            />
-            <ChromaticAberration
-              offset={new THREE.Vector2(0.001, 0.001)}
-              modulationOffset={0.1}
-              radialModulation={true}
-            />
-            <Vignette
-              eskil={false}
-              offset={0.1}
-              darkness={1.0}
-            />
-          </EffectComposer>
+          {isLoaded && (
+            <EffectComposer>
+              <Bloom
+                ref={bloomRef}
+                intensity={isDark ? 0.4 : 0.2}
+                luminanceThreshold={isDark ? 0.8 : 0.9}
+                luminanceSmoothing={0.9}
+                mipmapBlur
+              />
+              <Vignette
+                eskil={false}
+                offset={0.1}
+                darkness={isDark ? 0.6 : 0.3}
+              />
+            </EffectComposer>
+          )}
         </Canvas>
 
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
           <div
             ref={textRef}
             className="text-center max-w-3xl px-6 transition-opacity duration-300"
@@ -432,6 +463,7 @@ export default function MaskTransition() {
                 fontFamily: "Instrument Serif",
                 fontSize: "clamp(2rem, 4vw, 4rem)",
                 fontStyle: "italic",
+                color: isDark ? "#FFFFFF" : "#1A1A1A",
               }}
             >
               Engineered. Intentional. Cinematic.
@@ -439,17 +471,8 @@ export default function MaskTransition() {
           </div>
         </div>
 
-        {/* ── Top Fade ─────────────────────────────────────────────────────────── */}
-        <div
-          className="absolute inset-x-0 top-0 h-[15vh] z-10 pointer-events-none"
-          style={{ background: `linear-gradient(to bottom, #000000 0%, transparent 100%)` }}
-        />
-
-        {/* ── Bottom Fade ──────────────────────────────────────────────────────── */}
-        <div
-          className="absolute inset-x-0 bottom-0 h-[15vh] z-10 pointer-events-none"
-          style={{ background: `linear-gradient(to top, #000000 0%, transparent 100%)` }}
-        />
+        <div className="section-fade-top" style={{ zIndex: 50 }} />
+        <div className="section-fade-bottom" style={{ zIndex: 50 }} />
       </div>
     </div>
   );
