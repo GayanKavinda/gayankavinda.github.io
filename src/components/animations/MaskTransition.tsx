@@ -1,10 +1,12 @@
 import { useEffect, useRef, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, Environment } from "@react-three/drei";
+import { EffectComposer, Bloom, DepthOfField, Vignette, ChromaticAberration } from "@react-three/postprocessing";
 import * as THREE from "three";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTheme } from "@app/providers/theme-provider";
+import AtmosphericParticles from "./AtmosphericParticles";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,13 +14,32 @@ const clamp = (v: number, min = 0, max = 1) =>
   Math.max(min, Math.min(max, v));
 
 /* ============================================================
+   MATERIAL ENHANCEMENT CONSTANTS
+============================================================ */
+
+const MATERIAL_CONFIG = {
+  baseRoughness: 0.45,
+  baseMetalness: 0.3,
+  envMapIntensity: 1.4,
+  aoMapIntensity: 1.2,
+  emissiveColor: "#7C5CFC",
+  emissiveIntensity: 0.4,
+  glassTransmission: 1,
+  glassRoughness: 0,
+  glassThickness: 0.6,
+  glassClearcoat: 1,
+};
+
+/* ============================================================
    SHRINE SCENE – FULL TRANSFORMATION SYSTEM
 ============================================================ */
 
 function ShrineScene({
   scrollProgress,
+  directionalLightRef,
 }: {
   scrollProgress: React.MutableRefObject<number>;
+  directionalLightRef: React.RefObject<THREE.DirectionalLight>;
 }) {
   const { scene } = useGLTF("/models/shrine.glb");
   const groupRef = useRef<THREE.Group>(null);
@@ -28,10 +49,78 @@ function ShrineScene({
 
   const targetCameraPos = useRef(new THREE.Vector3());
   const targetLookAt = useRef(new THREE.Vector3());
+  const previousProgress = useRef(0);
+
+  /* ============================================================
+     MATERIAL RE-AUTHORING & ENHANCEMENT
+  ============================================================ */
 
   useEffect(() => {
-    threeScene.fog = new THREE.FogExp2("#000000", 0.04);
-  }, [threeScene]);
+    threeScene.fog = new THREE.FogExp2("#000000", 0.03);
+
+    // Traverse and enhance all materials
+    scene.traverse((child: any) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+
+        const mat = child.material;
+
+        if (mat) {
+          // Base material enhancement
+          mat.roughness = MATERIAL_CONFIG.baseRoughness;
+          mat.metalness = MATERIAL_CONFIG.baseMetalness;
+          mat.envMapIntensity = MATERIAL_CONFIG.envMapIntensity;
+
+          // Enhance contrast
+          mat.color.convertSRGBToLinear();
+
+          // Material depth enhancement
+          if (mat.aoMap) {
+            mat.aoMapIntensity = MATERIAL_CONFIG.aoMapIntensity;
+          }
+
+          // Subtle emissive boost for mystical effect
+          // Check for specific material names that should glow
+          const matName = mat.name?.toLowerCase() || "";
+          if (
+            matName.includes("skull") ||
+            matName.includes("bull") ||
+            matName.includes("horn") ||
+            matName.includes("core") ||
+            matName.includes("gem") ||
+            matName.includes("crystal") ||
+            matName.includes("eye") ||
+            matName.includes("accent")
+          ) {
+            mat.emissive = new THREE.Color(MATERIAL_CONFIG.emissiveColor);
+            mat.emissiveIntensity = MATERIAL_CONFIG.emissiveIntensity;
+          }
+
+          // Optional: Glass mystic accent for specific materials
+          if (
+            matName.includes("glass") ||
+            matName.includes("crystal") ||
+            matName.includes("gem")
+          ) {
+            const glassMat = new THREE.MeshPhysicalMaterial({
+              color: mat.color.clone(),
+              transmission: MATERIAL_CONFIG.glassTransmission,
+              roughness: MATERIAL_CONFIG.glassRoughness,
+              thickness: MATERIAL_CONFIG.glassThickness,
+              clearcoat: MATERIAL_CONFIG.glassClearcoat,
+              clearcoatRoughness: 0,
+              metalness: mat.metalness,
+              envMapIntensity: mat.envMapIntensity,
+            });
+            child.material = glassMat;
+          }
+
+          mat.needsUpdate = true;
+        }
+      }
+    });
+  }, [scene, threeScene]);
 
   useFrame(() => {
     if (!groupRef.current) return;
@@ -126,12 +215,53 @@ function ShrineScene({
 
     camera.position.lerp(targetCameraPos.current, 0.08);
     camera.lookAt(targetLookAt.current);
+
+    /* ============================================================
+       CAMERA MICRO-SHAKE (Velocity Based)
+    ============================================================ */
+
+    const velocity = Math.abs(p - previousProgress.current);
+    const shakeStrength = Math.min(velocity * 0.5, 0.02);
+
+    if (shakeStrength > 0.001) {
+      camera.position.x += (Math.random() - 0.5) * shakeStrength;
+      camera.position.y += (Math.random() - 0.5) * shakeStrength;
+    }
+
+    previousProgress.current = p;
+
+    /* ============================================================
+       SCROLL-DRIVEN LIGHT COLOR SHIFT
+    ============================================================ */
+
+    if (directionalLightRef.current) {
+      const hue = THREE.MathUtils.lerp(260, 190, p);
+      const color = new THREE.Color(`hsl(${hue}, 90%, 65%)`);
+      directionalLightRef.current.color.lerp(color, 0.05);
+    }
   });
 
   return (
     <group ref={groupRef}>
       <primitive object={scene} />
     </group>
+  );
+}
+
+/* ============================================================
+   GROUND CONTACT SHADOW
+============================================================ */
+
+function GroundShadow() {
+  return (
+    <mesh
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[0, -0.01, 0]}
+      receiveShadow
+    >
+      <planeGeometry args={[50, 50]} />
+      <shadowMaterial opacity={0.3} />
+    </mesh>
   );
 }
 
@@ -143,6 +273,10 @@ export default function MaskTransition() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollProgress = useRef(0);
   const textRef = useRef<HTMLDivElement>(null);
+  const directionalLightRef = useRef<THREE.DirectionalLight>(null);
+  const bloomRef = useRef<any>(null);
+  const dofRef = useRef<any>(null);
+  const previousProgress = useRef(0);
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
@@ -155,6 +289,17 @@ export default function MaskTransition() {
         scrub: 1,
         onUpdate: (self) => {
           scrollProgress.current = self.progress;
+
+          /* ── Velocity Driven Bloom Spike ───────────────────────────────────── */
+          const velocity = Math.abs(self.getVelocity());
+          if (bloomRef.current) {
+            bloomRef.current.intensity = 0.8 + velocity * 0.0003;
+          }
+
+          /* ── Advanced DOF Reactive Focus ───────────────────────────────────── */
+          if (dofRef.current) {
+            dofRef.current.focusDistance = THREE.MathUtils.lerp(0.01, 0.02, self.progress);
+          }
 
           if (textRef.current) {
             const opacity =
@@ -183,6 +328,8 @@ export default function MaskTransition() {
               });
             }
           }
+
+          previousProgress.current = self.progress;
         },
       });
     }, containerRef);
@@ -192,22 +339,19 @@ export default function MaskTransition() {
 
   return (
     <div ref={containerRef} style={{ height: "450vh" }}>
-      <div className="sticky top-0 h-screen overflow-hidden bg-[hsl(var(--background))]">
-        {/* ── Atmospheric Layer ───────────────────────────────────────────────────── */}
+      <div className="sticky top-0 h-screen overflow-hidden bg-[#000000]">
+        {/* ── Pure Black Background ───────────────────────────────────────────── */}
         <div
           className="absolute inset-0 pointer-events-none z-5"
           style={{
-            background:
-              "radial-gradient(ellipse at 50% 40%, rgba(124, 92, 252, 0.015), transparent 60%), " +
-              "radial-gradient(ellipse at 80% 70%, rgba(0, 212, 255, 0.01), transparent 70%)",
-            mixBlendMode: "screen",
-            animation: "atmosphereShift 12s ease-in-out infinite alternate",
+            background: "#000000",
           }}
         />
 
         <Canvas
+          shadows
           camera={{
-            fov: 22,
+            fov: 28,
             near: 0.1,
             far: 200,
             position: [0, 2, 14],
@@ -216,8 +360,19 @@ export default function MaskTransition() {
           dpr={[1, 2]}
         >
           <ambientLight intensity={isDark ? 0.4 : 0.8} />
-          <directionalLight position={[5, 8, 5]} intensity={2.2} />
+          <directionalLight
+            ref={directionalLightRef}
+            castShadow
+            shadow-mapSize-width={2048}
+            shadow-mapSize-height={2048}
+            shadow-bias={-0.0001}
+            position={[5, 8, 5]}
+            intensity={2.2}
+          />
           <spotLight
+            castShadow
+            shadow-mapSize-width={1024}
+            shadow-mapSize-height={1024}
             position={[0, 5, 5]}
             angle={0.35}
             penumbra={0.8}
@@ -225,9 +380,46 @@ export default function MaskTransition() {
           />
 
           <Suspense fallback={null}>
-            <ShrineScene scrollProgress={scrollProgress} />
+            <ShrineScene
+              scrollProgress={scrollProgress}
+              directionalLightRef={directionalLightRef}
+            />
             <Environment preset="sunset" />
           </Suspense>
+
+          {/* Ground contact shadow for realism */}
+          <GroundShadow />
+
+          {/* Particles outside Suspense for consistent rendering */}
+          <AtmosphericParticles />
+
+          {/* ── Post-Processing Effects ─────────────────────────────────────────── */}
+          <EffectComposer>
+            {/* Selective Bloom - Higher threshold prevents flat surfaces from glowing */}
+            <Bloom
+              ref={bloomRef}
+              intensity={0.8}
+              luminanceThreshold={0.6}
+              luminanceSmoothing={0.9}
+              mipmapBlur
+            />
+            <DepthOfField
+              ref={dofRef}
+              focusDistance={0.015}
+              focalLength={0.02}
+              bokehScale={1.5}
+            />
+            <ChromaticAberration
+              offset={new THREE.Vector2(0.001, 0.001)}
+              modulationOffset={0.1}
+              radialModulation={true}
+            />
+            <Vignette
+              eskil={false}
+              offset={0.1}
+              darkness={1.0}
+            />
+          </EffectComposer>
         </Canvas>
 
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -250,13 +442,13 @@ export default function MaskTransition() {
         {/* ── Top Fade ─────────────────────────────────────────────────────────── */}
         <div
           className="absolute inset-x-0 top-0 h-[15vh] z-10 pointer-events-none"
-          style={{ background: `linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 100%)` }}
+          style={{ background: `linear-gradient(to bottom, #000000 0%, transparent 100%)` }}
         />
 
         {/* ── Bottom Fade ──────────────────────────────────────────────────────── */}
         <div
           className="absolute inset-x-0 bottom-0 h-[15vh] z-10 pointer-events-none"
-          style={{ background: `linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)` }}
+          style={{ background: `linear-gradient(to top, #000000 0%, transparent 100%)` }}
         />
       </div>
     </div>
