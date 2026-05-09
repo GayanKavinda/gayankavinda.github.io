@@ -6,6 +6,8 @@ import MaskTransition from '@components/animations/MaskTransition';
 import Projects from '@features/projects/components/Projects';
 import TechStack from '@features/home/components/TechStack/index';
 import Experience from '@features/home/components/Experience';
+import Education from '@features/home/components/Education';
+import Certifications from '@features/home/components/Certifications';
 import About from '@features/about/components/About';
 import EngineeringPhilosophy from '@features/about/components/EngineeringPhilosophy/index';
 import Contact from '@features/contact/Contact';
@@ -49,6 +51,8 @@ const Home = () => {
 
 
       <Experience />
+      <Education />
+      <Certifications />
       <About />
       <EngineeringPhilosophy />
 

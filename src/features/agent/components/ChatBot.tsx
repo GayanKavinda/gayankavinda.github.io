@@ -6,63 +6,10 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { useChat } from '../hooks/useChat';
 import type { ChatMessage } from '../services/ai-service';
+import JujutsuKaisenLogo from '../../../assets/logos/Jujutsu_Kaisen-removebg-preview.png';
 
-const RobotIcon = ({ size = 24, animated = false }: { size?: number; animated?: boolean }) => (
-  <div className={`relative ${animated ? 'animate-pulse' : ''}`} style={{
-    width: size, height: size,
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-  }}>
-    {/* Outer glow ring */}
-    <div className="absolute inset-0 rounded-full opacity-30"
-      style={{
-        background: 'conic-gradient(from 0deg, var(--gy-c1), var(--gy-c2), var(--gy-c1))',
-        animation: animated ? 'spin 3s linear infinite' : 'none',
-        filter: 'blur(8px)',
-      }}
-    />
-    {/* Inner gradient background */}
-    <div className="relative rounded-full flex items-center justify-center"
-      style={{
-        width: size * 0.85,
-        height: size * 0.85,
-        background: 'linear-gradient(135deg, var(--gy-c1) 0%, var(--gy-c2) 100%)',
-        boxShadow: '0 4px 20px color-mix(in srgb, var(--gy-c1) 40%, transparent), inset 0 2px 4px rgba(255,255,255,0.3)',
-        border: '2px solid rgba(255,255,255,0.2)',
-      }}
-    >
-      {/* Anime-style robot face */}
-      <svg width={size * 0.5} height={size * 0.5} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        {/* Eyes */}
-        <circle cx="8" cy="10" r="2.5" fill="rgba(255,255,255,0.9)" />
-        <circle cx="16" cy="10" r="2.5" fill="rgba(255,255,255,0.9)" />
-        {/* Eye shine */}
-        <circle cx="7" cy="9" r="0.8" fill="var(--gy-c1)" />
-        <circle cx="15" cy="9" r="0.8" fill="var(--gy-c1)" />
-        {/* Mouth */}
-        <path d="M8 16c0 0 2.5 1.5 4 0s2.5-1.5 4 0" strokeLinecap="round" />
-        {/* Antenna */}
-        <line x1="12" y1="4" x2="12" y2="1" />
-        <circle cx="12" cy="1" r="1.5" fill="var(--gy-c2)" />
-      </svg>
-    </div>
-    {/* Floating particles */}
-    {animated && (
-      <>
-        <div className="absolute w-1 h-1 rounded-full bg-white/60" style={{
-          top: '10%', left: '20%',
-          animation: 'float 2s ease-in-out infinite',
-        }} />
-        <div className="absolute w-1.5 h-1.5 rounded-full bg-white/40" style={{
-          top: '70%', right: '15%',
-          animation: 'float 2.5s ease-in-out infinite 0.5s',
-        }} />
-        <div className="absolute w-1 h-1 rounded-full bg-white/50" style={{
-          bottom: '20%', left: '25%',
-          animation: 'float 3s ease-in-out infinite 1s',
-        }} />
-      </>
-    )}
-  </div>
+const RobotIcon = ({ size = 24 }: { size?: number; animated?: boolean }) => (
+  <img src={JujutsuKaisenLogo} alt="Avatar" style={{ width: size, height: size }} className="object-contain drop-shadow-sm" />
 );
 
 const Ic = ({ path, size = 15, className = '', sw = 1.75, style }: {
@@ -489,31 +436,26 @@ const ChatBot: React.FC = () => {
 
 
       {/* ── FAB ── */}
-      <button onClick={toggleChat} aria-label="Toggle AI Agent" className="gy-fab group relative"
+      <button onClick={toggleChat} aria-label="Toggle AI Agent" className="fixed bottom-6 right-6 sm:right-8 z-[9990] flex items-center justify-center group"
         style={{
-          animation: !isOpen && !interacted ? 'gyFloat 3.5s ease infinite' : undefined,
-          background: 'linear-gradient(135deg, var(--gy-c1) 0%, var(--gy-c2) 100%)',
-          boxShadow: '0 8px 32px color-mix(in srgb, var(--gy-c1) 35%, transparent), 0 0 0 0 rgba(var(--gy-c1), 0.4)',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          width: isOpen ? '52px' : 'auto',
+          height: isOpen ? '52px' : 'auto',
+          borderRadius: isOpen ? '16px' : '0',
+          background: isOpen ? 'var(--gy-bot-bg, #ffffff)' : 'transparent',
+          border: isOpen ? '1px solid var(--gy-bot-border, rgba(0,0,0,0.08))' : 'none',
+          boxShadow: isOpen ? '0 4px 12px rgba(0,0,0,0.08)' : 'none',
+          transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = '0 12px 40px color-mix(in srgb, var(--gy-c1) 45%, transparent), 0 0 0 4px rgba(var(--gy-c1), 0.2)';
-          e.currentTarget.style.transform = 'scale(1.05)';
+          e.currentTarget.style.transform = 'scale(1.08) translateY(-2px)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = '0 8px 32px color-mix(in srgb, var(--gy-c1) 35%, transparent), 0 0 0 0 rgba(var(--gy-c1), 0.4)';
-          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.transform = 'scale(1) translateY(0)';
         }}>
-        {/* Ripple effect */}
-        <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{
-            background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
-          }}
-        />
 
         {isOpen
-          ? <Ic path={P.x} size={16} sw={2.4} style={{ color: 'rgba(255,255,255,0.95)', position: 'relative', zIndex: 1 }} />
-          : <RobotIcon size={32} animated={!interacted} />}
+          ? <Ic path={P.x} size={16} sw={2.4} style={{ color: 'var(--gy-bot-text, #111827)' }} />
+          : <img src={JujutsuKaisenLogo} alt="ChatBot Logo" className="w-[72px] h-[72px] sm:w-[84px] sm:h-[84px] object-contain" style={{ filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.25))' }} />}
 
         {unreadCount > 0 && !isOpen && (
           <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full
@@ -617,7 +559,7 @@ const ChatBot: React.FC = () => {
             )}
 
             {/* ── MESSAGES ── */}
-            <div ref={bodyRef} className="flex-1 overflow-y-auto gy-scroll px-3.5 py-4 space-y-3.5">
+            <div ref={bodyRef} className="flex-1 overflow-y-auto gy-scroll px-3.5 py-4 space-y-3.5" data-lenis-prevent="true">
               {filtered.map((m, i) => (
                 <MsgBubble key={m.id} msg={m} idx={i}
                   isLast={i === filtered.length - 1 && !isLoading}
@@ -665,7 +607,7 @@ const ChatBot: React.FC = () => {
             {/* ── FOLLOW-UPS ── */}
             {followUps.length > 0 && messages.length > 1 && !isLoading && (
               <div className="gy-strip-bg flex-shrink-0">
-                <div className="gy-strip">
+                <div className="gy-strip" data-lenis-prevent="true">
                   <Ic path={P.spark} size={9} className="gy-accent-text opacity-60 flex-shrink-0" />
                   {followUps.slice(0, 5).map((q, qi) => (
                     <button key={q} onClick={() => sendMessage(q)} className="gy-chip"
