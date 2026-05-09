@@ -14,7 +14,7 @@ const clamp = (v: number, min = 0, max = 1) =>
   Math.max(min, Math.min(max, v));
 
 /* ============================================================
-   MATERIAL ENHANCEMENT CONSTANTS
+MATERIAL ENHANCEMENT CONSTANTS
 ============================================================ */
 
 const MATERIAL_CONFIG = {
@@ -31,7 +31,7 @@ const MATERIAL_CONFIG = {
 };
 
 /* ============================================================
-   SHRINE SCENE – FULL TRANSFORMATION SYSTEM
+SHRINE SCENE – FULL TRANSFORMATION SYSTEM
 ============================================================ */
 
 function ShrineScene({
@@ -54,12 +54,14 @@ function ShrineScene({
   const previousProgress = useRef(0);
 
   /* ============================================================
-     MATERIAL RE-AUTHORING & ENHANCEMENT
+  MATERIAL RE-AUTHORING & ENHANCEMENT
   ============================================================ */
 
   useEffect(() => {
     // Removed fog to eliminate "smoke" effect
     threeScene.fog = null;
+
+
 
     // Traverse and enhance all materials
     scene.traverse((child: any) => {
@@ -128,6 +130,8 @@ function ShrineScene({
   useFrame(() => {
     if (!groupRef.current) return;
 
+
+
     const p = scrollProgress.current;
 
     /* ============================================================
@@ -138,15 +142,15 @@ function ShrineScene({
       p < 0.2
         ? THREE.MathUtils.lerp(-8, -2, p / 0.2)
         : p < 0.4
-        ? THREE.MathUtils.lerp(-2, 0, (p - 0.2) / 0.2)
-        : 0;
+          ? THREE.MathUtils.lerp(-2, 0, (p - 0.2) / 0.2)
+          : 0;
 
     const rotationY =
       p < 0.3
         ? THREE.MathUtils.lerp(-Math.PI * 0.6, 0, p / 0.3)
         : p < 0.8
-        ? groupRef.current.rotation.y + 0.002
-        : THREE.MathUtils.lerp(
+          ? groupRef.current.rotation.y + 0.002
+          : THREE.MathUtils.lerp(
             groupRef.current.rotation.y,
             Math.PI * 0.3,
             (p - 0.8) / 0.2
@@ -161,8 +165,8 @@ function ShrineScene({
       p < 0.4
         ? THREE.MathUtils.lerp(4.2, 5, p / 0.4)
         : p < 0.85
-        ? 5
-        : THREE.MathUtils.lerp(5, 5.4, (p - 0.85) / 0.15);
+          ? 5
+          : THREE.MathUtils.lerp(5, 5.4, (p - 0.85) / 0.15);
 
     groupRef.current.position.y = positionY;
     groupRef.current.rotation.y = rotationY;
@@ -254,7 +258,7 @@ function ShrineScene({
 }
 
 /* ============================================================
-   GROUND CONTACT SHADOW
+GROUND CONTACT SHADOW
 ============================================================ */
 
 function GroundShadow() {
@@ -271,7 +275,7 @@ function GroundShadow() {
 }
 
 /* ============================================================
-   MAIN COMPONENT
+MAIN COMPONENT
 ============================================================ */
 
 export default function MaskTransition() {
@@ -374,7 +378,8 @@ export default function MaskTransition() {
           }}
         />
 
-        
+        text
+
         <Canvas
           shadows
           camera={{
@@ -387,8 +392,8 @@ export default function MaskTransition() {
             antialias: false,
             powerPreference: "high-performance",
             alpha: false,
-              stencil: false,
-              depth: true
+            stencil: false,
+            depth: true
           }}
           dpr={Math.min(window.devicePixelRatio, 1)}
           frameloop={isVisible ? "always" : "demand"}
