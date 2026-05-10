@@ -8,7 +8,7 @@ import { useChat } from '../hooks/useChat';
 import type { ChatMessage } from '../services/ai-service';
 import JujutsuKaisenLogo from '../../../assets/logos/Jujutsu_Kaisen-removebg-preview.png';
 
-const RobotIcon = ({ size = 24 }: { size?: number; animated?: boolean }) => (
+const RobotIcon = ({ size = 24 }: { size?: number }) => (
   <img src={JujutsuKaisenLogo} alt="Avatar" style={{ width: size, height: size }} className="object-contain drop-shadow-sm" />
 );
 
@@ -27,14 +27,8 @@ const P = {
   x:      'M18 6 6 18M6 6l12 12',
   minus:  'M5 12h14',
   refresh:'M1 4v6h6M23 20v-6h-6M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15',
-  expand: 'M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7',
-  shrink: 'M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7',
-  search: 'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm10 10-4-4',
-  dl:     'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3',
   vol:    'M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07',
   mut:    'M11 5 6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6',
-  mic:    'M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zM19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8',
-  micOff: 'M1 1l22 22M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23M12 19v4M8 23h8',
   copy:   'M20 9H11a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2zM5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 0 2 2v1',
   check:  'M20 6 9 17 4 12',
   thumbU: ['M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z','M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3'],
@@ -63,49 +57,7 @@ function useTypewriter(text: string, speed = 9, enabled = true) {
   return { shown, done };
 }
 
-function useVoiceInput(onFinal: (t: string) => void, onInterim?: (t: string) => void) {
-  const [listening, setListening] = useState(false);
-  const [supported, setSupported] = useState(false);
-  const [voiceErr,  setVoiceErr]  = useState<string | null>(null);
-  const recRef    = useRef<any>(null);
-  const activeRef = useRef(false);
-  useEffect(() => {
-    setSupported(!!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition));
-  }, []);
-  useEffect(() => () => { try { recRef.current?.abort(); } catch (_) {} }, []);
-  const stop = useCallback(() => {
-    try { recRef.current?.stop(); } catch (_) {}
-    activeRef.current = false; setListening(false);
-  }, []);
-  const toggle = useCallback(() => {
-    setVoiceErr(null);
-    if (!supported) { setVoiceErr('Voice not supported in this browser.'); return; }
-    if (activeRef.current) { stop(); return; }
-    try { recRef.current?.abort(); } catch (_) {}
-    const SR  = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const rec = new SR();
-    rec.continuous = false; rec.interimResults = true; rec.lang = 'en-US';
-    rec.onstart  = () => { activeRef.current = true; setListening(true); };
-    rec.onresult = (e: any) => {
-      let interim = '', final = '';
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        if (e.results[i].isFinal) final   += e.results[i][0].transcript;
-        else                       interim += e.results[i][0].transcript;
-      }
-      if (interim && onInterim) onInterim(interim);
-      if (final) { onFinal(final.trim()); setTimeout(stop, 80); }
-    };
-    rec.onerror = (e: any) => {
-      if (e.error !== 'aborted')
-        setVoiceErr(e.error === 'not-allowed' ? 'Mic access denied.' : 'Voice error.');
-      activeRef.current = false; setListening(false);
-    };
-    rec.onend = () => { activeRef.current = false; setListening(false); };
-    recRef.current = rec;
-    try { rec.start(); } catch (_) { setVoiceErr('Could not start mic.'); }
-  }, [supported, onFinal, onInterim, stop]);
-  return { listening, supported, voiceErr, toggle };
-}
+
 
 function useResize(iW: number, iH: number, mnW: number, mnH: number, mxW: number, mxH: number) {
   const [size, setSize] = useState({ w: iW, h: iH });
@@ -352,36 +304,23 @@ const ChatBot: React.FC = () => {
     messages, isLoading, isOpen, inputValue, suggestions, messagesEndRef,
     soundEnabled, unreadCount,
     setInputValue, sendMessage, regenerateLastMessage, toggleChat,
-    closeChat, clearChat, toggleSound, reactToMessage, exportChat, markRead,
+    closeChat, clearChat, toggleSound, reactToMessage, markRead,
   } = useChat();
 
   const inputRef  = useRef<HTMLInputElement>(null);
   const bodyRef   = useRef<HTMLDivElement>(null);
   const [closing,     setClosing]     = useState(false);
-  const [expanded,    setExpanded]    = useState(false);
-  const [searching,   setSearching]   = useState(false);
-  const [searchQ,     setSearchQ]     = useState('');
   const [scrollBtn,   setScrollBtn]   = useState(false);
   const [mobile,      setMobile]      = useState(false);
-  const [interacted,  setInteracted]  = useState(false);
-  const [voiceErrMsg, setVoiceErrMsg] = useState<string | null>(null);
 
   const { size, setSize, onMouseDown } = useResize(400, 600, 340, 440, 700, 820);
-  const { listening, supported: hasVoice, voiceErr, toggle: toggleVoice } = useVoiceInput(
-    (t) => { setInputValue(t); setTimeout(() => sendMessage(t), 200); },
-    (t) => setInputValue(t),
-  );
-
-  useEffect(() => {
-    if (voiceErr) { setVoiceErrMsg(voiceErr); const t = setTimeout(() => setVoiceErrMsg(null), 3500); return () => clearTimeout(t); }
-  }, [voiceErr]);
   useEffect(() => {
     const check = () => setMobile(window.innerWidth < 640);
     check(); window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
   useEffect(() => {
-    if (isOpen) { setTimeout(() => inputRef.current?.focus(), 320); markRead(); setInteracted(true); }
+    if (isOpen) { setTimeout(() => inputRef.current?.focus(), 320); markRead(); }
   }, [isOpen, markRead]);
   useEffect(() => {
     const el = bodyRef.current; if (!el) return;
@@ -398,15 +337,9 @@ const ChatBot: React.FC = () => {
     return () => window.removeEventListener('keydown', fn);
   }, [toggleChat, isOpen]);
 
-  const filtered = useMemo(() => {
-    if (!searchQ.trim()) return messages;
-    const q = searchQ.toLowerCase();
-    return messages.filter(m => m.content.toLowerCase().includes(q));
-  }, [messages, searchQ]);
-
   const doClose = useCallback(() => {
     setClosing(true);
-    setTimeout(() => { closeChat(); setClosing(false); setExpanded(false); }, 220);
+    setTimeout(() => { closeChat(); setClosing(false); }, 220);
   }, [closeChat]);
 
   const scrollEnd = () => bodyRef.current?.scrollTo({ top: bodyRef.current.scrollHeight, behavior: 'smooth' });
@@ -415,13 +348,6 @@ const ChatBot: React.FC = () => {
     navigator.clipboard.writeText(c);
     reactToMessage(id, 'copied');
     setTimeout(() => reactToMessage(id, 'copied'), 2000);
-  };
-  const doExpand = () => {
-    if (mobile) return;
-    setExpanded(p => !p);
-    setSize(expanded
-      ? { w: 400, h: 600 }
-      : { w: Math.min(700, window.innerWidth - 48), h: Math.min(820, window.innerHeight - 112) });
   };
 
   const lastBot   = useMemo(() => [...messages].reverse().find(m => m.role === 'assistant'), [messages]);
@@ -491,7 +417,7 @@ const ChatBot: React.FC = () => {
             ${mobile ? 'rounded-t-[24px]' : 'rounded-[20px]'}`}
             style={{ height: mobile ? '85vh' : `${size.h}px`, maxHeight: mobile ? '85vh' : 'calc(100vh - 108px)' }}>
 
-            {!mobile && !expanded && <div className="gy-resize" onMouseDown={onMouseDown} />}
+            {!mobile && <div className="gy-resize" onMouseDown={onMouseDown} />}
 
             {/* ── HEADER ── */}
             <header className="gy-header-bg flex items-center justify-between px-3.5 py-2.5 flex-shrink-0">
@@ -520,50 +446,21 @@ const ChatBot: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-0.5">
-                <HdrBtn onClick={() => { setSearching(p => !p); setSearchQ(''); }} title="Search" active={searching}>
-                  <Ic path={P.search} size={12} />
-                </HdrBtn>
                 <HdrBtn onClick={toggleSound} title={soundEnabled ? 'Mute' : 'Sound'}>
                   <Ic path={soundEnabled ? P.vol : P.mut} size={12} />
                 </HdrBtn>
-                {!mobile && <>
-                  <HdrBtn onClick={exportChat} title="Export"><Ic path={P.dl} size={12} /></HdrBtn>
-                  <HdrBtn onClick={doExpand} title={expanded ? 'Restore' : 'Expand'}>
-                    <Ic path={expanded ? P.shrink : P.expand} size={12} />
-                  </HdrBtn>
-                </>}
                 <div className="w-px h-3.5 bg-black/10 dark:bg-white/10 mx-0.5" />
                 <HdrBtn onClick={clearChat} title="Clear" danger><Ic path={P.trash} size={12} /></HdrBtn>
                 <HdrBtn onClick={doClose} title="Minimize"><Ic path={P.minus} size={12} /></HdrBtn>
               </div>
             </header>
 
-            {/* ── SEARCH ── */}
-            {searching && (
-              <div className="gy-search-bg px-3.5 py-2" style={{ animation:'gyFade .18s ease' }}>
-                <div className="flex items-center gap-2">
-                  <Ic path={P.search} size={12} className="gy-text-muted flex-shrink-0" />
-                  <input value={searchQ} onChange={e => setSearchQ(e.target.value)}
-                    placeholder="Search messages…" autoFocus
-                    className="flex-1 bg-transparent border-none outline-none text-[12px] gy-text-primary
-                      placeholder:gy-text-muted"
-                    style={{ fontFamily: 'Instrument Sans' }} />
-                  {searchQ && (
-                    <button onClick={() => setSearchQ('')}
-                      className="gy-text-muted hover:text-gray-600 dark:hover:text-gray-400 cursor-pointer bg-transparent border-none">
-                      <Ic path={P.x} size={11} />
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
-
             {/* ── MESSAGES ── */}
             <div ref={bodyRef} className="flex-1 overflow-y-auto gy-scroll px-3.5 py-4 space-y-3.5" data-lenis-prevent="true">
-              {filtered.map((m, i) => (
+              {messages.map((m, i) => (
                 <MsgBubble key={m.id} msg={m} idx={i}
-                  isLast={i === filtered.length - 1 && !isLoading}
-                  onRegen={i === filtered.length - 1 && m.role === 'assistant' && m.id !== 'welcome' ? regenerateLastMessage : undefined}
+                  isLast={i === messages.length - 1 && !isLoading}
+                  onRegen={i === messages.length - 1 && m.role === 'assistant' && m.id !== 'welcome' ? regenerateLastMessage : undefined}
                   onReact={r => reactToMessage(m.id, r)}
                   onCopy={() => doCopy(m.content, m.id)} />
               ))}
@@ -577,7 +474,7 @@ const ChatBot: React.FC = () => {
                     <p className="text-[8.5px] font-mono uppercase tracking-[.14em] gy-text-muted">Explore</p>
                   </div>
                   <div className="grid grid-cols-2 gap-1.5">
-                    {suggestions.slice(0, 8).map((s, i) => (
+                    {suggestions.slice(0, 4).map((s, i) => (
                       <button key={s.query} onClick={() => sendMessage(s.query)} className="gy-init"
                         style={{ animation:`gyFade .3s ease ${i * 45}ms both` }}>
                         <span className="text-[15px] block mb-1.5">{s.icon}</span>
@@ -609,7 +506,7 @@ const ChatBot: React.FC = () => {
               <div className="gy-strip-bg flex-shrink-0">
                 <div className="gy-strip" data-lenis-prevent="true">
                   <Ic path={P.spark} size={9} className="gy-accent-text opacity-60 flex-shrink-0" />
-                  {followUps.slice(0, 5).map((q, qi) => (
+                  {followUps.slice(0, 3).map((q, qi) => (
                     <button key={q} onClick={() => sendMessage(q)} className="gy-chip"
                       style={{ animation:`gySlide .3s ease ${qi * 55}ms both` }}>
                       {q}
@@ -622,21 +519,11 @@ const ChatBot: React.FC = () => {
             {/* ── INPUT ── */}
             <div className="gy-footer-bg flex-shrink-0 px-3.5 pb-3.5 pt-2">
               <form onSubmit={doSubmit} className="flex items-center gap-2">
-                {hasVoice && (
-                  <button type="button" onClick={toggleVoice} className={`gy-mic ${listening ? 'live' : ''}`}
-                    title={listening ? 'Stop' : 'Voice'}>
-                    <Ic path={listening ? P.micOff : P.mic} size={13} />
-                    {listening && (
-                      <span className="absolute inset-[-4px] rounded-[14px] border gy-accent-border"
-                        style={{ animation:'gyGlow .7s ease infinite alternate' }} />
-                    )}
-                  </button>
-                )}
                 <input ref={inputRef} value={inputValue}
                   onChange={e => setInputValue(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
-                  placeholder={listening ? '🎤 Listening…' : 'Ask anything about this portfolio…'}
-                  disabled={isLoading || listening}
+                  placeholder="Ask anything about this portfolio…"
+                  disabled={isLoading}
                   className="gy-input" />
                 <button type="submit" disabled={!inputValue.trim() || isLoading} className="gy-send">
                   {isLoading
@@ -645,19 +532,6 @@ const ChatBot: React.FC = () => {
                     : <Ic path={P.send} size={13} sw={2} className="text-white" />}
                 </button>
               </form>
-
-              {voiceErrMsg && (
-                <div className="flex items-center gap-2 mt-2 px-3 py-2 rounded-xl
-                  bg-red-500/[0.06] border border-red-500/20"
-                  style={{ animation:'gyFade .2s ease' }}>
-                  <span className="text-red-500 text-[10px] font-bold">⚠</span>
-                  <span className="text-[10px] text-red-500/80 flex-1">{voiceErrMsg}</span>
-                  <button onClick={() => setVoiceErrMsg(null)}
-                    className="text-red-500/40 cursor-pointer bg-transparent border-none">
-                    <Ic path={P.x} size={9} />
-                  </button>
-                </div>
-              )}
 
               <p className="text-center text-[7.5px] font-mono tracking-[.18em] uppercase mt-2 gy-text-muted">
                 gara yaka · portfolio ai{!mobile && <span className="ml-2 opacity-50">⌘K</span>}
