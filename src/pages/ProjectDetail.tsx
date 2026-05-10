@@ -7,10 +7,10 @@ import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSp
 import { useTheme } from '@app/providers/theme-provider';
 import Navbar from '@components/layout/Navbar';
 import Footer from '@components/layout/Footer';
-import { PROJECT_DETAILS } from '@constants/projectDetails';
-import LightRays from '@components/LightRays';
-import LightPillar from '@components/LightPillar';
-import BorderGlow from '@components/BorderGlow';
+import { PROJECT_DETAILS } from '@features/projects/data/projectDetails';
+import LightRays from '@components/ui/LightRays';
+import LightPillar from '@components/ui/LightPillar';
+import BorderGlow from '@components/ui/BorderGlow';
 import { CardStack } from '@components/ui/card-stack';
 // import ScrollImageSequence from '@components/animations/ScrollImageSequence';
 
