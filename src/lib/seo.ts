@@ -19,7 +19,7 @@ export interface SEOMeta {
 const DEFAULTS: Required<Omit<SEOMeta, 'article'>> = {
   title:       'Gayan Kavinda | Senior Systems Architect',
   description: 'Crafting high-performance distributed systems and cinematic digital experiences.',
-  image:       'https://gayankav.github.io/og-image.png', // replace with your actual OG image
+  image:       'https://gayankav.github.io/og-image.png',
   url:         'https://gayankav.github.io',
   type:        'website',
 };
