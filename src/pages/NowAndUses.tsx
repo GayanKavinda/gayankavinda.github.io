@@ -49,8 +49,8 @@ export const Now = () => {
   useEffect(() => {
     setSEO({
       title:       'Now — What I\'m Working On',
-      description: 'What Gara Yaka is focused on right now — projects, learning, reading, and life.',
-      url:         'https://garayaka.com/now',
+      description: 'What Gayan Kavinda is focused on right now — projects, learning, reading, and life.',
+      url:         'https://gayankav.github.io/now',
     });
     return () => setSEO();
   }, []);
@@ -129,8 +129,8 @@ export const Uses = () => {
   useEffect(() => {
     setSEO({
       title:       'Uses — Tools & Setup',
-      description: 'The software, hardware, and tools Gara Yaka uses daily.',
-      url:         'https://garayaka.com/uses',
+      description: 'The software, hardware, and tools Gayan Kavinda uses daily.',
+      url:         'https://gayankav.github.io/uses',
     });
     return () => setSEO();
   }, []);

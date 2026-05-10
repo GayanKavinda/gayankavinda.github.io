@@ -69,7 +69,12 @@ const EngineeringPhilosophy = () => {
   const isDark = theme === 'dark';
 
   return (
-    <section id="philosophy" ref={ref} className="relative py-[100px] md:py-[140px] bg-background overflow-hidden">
+    <section 
+      id="philosophy" 
+      ref={ref} 
+      className="relative py-[100px] md:py-[140px] bg-background overflow-hidden"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 1000px' }}
+    >
       {/* Background Artwork */}
       <div className="absolute inset-y-0 right-0 w-full lg:w-[85%] pointer-events-none z-0 overflow-hidden">
         <motion.img

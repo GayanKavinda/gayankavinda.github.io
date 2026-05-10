@@ -534,7 +534,7 @@ const ChatBot: React.FC = () => {
               </form>
 
               <p className="text-center text-[7.5px] font-mono tracking-[.18em] uppercase mt-2 gy-text-muted">
-                gara yaka · portfolio ai{!mobile && <span className="ml-2 opacity-50">⌘K</span>}
+                gayan kavinda · portfolio ai{!mobile && <span className="ml-2 opacity-50">⌘K</span>}
               </p>
             </div>
           </div>

@@ -17,10 +17,10 @@ export interface SEOMeta {
 }
 
 const DEFAULTS: Required<Omit<SEOMeta, 'article'>> = {
-  title:       'Gara Yaka — Senior Software Engineer & Systems Architect',
-  description: 'Building scalable distributed systems and elegant interfaces. Passionate about clean architecture, performance optimization, and developer experience.',
-  image:       'https://garayaka.com/og-image.png', // replace with your actual OG image
-  url:         'https://garayaka.com',
+  title:       'Gayan Kavinda | Senior Systems Architect',
+  description: 'Crafting high-performance distributed systems and cinematic digital experiences.',
+  image:       'https://gayankav.github.io/og-image.png', // replace with your actual OG image
+  url:         'https://gayankav.github.io',
   type:        'website',
 };
 
@@ -35,7 +35,7 @@ const DEFAULTS: Required<Omit<SEOMeta, 'article'>> = {
  * }, []);
  */
 export function setSEO(meta: SEOMeta = {}): void {
-  const t   = meta.title       ? `${meta.title} | Gara Yaka` : DEFAULTS.title;
+  const t   = meta.title       ? `${meta.title} | Gayan Kavinda` : DEFAULTS.title;
   const d   = meta.description ?? DEFAULTS.description;
   const img = meta.image       ?? DEFAULTS.image;
   const url = meta.url         ?? DEFAULTS.url;
@@ -61,7 +61,7 @@ export function setSEO(meta: SEOMeta = {}): void {
 
   // ── Standard meta ─────────────────────────────────────────────────────────
   setMetaName('description',      d);
-  setMetaName('author',           'Gara Yaka');
+  setMetaName('author',           'Gayan Kavinda');
   setMetaName('robots',           'index, follow');
   setMetaName('theme-color',      '#7C5CFC');
 
@@ -71,7 +71,7 @@ export function setSEO(meta: SEOMeta = {}): void {
   setMetaProp('og:image',         img);
   setMetaProp('og:url',           url);
   setMetaProp('og:type',          type);
-  setMetaProp('og:site_name',     'Gara Yaka');
+  setMetaProp('og:site_name',     'Gayan Kavinda');
   setMetaProp('og:locale',        'en_US');
 
   // ── Twitter Cards ─────────────────────────────────────────────────────────
@@ -79,7 +79,7 @@ export function setSEO(meta: SEOMeta = {}): void {
   setMetaName('twitter:title',    t);
   setMetaName('twitter:description', d);
   setMetaName('twitter:image',    img);
-  setMetaName('twitter:creator',  '@garayaka'); // update to your handle
+  setMetaName('twitter:creator',  '@gayankav'); // update to your handle
 
   // ── Article-specific ──────────────────────────────────────────────────────
   if (type === 'article' && meta.article) {
@@ -113,38 +113,33 @@ export function injectPersonSchema(): void {
   const schema = {
     '@context':   'https://schema.org',
     '@type':      'Person',
-    name:         'Gara Yaka',
-    url:          'https://garayaka.com',
+    name:         'Gayan Kavinda',
+    url:          'https://gayankav.github.io',
     jobTitle:     'Senior Software Engineer',
     description:  DEFAULTS.description,
     sameAs: [
-      'https://github.com/garayaka',       // update
-      'https://linkedin.com/in/garayaka',  // update
+      'https://github.com/GayanKavinda',
+      'https://linkedin.com/in/GayanKavinda',
+      'https://twitter.com/gayankav'
     ],
-    knowsAbout: ['TypeScript', 'React', 'Go', 'Distributed Systems', 'Kubernetes', 'Kafka'],
   };
   injectSchema('person-schema', schema);
 }
 
-/** Inject a TechArticle schema for blog posts */
-export function injectArticleSchema(post: {
-  title: string; excerpt: string; date: string;
-  url: string; image?: string; tags: string[];
-}): void {
-  removeSchema('article-schema');
+export const getArticleSchema = (post: { title: string; description: string; date: string; url: string; image?: string; tags: string[] }) => {
   const schema = {
     '@context':       'https://schema.org',
-    '@type':          'TechArticle',
+    '@type':          'BlogPosting',
     headline:         post.title,
-    description:      post.excerpt,
+    description:      post.description,
     datePublished:    post.date,
     url:              post.url,
     image:            post.image ?? DEFAULTS.image,
     keywords:         post.tags.join(', '),
-    author: { '@type': 'Person', name: 'Gara Yaka', url: 'https://garayaka.com' },
+    author: { '@type': 'Person', name: 'Gayan Kavinda', url: 'https://gayankav.github.io' },
     publisher: {
       '@type':  'Person',
-      name:     'Gara Yaka',
+      name:     'Gayan Kavinda',
       logo:     { '@type': 'ImageObject', url: DEFAULTS.image },
     },
   };

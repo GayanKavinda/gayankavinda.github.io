@@ -75,7 +75,7 @@ export const PreLoader = ({ children }: { children: React.ReactNode }) => {
             {/* Logo Image */}
             <motion.img
               src={maskImg}
-              alt="Gara Yaka Logo"
+              alt="Gayan Kavinda Logo"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 0.15 }}
               transition={{ duration: 2, ease: "easeOut" }}
@@ -85,7 +85,7 @@ export const PreLoader = ({ children }: { children: React.ReactNode }) => {
             {/* Signature */}
             <div className="relative z-20 mt-4 filter drop-shadow-md">
               <Signature
-                text="Gara Yaka"
+                text="Gayan Kavinda"
                 fontSize={84}
                 color="#D4891A" /* Portfolio Gold */
                 duration={1.2}

@@ -146,6 +146,7 @@ const Certifications = () => {
       id="certifications"
       ref={sectionRef}
       className="relative py-[100px] md:py-[140px] min-h-[70vh] md:min-h-[800px] flex items-center overflow-hidden"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }}
     >
       {/* Background Artwork */}
       <div className="absolute inset-y-0 right-0 w-full lg:w-[85%] pointer-events-none z-0 overflow-hidden">

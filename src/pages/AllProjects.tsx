@@ -34,7 +34,7 @@ const AllProjects = () => {
 
   useEffect(() => {
     setSEO({
-      title: 'Full Portfolio | Gara Yaka',
+      title: 'Full Portfolio | Gayan Kavinda',
       description: 'Explore the complete archive of production-ready applications, open-source systems, and architectural experiments.',
     });
     return () => setSEO();

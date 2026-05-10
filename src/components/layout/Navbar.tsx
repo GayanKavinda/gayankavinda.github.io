@@ -340,7 +340,7 @@ const Navbar = () => {
               style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0' }}
             >
               <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, color: '#7C5CFC', fontWeight: 900 }}>GY.</span>
-              <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: textMuted, letterSpacing: '0.05em' }}>Gara Yaka</span>
+              <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: textMuted, letterSpacing: '0.05em' }}>Gayan Kavinda</span>
             </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <ModeToggle />

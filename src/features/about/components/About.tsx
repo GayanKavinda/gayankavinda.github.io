@@ -24,7 +24,12 @@ const About = () => {
   const isDark     = theme === 'dark';
 
   return (
-    <section id="about" ref={sectionRef} className="py-[100px] md:py-[140px] relative overflow-hidden">
+    <section 
+      id="about" 
+      ref={sectionRef} 
+      className="py-[100px] md:py-[140px] relative overflow-hidden"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}
+    >
       {/* Background Image - Nobara */}
       <div className="absolute inset-y-0 right-0 w-full md:w-[90%] pointer-events-none z-0 overflow-hidden">
         <motion.img

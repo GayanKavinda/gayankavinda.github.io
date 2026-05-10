@@ -6,13 +6,15 @@ import CustomCursor from "@components/layout/CustomCursor";
 import { ThemeProvider } from "@app/providers/theme-provider";
 import { ChatBot } from '@/features/agent';
 
-// ── Pages ─────────────────────────────────────────────────────────────────────
-import Home from "@pages/Home";
-import AllProjects from "@pages/AllProjects";
-import ProjectDetail from "@pages/ProjectDetail";   // NEW
-import { Now } from "@pages/NowAndUses";       // NEW
-import { Uses } from "@pages/NowAndUses";       // NEW
-import NotFound from "@pages/NotFound";
+import { lazy, Suspense } from 'react';
+
+// ── Pages (Lazy Loaded) ────────────────────────────────────────────────────────
+const Home = lazy(() => import("@pages/Home"));
+const AllProjects = lazy(() => import("@pages/AllProjects"));
+const ProjectDetail = lazy(() => import("@pages/ProjectDetail"));
+const Now = lazy(() => import("@pages/NowAndUses").then(m => ({ default: m.Now })));
+const Uses = lazy(() => import("@pages/NowAndUses").then(m => ({ default: m.Uses })));
+const NotFound = lazy(() => import("@pages/NotFound"));
 
 import { PreLoader } from "@components/layout/PreLoader";
 import { CacheConsent } from "@components/layout/CacheConsent";
@@ -64,7 +66,13 @@ const App = () => (
             }}
           >
             <ScrollToTop />
-            <AnimatedRoutes />
+            <Suspense fallback={
+              <div className="fixed inset-0 bg-neutral-50 dark:bg-neutral-950 flex items-center justify-center z-[9999]">
+                <div className="w-12 h-[1px] bg-gold animate-pulse" />
+              </div>
+            }>
+              <AnimatedRoutes />
+            </Suspense>
 
             {/* Portfolio Agent - Chatbot */}
             <ChatBot />

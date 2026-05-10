@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://garayaka.com/sitemap.xml
+Sitemap: https://gayankav.github.io/sitemap.xml
 
 # Don't index development/test paths
 Disallow: /test/

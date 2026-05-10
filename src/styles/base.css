@@ -1,5 +1,5 @@
 /* src/app/styles/base.css */
-@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,500&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
 
 /* ── Custom Display Fonts ─────────────────────────────────────────────── */
 @font-face {
@@ -275,11 +275,27 @@
 
   @keyframes glow {
     0%, 100% {
-      box-shadow: 0 0 20px rgba(124, 92, 252, 0.18);
+      opacity: 0.18;
     }
     50% {
-      box-shadow: 0 0 45px rgba(124, 92, 252, 0.38);
+      opacity: 0.38;
     }
+  }
+
+  .glow-animation {
+    position: relative;
+  }
+
+  .glow-animation::after {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    background: var(--primary);
+    filter: blur(20px);
+    border-radius: inherit;
+    z-index: -1;
+    animation: glow 3s ease-in-out infinite;
+    pointer-events: none;
   }
 
   @keyframes gradientShift {

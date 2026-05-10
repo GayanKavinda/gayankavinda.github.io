@@ -171,7 +171,7 @@ const Footer = () => {
           <div style={{ flex: '1 1 280px', minWidth: '240px' }} className="footer-col">
             <div className="mb-8 flex items-center gap-4">
                <img src={maskImg} alt="" style={{ width: '24px', height: '24px', mixBlendMode: isDark ? 'screen' : 'multiply', filter: isDark ? 'brightness(1.5)' : 'none' }} />
-               <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '18px', fontWeight: 700, color: t1, letterSpacing: '-0.02em' }}>Gara Yaka</span>
+               <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '18px', fontWeight: 700, color: t1, letterSpacing: '-0.02em' }}>Gayan Kavinda</span>
             </div>
             <p style={{ fontSize: '13px', color: t2, maxWidth: '210px', marginBottom: '24px', lineHeight: '1.6' }}>
               Architecting precision-driven digital systems where heritage meets modern engineering.
@@ -221,11 +221,11 @@ const Footer = () => {
              </p>
              <div className="flex flex-col gap-6">
                <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                  <QRCode value="https://garayaka.com" size={72} />
+                  <QRCode value="https://gayankav.github.io" size={72} />
                   <MapThumbnail isDark={isDark} />
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <span style={{ fontSize: '10px', color: t4, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Direct Line</span>
-                    <a href="mailto:hello@garayaka.com" style={{ ...linkStyle('mail'), color: t1, fontWeight: 600, fontSize: '14px' }}>hello@garayaka.com</a>
+                    <a href="mailto:hello@gayankav.github.io" style={{ ...linkStyle('mail'), color: t1, fontWeight: 600, fontSize: '14px' }}>hello@gayankav.github.io</a>
                   </div>
                </div>
 
@@ -323,13 +323,13 @@ const Footer = () => {
               </linearGradient>
             </defs>
             <text x="720" y="148" textAnchor="middle" fontFamily="'Plus Jakarta Sans', sans-serif" fontWeight="900" fontSize="168" letterSpacing="-4" fill="url(#wm-brand)" stroke="url(#wm-stroke)" strokeWidth="0.8" paintOrder="stroke fill" mask="url(#wm-fade-mask)" opacity={isDark ? 0.55 : 0.45}>
-              GaraYaka
+              Gayan Kavinda
             </text>
           </svg>
         </div>
         <div style={{ width: '100%', padding: '0 60px 28px' }}>
           <div style={{ borderTop: `1px solid ${hairline}`, paddingTop: '18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-             <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '9.5px', color: t4 }}>© {YEAR} Gara Yaka. All rights reserved.</span>
+             <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '9.5px', color: t4 }}>© {YEAR} Gayan Kavinda. All rights reserved.</span>
              <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '9.5px', color: t4 }}>React · GSAP · TypeScript · D3</span>
              <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ background: 'none', border: 'none', color: t3, cursor: 'pointer', fontFamily: "'DM Mono', monospace", fontSize: '9.5px', textTransform: 'uppercase' }}>Back to top</button>
           </div>

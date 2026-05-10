@@ -133,6 +133,7 @@ const Education = () => {
       id="education"
       ref={sectionRef}
       className="relative py-[100px] md:py-[140px] overflow-hidden"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 600px' }}
     >
       {/* Background Artwork */}
       <div className="absolute inset-y-0 left-0 w-full lg:w-[85%] pointer-events-none z-0 overflow-hidden">

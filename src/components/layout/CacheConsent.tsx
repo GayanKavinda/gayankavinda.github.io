@@ -56,9 +56,8 @@ export const CacheConsent = () => {
           exit={{ opacity: 0, y: 20, scale: 0.98 }}
           className="fixed bottom-6 right-6 z-[9999] w-[310px] pointer-events-auto"
         >
-          <Card className={`border-2 backdrop-blur-md shadow-2xl relative overflow-hidden ${
-            isDark ? 'bg-zinc-950/80 border-white/10' : 'bg-white/90 border-black/5'
-          }`}>
+          <Card className={`border-2 backdrop-blur-md shadow-2xl relative overflow-hidden ${isDark ? 'bg-zinc-950/80 border-white/10' : 'bg-white/90 border-black/5'
+            }`}>
             <CardHeader className="p-4 pb-2 space-y-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -73,7 +72,7 @@ export const CacheConsent = () => {
                   </button>
                 )}
               </div>
-              
+
               {mode === 'info' && (
                 <CardTitle className="text-[14px] font-display font-medium tracking-tight mt-1">
                   Runtime Optimization
@@ -88,13 +87,13 @@ export const CacheConsent = () => {
                     Maintaining stable workspace state via predictive media caching and persistent session tokens for low-latency interactions.
                   </p>
                   <div className="flex gap-2">
-                    <Button 
+                    <Button
                       onClick={() => saveAndClose({ essential: true, assets: true, analytics: true })}
                       className="flex-1 h-9 rounded-lg bg-[hsl(var(--crimson))] text-white hover:bg-[hsl(var(--crimson)/0.9)] text-[11.5px] font-bold font-mono border-none"
                     >
                       ACCEPT ALL
                     </Button>
-                    <Button 
+                    <Button
                       variant="outline"
                       onClick={() => setMode('config')}
                       className="h-9 w-9 p-0 rounded-lg border-muted-foreground/20 hover:bg-muted/5"
@@ -121,9 +120,9 @@ export const CacheConsent = () => {
                         <Zap className={`w-3.5 h-3.5 transition-colors ${prefs.assets ? 'text-primary' : 'text-muted-foreground/30'}`} />
                         <Label className={`font-mono text-[10px] uppercase tracking-wider cursor-pointer ${prefs.assets ? 'opacity-100' : 'opacity-40'}`}>Media Assets</Label>
                       </div>
-                      <Switch 
-                        checked={prefs.assets} 
-                        onCheckedChange={(v) => setPrefs(p => ({ ...p, assets: v }))} 
+                      <Switch
+                        checked={prefs.assets}
+                        onCheckedChange={(v) => setPrefs(p => ({ ...p, assets: v }))}
                         className="scale-90 data-[state=checked]:bg-[hsl(var(--crimson))]"
                       />
                     </div>
@@ -134,15 +133,15 @@ export const CacheConsent = () => {
                         <Activity className={`w-3.5 h-3.5 transition-colors ${prefs.analytics ? 'text-primary' : 'text-muted-foreground/30'}`} />
                         <Label className={`font-mono text-[10px] uppercase tracking-wider cursor-pointer ${prefs.analytics ? 'opacity-100' : 'opacity-40'}`}>Telemetry</Label>
                       </div>
-                      <Switch 
-                        checked={prefs.analytics} 
-                        onCheckedChange={(v) => setPrefs(p => ({ ...p, analytics: v }))} 
+                      <Switch
+                        checked={prefs.analytics}
+                        onCheckedChange={(v) => setPrefs(p => ({ ...p, analytics: v }))}
                         className="scale-90 data-[state=checked]:bg-[hsl(var(--crimson))]"
                       />
                     </div>
                   </div>
 
-                  <Button 
+                  <Button
                     variant="default"
                     onClick={() => saveAndClose(prefs)}
                     className="w-full h-9 rounded-lg bg-[hsl(var(--crimson))] text-white hover:bg-[hsl(var(--crimson)/0.9)] text-[11.5px] font-bold font-mono border-none"
