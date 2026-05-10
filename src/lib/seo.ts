@@ -19,8 +19,8 @@ export interface SEOMeta {
 const DEFAULTS: Required<Omit<SEOMeta, 'article'>> = {
   title:       'Gayan Kavinda | Senior Systems Architect',
   description: 'Crafting high-performance distributed systems and cinematic digital experiences.',
-  image:       'https://gayankav.github.io/og-image.png',
-  url:         'https://gayankav.github.io',
+  image:       'https://gayankavinda.github.io/og-image.png',
+  url:         'https://gayankavinda.github.io',
   type:        'website',
 };
 
@@ -114,7 +114,7 @@ export function injectPersonSchema(): void {
     '@context':   'https://schema.org',
     '@type':      'Person',
     name:         'Gayan Kavinda',
-    url:          'https://gayankav.github.io',
+    url:          'https://gayankavinda.github.io',
     jobTitle:     'Senior Software Engineer',
     description:  DEFAULTS.description,
     sameAs: [
@@ -136,7 +136,7 @@ export const getArticleSchema = (post: { title: string; description: string; dat
     url:              post.url,
     image:            post.image ?? DEFAULTS.image,
     keywords:         post.tags.join(', '),
-    author: { '@type': 'Person', name: 'Gayan Kavinda', url: 'https://gayankav.github.io' },
+    author: { '@type': 'Person', name: 'Gayan Kavinda', url: 'https://gayankavinda.github.io' },
     publisher: {
       '@type':  'Person',
       name:     'Gayan Kavinda',

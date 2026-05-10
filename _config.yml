@@ -2,7 +2,7 @@ theme: jekyll-theme-minimal
 title: Gayan Kavinda | Senior Systems Architect
 description: Crafting high-performance distributed systems and cinematic digital experiences. Expert in React, Go, and Cloud Architecture.
 baseurl: ""
-url: "https://gayankav.github.io"
+url: "https://gayankavinda.github.io"
 
 exclude:
   - skills
