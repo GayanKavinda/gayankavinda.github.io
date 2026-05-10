@@ -3,3 +3,24 @@ title: Gayan Kavinda | Senior Systems Architect
 description: Crafting high-performance distributed systems and cinematic digital experiences. Expert in React, Go, and Cloud Architecture.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://gayankav.github.io" # the base hostname & protocol for your site
+
+exclude:
+  - skills
+  - node_modules
+  - .agents
+  - .claude
+  - .superpowers
+  - .opencode
+  - scratch
+  - tasks
+  - dist
+  - vendor
+  - package.json
+  - package-lock.json
+  - tsconfig.json
+  - vite.config.ts
+  - tailwind.config.ts
+  - postcss.config.js
+  - components.json
+  - knip-output.txt
+  - knip-output-utf8.txt
