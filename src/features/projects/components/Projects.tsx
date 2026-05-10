@@ -3,6 +3,7 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
+import Magnetic from '@components/animations/Magnetic';
 import { Badge } from '@components/ui/badge';
 import { allProjects } from '../data/projectData';
 import { ProjectViz } from './ProjectViz';
@@ -10,6 +11,8 @@ import { Project } from '../types';
 import { useTheme } from '@app/providers/theme-provider';
 import bgDark from '@assets/images/selected-projects/dark.jpeg';
 import bgWhite from '@assets/images/selected-projects/white.png';
+
+const CLIP_BTN = 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)';
 
 const getTagColor = (tag: string): any => {
   const t = tag.toLowerCase();
@@ -25,11 +28,16 @@ const getTagColor = (tag: string): any => {
 const ProjectCard = React.memo(({
   project,
   index,
+  onNavigate,
 }: {
   project: Project;
   index: number;
+  onNavigate: (slug: string) => void;
 }) => (
-  <div className="group flex-shrink-0 w-[340px] will-change-transform">
+  <div
+    className="group flex-shrink-0 w-[340px] will-change-transform"
+    onClick={() => onNavigate(project.slug)}
+  >
     <div className="h-full rounded-2xl border border-white/5 bg-card/70 dark:bg-zinc-900/80 elevation-card shimmer-border group-hover:-translate-y-2 transition-all duration-500 ease-out cursor-pointer overflow-hidden">
 
       {/* Viz area */}
@@ -208,6 +216,7 @@ const Projects = () => {
                 key={`${project.name}-${index}`}
                 project={project}
                 index={index % allProjects.length}
+                onNavigate={(slug) => navigate(`/projects/${slug}`)}
               />
             ))}
           </div>
@@ -221,15 +230,45 @@ const Projects = () => {
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.7, delay: 0.5 }}
       >
-        <button
-          onClick={() => navigate('/projects')}
-          className="group font-mono text-[12px] tracking-wide text-[#7C5CFC] border border-[#7C5CFC]/30 px-10 py-4 rounded-full hover:border-[#00D4FF]/50 hover:text-[#00D4FF] hover:bg-[#00D4FF]/5 hover:shadow-xl hover:shadow-[#00D4FF]/10 transition-all duration-500 hover:scale-105"
-        >
-          <span className="inline-flex items-center gap-2">
-            View All Projects
-            <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
-          </span>
-        </button>
+        <Magnetic strength={0.15}>
+          <button
+            onClick={() => navigate('/projects')}
+            className="group relative overflow-hidden focus:outline-none focus:ring-1 focus:ring-[#7C5CFC]/50"
+            style={{
+              fontFamily: "'Audiowide', sans-serif",
+              fontSize: '10px',
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              padding: '10px 30px',
+              background: 'transparent',
+              color: isDark ? 'rgba(255,255,255,0.90)' : 'rgba(20,20,20,0.85)',
+              border: `1.5px solid ${isDark ? 'rgba(124,92,252,0.65)' : 'rgba(107,78,240,0.55)'}`,
+              clipPath: CLIP_BTN,
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              transition: 'border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease',
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = isDark ? 'rgba(0,212,255,0.85)' : 'rgba(124,92,252,0.85)';
+              (e.currentTarget as HTMLButtonElement).style.color = isDark ? '#00D4FF' : '#7C5CFC';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = isDark ? '0 0 22px rgba(0,212,255,0.2)' : '0 0 22px rgba(124,92,252,0.15)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = isDark ? 'rgba(124,92,252,0.65)' : 'rgba(107,78,240,0.55)';
+              (e.currentTarget as HTMLButtonElement).style.color = isDark ? 'rgba(255,255,255,0.90)' : 'rgba(20,20,20,0.85)';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';
+            }}
+          >
+            <span className="relative z-10">View All Projects</span>
+            <motion.span
+              className="absolute inset-0"
+              style={{ background: isDark ? 'linear-gradient(135deg, rgba(124,92,252,0.08) 0%, transparent 100%)' : 'linear-gradient(135deg, rgba(107,78,240,0.05) 0%, transparent 100%)' }}
+              initial={{ x: '-100%' }}
+              whileHover={{ x: '100%' }}
+              transition={{ duration: 0.6 }}
+            />
+          </button>
+        </Magnetic>
       </motion.div>
 
       <div className="section-fade-top" style={{ zIndex: 50 }} />

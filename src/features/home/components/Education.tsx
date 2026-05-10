@@ -74,10 +74,10 @@ const BentoCard = ({ item, index }: { item: typeof educationData[0], index: numb
         className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
         style={{ background: spotlightBg, opacity: hovered ? 1 : 0 }}
       />
-      
+
       {/* Top accent line */}
-      <div 
-        className="absolute top-0 left-0 right-0 h-[2px] opacity-50" 
+      <div
+        className="absolute top-0 left-0 right-0 h-[2px] opacity-50"
         style={{ background: `linear-gradient(90deg, hsla(${item.color}, 1), transparent)` }}
       />
 
@@ -108,7 +108,7 @@ const BentoCard = ({ item, index }: { item: typeof educationData[0], index: numb
 
         <div className="flex flex-wrap gap-2 mt-auto">
           {item.highlights.map(highlight => (
-            <span 
+            <span
               key={highlight}
               className="font-mono text-[10px] uppercase tracking-widest text-foreground/50 border border-white/10 rounded-full px-3 py-1.5 bg-white/5"
             >
@@ -139,22 +139,26 @@ const Education = () => {
         <motion.img
           key={isDark ? 'dark' : 'light'}
           initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: isDark ? 0.55 : 0.45, x: 0 }}
+          animate={{ opacity: isDark ? 0.8 : 0.7, x: 0 }} // ⬆️ Increased for visibility
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           src={isDark ? educationDark : educationWhite}
           alt="Education Background"
           loading="lazy"
           decoding="async"
           className="h-full w-full object-cover object-left"
-          style={{ mixBlendMode: isDark ? 'screen' : 'multiply', willChange: 'opacity, transform' }}
+          style={{
+            mixBlendMode: 'normal', // ⬇️ Removed screen/multiply to stop color washout
+            willChange: 'opacity, transform',
+            filter: 'brightness(1.05) contrast(1.05)' // ✅ Brings out details safely
+          }}
         />
-        {/* Soft fade gradients - Fading from the right so the character on the left remains visible */}
+        {/* Your exact fades - kept intact */}
         <div className="absolute inset-0 bg-gradient-to-l from-background via-background/40 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8">
-        
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
