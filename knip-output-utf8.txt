@@ -1,0 +1,136 @@
+﻿Unused files (65)
+config/eslint.config.js                                      
+config/playwright.config.ts                                  
+config/postcss.config.js                                     
+config/vitest.config.ts                                      
+playwright-fixture.ts                                        
+skills/skills/algorithmic-art/templates/generator_template.js
+src/components/animations/ScrollImageSequence.tsx            
+src/components/CircularGallery.css                           
+src/components/CircularGallery.tsx                           
+src/components/common/index.ts                               
+src/components/common/NavLink.tsx                            
+src/components/layout/index.ts                               
+src/components/ui/accordion.tsx                              
+src/components/ui/alert-dialog.tsx                           
+src/components/ui/alert.tsx                                  
+src/components/ui/aspect-ratio.tsx                           
+src/components/ui/avatar.tsx                                 
+src/components/ui/breadcrumb.tsx                             
+src/components/ui/calendar.tsx                               
+src/components/ui/carousel.tsx                               
+src/components/ui/chart.tsx                                  
+src/components/ui/checkbox.tsx                               
+src/components/ui/collapsible.tsx                            
+src/components/ui/command.tsx                                
+src/components/ui/context-menu.tsx                           
+src/components/ui/dialog.tsx                                 
+src/components/ui/drawer.tsx                                 
+src/components/ui/dropdown-menu.tsx                          
+src/components/ui/form.tsx                                   
+src/components/ui/hover-card.tsx                             
+src/components/ui/index.ts                                   
+src/components/ui/input-otp.tsx                              
+src/components/ui/marquee.tsx                                
+src/components/ui/menubar.tsx                                
+src/components/ui/navigation-menu.tsx                        
+src/components/ui/pagination.tsx                             
+src/components/ui/popover.tsx                                
+src/components/ui/progress.tsx                               
+src/components/ui/radio-group.tsx                            
+src/components/ui/resizable.tsx                              
+src/components/ui/scroll-area.tsx                            
+src/components/ui/ScrollReveal.css                           
+src/components/ui/ScrollReveal.tsx                           
+src/components/ui/select.tsx                                 
+src/components/ui/separator.tsx                              
+src/components/ui/sheet.tsx                                  
+src/components/ui/sidebar.tsx                                
+src/components/ui/skeleton.tsx                               
+src/components/ui/slider.tsx                                 
+src/components/ui/sonner.tsx                                 
+src/components/ui/table.tsx                                  
+src/components/ui/tabs.tsx                                   
+src/components/ui/toast.tsx                                  
+src/components/ui/toaster.tsx                                
+src/components/ui/toggle-group.tsx                           
+src/components/ui/toggle.tsx                                 
+src/components/ui/tracing-beam.tsx                           
+src/components/ui/use-toast.ts                               
+src/features/home/components/ArchDiagram.tsx                 
+src/features/home/components/SystemPillars.tsx               
+src/hooks/index.ts                                           
+src/hooks/use-mobile.tsx                                     
+src/hooks/use-toast.ts                                       
+src/lib/index.ts                                             
+src/styles/App.css                                           
+Unused dependencies (36)
+@radix-ui/react-accordion        package.json:17:6
+@radix-ui/react-alert-dialog     package.json:18:6
+@radix-ui/react-aspect-ratio     package.json:19:6
+@radix-ui/react-avatar           package.json:20:6
+@radix-ui/react-checkbox         package.json:21:6
+@radix-ui/react-collapsible      package.json:22:6
+@radix-ui/react-context-menu     package.json:23:6
+@radix-ui/react-dialog           package.json:24:6
+@radix-ui/react-dropdown-menu    package.json:25:6
+@radix-ui/react-hover-card       package.json:26:6
+@radix-ui/react-icons            package.json:27:6
+@radix-ui/react-menubar          package.json:29:6
+@radix-ui/react-navigation-menu  package.json:30:6
+@radix-ui/react-popover          package.json:31:6
+@radix-ui/react-progress         package.json:32:6
+@radix-ui/react-radio-group      package.json:33:6
+@radix-ui/react-scroll-area      package.json:34:6
+@radix-ui/react-select           package.json:35:6
+@radix-ui/react-separator        package.json:36:6
+@radix-ui/react-slider           package.json:37:6
+@radix-ui/react-tabs             package.json:40:6
+@radix-ui/react-toast            package.json:41:6
+@radix-ui/react-toggle           package.json:42:6
+@radix-ui/react-toggle-group     package.json:43:6
+@types/d3                        package.json:49:6
+cmdk                             package.json:53:6
+d3                               package.json:54:6
+date-fns                         package.json:55:6
+embla-carousel-react             package.json:56:6
+input-otp                        package.json:59:6
+next-themes                      package.json:63:6
+react-day-picker                 package.json:67:6
+react-resizable-panels           package.json:71:6
+recharts                         package.json:73:6
+sonner                           package.json:74:6
+vaul                             package.json:78:6
+Unused devDependencies (8)
+@eslint/js                   package.json:82:6 
+@tailwindcss/typography      package.json:84:6 
+@testing-library/jest-dom    package.json:85:6 
+@testing-library/react       package.json:86:6 
+eslint-plugin-react-hooks    package.json:93:6 
+eslint-plugin-react-refresh  package.json:94:6 
+globals                      package.json:95:6 
+typescript-eslint            package.json:101:6
+Unused exports (18)
+badgeVariants                     src/components/ui/badge.tsx:52:17                        
+buttonVariants                    src/components/ui/button.tsx:47:18                       
+CardDescription                   src/components/ui/card.tsx:43:51                         
+Tooltip                           src/components/ui/tooltip.tsx:28:10                      
+TooltipTrigger                    src/components/ui/tooltip.tsx:28:19                      
+TooltipContent                    src/components/ui/tooltip.tsx:28:35                      
+portfolioKnowledge                src/features/agent/data/knowledge-base.ts:16:14          
+useChat                           src/features/agent/index.ts:3:10                         
+searchPortfolio                   src/features/agent/index.ts:4:10                         
+buildPortfolioContext             src/features/agent/index.ts:4:27                         
+getByCategory                     src/features/agent/index.ts:4:50                         
+getFollowUpSuggestions            src/features/agent/index.ts:4:65                         
+CR                                src/features/home/components/TechStack/constants.ts:3:14 
+GD                                src/features/home/components/TechStack/constants.ts:4:14 
+CRP                               src/features/home/components/TechStack/constants.ts:5:14 
+GDP                               src/features/home/components/TechStack/constants.ts:6:14 
+rm                                src/features/home/components/TechStack/constants.ts:15:14
+injectArticleSchema     function  src/lib/seo.ts:130:17                                    
+Unused exported types (4)
+BadgeProps     interface  src/components/ui/badge.tsx:35:18  
+ButtonProps    interface  src/components/ui/button.tsx:33:18 
+TextareaProps  interface  src/components/ui/textarea.tsx:5:18
+ChatMessage    type       src/features/agent/index.ts:5:15   
