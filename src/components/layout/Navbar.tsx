@@ -40,11 +40,11 @@ const Navbar = () => {
     // Use a small timeout to ensure all components are mounted and have their IDs
     const timer = setTimeout(() => {
       // We observe multiple thresholds so we get updates as elements move through the viewport
-      const options = { 
+      const options = {
         threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-        rootMargin: "-10% 0px -40% 0px" 
+        rootMargin: "-10% 0px -40% 0px"
       };
-      
+
       let maxRatio = 0;
       let currentActive = 'home';
       let visibleSections = new Map();

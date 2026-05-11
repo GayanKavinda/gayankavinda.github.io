@@ -10,8 +10,8 @@ import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
 import { Textarea } from '@components/ui/textarea';
 
-import yujiDark from '@assets/images/contact/Yuji_Itadori_dark.jpeg';
-import yujiWhite from '@assets/images/contact/Yuji_Itadori_white.jpeg';
+import yujiDark from '@assets/images/contact/Yuji_Itadori_dark.webp';
+import yujiWhite from '@assets/images/contact/Yuji_Itadori_white.webp';
 
 import { useTheme } from '@app/providers/theme-provider';
 import { useForm, Controller } from 'react-hook-form';

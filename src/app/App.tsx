@@ -57,28 +57,28 @@ const App = () => (
     <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          {/* <PreLoader> */}
-          <CustomCursor />
-          <BrowserRouter
-            future={{
-              v7_startTransition: true,
-              v7_relativeSplatPath: true,
-            }}
-          >
-            <ScrollToTop />
-            <Suspense fallback={
-              <div className="fixed inset-0 bg-neutral-50 dark:bg-neutral-950 flex items-center justify-center z-[9999]">
-                <div className="w-12 h-[1px] bg-gold animate-pulse" />
-              </div>
-            }>
-              <AnimatedRoutes />
-            </Suspense>
+          <PreLoader>
+            <CustomCursor />
+            <BrowserRouter
+              future={{
+                v7_startTransition: true,
+                v7_relativeSplatPath: true,
+              }}
+            >
+              <ScrollToTop />
+              <Suspense fallback={
+                <div className="fixed inset-0 bg-neutral-50 dark:bg-neutral-950 flex items-center justify-center z-[9999]">
+                  <div className="w-12 h-[1px] bg-gold animate-pulse" />
+                </div>
+              }>
+                <AnimatedRoutes />
+              </Suspense>
 
-            {/* Portfolio Agent - Chatbot */}
-            <ChatBot />
-            <CacheConsent />
-          </BrowserRouter>
-          {/* </PreLoader> */}
+              {/* Portfolio Agent - Chatbot */}
+              <ChatBot />
+              <CacheConsent />
+            </BrowserRouter>
+          </PreLoader>
         </TooltipProvider>
       </QueryClientProvider>
     </ReactLenis>

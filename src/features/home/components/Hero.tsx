@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
-import lightHeroImg from '@assets/images/hero/whitemode_2.jpeg';
-import darkHeroImg from '@assets/images/hero/darkmode.png';
+import lightHeroImg from '@assets/images/hero/whitemode_2.webp';
+import darkHeroImg from '@assets/images/hero/darkmode.webp';
 import Magnetic from '@components/animations/Magnetic';
 
 // ── Per-character split ───────────────────────────────────────────────────────

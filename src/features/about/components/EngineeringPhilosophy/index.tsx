@@ -1,8 +1,8 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
-import nezukoDark from '@assets/images/philosophy/Nezuko_Kamado_dark.jpeg';
-import nezukoWhite from '@assets/images/philosophy/Nezuko_Kamado_white.jpeg';
+import nezukoDark from '@assets/images/philosophy/Nezuko_Kamado_dark.webp';
+import nezukoWhite from '@assets/images/philosophy/Nezuko_Kamado_white.webp';
 import { ObservabilityMockup } from './mockups/ObservabilityMockup';
 import { SimplicityMockup } from './mockups/SimplicityMockup';
 import { TestingMockup } from './mockups/TestingMockup';

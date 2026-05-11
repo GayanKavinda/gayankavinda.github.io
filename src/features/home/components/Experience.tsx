@@ -6,8 +6,8 @@ import { Badge } from '@components/ui/badge';
 import { useTheme } from '@app/providers/theme-provider';
 
 // Asset imports
-import yutaDark from '@assets/images/experience/yuta-dark.jpeg';
-import yutaWhite from '@assets/images/experience/yuta-white.jpeg';
+import yutaDark from '@assets/images/experience/yuta-dark.webp';
+import yutaWhite from '@assets/images/experience/yuta-white.webp';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 

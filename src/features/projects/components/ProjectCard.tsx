@@ -33,7 +33,7 @@ export const ProjectCard = React.memo(({ project, index }: ProjectCardProps) => 
   const navigate = useNavigate();
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
-  const { resolvedTheme } = useTheme();
+  const { theme } = useTheme();
 
   // Mouse position for spotlight
   const mouseX = useMotionValue(0);
@@ -49,10 +49,10 @@ export const ProjectCard = React.memo(({ project, index }: ProjectCardProps) => 
   // Spotlight color based on theme and project accent
   const spotlightColor = useMemo(
     () =>
-      resolvedTheme === 'dark'
+      theme === 'dark'
         ? `hsla(${project.accentColor ?? '0'}, 60%, 70%, 0.12)`
         : `hsla(${project.accentColor ?? '0'}, 60%, 40%, 0.08)`,
-    [resolvedTheme, project.accentColor],
+    [theme, project.accentColor],
   );
 
   const spotlightBg = useMotionTemplate`radial-gradient(450px circle at ${mouseX}px ${mouseY}px, ${spotlightColor}, transparent 40%)`;

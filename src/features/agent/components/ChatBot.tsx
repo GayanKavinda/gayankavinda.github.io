@@ -6,11 +6,17 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { useChat } from '../hooks/useChat';
 import type { ChatMessage } from '../services/ai-service';
-import JujutsuKaisenLogo from '../../../assets/logos/Jujutsu_Kaisen-removebg-preview.png';
+import { useTheme } from '@/app/providers/theme-provider';
+import GojoLogo from '../../../assets/logos/Jujutsu_Kaisen-removebg-preview.webp';
+import InosukeLogo from '../../../assets/logos/Demon_Slayer_Inosuke_Wild_Mask_Sticker-removebg-preview.webp';
 
-const RobotIcon = ({ size = 24 }: { size?: number }) => (
-  <img src={JujutsuKaisenLogo} alt="Avatar" style={{ width: size, height: size }} className="object-contain drop-shadow-sm" />
-);
+const RobotIcon = ({ size = 24 }: { size?: number }) => {
+  const { theme } = useTheme();
+  const currentLogo = theme === 'dark' ? GojoLogo : InosukeLogo;
+  return (
+    <img src={currentLogo} alt="Avatar" style={{ width: size, height: size }} className="object-contain drop-shadow-sm" />
+  );
+};
 
 const Ic = ({ path, size = 15, className = '', sw = 1.75, style }: {
   path: string | string[]; size?: number; className?: string; sw?: number; style?: React.CSSProperties;
@@ -300,6 +306,9 @@ const TypingDots = () => (
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 
 const ChatBot: React.FC = () => {
+  const { theme } = useTheme();
+  const currentLogo = theme === 'dark' ? GojoLogo : InosukeLogo;
+
   const {
     messages, isLoading, isOpen, inputValue, suggestions, messagesEndRef,
     soundEnabled, unreadCount,
@@ -362,7 +371,8 @@ const ChatBot: React.FC = () => {
 
 
       {/* ── FAB ── */}
-      <button onClick={toggleChat} aria-label="Toggle AI Agent" className="fixed bottom-6 right-6 sm:right-8 z-[9990] flex items-center justify-center group"
+      <button onClick={toggleChat} aria-label="Toggle AI Agent" 
+        className="fixed bottom-6 right-6 sm:right-8 z-[9990] flex items-center justify-center group"
         style={{
           width: isOpen ? '52px' : 'auto',
           height: isOpen ? '52px' : 'auto',
@@ -381,7 +391,7 @@ const ChatBot: React.FC = () => {
 
         {isOpen
           ? <Ic path={P.x} size={16} sw={2.4} style={{ color: 'var(--gy-bot-text, #111827)' }} />
-          : <img src={JujutsuKaisenLogo} alt="ChatBot Logo" className="w-[72px] h-[72px] sm:w-[84px] sm:h-[84px] object-contain" style={{ filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.25))' }} />}
+          : <img src={currentLogo} alt="ChatBot Logo" className="w-[72px] h-[72px] sm:w-[84px] sm:h-[84px] object-contain" style={{ filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.25))' }} />}
 
         {unreadCount > 0 && !isOpen && (
           <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full
@@ -404,7 +414,7 @@ const ChatBot: React.FC = () => {
 
       {isOpen && (
         <div
-          className={`fixed z-[9989] ${mobile ? 'bottom-0 left-0 right-0' : 'bottom-[78px] right-5 sm:right-6'}`}
+          className={`fixed z-[9989] ${mobile ? 'bottom-[92px] left-4 right-4' : 'bottom-[92px] right-5 sm:right-8'}`}
           style={{
             width: mobile ? '100%' : `${size.w}px`,
             maxWidth: mobile ? '100%' : 'calc(100vw - 32px)',
@@ -415,7 +425,7 @@ const ChatBot: React.FC = () => {
         >
           <div className={`relative flex flex-col overflow-hidden gy-panel-bg
             ${mobile ? 'rounded-t-[24px]' : 'rounded-[20px]'}`}
-            style={{ height: mobile ? '85vh' : `${size.h}px`, maxHeight: mobile ? '85vh' : 'calc(100vh - 108px)' }}>
+            style={{ height: mobile ? 'min(600px, 70vh)' : `${size.h}px`, maxHeight: mobile ? '70vh' : 'calc(100vh - 120px)' }}>
 
             {!mobile && <div className="gy-resize" onMouseDown={onMouseDown} />}
 
