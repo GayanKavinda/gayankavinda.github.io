@@ -530,7 +530,7 @@ const ProjectDetail = () => {
   }, [previewIndex, galleryImages.length]);
 
   return (
-    <div ref={pageRef} className="min-h-screen relative overflow-x-hidden" style={{ background: isDark ? '#0a0a0a' : '#fafafa' }}>
+    <div ref={pageRef} className="min-h-[100dvh] relative overflow-x-hidden" style={{ background: isDark ? '#0a0a0a' : '#fafafa' }}>
       {!reducedMotion && !isTouch && <MagneticCursor />}
       <Navbar />
 

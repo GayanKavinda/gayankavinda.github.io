@@ -133,7 +133,7 @@ const Hero = () => {
   return (
     <section
       ref={heroRef}
-      className="relative h-screen w-full overflow-hidden"
+      className="relative h-[100dvh] w-full overflow-hidden"
       aria-label="Hero section"
     >
       {/* ── Background Image ────────────────────────────────────────────────── */}

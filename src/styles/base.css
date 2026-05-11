@@ -152,7 +152,8 @@
       @apply bg-background text-foreground;
       font-family: 'Instrument Sans', sans-serif;
       cursor: none;
-      overflow-x: hidden;
+      min-height: 100dvh;
+      overflow-x: clip;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -201,6 +202,7 @@
   /* Smooth scrolling - UI/UX Pro Max recommendation */
   html {
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
   }
 
   /* Marquee animations */

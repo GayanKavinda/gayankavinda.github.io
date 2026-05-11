@@ -56,7 +56,7 @@ export const Now = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100dvh] bg-background">
       <Navbar />
       <div className="pt-28 md:pt-36 pb-24 max-w-[720px] mx-auto px-6 md:px-10">
 
@@ -202,7 +202,7 @@ export const Uses = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100dvh] bg-background">
       <Navbar />
       <div className="pt-28 md:pt-36 pb-24 max-w-[860px] mx-auto px-6 md:px-10">
 

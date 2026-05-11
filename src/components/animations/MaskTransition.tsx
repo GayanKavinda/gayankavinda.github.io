@@ -329,7 +329,7 @@ export default function MaskTransition() {
   return (
     <div ref={containerRef} style={{ height: "450vh" }}>
       <div
-        className="sticky top-0 h-screen overflow-hidden relative"
+        className="sticky top-0 h-[100dvh] overflow-hidden relative"
         style={{ background: isDark ? "#000000" : "#FFFFFF" }}
       >
 

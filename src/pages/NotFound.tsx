@@ -10,7 +10,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background relative overflow-hidden">
+    <div className="flex min-h-[100dvh] items-center justify-center bg-background relative overflow-hidden">
       {/* Design accents */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]" 
         style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '32px 32px' }} />
