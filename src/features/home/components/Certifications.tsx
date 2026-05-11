@@ -4,8 +4,8 @@ import { useTheme } from '@app/providers/theme-provider';
 import { Cloud, Server, Database, Layers, ExternalLink } from 'lucide-react';
 
 // Asset imports
-import certDark from '@assets/images/certifications/akaza-darkmode.jpeg';
-import certWhite from '@assets/images/certifications/tanjiro-whitemode.jpeg';
+import certDark from '@assets/images/certifications/akaza-darkmode-New.webp';
+import certWhite from '@assets/images/certifications/tanjiro-whitemode-New.webp';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -149,21 +149,25 @@ const Certifications = () => {
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }}
     >
       {/* Background Artwork */}
-      <div className="absolute inset-y-0 right-0 w-full lg:w-[85%] pointer-events-none z-0 overflow-hidden">
+      <div className="absolute inset-y-0 left-0 w-full pointer-events-none z-0 overflow-hidden">
         <motion.img
           key={isDark ? 'dark' : 'light'}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: isDark ? 0.55 : 0.45, x: 0 }}
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: isDark ? 0.95 : 0.85, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           src={isDark ? certDark : certWhite}
           alt="Certifications Background"
           loading="lazy"
           decoding="async"
-          className="h-full w-full object-cover object-right"
-          style={{ mixBlendMode: isDark ? 'screen' : 'multiply', willChange: 'opacity, transform' }}
+          className="h-full w-full object-cover object-left lg:object-[10%_center]"
+          style={{ 
+            mixBlendMode: 'normal', 
+            willChange: 'opacity, transform',
+            filter: 'brightness(1.2) contrast(1.2)'
+          }}
         />
-        {/* Soft fade gradients - Fading from the left so the character on the right remains visible */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
+        {/* Soft edge fade: blend from content area into the character */}
+        <div className="absolute inset-0 bg-gradient-to-l from-background via-background/10 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
       </div>
 

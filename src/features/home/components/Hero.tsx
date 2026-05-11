@@ -142,11 +142,13 @@ const Hero = () => {
           src={lightHeroImg} alt="" aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover object-[75%_center] sm:object-center transition-opacity duration-1000"
           style={{ opacity: isDark ? 0 : 1, filter: c.vidFilter }}
+          loading="eager"
         />
         <img
           src={darkHeroImg} alt="" aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover object-[75%_center] sm:object-center transition-opacity duration-1000"
           style={{ opacity: isDark ? 1 : 0, filter: c.vidFilter }}
+          loading="eager"
         />
         {/* Depth vignette — pulls focus to content */}
         <div
@@ -207,7 +209,7 @@ const Hero = () => {
           <h1
             className="select-none uppercase font-winner overflow-hidden"
             style={{
-              fontSize: 'clamp(44px, 9.5vw, 96px)',
+              fontSize: 'clamp(40px, 9.5vw, 96px)',
               lineHeight: 0.88,
               color: c.name,
               letterSpacing: '0.05em',

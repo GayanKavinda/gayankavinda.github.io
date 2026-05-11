@@ -44,17 +44,15 @@ const Home = () => {
         <Hero />
       </div>
 
+      <About />
+      <Experience />
       <MaskTransition />
       <Projects />
+      <EngineeringPhilosophy />
       <TechStack />
 
-
-
-      <Experience />
       <Education />
       <Certifications />
-      <About />
-      <EngineeringPhilosophy />
 
       <Contact />
       <Footer />

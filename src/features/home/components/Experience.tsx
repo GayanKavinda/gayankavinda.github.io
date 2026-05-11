@@ -408,7 +408,7 @@ const Experience = () => {
 
             {/* Stats row */}
             <motion.div
-              className="flex gap-8"
+              className="flex flex-wrap gap-x-8 gap-y-4"
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

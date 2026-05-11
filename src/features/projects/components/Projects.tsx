@@ -9,8 +9,8 @@ import { allProjects } from '../data/projectData';
 import { ProjectViz } from './ProjectViz';
 import { Project } from '../types';
 import { useTheme } from '@app/providers/theme-provider';
-import bgDark from '@assets/images/selected-projects/dark.jpeg';
-import bgWhite from '@assets/images/selected-projects/white.png';
+import bgDark from '@assets/images/selected-projects/gojo-dark-left.webp';
+import bgWhite from '@assets/images/selected-projects/gojo-white-left.webp';
 
 const CLIP_BTN = 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)';
 
@@ -147,19 +147,20 @@ const Projects = () => {
       }}
     >
       {/* Background Image - Gojo */}
-      <div className="absolute inset-y-0 right-0 w-full md:w-3/4 pointer-events-none z-0 overflow-hidden">
+      <div className="absolute inset-y-0 left-0 w-full md:w-[85%] pointer-events-none z-0 overflow-hidden">
         <motion.img
           key={isDark ? 'dark' : 'light'}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: isDark ? 0.55 : 0.45, x: 0 }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: isDark ? 0.7 : 0.6, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           src={isDark ? bgDark : bgWhite}
-          alt=""
-          className="h-full w-full object-cover object-right"
+          alt="Gojo Background"
+          className="h-full w-full object-cover object-left"
           style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
         />
-        {/* Soft edge fade: fade out the left edge to blend with the background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
+        {/* Soft edge fade: blend from the left towards the center */}
+        <div className="absolute inset-0 bg-gradient-to-l from-background via-background/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
       </div>
 
       {/* Header */}

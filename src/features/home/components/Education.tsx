@@ -4,8 +4,8 @@ import { Badge } from '@components/ui/badge';
 import { useTheme } from '@app/providers/theme-provider';
 
 // Asset imports
-import educationDark from '@assets/images/education/Kukushibo-darkmode.jpeg';
-import educationWhite from '@assets/images/education/Yorichi-whitemode.jpeg';
+import educationDark from '@assets/images/education/Kukushibo-darkmode-right-New.webp';
+import educationWhite from '@assets/images/education/Yorichi-white-mode-right-New.webp';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -136,25 +136,25 @@ const Education = () => {
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 600px' }}
     >
       {/* Background Artwork */}
-      <div className="absolute inset-y-0 left-0 w-full lg:w-[85%] pointer-events-none z-0 overflow-hidden">
+      <div className="absolute inset-y-0 right-0 w-full lg:w-[85%] pointer-events-none z-0 overflow-hidden">
         <motion.img
           key={isDark ? 'dark' : 'light'}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: isDark ? 0.8 : 0.7, x: 0 }} // ⬆️ Increased for visibility
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: isDark ? 0.8 : 0.7, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           src={isDark ? educationDark : educationWhite}
           alt="Education Background"
           loading="lazy"
           decoding="async"
-          className="h-full w-full object-cover object-left"
+          className="h-full w-full object-cover object-right"
           style={{
-            mixBlendMode: 'normal', // ⬇️ Removed screen/multiply to stop color washout
+            mixBlendMode: 'normal',
             willChange: 'opacity, transform',
-            filter: 'brightness(1.05) contrast(1.05)' // ✅ Brings out details safely
+            filter: 'brightness(1.1) contrast(1.1)' 
           }}
         />
-        {/* Your exact fades - kept intact */}
-        <div className="absolute inset-0 bg-gradient-to-l from-background via-background/40 to-transparent" />
+        {/* Soft edge fade: blend from right to left */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
       </div>
 

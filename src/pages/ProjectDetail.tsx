@@ -215,7 +215,7 @@ const StreamingArchitecture = ({ components, description }: {
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-foreground/10 mb-6">
           <span className="text-[10px] font-mono tracking-widest text-crimson font-bold uppercase">Technical Schema</span>
         </div>
-        <h3 className="text-4xl font-light tracking-tight" style={{ textWrap: 'balance' }}>{description}</h3>
+        <h3 className="text-3xl md:text-4xl font-light tracking-tight" style={{ textWrap: 'balance' }}>{description}</h3>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8">
@@ -225,7 +225,7 @@ const StreamingArchitecture = ({ components, description }: {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className={`group p-8 rounded-3xl border transition-[transform,border-color,box-shadow,background-color] duration-500 hover:-translate-y-1 ${isDark ? 'border-foreground/10 hover:border-foreground/20' : 'border-foreground/10 bg-foreground/[0.01] hover:border-foreground/15 shadow-sm hover:shadow-md'}`}
+            className={`group p-6 md:p-8 rounded-3xl border transition-[transform,border-color,box-shadow,background-color] duration-500 hover:-translate-y-1 ${isDark ? 'border-foreground/10 hover:border-foreground/20' : 'border-foreground/10 bg-foreground/[0.01] hover:border-foreground/15 shadow-sm hover:shadow-md'}`}
           >
             <div className={`w-1.5 h-1.5 rounded-full mb-6 transition-all group-hover:scale-125 ${isDark ? 'bg-white' : 'bg-foreground/40'}`} />
             <h4 className="text-xl font-medium mb-3 tracking-tight">{comp.name}</h4>

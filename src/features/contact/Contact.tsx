@@ -71,13 +71,15 @@ function ChipGroup({
   withIcon?: boolean;
 }) {
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={withIcon ? "Select topic" : "Select timeline"}>
       {options.map((o) => {
         const active = selected === o.id;
         return (
           <button
             key={o.id}
             type="button"
+            role="radio"
+            aria-checked={active}
             onClick={() => onChange(o.id)}
             className="font-sans text-[11px] px-3 py-1.5 rounded-lg transition-all duration-150 cursor-pointer select-none"
             style={{
