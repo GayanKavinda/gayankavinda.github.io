@@ -28,9 +28,13 @@
     <!-- Canonical -->
     <link rel="canonical" href="https://gayankavinda.github.io/" />
 
-    <!-- Preconnect to Google Fonts (already loaded in index.css) -->
+    <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Critical Background Preloads - Ensures these load before JS execution -->
+    <link rel="preload" as="image" href="/src/assets/images/hero/darkmode.png" />
+    <link rel="preload" as="image" href="/src/assets/images/hero/whitemode_2.jpeg" />
   </head>
 
   <body>

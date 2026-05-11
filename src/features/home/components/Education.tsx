@@ -2,6 +2,7 @@ import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import React, { useRef, useState } from 'react';
 import { Badge } from '@components/ui/badge';
 import { useTheme } from '@app/providers/theme-provider';
+import { useImageLoader } from '@hooks/useImageLoader';
 
 // Asset imports
 import educationDark from '@assets/images/education/Kukushibo-darkmode-right-New.webp';
@@ -128,6 +129,9 @@ const Education = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
+  const bgSrc = isDark ? educationDark : educationWhite;
+  const { isLoaded } = useImageLoader(bgSrc);
+
   return (
     <section
       id="education"
@@ -136,13 +140,13 @@ const Education = () => {
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 600px' }}
     >
       {/* Background Artwork */}
-      <div className="absolute inset-y-0 right-0 w-full lg:w-[85%] pointer-events-none z-0 overflow-hidden">
+      <div className="absolute inset-y-0 right-0 w-full pointer-events-none z-0 overflow-hidden">
         <motion.img
-          key={isDark ? 'dark' : 'light'}
+          key={bgSrc}
           initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: isDark ? 0.8 : 0.7, x: 0 }}
+          animate={{ opacity: isLoaded ? (isDark ? 0.8 : 0.7) : 0, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          src={isDark ? educationDark : educationWhite}
+          src={bgSrc}
           alt="Education Background"
           loading="lazy"
           decoding="async"

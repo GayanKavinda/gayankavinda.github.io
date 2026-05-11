@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import bgDark from '@assets/images/about/nobara-dark.jpeg';
 import bgWhite from '@assets/images/about/nobara-white.jpeg';
 import { useTheme } from '@app/providers/theme-provider';
+import { useImageLoader } from '@hooks/useImageLoader';
 
 // Impact-driven stats
 const stats = [
@@ -17,11 +18,13 @@ const stats = [
   { num: '50+',  label: 'PROJECTS', sub: 'Shipped'          },
   { num: '12+',  label: 'SYSTEMS',  sub: 'Architected'      },
 ];
-
 const About = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { theme }  = useTheme();
   const isDark     = theme === 'dark';
+
+  const bgSrc = isDark ? bgDark : bgWhite;
+  const { isLoaded } = useImageLoader(bgSrc);
 
   return (
     <section 
@@ -33,11 +36,11 @@ const About = () => {
       {/* Background Image - Nobara */}
       <div className="absolute inset-y-0 right-0 w-full md:w-[90%] pointer-events-none z-0 overflow-hidden">
         <motion.img
-          key={isDark ? 'dark' : 'light'}
+          key={bgSrc}
           initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
+          animate={{ opacity: isLoaded ? 1 : 0, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          src={isDark ? bgDark : bgWhite}
+          src={bgSrc}
           alt=""
           className="h-full w-full object-cover object-center md:object-right"
           style={{ mixBlendMode: isDark ? 'lighten' : 'darken' }}

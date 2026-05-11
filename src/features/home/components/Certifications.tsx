@@ -1,6 +1,7 @@
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import React, { useRef, useState } from 'react';
 import { useTheme } from '@app/providers/theme-provider';
+import { useImageLoader } from '@hooks/useImageLoader';
 import { Cloud, Server, Database, Layers, ExternalLink } from 'lucide-react';
 
 // Asset imports
@@ -141,6 +142,9 @@ const Certifications = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
+  const bgSrc = isDark ? certDark : certWhite;
+  const { isLoaded } = useImageLoader(bgSrc);
+
   return (
     <section
       id="certifications"
@@ -151,11 +155,11 @@ const Certifications = () => {
       {/* Background Artwork */}
       <div className="absolute inset-y-0 left-0 w-full pointer-events-none z-0 overflow-hidden">
         <motion.img
-          key={isDark ? 'dark' : 'light'}
+          key={bgSrc}
           initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: isDark ? 0.95 : 0.85, x: 0 }}
+          animate={{ opacity: isLoaded ? (isDark ? 0.95 : 0.85) : 0, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          src={isDark ? certDark : certWhite}
+          src={bgSrc}
           alt="Certifications Background"
           loading="lazy"
           decoding="async"

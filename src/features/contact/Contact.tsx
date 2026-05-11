@@ -16,6 +16,8 @@ import yujiWhite from '@assets/images/contact/Yuji_Itadori_white.jpeg';
 import { useTheme } from '@app/providers/theme-provider';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useImageLoader } from '@hooks/useImageLoader';
+import emailjs from '@emailjs/browser';
 import * as z from 'zod';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -295,6 +297,9 @@ const Contact = () => {
   const cardBdr = isDark ? 'hsl(0 0% 100% / 0.09)'     : 'hsl(220 15% 15% / 0.15)';
   const blockBdr= isDark ? 'hsl(0 0% 100% / 0.07)'     : 'hsl(220 15% 15% / 0.08)';
 
+  const bgSrc = isDark ? yujiDark : yujiWhite;
+  const { isLoaded } = useImageLoader(bgSrc);
+
   return (
     <section
       id="contact"
@@ -304,16 +309,16 @@ const Contact = () => {
       {/* Background Artwork */}
       <div className="absolute inset-y-0 left-0 w-full lg:w-[85%] pointer-events-none z-0 overflow-hidden">
         <motion.img
-          key={isDark ? 'dark' : 'light'}
+          key={bgSrc}
           initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: isDark ? 0.7 : 0.6, x: 0 }}
+          animate={{ opacity: isLoaded ? (isDark ? 0.7 : 0.6) : 0, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          src={isDark ? yujiDark : yujiWhite}
+          src={bgSrc}
           alt="Contact Background"
           loading="lazy"
           decoding="async"
           className="h-full w-full object-cover object-left"
-          style={{ mixBlendMode: isDark ? 'screen' : 'multiply', opacity: isDark ? 0.7 : 0.6, willChange: 'opacity, transform' }}
+          style={{ mixBlendMode: isDark ? 'screen' : 'multiply', willChange: 'opacity, transform' }}
         />
         {/* Soft fade gradients */}
         <div className="absolute inset-0 bg-gradient-to-l from-background via-background/20 to-transparent" />

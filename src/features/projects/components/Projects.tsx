@@ -9,6 +9,7 @@ import { allProjects } from '../data/projectData';
 import { ProjectViz } from './ProjectViz';
 import { Project } from '../types';
 import { useTheme } from '@app/providers/theme-provider';
+import { useImageLoader } from '@hooks/useImageLoader';
 import bgDark from '@assets/images/selected-projects/gojo-dark-left.webp';
 import bgWhite from '@assets/images/selected-projects/gojo-white-left.webp';
 
@@ -136,6 +137,9 @@ const Projects = () => {
   const displayProjects = [...allProjects, ...allProjects];
   const totalPx = STRIDE * allProjects.length;
 
+  const bgSrc = isDark ? bgDark : bgWhite;
+  const { isLoaded } = useImageLoader(bgSrc);
+
   return (
     <section
       id="projects"
@@ -147,13 +151,13 @@ const Projects = () => {
       }}
     >
       {/* Background Image - Gojo */}
-      <div className="absolute inset-y-0 left-0 w-full md:w-[85%] pointer-events-none z-0 overflow-hidden">
+      <div className="absolute inset-y-0 left-0 w-full pointer-events-none z-0 overflow-hidden">
         <motion.img
-          key={isDark ? 'dark' : 'light'}
+          key={bgSrc}
           initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: isDark ? 0.7 : 0.6, x: 0 }}
+          animate={{ opacity: isLoaded ? (isDark ? 0.7 : 0.6) : 0, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          src={isDark ? bgDark : bgWhite}
+          src={bgSrc}
           alt="Gojo Background"
           className="h-full w-full object-cover object-left"
           style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
