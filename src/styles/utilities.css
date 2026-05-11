@@ -332,8 +332,17 @@ select:focus-visible {
 /* ── Section Spacing ────────────────────────────────────────────────────── */
 @media (max-width: 767px) {
   section {
-    padding-top: clamp(48px, 10vw, 80px);
-    padding-bottom: clamp(48px, 10vw, 80px);
+    padding-top: clamp(40px, 8vw, 64px);
+    padding-bottom: clamp(40px, 8vw, 64px);
+  }
+
+  /* Utility for mobile-specific background dimming */
+  .mobile-bg-subtle {
+    opacity: 0.3 !important;
+  }
+
+  .mobile-object-center {
+    object-position: center !important;
   }
 
   pre {

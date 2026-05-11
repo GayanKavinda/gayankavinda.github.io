@@ -35,11 +35,11 @@
 
 @keyframes marquee-left {
   0%   { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-33.333%, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
 }
 
 @keyframes marquee-right {
-  0%   { transform: translate3d(-33.333%, 0, 0); }
+  0%   { transform: translate3d(-50%, 0, 0); }
   100% { transform: translate3d(0, 0, 0); }
 }
 
@@ -212,6 +212,11 @@
 /* Marquee */
 .animate-marquee-left  { animation: marquee-left  30s linear infinite; }
 .animate-marquee-right { animation: marquee-right 30s linear infinite; }
+
+@media (max-width: 767px) {
+  .animate-marquee-left  { animation-duration: 12s; }
+  .animate-marquee-right { animation-duration: 12s; }
+}
 
 .marquee-container:hover .animate-marquee-left,
 .marquee-container:hover .animate-marquee-right {

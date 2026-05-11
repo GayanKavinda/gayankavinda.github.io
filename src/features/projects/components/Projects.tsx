@@ -155,15 +155,15 @@ const Projects = () => {
         <motion.img
           key={bgSrc}
           initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: isLoaded ? (isDark ? 0.7 : 0.6) : 0, x: 0 }}
+          animate={{ opacity: isLoaded ? (isDark ? 0.35 : 0.3) : 0, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           src={bgSrc}
-          alt="Gojo Background"
-          className="h-full w-full object-cover object-left"
+          alt=""
+          className="h-full w-full object-cover object-center md:object-left transition-opacity duration-700"
           style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
         />
-        {/* Soft edge fade: blend from the left towards the center */}
-        <div className="absolute inset-0 bg-gradient-to-l from-background via-background/20 to-transparent" />
+        {/* Stronger mobile edge fade */}
+        <div className="absolute inset-0 bg-gradient-to-l from-background/80 md:from-background/20 via-transparent to-background/60 md:to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
       </div>
 

@@ -47,6 +47,18 @@ function ShrineScene({
   const targetCameraPos = useRef(new THREE.Vector3());
   const targetLookAt = useRef(new THREE.Vector3());
   const previousProgress = useRef(0);
+  const scaleFactorRef = useRef(1);
+  const isMobileRef = useRef(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      isMobileRef.current = window.innerWidth < 768;
+      scaleFactorRef.current = isMobileRef.current ? 0.7 : 1;
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     threeScene.fog = null;
@@ -112,19 +124,23 @@ function ShrineScene({
 
     const rotationX = p > 0.7 ? THREE.MathUtils.lerp(0, -0.2, (p - 0.7) / 0.3) : 0;
 
-    const scale =
-      p < 0.4  ? THREE.MathUtils.lerp(4.2, 5, p / 0.4)
-      : p < 0.85 ? 5
-      : THREE.MathUtils.lerp(5, 5.4, (p - 0.85) / 0.15);
+    const scaleFactor = scaleFactorRef.current;
 
+    const targetScale =
+      p < 0.4  ? THREE.MathUtils.lerp(4.2 * scaleFactor, 5 * scaleFactor, p / 0.4)
+      : p < 0.85 ? 5 * scaleFactor
+      : THREE.MathUtils.lerp(5 * scaleFactor, 5.4 * scaleFactor, (p - 0.85) / 0.15);
+
+    // Smoothly lerp to target scale to avoid any jumps
+    groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.1));
     groupRef.current.position.y = positionY;
     groupRef.current.rotation.y = rotationY;
     groupRef.current.rotation.x = rotationX;
-    groupRef.current.scale.set(scale, scale, scale);
 
+    const radiusFactor = isMobileRef.current ? 1.15 : 1;
     const radius =
-      p < 0.5 ? THREE.MathUtils.lerp(13, 10, p / 0.5)
-      : THREE.MathUtils.lerp(10, 9, (p - 0.5) / 0.5);
+      (p < 0.5 ? THREE.MathUtils.lerp(13, 10, p / 0.5)
+      : THREE.MathUtils.lerp(10, 9, (p - 0.5) / 0.5)) * radiusFactor;
 
     const azimuth = THREE.MathUtils.lerp(0, Math.PI * 1.3, p);
     const polar   = THREE.MathUtils.lerp(Math.PI * 0.4, Math.PI * 0.58, p);
@@ -308,11 +324,13 @@ export default function MaskTransition() {
   const h1Style: React.CSSProperties = {
     fontFamily: "Instrument Serif",
     fontStyle: "italic",
-    fontSize: "clamp(1.8rem, 3.2vw, 3.6rem)",
-    lineHeight: 1.1,
+    fontSize: "clamp(1.4rem, 3.2vw, 3.6rem)",
+    lineHeight: 1.2,
     letterSpacing: "-0.02em",
     color: fg,
     margin: 0,
+    width: "90vw",
+    maxWidth: "460px",
   };
 
   /* Chapter label style — DM Mono, tiny */
@@ -349,13 +367,12 @@ export default function MaskTransition() {
               transform: "translate(-50%, -50%)",
               fontFamily: "Instrument Serif",
               fontStyle: "italic",
-              fontSize: "clamp(7rem, 18vw, 20rem)",
+              fontSize: "clamp(4rem, 18vw, 20rem)",
               fontWeight: 400,
               letterSpacing: "-0.04em",
               lineHeight: 1,
               color: fg,
               opacity: 0,
-              whiteSpace: "nowrap",
               willChange: "transform, opacity",
               userSelect: "none",
             }}
@@ -372,7 +389,7 @@ export default function MaskTransition() {
               bottom: "10%",
               right: "6%",
               fontFamily: "serif",
-              fontSize: "clamp(5rem, 12vw, 14rem)",
+              fontSize: "clamp(4rem, 12vw, 14rem)",
               fontWeight: 900,
               color: fg,
               opacity: 0,
@@ -395,7 +412,6 @@ export default function MaskTransition() {
               textAlign: "center",
               opacity: 0,
               willChange: "transform, opacity",
-              whiteSpace: "nowrap",
             }}
           >
             <span style={labelStyle}>— i —</span>
@@ -417,7 +433,6 @@ export default function MaskTransition() {
               textAlign: "left",
               opacity: 0,
               willChange: "transform, opacity",
-              whiteSpace: "nowrap",
             }}
           >
             <span style={labelStyle}>— ii —</span>
@@ -438,7 +453,6 @@ export default function MaskTransition() {
               textAlign: "right",
               opacity: 0,
               willChange: "transform, opacity",
-              whiteSpace: "nowrap",
             }}
           >
             <span style={{ ...labelStyle, textAlign: "right" }}>— iii —</span>

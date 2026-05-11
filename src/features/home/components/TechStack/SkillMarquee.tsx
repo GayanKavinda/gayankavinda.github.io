@@ -11,46 +11,46 @@ import { CAT_META, SKILLS } from './constants';
 const ROW_1 = SKILLS.filter(s => s.cat === 'fe' || s.cat === 'be');
 const ROW_2 = SKILLS.filter(s => s.cat === 'infra' || s.cat === 'data');
 
-// Duplicate items for seamless infinite loop
-function renderTrackItems(skills: typeof ROW_1, keyPrefix: string) {
-  return (
-    <>
-      {skills.map((s, i) => (
-        <SkillChip
-          key={`${keyPrefix}-a-${s.name}-${i}`}
-          name={s.name}
-          accentColor={CAT_META[s.cat].color}
-          description={s.desc}
-        />
-      ))}
-      {skills.map((s, i) => (
-        <SkillChip
-          key={`${keyPrefix}-b-${s.name}-${i}`}
-          name={s.name}
-          accentColor={CAT_META[s.cat].color}
-          description={s.desc}
-        />
-      ))}
-      {skills.map((s, i) => (
-        <SkillChip
-          key={`${keyPrefix}-c-${s.name}-${i}`}
-          name={s.name}
-          accentColor={CAT_META[s.cat].color}
-          description={s.desc}
-        />
-      ))}
-    </>
-  );
-}
 
 export const SkillMarquee = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: false, margin: '-50px' });
 
+  const MarqueeRow = ({ skills, direction }: { skills: typeof ROW_1; direction: 'left' | 'right' }) => (
+    <div className="flex w-max">
+      <div 
+        className={`flex gap-3 px-1.5 ${direction === 'left' ? 'animate-marquee-left' : 'animate-marquee-right'}`}
+        style={{ animationPlayState: isInView ? 'running' : 'paused' }}
+      >
+        {skills.map((s, i) => (
+          <SkillChip
+            key={`${s.name}-${i}`}
+            name={s.name}
+            accentColor={CAT_META[s.cat].color}
+            description={s.desc}
+          />
+        ))}
+      </div>
+      <div 
+        className={`flex gap-3 px-1.5 ${direction === 'left' ? 'animate-marquee-left' : 'animate-marquee-right'}`}
+        style={{ animationPlayState: isInView ? 'running' : 'paused' }}
+      >
+        {skills.map((s, i) => (
+          <SkillChip
+            key={`${s.name}-${i}-dup`}
+            name={s.name}
+            accentColor={CAT_META[s.cat].color}
+            description={s.desc}
+          />
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div 
       ref={containerRef}
-      className="w-full overflow-hidden pt-16 pb-32"
+      className="w-full overflow-hidden py-10 md:pt-16 md:pb-32"
       style={{
         maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
         WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
@@ -59,25 +59,8 @@ export const SkillMarquee = () => {
       }}
     >
       <div className="space-y-12">
-        {/* Row 1 — Frontend & Backend (scrolls left) */}
-        <div className="relative z-10 hover:z-20 transition-[z-index]">
-          <div 
-            className="flex gap-3 animate-marquee-left py-2 overflow-visible"
-            style={{ animationPlayState: isInView ? 'running' : 'paused' }}
-          >
-            {renderTrackItems(ROW_1, 'row1')}
-          </div>
-        </div>
-
-        {/* Row 2 — Infrastructure & Data (scrolls right) */}
-        <div className="relative z-10 hover:z-20 transition-[z-index]">
-          <div 
-            className="flex gap-3 animate-marquee-right py-2 overflow-visible"
-            style={{ animationPlayState: isInView ? 'running' : 'paused' }}
-          >
-            {renderTrackItems(ROW_2, 'row2')}
-          </div>
-        </div>
+        <MarqueeRow skills={ROW_1} direction="left" />
+        <MarqueeRow skills={ROW_2} direction="right" />
       </div>
     </div>
   );

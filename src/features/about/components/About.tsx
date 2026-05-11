@@ -14,22 +14,22 @@ import { useImageLoader } from '@hooks/useImageLoader';
 
 // Impact-driven stats
 const stats = [
-  { num: '10+',  label: 'YEARS',    sub: 'Engineering'      },
-  { num: '50+',  label: 'PROJECTS', sub: 'Shipped'          },
-  { num: '12+',  label: 'SYSTEMS',  sub: 'Architected'      },
+  { num: '10+', label: 'YEARS', sub: 'Engineering' },
+  { num: '50+', label: 'PROJECTS', sub: 'Shipped' },
+  { num: '12+', label: 'SYSTEMS', sub: 'Architected' },
 ];
 const About = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const { theme }  = useTheme();
-  const isDark     = theme === 'dark';
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const bgSrc = isDark ? bgDark : bgWhite;
   const { isLoaded } = useImageLoader(bgSrc);
 
   return (
-    <section 
-      id="about" 
-      ref={sectionRef} 
+    <section
+      id="about"
+      ref={sectionRef}
       className="py-[100px] md:py-[140px] relative overflow-hidden"
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}
     >
@@ -38,22 +38,22 @@ const About = () => {
         <motion.img
           key={bgSrc}
           initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: isLoaded ? 1 : 0, x: 0 }}
+          animate={{ opacity: isLoaded ? (isDark ? 0.4 : 0.5) : 0, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           src={bgSrc}
           alt=""
-          className="h-full w-full object-cover object-center md:object-right"
+          className="h-full w-full object-cover object-center md:object-right transition-opacity duration-700"
           style={{ mixBlendMode: isDark ? 'lighten' : 'darken' }}
         />
-        {/* Minimal left edge fade so image is fully visible */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent" />
+        {/* Stronger mobile fade gradient */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 md:via-transparent to-transparent md:to-transparent" />
       </div>
 
       <div className="relative z-[1] max-w-[1100px] mx-auto px-6 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
 
           {/* Photo with Framer Motion entry */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -61,8 +61,8 @@ const About = () => {
             className="relative w-fit mx-auto md:mx-0"
           >
             <div className="w-[280px] h-[340px] md:w-[340px] md:h-[400px] rounded-2xl border border-black/5 dark:border-white/5 overflow-hidden bg-background/50 backdrop-blur-sm shadow-xl flex items-center justify-center">
-               <div className="absolute inset-0 bg-gradient-to-br from-crimson/5 to-gold/5" />
-               <span className="relative z-10 font-mono text-[14px] text-foreground/40 font-medium tracking-tight">[ Engineering Persona ]</span>
+              <div className="absolute inset-0 bg-gradient-to-br from-crimson/5 to-gold/5" />
+              <span className="relative z-10 font-mono text-[14px] text-foreground/40 font-medium tracking-tight">[ Engineering Persona ]</span>
             </div>
             {/* Corner brackets */}
             {['top-0 left-0', 'top-0 right-0 rotate-90', 'bottom-0 right-0 rotate-180', 'bottom-0 left-0 -rotate-90'].map((pos, i) => (
@@ -72,7 +72,7 @@ const About = () => {
             ))}
             <div className="flex gap-5 mt-6 justify-center md:justify-start">
               {['GitHub', 'LinkedIn', 'Twitter'].map(s => (
-                <a key={s} href="#" className="font-mono text-[11px] uppercase tracking-widest text-foreground/50 hover:text-crimson hover:translate-y-[-1px] transition-all">{s}</a>
+                <a key={s} href={`https://${s.toLowerCase()}.com`} target="_blank" rel="noopener noreferrer" className="font-mono text-[11px] uppercase tracking-widest text-foreground/50 hover:text-crimson hover:translate-y-[-1px] transition-all">{s}</a>
               ))}
             </div>
           </motion.div>
@@ -84,7 +84,7 @@ const About = () => {
             viewport={{ once: true, margin: "-100px" }}
             variants={{
               hidden: { opacity: 0 },
-              visible: { 
+              visible: {
                 opacity: 1,
                 transition: { staggerChildren: 0.12, delayChildren: 0.1 }
               }
@@ -108,7 +108,7 @@ const About = () => {
             </motion.div>
 
             <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="mt-8 space-y-5 font-sans text-[14px] leading-[1.6] text-foreground/70 max-w-[460px]">
-              <p>With over a decade of production experience, I've learned that elite engineering isn't just about syntax — it's about architecting systems that scale gracefully while remaining radically simple to maintain.</p>
+              <p>With over a decade of production experience, I've learned that elite engineering isn't just about syntax, it's about architecting systems that scale gracefully while remaining radically simple to maintain.</p>
               <p>I specialize in distributed systems and high-throughput cloud architectures. My focus is on the pivot between complex back-end engineering and pixel-perfect sensory experiences.</p>
             </motion.div>
 
@@ -124,10 +124,10 @@ const About = () => {
             </motion.div>
           </motion.div>
 
+        </div>
       </div>
-    </div>
-    <div className="section-fade-top" />
-    <div className="section-fade-bottom" />
+      <div className="section-fade-top" />
+      <div className="section-fade-bottom" />
     </section>
   );
 };

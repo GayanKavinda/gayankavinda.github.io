@@ -80,17 +80,16 @@ const EngineeringPhilosophy = () => {
         <motion.img
           key={isDark ? 'dark' : 'light'}
           initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: isDark ? 0.6 : 0.5, x: 0 }}
+          animate={{ opacity: isDark ? 0.4 : 0.35, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           src={isDark ? nezukoDark : nezukoWhite}
-          alt="Philosophy Background"
+          alt=""
           loading="lazy"
-          decoding="async"
-          className="h-full w-full object-cover object-right"
-          style={{ mixBlendMode: isDark ? 'screen' : 'multiply', willChange: 'opacity, transform' }}
+          className="h-full w-full object-cover object-center md:object-right transition-opacity duration-700"
+          style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
         />
-        {/* Soft fade gradients */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent" />
+        {/* Stronger mobile fades */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 md:via-background/20 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
       </div>
 

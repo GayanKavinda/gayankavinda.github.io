@@ -55,19 +55,19 @@ const TechStack = () => {
       className="py-[80px] md:py-[100px] relative overflow-hidden"
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}
     >
-      {/* Background Image - Sakuna (same structure as Projects/Gojo) */}
+      {/* Background Image - Sakuna */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <motion.img
           key={isDark ? 'dark' : 'light'}
           initial={{ opacity: 0, x: 40 }}
-          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
+          animate={isInView ? { opacity: isDark ? 0.35 : 0.3, x: 0 } : { opacity: 0, x: 40 }}
           transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
           src={isDark ? bgDark : bgWhite}
           alt=""
-          className="h-full w-full object-cover object-center"
+          className="h-full w-full object-cover object-center transition-opacity duration-700"
         />
-        {/* Subtle fade to ensure text readability while keeping character visibility */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/10 to-background/60" />
+        {/* Stronger mobile fade */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background/80 md:from-background/60 via-background/10 to-background/80 md:to-background/60" />
       </div>
 
       <div className="max-w-[1280px] mx-auto px-6 md:px-12">

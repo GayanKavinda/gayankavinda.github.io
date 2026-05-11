@@ -140,13 +140,13 @@ const Hero = () => {
       <motion.div style={{ y: bgY, willChange: 'transform' }} className="absolute inset-0 -z-10 bg-black">
         <img
           src={lightHeroImg} alt="" aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-[75%_center] sm:object-center transition-opacity duration-1000"
+          className="absolute inset-0 w-full h-full object-cover object-center md:object-[75%_center] transition-opacity duration-1000"
           style={{ opacity: isDark ? 0 : 1, filter: c.vidFilter }}
           loading="eager"
         />
         <img
           src={darkHeroImg} alt="" aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-[75%_center] sm:object-center transition-opacity duration-1000"
+          className="absolute inset-0 w-full h-full object-cover object-center md:object-[75%_center] transition-opacity duration-1000"
           style={{ opacity: isDark ? 1 : 0, filter: c.vidFilter }}
           loading="eager"
         />
@@ -209,7 +209,7 @@ const Hero = () => {
           <h1
             className="select-none uppercase font-winner overflow-hidden"
             style={{
-              fontSize: 'clamp(40px, 9.5vw, 96px)',
+              fontSize: 'clamp(32px, 9.5vw, 96px)',
               lineHeight: 0.88,
               color: c.name,
               letterSpacing: '0.05em',
@@ -263,7 +263,7 @@ const Hero = () => {
         </motion.p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-wrap justify-center sm:justify-end gap-4 mt-8">
+        <div className="flex flex-col sm:flex-row flex-wrap justify-center sm:justify-end gap-4 mt-8 w-full sm:w-auto px-4 sm:px-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

@@ -82,10 +82,10 @@ const BentoCard = ({ item, index }: { item: typeof educationData[0], index: numb
         style={{ background: `linear-gradient(90deg, hsla(${item.color}, 1), transparent)` }}
       />
 
-      <div className="relative z-10 p-8 h-full flex flex-col">
+      <div className="relative z-10 p-5 md:p-8 h-full flex flex-col">
         <div className="flex justify-between items-start mb-6 gap-4">
           <div>
-            <h3 className="font-jakarta font-semibold text-xl md:text-2xl text-foreground/80 dark:text-foreground tracking-tight leading-tight mb-2">
+            <h3 className="font-jakarta font-semibold text-lg md:text-2xl text-foreground/80 dark:text-foreground tracking-tight leading-tight mb-2">
               {item.degree}
             </h3>
             <div className="flex items-center gap-2">
@@ -144,21 +144,19 @@ const Education = () => {
         <motion.img
           key={bgSrc}
           initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: isLoaded ? (isDark ? 0.8 : 0.7) : 0, x: 0 }}
+          animate={{ opacity: isLoaded ? (isDark ? 0.35 : 0.3) : 0, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           src={bgSrc}
-          alt="Education Background"
+          alt=""
           loading="lazy"
-          decoding="async"
-          className="h-full w-full object-cover object-right"
+          className="h-full w-full object-cover object-center md:object-right transition-opacity duration-700"
           style={{
             mixBlendMode: 'normal',
-            willChange: 'opacity, transform',
-            filter: 'brightness(1.1) contrast(1.1)' 
+            filter: 'brightness(1.1) contrast(1.1)'
           }}
         />
         {/* Soft edge fade: blend from right to left */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 md:via-background/20 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
       </div>
 

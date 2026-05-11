@@ -95,17 +95,17 @@ const BadgeCard = ({ item, index }: { item: typeof certificationsData[0], index:
         <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4 mx-auto shadow-inner text-foreground/80">
           <item.icon className="w-5 h-5" />
         </div>
-        
+
         <h3 className="font-jakarta font-semibold text-base text-foreground tracking-tight leading-tight mb-2 min-h-[40px] flex items-center justify-center">
           {item.name}
         </h3>
-        
+
         <div className="font-mono text-[10px] text-foreground/40 uppercase tracking-widest mb-3">
           {item.issuer}
         </div>
-        
+
         <div className="mb-6 flex-grow">
-          <span 
+          <span
             className="inline-block font-mono text-[11px] font-bold tracking-[.1em] px-3 py-1 rounded-full bg-black/20 border border-white/5"
             style={{ color: `hsla(${item.color}, 1)` }}
           >
@@ -121,7 +121,7 @@ const BadgeCard = ({ item, index }: { item: typeof certificationsData[0], index:
           ))}
         </div>
 
-        <a 
+        <a
           href={item.link}
           target="_blank"
           rel="noopener noreferrer"
@@ -157,26 +157,24 @@ const Certifications = () => {
         <motion.img
           key={bgSrc}
           initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: isLoaded ? (isDark ? 0.95 : 0.85) : 0, x: 0 }}
+          animate={{ opacity: isLoaded ? (isDark ? 0.4 : 0.35) : 0, x: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           src={bgSrc}
-          alt="Certifications Background"
+          alt=""
           loading="lazy"
-          decoding="async"
-          className="h-full w-full object-cover object-left lg:object-[10%_center]"
-          style={{ 
-            mixBlendMode: 'normal', 
-            willChange: 'opacity, transform',
+          className="h-full w-full object-cover object-center md:object-left lg:object-[10%_center] transition-opacity duration-700"
+          style={{
+            mixBlendMode: 'normal',
             filter: 'brightness(1.2) contrast(1.2)'
           }}
         />
-        {/* Soft edge fade: blend from content area into the character */}
-        <div className="absolute inset-0 bg-gradient-to-l from-background via-background/10 to-transparent" />
+        {/* Stronger mobile edge fade */}
+        <div className="absolute inset-0 bg-gradient-to-l from-background via-background/80 md:via-background/10 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
       </div>
 
       <div className="relative z-10 w-full max-w-6xl mx-auto px-6 lg:px-8">
-        
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
