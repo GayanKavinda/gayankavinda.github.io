@@ -4,7 +4,7 @@ import { ReactLenis } from 'lenis/react';
 import { TooltipProvider } from "@components/ui/tooltip";
 import CustomCursor from "@components/layout/CustomCursor";
 import { ThemeProvider } from "@app/providers/theme-provider";
-import { ChatBot } from '@/features/agent';
+
 
 import { lazy, Suspense } from 'react';
 
@@ -74,8 +74,7 @@ const App = () => (
                 <AnimatedRoutes />
               </Suspense>
 
-              {/* Portfolio Agent - Chatbot */}
-              <ChatBot />
+
               <CacheConsent />
             </BrowserRouter>
           </PreLoader>

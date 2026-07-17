@@ -1,10 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { motion, useInView, animate, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useInView, animate, useMotionValue, useTransform, useScroll } from 'framer-motion';
 import { SkillMarquee } from './SkillMarquee';
 import { SKILLS } from './constants';
 import { useTheme } from '@app/providers/theme-provider';
-import bgDark from '@assets/images/skills/sakuna-dark.webp';
-import bgWhite from '@assets/images/skills/sakuna-white.webp';
+// Background images removed per requirements
 
 // ── Animated count-up ────────────────────────────────────────────────────────
 function CountUp({ target, suffix = '' }: { target: number; suffix?: string }) {
@@ -55,20 +54,17 @@ const TechStack = () => {
       className="py-[80px] md:py-[100px] relative overflow-hidden"
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}
     >
-      {/* Background Image - Sakuna */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        <motion.img
-          key={isDark ? 'dark' : 'light'}
-          initial={{ opacity: 0, x: 40 }}
-          animate={isInView ? { opacity: isDark ? 0.35 : 0.3, x: 0 } : { opacity: 0, x: 40 }}
-          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-          src={isDark ? bgDark : bgWhite}
-          alt=""
-          className="h-full w-full object-cover object-center transition-opacity duration-700"
-        />
-        {/* Stronger mobile fade */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background/80 md:from-background/60 via-background/10 to-background/80 md:to-background/60" />
-      </div>
+      {/* Parallax Overlay */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          transform: `translateY(${useTransform(useScroll({ target: sectionRef, offset: ['start center', 'end center'] }).scrollY, [0, 1], [80, -80])}px)`
+        }}
+      >
+        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[250px] h-[250px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[60px]" />
+      </motion.div>
 
       <div className="max-w-[1280px] mx-auto px-6 md:px-12">
 

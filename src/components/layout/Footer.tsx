@@ -3,10 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { motion, AnimatePresence } from 'framer-motion';
-import maskImg from '@assets/images/mask.png';
-import mapDark from '@assets/images/map-dark.webp';
-import mapWhite from '@assets/images/map-white.webp';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
 import { QRCode } from '@components/ui/qr-code';
 
@@ -85,15 +82,11 @@ function getColomboHour() {
 // ── Components ────────────────────────────────────────────────────────────────
 
 const MapThumbnail = ({ isDark }: { isDark: boolean }) => (
-  <div 
+  <div
     className="relative w-[110px] h-[72px] rounded-lg overflow-hidden border group"
     style={{ borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' }}
   >
-    <img 
-      src={isDark ? mapDark : mapWhite} 
-      alt="Colombo, Sri Lanka" 
-      className="w-full h-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:scale-110"
-    />
+    <div className="w-full h-full bg-gradient-to-br from-crimson/5 to-gold/5" />
     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
     {/* Animated marker */}
     <div className="absolute left-[55%] top-[45%] -translate-x-1/2 -translate-y-1/2">
@@ -142,13 +135,25 @@ const Footer = () => {
   });
 
   return (
-    <footer 
+    <footer
       ref={footerRef}
       className="relative w-full overflow-hidden"
-      style={{ 
+      style={{
         background: bg
       }}
     >
+      {/* Parallax Overlay */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          transform: `translateY(${useTransform(useScroll({ target: footerRef, offset: ['start center', 'end center'] }).scrollY, [0, 1], [100, -100])}px)`
+        }}
+      >
+        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[80px]" />
+      </motion.div>
+
       {/* ── Background decoration ──────────────────────────────────────────────── */}
       <div 
         className="absolute bottom-0 right-0 w-[40vw] h-[40vw] -mr-[10vw] -mb-[10vw] opacity-[0.03] pointer-events-none"
@@ -170,7 +175,7 @@ const Footer = () => {
           {/* Column 1: Brand */}
           <div style={{ flex: '1 1 280px', minWidth: '240px' }} className="footer-col">
             <div className="mb-8 flex items-center gap-4">
-               <img src={maskImg} alt="" style={{ width: '24px', height: '24px', mixBlendMode: isDark ? 'screen' : 'multiply', filter: isDark ? 'brightness(1.5)' : 'none' }} />
+               <div className="w-[24px] h-[24px] rounded-full bg-gradient-to-br from-crimson/5 to-gold/5" />
                <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '18px', fontWeight: 700, color: t1, letterSpacing: '-0.02em' }}>Gayan Kavinda</span>
             </div>
             <p style={{ fontSize: '13px', color: t2, maxWidth: '210px', marginBottom: '24px', lineHeight: '1.6' }}>

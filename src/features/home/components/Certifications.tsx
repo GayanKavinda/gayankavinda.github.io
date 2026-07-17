@@ -1,12 +1,10 @@
-import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
+import { motion, useMotionTemplate, useMotionValue, useTransform, useScroll } from 'framer-motion';
 import React, { useRef, useState } from 'react';
 import { useTheme } from '@app/providers/theme-provider';
 import { useImageLoader } from '@hooks/useImageLoader';
 import { Cloud, Server, Database, Layers, ExternalLink } from 'lucide-react';
 
-// Asset imports
-import certDark from '@assets/images/certifications/akaza-darkmode-New.webp';
-import certWhite from '@assets/images/certifications/tanjiro-whitemode-New.webp';
+// Asset imports removed - background images removed per requirements
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -142,9 +140,6 @@ const Certifications = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  const bgSrc = isDark ? certDark : certWhite;
-  const { isLoaded } = useImageLoader(bgSrc);
-
   return (
     <section
       id="certifications"
@@ -152,26 +147,17 @@ const Certifications = () => {
       className="relative py-[100px] md:py-[140px] min-h-[70vh] md:min-h-[800px] flex items-center overflow-hidden"
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }}
     >
-      {/* Background Artwork */}
-      <div className="absolute inset-y-0 left-0 w-full pointer-events-none z-0 overflow-hidden">
-        <motion.img
-          key={bgSrc}
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: isLoaded ? (isDark ? 0.4 : 0.35) : 0, x: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          src={bgSrc}
-          alt=""
-          loading="lazy"
-          className="h-full w-full object-cover object-center md:object-left lg:object-[10%_center] transition-opacity duration-700"
-          style={{
-            mixBlendMode: 'normal',
-            filter: 'brightness(1.2) contrast(1.2)'
-          }}
-        />
-        {/* Stronger mobile edge fade */}
-        <div className="absolute inset-0 bg-gradient-to-l from-background via-background/80 md:via-background/10 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
-      </div>
+      {/* Parallax Overlay */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          transform: `translateY(${useTransform(useScroll({ target: sectionRef, offset: ['start center', 'end center'] }).scrollY, [0, 1], [100, -100])}px)`
+        }}
+      >
+        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[80px]" />
+      </motion.div>
 
       <div className="relative z-10 w-full max-w-6xl mx-auto px-6 lg:px-8">
 

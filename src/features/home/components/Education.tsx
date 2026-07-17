@@ -1,12 +1,10 @@
-import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
+import { motion, useMotionTemplate, useMotionValue, useTransform, useScroll } from 'framer-motion';
 import React, { useRef, useState } from 'react';
 import { Badge } from '@components/ui/badge';
 import { useTheme } from '@app/providers/theme-provider';
 import { useImageLoader } from '@hooks/useImageLoader';
 
-// Asset imports
-import educationDark from '@assets/images/education/Kukushibo-darkmode-right-New.webp';
-import educationWhite from '@assets/images/education/Yorichi-white-mode-right-New.webp';
+// Asset imports removed - background images removed per requirements
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -129,9 +127,6 @@ const Education = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  const bgSrc = isDark ? educationDark : educationWhite;
-  const { isLoaded } = useImageLoader(bgSrc);
-
   return (
     <section
       id="education"
@@ -139,26 +134,17 @@ const Education = () => {
       className="relative py-[100px] md:py-[140px] overflow-hidden"
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 600px' }}
     >
-      {/* Background Artwork */}
-      <div className="absolute inset-y-0 right-0 w-full pointer-events-none z-0 overflow-hidden">
-        <motion.img
-          key={bgSrc}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: isLoaded ? (isDark ? 0.35 : 0.3) : 0, x: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          src={bgSrc}
-          alt=""
-          loading="lazy"
-          className="h-full w-full object-cover object-center md:object-right transition-opacity duration-700"
-          style={{
-            mixBlendMode: 'normal',
-            filter: 'brightness(1.1) contrast(1.1)'
-          }}
-        />
-        {/* Soft edge fade: blend from right to left */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 md:via-background/20 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
-      </div>
+      {/* Parallax Overlay */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          transform: `translateY(${useTransform(useScroll({ target: sectionRef, offset: ['start center', 'end center'] }).scrollY, [0, 1], [100, -100])}px)`
+        }}
+      >
+        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[80px]" />
+      </motion.div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8">
 

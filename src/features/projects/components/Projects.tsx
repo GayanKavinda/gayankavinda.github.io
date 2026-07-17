@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import Magnetic from '@components/animations/Magnetic';
 import { Badge } from '@components/ui/badge';
 import { allProjects } from '../data/projectData';
@@ -10,8 +10,7 @@ import { ProjectViz } from './ProjectViz';
 import { Project } from '../types';
 import { useTheme } from '@app/providers/theme-provider';
 import { useImageLoader } from '@hooks/useImageLoader';
-import bgDark from '@assets/images/selected-projects/gojo-dark-left.webp';
-import bgWhite from '@assets/images/selected-projects/gojo-white-left.webp';
+// Background images removed per requirements
 
 const CLIP_BTN = 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)';
 
@@ -137,9 +136,6 @@ const Projects = () => {
   const displayProjects = [...allProjects, ...allProjects];
   const totalPx = STRIDE * allProjects.length;
 
-  const bgSrc = isDark ? bgDark : bgWhite;
-  const { isLoaded } = useImageLoader(bgSrc);
-
   return (
     <section
       id="projects"
@@ -150,22 +146,17 @@ const Projects = () => {
         containIntrinsicSize: '0 1000px'
       }}
     >
-      {/* Background Image - Gojo */}
-      <div className="absolute inset-y-0 left-0 w-full pointer-events-none z-0 overflow-hidden">
-        <motion.img
-          key={bgSrc}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: isLoaded ? (isDark ? 0.35 : 0.3) : 0, x: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          src={bgSrc}
-          alt=""
-          className="h-full w-full object-cover object-center md:object-left transition-opacity duration-700"
-          style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
-        />
-        {/* Stronger mobile edge fade */}
-        <div className="absolute inset-0 bg-gradient-to-l from-background/80 md:from-background/20 via-transparent to-background/60 md:to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
-      </div>
+      {/* Parallax Overlay */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          transform: `translateY(${useTransform(useScroll({ target: containerRef, offset: ['start center', 'end center'] }).scrollY, [0, 1], [100, -100])}px)`
+        }}
+      >
+        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[80px]" />
+      </motion.div>
 
       {/* Header */}
       <motion.div

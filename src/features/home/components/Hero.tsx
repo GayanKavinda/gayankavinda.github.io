@@ -17,7 +17,7 @@ const MotionSplitChars = ({ text, delay = 0 }: { text: string; delay?: number })
         className="inline-block"
         style={{ transformOrigin: 'bottom' }}
       >
-        {char === ' ' ? '\u00A0' : char}
+        {char === ' ' ? ' ' : char}
       </motion.span>
     ))}
   </>
@@ -178,38 +178,19 @@ const Hero = () => {
         style={{ y: contentY, opacity: contentOpacity, willChange: 'transform, opacity' }}
         className="relative z-20 h-full flex flex-col items-center sm:items-end justify-center px-6 sm:pr-[clamp(24px,8vw,120px)] sm:pl-6 text-center sm:text-right"
       >
-        {/* Eyebrow with glitch */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex items-center gap-3 mb-4"
-        >
-          <GlitchEyebrow text="Software Engineer" color={c.eyebrow} />
-        </motion.div>
-
-        {/* Top rule — animated shimmer */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="h-[1px] mb-6 sm:origin-right overflow-hidden"
-          style={{ width: 'clamp(100px, 20vw, 400px)' }}
-        >
-          <motion.div
-            className="h-full w-full"
-            style={{ background: c.ruleGrad }}
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          />
-        </motion.div>
+        {/* New header */}
+        <section className="flex items-center gap-3 mb-4">
+          <span className="font-syne text-[clamp(9px,1.1vw,12px)] uppercase tracking-[0.3em]">
+            Senior Systems Architect
+          </span>
+        </section>
 
         {/* Name block */}
         <div className="relative">
           <h1
             className="select-none uppercase font-winner overflow-hidden"
             style={{
-              fontSize: 'clamp(32px, 9.5vw, 96px)',
+              fontSize: 'clamp(32px,9.5vw,96px)',
               lineHeight: 0.88,
               color: c.name,
               letterSpacing: '0.05em',
@@ -224,30 +205,15 @@ const Hero = () => {
           </h1>
         </div>
 
-        {/* Bottom rule */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 0.9, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
-          className="h-[1px] mt-5 mb-5 sm:origin-right"
-          style={{ width: 'clamp(120px, 25vw, 500px)', background: c.ruleGrad }}
-        />
-
         {/* Tagline */}
         <motion.h2
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.3 }}
           className="font-syne font-semibold leading-snug"
-          style={{ fontSize: 'clamp(15px, 2.6vw, 26px)', color: c.tagline, letterSpacing: '-0.01em' }}
+          style={{ fontSize: 'clamp(15px,2.6vw,26px)', color: c.tagline, letterSpacing: '-0.01em' }}
         >
-          Architecting{' '}
-          <em
-            className="not-italic"
-            style={{ backgroundImage: c.gradText, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
-          >
-            systems that scale
-          </em>
+          Architecting systems that scale
         </motion.h2>
 
         {/* Description */}
@@ -256,10 +222,9 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.5 }}
           className="font-sans leading-relaxed mt-3 max-w-[440px]"
-          style={{ fontSize: 'clamp(12px, 1.35vw, 14px)', color: c.desc, textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.6)' : 'none' }}
+          style={{ fontSize: 'clamp(12px,1.35vw,14px)', color: c.desc, textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.6)' : 'none' }}
         >
-          Distributed systems architect. Premium digital experiences. Precision
-          engineering fused with clean, scalable architecture.
+          I design and operate high‑performance distributed systems that power global‑scale products — combining cloud‑native architecture, observability‑first thinking, and clean, scalable code.
         </motion.p>
 
         {/* CTA Buttons */}
@@ -327,6 +292,15 @@ const Hero = () => {
               </button>
             </Magnetic>
           </motion.div>
+        </div>
+
+        {/* Tech Stack Badge */}
+        <div className="flex flex-wrap gap-2 mt-6 text-[clamp(10px,1.2vw,12px)]">
+          <span className="bg-[hsl(var(--primary)/0.1)] px-3 py-1 rounded text-[hsl(var(--primary))]">React</span>
+          <span className="bg-[hsl(var(--secondary)/0.1)] px-3 py-1 rounded text-[hsl(var(--secondary))]">Go</span>
+          <span className="bg-[hsl(var(--primary)/0.1)] px-3 py-1 rounded text-[hsl(var(--primary))]">Kubernetes</span>
+          <span className="bg-[hsl(var(--secondary)/0.1)] px-3 py-1 rounded text-[hsl(var(--secondary))]">AWS</span>
+          <span className="bg-[hsl(var(--primary)/0.1)] px-3 py-1 rounded text-[hsl(var(--primary))]">Terraform</span>
         </div>
 
         {/* Scroll indicator */}

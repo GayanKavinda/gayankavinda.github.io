@@ -6,11 +6,8 @@
 // - Photo placeholder with corner brackets preserved
 // - Typography tightened on mobile
 import { useRef } from 'react';
-import { motion } from 'framer-motion';
-import bgDark from '@assets/images/about/nobara-dark.jpeg';
-import bgWhite from '@assets/images/about/nobara-white.jpeg';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
-import { useImageLoader } from '@hooks/useImageLoader';
 
 // Impact-driven stats
 const stats = [
@@ -23,8 +20,7 @@ const About = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  const bgSrc = isDark ? bgDark : bgWhite;
-  const { isLoaded } = useImageLoader(bgSrc);
+
 
   return (
     <section
@@ -33,21 +29,7 @@ const About = () => {
       className="py-[100px] md:py-[140px] relative overflow-hidden"
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}
     >
-      {/* Background Image - Nobara */}
-      <div className="absolute inset-y-0 right-0 w-full md:w-[90%] pointer-events-none z-0 overflow-hidden">
-        <motion.img
-          key={bgSrc}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: isLoaded ? (isDark ? 0.4 : 0.5) : 0, x: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          src={bgSrc}
-          alt=""
-          className="h-full w-full object-cover object-center md:object-right transition-opacity duration-700"
-          style={{ mixBlendMode: isDark ? 'lighten' : 'darken' }}
-        />
-        {/* Stronger mobile fade gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 md:via-transparent to-transparent md:to-transparent" />
-      </div>
+
 
       <div className="relative z-[1] max-w-[1100px] mx-auto px-6 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
@@ -102,35 +84,43 @@ const About = () => {
               </p>
             </motion.div>
 
-            <motion.div variants={{ hidden: { opacity: 0, scaleX: 0 }, visible: { opacity: 1, scaleX: 1 } }} className="flex items-center gap-4 mt-7 origin-left">
-              <div className="w-16 h-px bg-crimson" />
-              <div className="w-2 h-2 rounded-full bg-gold" />
+            <motion.div variants={{ hidden: { opacity: 0, scaleX: 0 }, visible: { opacity: 1, scaleX: 1 }}} className="mb-6">
+              <h3 className="font-jakarta font-medium text-lg text-500 text-foreground/80 mb-3">
+                Professional Impact
+              </h3>
+              <ul className="space-y-3 text-sm text-foreground/60 dark:text-foreground/50">
+                <li>Designed a multi‑region, event‑driven platform handling {'>'}2M RPS with {'<'}50 ms p99 latency.</li>
+                <li>Introduced observability‑first practices (OpenTelemetry, SLO‑based alerting) reducing MTTR by 40%.</li>
+                <li>Led migration from monolith to Kubernetes‑microservices, reducing deploy‑time from hours to {'<'}15 min.</li>
+                <li>Authored internal library for distributed tracing adopted by 8+ teams.</li>
+              </ul>
             </motion.div>
 
-            <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="mt-8 space-y-5 font-sans text-[14px] leading-[1.6] text-foreground/70 max-w-[460px]">
-              <p>With over a decade of production experience, I've learned that elite engineering isn't just about syntax, it's about architecting systems that scale gracefully while remaining radically simple to maintain.</p>
-              <p>I specialize in distributed systems and high-throughput cloud architectures. My focus is on the pivot between complex back-end engineering and pixel-perfect sensory experiences.</p>
-            </motion.div>
-
-            {/* Stats grid */}
-            <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="grid grid-cols-3 gap-3 md:gap-5 mt-10 pt-10 border-t border-black/5 dark:border-white/5">
-              {stats.map(s => (
-                <div key={s.label} className="group">
-                  <p className="font-jakarta font-black text-[28px] text-crimson leading-none tracking-tighter group-hover:text-gold transition-colors duration-500">{s.num}</p>
-                  <p className="font-mono text-[10px] text-foreground/40 uppercase tracking-widest mt-2">{s.label}</p>
-                  <p className="font-sans text-[12px] text-foreground/60 mt-0.5">{s.sub}</p>
-                </div>
-              ))}
+            <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="mb-4">
+              <div className="flex flex-wrap gap-4">
+                {stats.map((stat, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="text-center"
+                  >
+                    <div className="flex flex-col items-center">
+                      <span className="font-jakarta font-bold text-2xl text-foreground">{stat.num}</span>
+                      <span className="font-mono text-xs text-foreground/50 uppercase tracking-wider">{stat.label}</span>
+                      <span className="font-mono text-xs text-foreground/40">{stat.sub}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
           </motion.div>
-
         </div>
       </div>
-      <div className="section-fade-top" />
-      <div className="section-fade-bottom" />
     </section>
   );
 };
 
 export default About;
-

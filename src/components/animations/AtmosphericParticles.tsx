@@ -4,7 +4,7 @@ import * as THREE from "three";
 
 export default function AtmosphericParticles({ isDark = true }: { isDark?: boolean }) {
   const particlesRef = useRef<THREE.Points>(null);
-  
+
   // Shooting stars state
   const shootingStars = useMemo(() => {
     return Array.from({ length: 8 }, () => ({
@@ -17,7 +17,7 @@ export default function AtmosphericParticles({ isDark = true }: { isDark?: boole
   }, []);
 
   const { positions, colors, sizes, initialPositions } = useMemo(() => {
-    const count = 1500; // Even more stars
+    const count = 800; // Adjusted for performance
     const positions = new Float32Array(count * 3);
     const initialPositions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
@@ -63,7 +63,7 @@ export default function AtmosphericParticles({ isDark = true }: { isDark?: boole
     if (!particlesRef.current) return;
     const time = state.clock.getElapsedTime();
     const posAttr = particlesRef.current.geometry.attributes.position;
-    
+
     // Base rotation
     particlesRef.current.rotation.y = time * 0.01;
     particlesRef.current.rotation.x = Math.sin(time * 0.05) * 0.01;
@@ -72,8 +72,8 @@ export default function AtmosphericParticles({ isDark = true }: { isDark?: boole
       // Shooting stars logic integrated into the particle system
       for (let i = 0; i < shootingStars.length; i++) {
         const star = shootingStars[i];
-        const index = (1500 - 1 - i) * 3; // Use the last few particles as shooting stars
-        
+        const index = (count - 1 - i) * 3; // Use the last few particles as shooting stars
+
         const cycleTime = (time + star.delay) % 6;
         if (cycleTime < 1.5) { // 1.5s dash
           const progress = cycleTime / 1.5;
@@ -85,10 +85,10 @@ export default function AtmosphericParticles({ isDark = true }: { isDark?: boole
               (Math.random() - 0.5) * 20
             );
           }
-          
+
           const moveX = star.startPos.x - progress * 30;
           const moveY = star.startPos.y - progress * 20;
-          
+
           posAttr.array[index] = moveX;
           posAttr.array[index + 1] = moveY;
           posAttr.array[index + 2] = star.startPos.z;
@@ -104,9 +104,9 @@ export default function AtmosphericParticles({ isDark = true }: { isDark?: boole
   return (
     <points ref={particlesRef}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={1500} array={positions} itemSize={3} />
-        <bufferAttribute attach="attributes-color" count={1500} array={colors} itemSize={3} />
-        <bufferAttribute attach="attributes-size" count={1500} array={sizes} itemSize={1} />
+        <bufferAttribute attach="attributes-position" count={800} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-color" count={800} array={colors} itemSize={3} />
+        <bufferAttribute attach="attributes-size" count={800} array={sizes} itemSize={1} />
       </bufferGeometry>
       <pointsMaterial
         size={0.007}

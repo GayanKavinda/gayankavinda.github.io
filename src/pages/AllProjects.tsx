@@ -1,8 +1,8 @@
 // src/pages/AllProjects.tsx
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, LayoutGroup } from 'framer-motion';
+import { motion, LayoutGroup, useScroll, useTransform } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 
 import Navbar from '@components/layout/Navbar';
@@ -18,6 +18,7 @@ const AllProjects = () => {
   const [activeCategory, setActiveCategory] = useState<ProjectCategory>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const mainRef = useRef<HTMLDivElement>(null);
 
   const filteredProjects = useMemo(() =>
     allProjects.filter(p => {
@@ -42,16 +43,30 @@ const AllProjects = () => {
 
   return (
     <div className="min-h-[100dvh] bg-neutral-50 dark:bg-neutral-950 transition-colors duration-500 selection:bg-gold/30 selection:text-gold relative overflow-hidden">
-      {/* Background Aesthetics */}
+      {/* Background Aesthetics - Removed per request */}
+      {/*
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-5%] left-[-5%] w-[35%] h-[35%] bg-crimson/5 rounded-full blur-[80px] will-change-transform opacity-70" />
         <div className="absolute bottom-[20%] right-[-5%] w-[45%] h-[45%] bg-gold/5 rounded-full blur-[100px] will-change-transform opacity-70" />
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.012] dark:opacity-[0.015] mix-blend-overlay pointer-events-none" />
       </div>
+      */}
+
+      {/* Parallax Overlay */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          transform: `translateY(${useTransform(useScroll({ target: mainRef, offset: ['start center', 'end center'] }).scrollY, [0, 1], [100, -100])}px)`
+        }}
+      >
+        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[80px]" />
+      </motion.div>
 
       <Navbar />
 
-      <main className="relative z-10 pt-12 pb-12 max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+      <main ref={mainRef} className="relative z-10 pt-12 pb-12 max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
 
         {/* Navigation / Back */}
         <motion.button

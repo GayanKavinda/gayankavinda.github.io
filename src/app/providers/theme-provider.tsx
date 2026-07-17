@@ -84,13 +84,13 @@ class Petal {
     ctx.translate(this.x, this.y)
     ctx.rotate(this.rot)
     ctx.globalAlpha = this.alpha * 0.8
-    
+
     // Simplified petal shape: faster to draw than Bezier curves
     ctx.beginPath()
     ctx.ellipse(0, 0, this.r * 0.8, this.r * 0.4, 0, 0, Math.PI * 2)
     ctx.fillStyle = this.color
     ctx.fill()
-    
+
     // Minimal stroke
     ctx.strokeStyle = "rgba(255,255,255,0.15)"
     ctx.lineWidth = 0.5
@@ -251,9 +251,20 @@ export function ThemeProvider({
   storageKey = "gy-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  )
+  // Determine initial theme: from localStorage, then OS preference, then fallback to defaultTheme
+  const getInitialTheme = (): Theme => {
+    const stored = localStorage.getItem(storageKey)
+    if (stored === "light" || stored === "dark") {
+      return stored as Theme
+    }
+    if (typeof window !== "undefined") {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      return prefersDark ? "dark" : "light"
+    }
+    return defaultTheme
+  }
+
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme)
   const animating = useRef(false)
 
   useLayoutEffect(() => {
@@ -278,7 +289,7 @@ export function ThemeProvider({
         localStorage.setItem(storageKey, newTheme)
         setThemeState(newTheme)
       },
-      () => { 
+      () => {
         animating.current = false
         // Snappy removal of transition class
         setTimeout(() => {

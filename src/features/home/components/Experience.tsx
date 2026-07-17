@@ -5,9 +5,7 @@ import React, { useRef, useState } from 'react';
 import { Badge } from '@components/ui/badge';
 import { useTheme } from '@app/providers/theme-provider';
 
-// Asset imports
-import yutaDark from '@assets/images/experience/yuta-dark.webp';
-import yutaWhite from '@assets/images/experience/yuta-white.webp';
+// Asset imports removed - background images removed per requirements
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -349,6 +347,7 @@ const Experience = () => {
   });
 
   const spineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [200, -200]);
 
   return (
     <section
@@ -361,23 +360,17 @@ const Experience = () => {
       <div className="absolute top-1/4 left-0 w-[480px] h-[480px] bg-hsla(var(--primary-hsl), 0.04) rounded-full blur-[80px] pointer-events-none -translate-x-1/2 will-change-[filter]" />
       <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-hsla(var(--secondary-hsl), 0.04) rounded-full blur-[80px] pointer-events-none translate-x-1/2 will-change-[filter]" />
 
-      {/* Yuta Background Artwork */}
-      <div className="absolute inset-y-0 right-0 w-full lg:w-[85%] pointer-events-none z-0 overflow-hidden">
-        <motion.img
-          key={isDark ? 'dark' : 'light'}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: isDark ? 0.4 : 0.35, x: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          src={isDark ? yutaDark : yutaWhite}
-          alt=""
-          loading="lazy"
-          className="h-full w-full object-cover object-center md:object-right transition-opacity duration-700"
-          style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
-        />
-        {/* Stronger mobile fades */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 md:via-background/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
-      </div>
+      {/* Parallax overlay */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          transform: `translateY(${parallaxY}px)`
+        }}
+      >
+        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[80px]" />
+      </motion.div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8">
 

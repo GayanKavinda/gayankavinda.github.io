@@ -4,19 +4,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@components/ui/button';
 import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
 import { Textarea } from '@components/ui/textarea';
 
-import yujiDark from '@assets/images/contact/Yuji_Itadori_dark.webp';
-import yujiWhite from '@assets/images/contact/Yuji_Itadori_white.webp';
-
 import { useTheme } from '@app/providers/theme-provider';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useImageLoader } from '@hooks/useImageLoader';
 import emailjs from '@emailjs/browser';
 import * as z from 'zod';
 
@@ -297,8 +293,7 @@ const Contact = () => {
   const cardBdr = isDark ? 'hsl(0 0% 100% / 0.09)'     : 'hsl(220 15% 15% / 0.15)';
   const blockBdr= isDark ? 'hsl(0 0% 100% / 0.07)'     : 'hsl(220 15% 15% / 0.08)';
 
-  const bgSrc = isDark ? yujiDark : yujiWhite;
-  const { isLoaded } = useImageLoader(bgSrc);
+  // Background images removed per request - keeping only parallax overlay
 
   return (
     <section
@@ -306,24 +301,17 @@ const Contact = () => {
       ref={sectionRef}
       className="py-[60px] sm:py-[80px] md:py-[100px] relative overflow-hidden"
     >
-      {/* Background Artwork */}
-      <div className="absolute inset-y-0 left-0 w-full lg:w-[85%] pointer-events-none z-0 overflow-hidden">
-        <motion.img
-          key={bgSrc}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: isLoaded ? (isDark ? 0.7 : 0.6) : 0, x: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          src={bgSrc}
-          alt="Contact Background"
-          loading="lazy"
-          decoding="async"
-          className="h-full w-full object-cover object-left"
-          style={{ mixBlendMode: isDark ? 'screen' : 'multiply', willChange: 'opacity, transform' }}
-        />
-        {/* Soft fade gradients */}
-        <div className="absolute inset-0 bg-gradient-to-l from-background via-background/20 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
-      </div>
+      {/* Parallax Overlay */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          transform: `translateY(${useTransform(useScroll({ target: sectionRef, offset: ['start center', 'end center'] }).scrollY, [0, 1], [100, -100])}px)`
+        }}
+      >
+        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[80px]" />
+      </motion.div>
 
       <div className="max-w-[860px] mx-auto px-4 sm:px-6 md:px-10 relative z-10">
 

@@ -296,7 +296,7 @@ export default function MaskTransition() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, []); // stable
+  }, []);
 
   /* ── Intersection observer ─────────────────────────────── */
   useEffect(() => {
@@ -350,13 +350,12 @@ export default function MaskTransition() {
         className="sticky top-0 h-[100dvh] overflow-hidden relative"
         style={{ background: isDark ? "#000000" : "#FFFFFF" }}
       >
-
-        {/* ═══════════════════════════════════════════════
-            TEXT LAYERS — z-0, behind canvas
-        ═══════════════════════════════════════════════ */}
+        {/* ══════════════════════════════════════════════════════════════════════════════════════════ */}
+        {/* TEXT LAYERS — z-0, behind canvas */}
+        {/* ══════════════════════════════════════════════════════════════════════════════════════════ */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
 
-          {/* L1 — BREATHE: 18vw, centered, ultra-ghost */}
+          {/* L1 — SCALABLE: 18vw, centered, ultra-ghost */}
           <div
             ref={ghostWordRef}
             aria-hidden="true"
@@ -377,10 +376,10 @@ export default function MaskTransition() {
               userSelect: "none",
             }}
           >
-            BREATHE
+            SCALABLE
           </div>
 
-          {/* L2 — 技: 12vw, bottom-right, ghost */}
+          {/* L2 — 系: 12vw, bottom-right, ghost */}
           <div
             ref={kanjiRef}
             aria-hidden="true"
@@ -398,7 +397,7 @@ export default function MaskTransition() {
               lineHeight: 1,
             }}
           >
-            技
+            系
           </div>
 
           {/* L3 — Chapter 1: center, bottom-third */}
@@ -416,9 +415,7 @@ export default function MaskTransition() {
           >
             <span style={labelStyle}>— i —</span>
             <h2 style={h1Style}>
-              Cursed by craft.
-              <br />
-              Bound by code.
+              Event‑driven architecture
             </h2>
           </div>
 
@@ -437,9 +434,7 @@ export default function MaskTransition() {
           >
             <span style={labelStyle}>— ii —</span>
             <h2 style={h1Style}>
-              Every line of code,
-              <br />
-              a vow.
+              Observability‑first design
             </h2>
           </div>
 
@@ -457,17 +452,15 @@ export default function MaskTransition() {
           >
             <span style={{ ...labelStyle, textAlign: "right" }}>— iii —</span>
             <h2 style={h1Style}>
-              Every interface,
-              <br />
-              a domain.
+              Zero‑downtime deployment
             </h2>
           </div>
 
         </div>
 
-        {/* ═══════════════════════════════════════════════
-            CANVAS — z-10, alpha:true
-        ═══════════════════════════════════════════════ */}
+        {/* ════════════════════════════════════════════════════════════════════════════════════════ */}
+        {/* CANVAS — z-10, alpha:true */}
+        {/* ════════════════════════════════════════════════════════════════════════════════════════ */}
         <div className="absolute inset-0 z-10">
           <Canvas
             shadows
