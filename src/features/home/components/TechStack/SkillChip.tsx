@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ICON_MAP } from './constants';
 
-const BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/';
+const BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/';
 
 interface SkillChipProps {
   name: string;

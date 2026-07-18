@@ -71,12 +71,17 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-12px)" },
         },
+        "shimmer": {
+          "from": { backgroundPosition: "200% 0" },
+          "to": { backgroundPosition: "-200% 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "hero-pulse": "hero-pulse 2s ease-in-out infinite",
         "float-slow": "float-slow 4s ease-in-out infinite",
+        "shimmer": "shimmer 8s ease-in-out infinite",
       },
       transitionTimingFunction: {
         "hero-ease": "cubic-bezier(0.16, 1, 0.3, 1)",

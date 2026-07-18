@@ -75,7 +75,7 @@ export const SimplicityMockup = () => {
         fill="currentColor" opacity="0.7"
         className="text-foreground"
         animate={{ opacity: [0, 0.7, 0] }}
-        transition={{ duration: 0.8, repeat: Infinity, ease: "steps(1)" }}
+        transition={{ duration: 0.8, repeat: Infinity, ease: t => t < 0.5 ? 0 : 1 }}
       />
       <rect x="0" y="148" width="280" height="12" className="mockup-panel" />
       <rect x="10" y="151" width="30" height="5" rx="2" fill="#22c55e" opacity="0.45" />

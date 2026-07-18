@@ -16,14 +16,15 @@ export default function AtmosphericParticles({ isDark = true }: { isDark?: boole
     }));
   }, []);
 
-  const { positions, colors, sizes, initialPositions } = useMemo(() => {
-    const count = 800; // Adjusted for performance
-    const positions = new Float32Array(count * 3);
-    const initialPositions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
-    const sizes = new Float32Array(count);
+  const COUNT = 800;
 
-    for (let i = 0; i < count; i++) {
+  const { positions, colors, sizes, initialPositions } = useMemo(() => {
+    const positions = new Float32Array(COUNT * 3);
+    const initialPositions = new Float32Array(COUNT * 3);
+    const colors = new Float32Array(COUNT * 3);
+    const sizes = new Float32Array(COUNT);
+
+    for (let i = 0; i < COUNT; i++) {
       const radius = 5 + Math.random() * 30;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
@@ -72,7 +73,7 @@ export default function AtmosphericParticles({ isDark = true }: { isDark?: boole
       // Shooting stars logic integrated into the particle system
       for (let i = 0; i < shootingStars.length; i++) {
         const star = shootingStars[i];
-        const index = (count - 1 - i) * 3; // Use the last few particles as shooting stars
+        const index = (COUNT - 1 - i) * 3; // Use the last few particles as shooting stars
 
         const cycleTime = (time + star.delay) % 6;
         if (cycleTime < 1.5) { // 1.5s dash

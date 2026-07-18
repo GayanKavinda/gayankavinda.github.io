@@ -14,8 +14,9 @@ export function ModeToggle() {
       style={{
         width: 36,
         height: 36,
-        borderRadius: '50%',
-        border: isDark ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(0,0,0,0.10)',
+        borderRadius: '0px',
+        clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)',
+        border: isDark ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(0,0,0,0.15)',
         background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
         display: 'flex',
         alignItems: 'center',
