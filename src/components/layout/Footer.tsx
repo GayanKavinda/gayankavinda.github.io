@@ -369,6 +369,13 @@ const Footer = () => {
           }
         }
       `}</style>
+      {/* Bottom fade */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-[22vh] pointer-events-none z-30"
+        style={{
+          background: 'linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)',
+        }}
+      />
     </footer>
   );
 };

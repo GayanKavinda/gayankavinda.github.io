@@ -267,8 +267,13 @@ const Projects = () => {
         </Magnetic>
       </motion.div>
 
-      <div className="section-fade-top" style={{ zIndex: 50 }} />
-      <div className="section-fade-bottom" style={{ zIndex: 50 }} />
+      {/* Bottom fade into next section */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-[22vh] pointer-events-none z-30"
+        style={{
+          background: 'linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)',
+        }}
+      />
     </section>
   );
 };
