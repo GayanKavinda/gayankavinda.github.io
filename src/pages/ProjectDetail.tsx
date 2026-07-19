@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useScroll, AnimatePresence, useSpring } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
 import Navbar from '@components/layout/Navbar';
 import Footer from '@components/layout/Footer';
@@ -13,452 +13,17 @@ import LightPillar from '@components/ui/LightPillar';
 import BorderGlow from '@components/ui/BorderGlow';
 import { CardStack } from '@components/ui/card-stack';
 // import ScrollImageSequence from '@components/animations/ScrollImageSequence';
-
-// ── Reduced Motion Hook ─────────────────────────────────────────────────────
-const useReducedMotion = () => {
-  const [reducedMotion, setReducedMotion] = useState(false);
-  
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReducedMotion(mediaQuery.matches);
-    
-    const listener = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
-    mediaQuery.addEventListener('change', listener);
-    return () => mediaQuery.removeEventListener('change', listener);
-  }, []);
-
-  return reducedMotion;
-};
-
-
-// ── Animated Section Wrapper ────────────────────────
-const AnimatedSection = ({ 
-  id, 
-  children, 
-  delay = 0,
-  direction = 'up' 
-}: { 
-  id: string; 
-  children: React.ReactNode; 
-  delay?: number;
-  direction?: 'up' | 'left' | 'right'
-}) => {
-  const initial = {
-    up:    { opacity: 0, y: 50 },
-    left:  { opacity: 0, x: -30 },
-    right: { opacity: 0, x: 30 },
-  }[direction];
-
-  return (
-    <motion.section
-      id={id}
-      initial={initial}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true, amount: 0.12, margin: "0px 0px -10% 0px" }}
-      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
-      className="min-h-[100px]"
-    >
-      {children}
-    </motion.section>
-  );
-};
-
-// ── Magnetic Cursor (Subtle Zen version) ───────────────────────────────
-const MagneticCursor = () => {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const springX = useSpring(x, { stiffness: 150, damping: 25 });
-  const springY = useSpring(y, { stiffness: 150, damping: 25 });
-  const [label, setLabel] = useState('');
-
-  useEffect(() => {
-    const move = (e: MouseEvent) => { x.set(e.clientX); y.set(e.clientY); };
-    const enter = (e: MouseEvent) => {
-      const el = (e.target as HTMLElement).closest('[data-cursor]') as HTMLElement | null;
-      setLabel(el?.dataset.cursor ?? '');
-    };
-    window.addEventListener('mousemove', move);
-    window.addEventListener('mouseover', enter);
-    return () => {
-      window.removeEventListener('mousemove', move);
-      window.removeEventListener('mouseover', enter);
-    };
-  }, [x, y]);
-
-  return (
-    <motion.div
-      className="fixed top-0 left-0 pointer-events-none z-[999] mix-blend-difference"
-      style={{ x: springX, y: springY, translateX: '-50%', translateY: '-50%' }}
-    >
-      <motion.div
-        className="rounded-full border border-white/40 flex items-center justify-center"
-        animate={{ width: label ? 64 : 6, height: label ? 64 : 6 }}
-        transition={{ type: 'spring', stiffness: 280, damping: 22 }}
-      >
-        {label && <span className="font-mono text-[10px] uppercase tracking-widest text-white">{label}</span>}
-      </motion.div>
-    </motion.div>
-  );
-};
-
-// ── Mouse Proximity Glow Text Effect ─────────────────────────────────────
-const GlowText = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    ref.current.style.setProperty('--mouse-x', `${Math.max(0, Math.min(100, x))}%`);
-    ref.current.style.setProperty('--mouse-y', `${Math.max(0, Math.min(100, y))}%`);
-  };
-
-  return (
-    <div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      className={`relative transition-[background-color,shadow,transform] duration-700 ${className}`}
-      style={{
-        background: isDark 
-          ? `radial-gradient(circle 240px at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(var(--crimson), 0.08), transparent 70%)`
-          : `radial-gradient(circle 300px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0,0,0,0.02), transparent 70%)`,
-      } as any}
-    >
-      {children}
-    </div>
-  );
-};
-
-// ── Ticker tape header ───────────────────────────────────────────────────────
-const TickerTape = ({ items }: { items: string[] }) => {
-  const repeated = [...items, ...items, ...items];
-  return (
-    <div className="overflow-hidden border-b border-t border-foreground/[0.06] py-2 relative">
-      <div className="flex gap-0 ticker-inner" style={{ width: 'max-content' }}>
-        {repeated.map((item, i) => (
-          <span key={i} className="font-mono text-[12px] uppercase tracking-[0.2em] text-foreground/50 px-6 flex-shrink-0 flex items-center gap-6">
-            {item}
-            <span className="w-px h-3 bg-foreground/10 inline-block" />
-          </span>
-        ))}
-      </div>
-      <style>{`
-        .ticker-inner { animation: ticker 28s linear infinite; }
-        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-33.333%); } }
-      `}</style>
-    </div>
-  );
-};
-
-// ── Redacted text reveal ─────────────────────────────────────────────────────
-const Redacted = ({ children }: { children: string }) => {
-  const [revealed, setRevealed] = useState(false);
-  return (
-    <span
-      onClick={() => setRevealed(true)}
-      data-cursor={revealed ? '' : 'REVEAL'}
-      className="relative inline-block cursor-pointer group"
-    >
-      <span className={`transition-all duration-500 ${revealed ? 'blur-0 opacity-100' : 'blur-sm opacity-0 select-none'}`}>
-        {children}
-      </span>
-      {!revealed && (
-        <span
-          className="absolute inset-0 rounded-sm flex items-center"
-          style={{ background: 'hsl(var(--foreground) / 0.85)' }}
-        />
-      )}
-    </span>
-  );
-};
-
-// ── Section Label (Zen) ───────────────────────────────────────────────────
-const SectionLabel = ({ num, title }: { num: string; title: string }) => (
-  <motion.div 
-    className="flex items-center gap-6 mb-16"
-    initial={{ opacity: 0, x: -20 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.5, ease: 'easeOut' }}
-  >
-    <span className="font-mono text-[10px] tracking-[0.2em] text-foreground/30 font-bold">{num}</span>
-    <div className="h-[0.5px] flex-1 bg-foreground/5" />
-    <span className="font-mono uppercase text-[11px] tracking-[0.15em] text-foreground/40 font-medium">{title}</span>
-  </motion.div>
-);
-
-// ── Pulse dot ───────────────────────────────────────────────────────────────
-const PulseDot = ({ color = 'crimson' }: { color?: string }) => (
-  <span className="relative flex items-center justify-center w-2 h-2 flex-shrink-0">
-    <span
-      className="absolute inline-flex w-full h-full rounded-full opacity-40 animate-ping"
-      style={{ background: `hsl(var(--${color}))` }}
-    />
-    <span className="relative inline-flex w-1.5 h-1.5 rounded-full" style={{ background: `hsl(var(--${color}))` }} />
-  </span>
-);
-
-// ── Real-time Streaming Architecture (Zen) ──────────────────────────────────
-const StreamingArchitecture = ({ components, description }: { 
-  components: { name: string; role: string; detail?: string }[];
-  description: string;
-}) => {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
-  return (
-    <div className="max-w-3xl mx-auto space-y-20">
-      <div className="text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-foreground/10 mb-6">
-          <span className="text-[10px] font-mono tracking-widest text-crimson font-bold uppercase">Technical Schema</span>
-        </div>
-        <h3 className="text-3xl md:text-4xl font-light tracking-tight" style={{ textWrap: 'balance' }}>{description}</h3>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-8">
-        {components.map((comp, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className={`group p-6 md:p-8 rounded-3xl border transition-[transform,border-color,box-shadow,background-color] duration-500 hover:-translate-y-1 ${isDark ? 'border-foreground/10 hover:border-foreground/20' : 'border-foreground/10 bg-foreground/[0.01] hover:border-foreground/15 shadow-sm hover:shadow-md'}`}
-          >
-            <div className={`w-1.5 h-1.5 rounded-full mb-6 transition-all group-hover:scale-125 ${isDark ? 'bg-white' : 'bg-foreground/40'}`} />
-            <h4 className="text-xl font-medium mb-3 tracking-tight">{comp.name}</h4>
-            <p className="text-foreground/70 leading-relaxed font-light">{comp.role}</p>
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="pt-8 border-t border-foreground/10 text-center text-[11px] font-mono text-foreground/40 tracking-widest uppercase">
-        Engineered for performance • Zero-downtime scalability
-      </div>
-    </div>
-  );
-};
-
-// ── Timeline — Zen version ──────────────────────────────────────────────────
-const Timeline = ({ items }: { items: { duration: string; phase: string; desc: string }[] }) => {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
-  return (
-    <div className="relative pl-6">
-      <div className="absolute left-0 top-2 bottom-2 w-px bg-foreground/[0.08]" />
-      {items.map((item, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, x: -8 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.35, delay: i * 0.07 }}
-          className="relative pb-16 last:pb-0 group"
-        >
-          <div
-            className={`absolute -left-[25px] top-[7px] w-2 h-2 rounded-full transition-colors duration-300 border ${isDark ? 'bg-foreground/20 border-white/10' : 'bg-foreground/10 border-foreground/5'}`}
-            style={{ background: isDark ? 'hsl(var(--background))' : '#fafafa' }}
-          />
-          <div className="flex flex-col gap-2">
-            <span className={`font-mono text-[11px] uppercase tracking-widest ${isDark ? 'text-foreground/40' : 'text-foreground/50'}`}>
-              {item.duration}
-            </span>
-            <h5 className="text-xl font-medium tracking-tight mb-2">
-              {item.phase}
-            </h5>
-            <p className={`text-[16px] leading-[1.8] font-medium max-w-[640px] ${isDark ? 'text-foreground/60' : 'text-foreground/70'}`}>
-              {item.desc}
-            </p>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-};
-
-// ── Debrief — Zen alternating pull quotes ───────────────────────────────────────
-const Debrief = ({ learnings }: { learnings: string[] }) => {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
-  return (
-    <div className="space-y-12">
-      {learnings.map((learning, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: i * 0.06 }}
-          className="group relative"
-        >
-          <GlowText className={`p-8 rounded-3xl border transition-[border-color,background-color,box-shadow] duration-700 ${isDark ? 'border-foreground/5 hover:border-foreground/10 bg-transparent' : 'border-foreground/[0.05] hover:border-foreground/[0.1] bg-foreground/[0.01] shadow-sm'}`}>
-             <div className="flex gap-6">
-               <span className="font-mono text-[10px] text-foreground/20 mt-2 uppercase tracking-[0.2em] font-bold">Log {String(i + 1).padStart(2, '0')}</span>
-               <p className={`text-xl leading-relaxed font-light transition-colors ${isDark ? 'text-foreground/70 group-hover:text-foreground/90' : 'text-foreground/70 group-hover:text-foreground/100'}`}>
-                 {learning}
-               </p>
-             </div>
-          </GlowText>
-        </motion.div>
-      ))}
-    </div>
-  );
-};
-
-// ── New Impact Metrics Section ──────────────────────────────────────────────
-const ImpactMetrics = ({ metrics }: { metrics: Array<{ label: string; value: string; suffix?: string }> }) => {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-      {metrics.map((metric, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.1 }}
-          className={`rounded-2xl p-6 text-center group transition-[border-color,background-color,transform,box-shadow] duration-500 ${isDark ? 'bg-foreground/[0.03] border border-foreground/[0.08] hover:border-crimson/30' : 'bg-foreground/[0.01] border border-foreground/[0.06] hover:border-foreground/15 shadow-sm'}`}
-        >
-          <div className={`font-mono text-4xl md:text-5xl font-bold mb-2 tabular-nums ${isDark ? 'text-crimson' : 'text-foreground/80'}`}>
-            {metric.value}{metric.suffix}
-          </div>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/30 font-bold group-hover:text-foreground/50 transition-colors">
-            {metric.label}
-          </p>
-        </motion.div>
-      ))}
-    </div>
-  );
-};
-
-// ── Sticky TOC — left rail ───────────────────────────────────────────────────
-const SECTIONS = [
-  { id: 'overview',  label: 'ZEN',       num: '00' },
-  { id: 'problem',   label: 'MISSION',   num: '01' },
-  { id: 'system',    label: 'SCHEMA',    num: '02' },
-  { id: 'impact',    label: 'IMPACT',    num: '03' },
-  { id: 'evidence',  label: 'VIEW',      num: '04' },
-  { id: 'timeline',  label: 'LOG',       num: '05' },
-  { id: 'debrief',   label: 'WRAP',      num: '06' },
-];
-
-const SidebarTOC = ({ active }: { active: string }) => {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
-  return (
-    <aside className="hidden xl:flex flex-col sticky top-32 w-[80px] shrink-0 self-start">
-      <div className="flex flex-col gap-1">
-        {SECTIONS.map((s) => {
-        const isActive = active === s.id;
-        return (
-          <a
-            key={s.id}
-            href={`#${s.id}`}
-            style={{ textDecoration: 'none' }}
-            className="group flex items-center gap-2 py-2 px-2 rounded-md transition-colors hover:bg-foreground/[0.03]"
-          >
-            <span
-              className="font-mono text-[11px] transition-colors"
-              style={{ color: isActive ? 'hsl(var(--crimson))' : (isDark ? 'hsl(var(--foreground) / 0.35)' : 'hsl(var(--foreground) / 0.5)') }}
-            >
-              {s.num}
-            </span>
-            <motion.div
-              className="h-px transition-all"
-              animate={{
-                width: isActive ? 20 : 8,
-                background: isActive ? 'hsl(var(--crimson))' : (isDark ? 'hsl(var(--foreground) / 0.12)' : 'hsl(var(--foreground) / 0.2)'),
-              }}
-            />
-            <span
-              className="font-mono text-[10px] uppercase tracking-[0.2em] transition-colors font-bold"
-              style={{ color: isActive ? (isDark ? 'hsl(var(--foreground) / 0.9)' : 'hsl(var(--foreground) / 0.8)') : (isDark ? 'hsl(var(--foreground) / 0.4)' : 'hsl(var(--foreground) / 0.3)') }}
-            >
-              {s.label}
-            </span>
-          </a>
-        );
-        })}
-      </div>
-    </aside>
-  );
-};
-
-// ── Dynamic Tag Colors ───────────────────────────────────────────────────────
-const getTagColors = (tag: string, isDark: boolean) => {
-  const hash = Array.from(tag).reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const hues = [270, 190, 150, 45, 340, 210]; // Purple, Cyan, Emerald, Amber, Rose, Blue
-  const hue = hues[hash % hues.length];
-  
-  if (isDark) {
-    return {
-      color: `hsl(${hue} 80% 75%)`,
-      background: `hsl(${hue} 80% 50% / 0.1)`,
-      borderColor: `hsl(${hue} 80% 50% / 0.2)`,
-      boxShadow: `inset 0 1px 3px hsl(${hue} 80% 50% / 0.1)`,
-    };
-  } else {
-    return {
-      color: `hsl(${hue} 80% 35%)`,
-      background: `hsl(${hue} 80% 50% / 0.08)`,
-      borderColor: `hsl(${hue} 80% 50% / 0.15)`,
-      boxShadow: `none`,
-    };
-  }
-};
-
-// ── Main component ───────────────────────────────────────────────────────────
-// ── Action Links (Zen Style) ─────────────────────────────────────────────
-const ProjectActions = ({ project, hasCode, hasDoc, hasLive }: any) => {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-  return (
-    <div className="flex flex-wrap gap-3 justify-center mt-12">
-      {hasCode && (
-        <a
-          href={project.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-cursor="SOURCE"
-          className={`inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-2xl border transition-all group ${isDark ? 'border-foreground/20 hover:border-foreground/40' : 'border-foreground/10 bg-white/50 hover:border-foreground/20 shadow-sm hover:shadow-md'}`}
-        >
-          <span className="font-mono text-xs uppercase tracking-[0.15em] font-bold">Source Code</span>
-          <span className="text-xl group-hover:rotate-12 transition-transform opacity-50">↗</span>
-        </a>
-      )}
-
-      {hasDoc && (
-        <a
-          href={project.docUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-cursor="DOCS"
-          className={`inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-2xl border transition-all ${isDark ? 'border-foreground/20 hover:border-foreground/40' : 'border-foreground/10 bg-white/50 hover:border-foreground/20 shadow-sm hover:shadow-md'}`}
-        >
-          <span className="font-mono text-xs uppercase tracking-[0.15em] font-bold">Case Study</span>
-        </a>
-      )}
-
-      {project.liveUrl && (
-        <a
-          href={project.liveUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-cursor="LIVE"
-          className={`inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-2xl transition-all font-bold ${isDark ? 'bg-foreground text-background hover:bg-crimson' : 'bg-foreground text-background hover:opacity-90 shadow-lg hover:shadow-xl'}`}
-        >
-          <span className="font-mono text-xs uppercase tracking-[0.15em]">Live Demo →</span>
-        </a>
-      )}
-    </div>
-  );
-};
+import { useReducedMotion } from '@features/projects/components/ProjectDetail/utils';
+import AnimatedSection from '@features/projects/components/ProjectDetail/AnimatedSection';
+import MagneticCursor from '@features/projects/components/ProjectDetail/MagneticCursor';
+import GlowText from '@features/projects/components/ProjectDetail/GlowText';
+import SectionLabel from '@features/projects/components/ProjectDetail/SectionLabel';
+import PulseDot from '@features/projects/components/ProjectDetail/PulseDot';
+import StreamingArchitecture from '@features/projects/components/ProjectDetail/StreamingArchitecture';
+import Timeline from '@features/projects/components/ProjectDetail/Timeline';
+import Debrief from '@features/projects/components/ProjectDetail/Debrief';
+import SidebarTOC, { SECTIONS } from '@features/projects/components/ProjectDetail/SidebarTOC';
+import ProjectBentoGrid from '@features/projects/components/ProjectDetail/ProjectBentoGrid';
 
 // ── Main component ───────────────────────────────────────────────────────────
 const ProjectDetail = () => {
@@ -478,9 +43,9 @@ const ProjectDetail = () => {
     const compute = () => {
       const vw = window.innerWidth;
       setIsTouch(window.matchMedia('(pointer: coarse)').matches);
-      if (vw < 480)      setCardDims({ w: Math.min(300, vw - 40), h: 200 });
+      if (vw < 480) setCardDims({ w: Math.min(300, vw - 40), h: 200 });
       else if (vw < 768) setCardDims({ w: Math.min(360, vw - 60), h: 240 });
-      else               setCardDims({ w: 420, h: 280 });
+      else setCardDims({ w: 420, h: 280 });
     };
     compute();
     window.addEventListener('resize', compute);
@@ -501,7 +66,7 @@ const ProjectDetail = () => {
   const goPrev = () => setPreviewIndex(i => (i - 1 + galleryImages.length) % galleryImages.length);
 
   const hasCode = !!(project.github && project.github !== '#' && project.github !== null);
-  const hasDoc  = !!(project.docUrl && project.docUrl !== '#');
+  const hasDoc = !!(project.docUrl && project.docUrl !== '#');
   const hasLive = !!(project.liveUrl);
 
   const { scrollYProgress } = useScroll({ target: pageRef, offset: ['start start', 'end end'] });
@@ -545,34 +110,34 @@ const ProjectDetail = () => {
         {!isDark && (
           <>
             {/* <ScrollImageSequence opacity={0.55} /> */}
-            <div 
-              className="absolute inset-0" 
-              style={{ 
+            <div
+              className="absolute inset-0"
+              style={{
                 background: 'radial-gradient(circle at center, transparent 20%, #fafafa 100%)',
                 opacity: 0.4
-              }} 
+              }}
             />
           </>
         )}
         <div className="absolute inset-0 opacity-30">
           {isDark && (
-             <>
-               <LightRays raysColor="#4f46e5" raysSpeed={0.45} noiseAmount={0.01} />
-               <LightPillar 
-                 topColor="#7C5CFC" 
-                 bottomColor="#00D4FF" 
-                 intensity={0.6} 
-                 pillarWidth={2.5} 
-                 glowAmount={0.003} 
-                 noiseIntensity={0.2}
-               />
-             </>
+            <>
+              <LightRays raysColor="#4f46e5" raysSpeed={0.45} noiseAmount={0.01} />
+              <LightPillar
+                topColor="#7C5CFC"
+                bottomColor="#00D4FF"
+                intensity={0.6}
+                pillarWidth={2.5}
+                glowAmount={0.003}
+                noiseIntensity={0.2}
+              />
+            </>
           )}
         </div>
       </div>
 
       <div className="relative z-10 pt-28 pb-32 max-w-4xl mx-auto px-6 md:px-8">
-        
+
         {/* Back Button */}
         <motion.button
           onClick={() => navigate('/projects')}
@@ -582,67 +147,42 @@ const ProjectDetail = () => {
           ← <span className="group-hover:underline">All Projects</span>
         </motion.button>
 
-        {/* Hero */}
-        <div className="text-center mb-24">
-          <div className="flex justify-center gap-4 mb-6">
+        {/* Cinematic Header */}
+        <div className="mb-12">
+          <div className="flex items-center gap-4 mb-4">
             <PulseDot color={project.status === 'Production' ? 'crimson' : 'gold'} />
-            <span className="font-mono text-xs tracking-[3px] text-foreground/50">{project.year} • {project.status}</span>
+            <span className="font-mono text-xs tracking-[3px] text-foreground/50">{project.status}</span>
           </div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="font-light text-4xl sm:text-6xl md:text-8xl leading-tight md:leading-none tracking-tighter mb-8 break-words"
+            className="font-light text-4xl sm:text-5xl leading-tight tracking-tighter mb-4 break-words"
           >
             {project.title}
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="text-2xl text-foreground/70 max-w-2xl mx-auto leading-tight font-light"
+            transition={{ delay: 0.2 }}
+            className="text-lg text-foreground/70 max-w-2xl leading-relaxed font-light"
           >
             {project.tagline}
           </motion.p>
         </div>
 
-        {/* Meta Info */}
-        <div className="flex flex-wrap justify-center gap-x-12 gap-y-8 text-center mb-20 text-sm">
-          <div>
-            <div className="text-foreground/40 text-xs tracking-widest mb-1 uppercase font-bold">Role</div>
-            <div className="font-medium">{project.role}</div>
-          </div>
-          <div>
-            <div className="text-foreground/40 text-xs tracking-widest mb-1 uppercase font-bold">Team</div>
-            <div className="font-medium">{project.team}</div>
-          </div>
-          <div>
-            <div className="text-foreground/40 text-xs tracking-widest mb-1 uppercase font-bold">Duration</div>
-            <div className="font-medium">{project.duration}</div>
-          </div>
-        </div>
+        {/* Bento Grid */}
+        <ProjectBentoGrid project={project} />
 
-        {/* Project Actions */}
-        <ProjectActions project={project} hasCode={hasCode} hasDoc={hasDoc} hasLive={hasLive} />
-
-        {/* Tags */}
-        <div className="flex flex-wrap justify-center gap-2 mt-10">
-          {project.tags.map((tag: string) => (
-            <span key={tag} className="px-4 py-1.5 text-xs font-mono border border-foreground/10 rounded-full text-foreground/60">
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        <main className="mt-32 space-y-48">
+        <main className="mt-16 space-y-24">
           {/* ════════════════════════════════════════════
               00  ZEN OVERVIEW
           ════════════════════════════════════════════ */}
           <AnimatedSection id="overview" direction="up">
             <SectionLabel num="00" title="Overview" />
-            <GlowText className="text-2xl leading-relaxed text-center text-foreground/80 font-light">
+            <GlowText className="text-lg leading-relaxed text-center text-foreground/80 font-light">
               {project.problem}
             </GlowText>
           </AnimatedSection>
@@ -652,7 +192,7 @@ const ProjectDetail = () => {
           ════════════════════════════════════════════ */}
           <AnimatedSection id="problem" direction="left" delay={0.05}>
             <SectionLabel num="01" title="The Mission" />
-            <GlowText className="text-xl md:text-2xl leading-relaxed text-center max-w-3xl mx-auto italic font-medium">
+            <GlowText className="text-lg md:text-xl leading-relaxed text-center max-w-3xl mx-auto italic font-medium">
               {project.solution}
             </GlowText>
           </AnimatedSection>
@@ -662,21 +202,13 @@ const ProjectDetail = () => {
           ════════════════════════════════════════════ */}
           <AnimatedSection id="system" direction="up" delay={0.05}>
             <SectionLabel num="02" title="Real-time Architecture" />
-            <StreamingArchitecture 
+            <StreamingArchitecture
               components={project.architecture.components}
               description={project.architecture.description}
             />
           </AnimatedSection>
 
-          {/* ════════════════════════════════════════════
-              03  IMPACT
-          ════════════════════════════════════════════ */}
-          {project.metrics && (
-            <AnimatedSection id="impact" direction="right" delay={0.05}>
-              <SectionLabel num="03" title="Impact" />
-              <ImpactMetrics metrics={project.metrics} />
-            </AnimatedSection>
-          )}
+
 
           {/* ════════════════════════════════════════════
               04  VISUAL EVIDENCE
@@ -687,9 +219,9 @@ const ProjectDetail = () => {
             {/* Video Thumbnails */}
             {project.videoLinks?.length > 0 && (
               isDark ? (
-                <BorderGlow 
-                  glowColor="124 92 252" 
-                  className="mb-20 rounded-[40px] overflow-hidden" 
+                <BorderGlow
+                  glowColor="124 92 252"
+                  className="mb-20 rounded-[40px] overflow-hidden"
                   borderRadius={40}
                 >
                   <div className="p-8 md:p-12">
@@ -698,17 +230,17 @@ const ProjectDetail = () => {
                       {project.videoLinks.map((vid: any, i: number) => (
                         <a key={i} href={vid.url} target="_blank" rel="noopener noreferrer" className="group block">
                           <div className={`relative aspect-video rounded-3xl overflow-hidden ${isDark ? 'bg-black/10' : 'bg-foreground/[0.03]'}`}>
-                            <img 
-                              src={`https://picsum.photos/seed/video-${project.id}-${i}/800/450`} 
-                              className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-all duration-500 group-hover:scale-105" 
+                            <img
+                              src={`https://picsum.photos/seed/video-${project.id}-${i}/800/450`}
+                              className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-all duration-500 group-hover:scale-105"
                               alt={vid.title}
                             />
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <div 
+                              <div
                                 className={`w-16 h-16 rounded-full flex items-center justify-center border transition-all duration-500 group-hover:scale-110 ${isDark ? 'bg-white/10 border-white/30 backdrop-blur-md' : 'bg-foreground/5 border-foreground/10 backdrop-blur-xl'}`}
                               >
-                                <div 
-                                  className={`w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent ml-1 ${isDark ? 'border-l-white' : 'border-l-foreground/60'}`} 
+                                <div
+                                  className={`w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent ml-1 ${isDark ? 'border-l-white' : 'border-l-foreground/60'}`}
                                 />
                               </div>
                             </div>
@@ -726,17 +258,17 @@ const ProjectDetail = () => {
                     {project.videoLinks.map((vid: any, i: number) => (
                       <a key={i} href={vid.url} target="_blank" rel="noopener noreferrer" className="group block">
                         <div className="relative aspect-video rounded-3xl overflow-hidden bg-foreground/[0.03]">
-                          <img 
-                            src={`https://picsum.photos/seed/video-${project.id}-${i}/800/450`} 
-                            className="w-full h-full object-cover opacity-85 group-hover:opacity-100 transition-all duration-500 group-hover:scale-105" 
+                          <img
+                            src={`https://picsum.photos/seed/video-${project.id}-${i}/800/450`}
+                            className="w-full h-full object-cover opacity-85 group-hover:opacity-100 transition-all duration-500 group-hover:scale-105"
                             alt={vid.title}
                           />
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <div 
+                            <div
                               className="w-16 h-16 rounded-full flex items-center justify-center border border-foreground/10 bg-white/40 backdrop-blur-xl transition-all duration-500 group-hover:scale-110"
                             >
-                              <div 
-                                className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-foreground/40 ml-1" 
+                              <div
+                                className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-foreground/40 ml-1"
                               />
                             </div>
                           </div>
@@ -763,14 +295,14 @@ const ProjectDetail = () => {
                   autoAdvance
                   intervalMs={4500}
                   renderCard={(item) => (
-                    <div 
-                      className="relative h-full w-full overflow-hidden rounded-[32px] cursor-zoom-in group shadow-2xl" 
+                    <div
+                      className="relative h-full w-full overflow-hidden rounded-[32px] cursor-zoom-in group shadow-2xl"
                       onClick={() => setPreviewIndex(item.id as number)}
                     >
-                      <img 
-                        src={item.imageSrc} 
-                        className={`w-full h-full object-cover transition-all duration-700 ${isDark ? 'grayscale-[0.4] group-hover:grayscale-0' : 'grayscale-[0.1] group-hover:grayscale-0'}`} 
-                        alt={item.title} 
+                      <img
+                        src={item.imageSrc}
+                        className={`w-full h-full object-cover transition-all duration-700 ${isDark ? 'grayscale-[0.4] group-hover:grayscale-0' : 'grayscale-[0.1] group-hover:grayscale-0'}`}
+                        alt={item.title}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       <div className="absolute bottom-6 left-6 text-white opacity-0 group-hover:opacity-100 transition-opacity font-mono text-xs tracking-widest">
@@ -937,6 +469,7 @@ const ProjectDetail = () => {
         )}
       </AnimatePresence>
     </div>
+
   );
 };
 
