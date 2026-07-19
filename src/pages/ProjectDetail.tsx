@@ -14,16 +14,9 @@ import BorderGlow from '@components/ui/BorderGlow';
 import { CardStack } from '@components/ui/card-stack';
 // import ScrollImageSequence from '@components/animations/ScrollImageSequence';
 import { useReducedMotion } from '@features/projects/components/ProjectDetail/utils';
-import AnimatedSection from '@features/projects/components/ProjectDetail/AnimatedSection';
 import MagneticCursor from '@features/projects/components/ProjectDetail/MagneticCursor';
-import GlowText from '@features/projects/components/ProjectDetail/GlowText';
-import SectionLabel from '@features/projects/components/ProjectDetail/SectionLabel';
-import PulseDot from '@features/projects/components/ProjectDetail/PulseDot';
-import StreamingArchitecture from '@features/projects/components/ProjectDetail/StreamingArchitecture';
-import Timeline from '@features/projects/components/ProjectDetail/Timeline';
-import Debrief from '@features/projects/components/ProjectDetail/Debrief';
-import SidebarTOC, { SECTIONS } from '@features/projects/components/ProjectDetail/SidebarTOC';
 import ProjectBentoGrid from '@features/projects/components/ProjectDetail/ProjectBentoGrid';
+import PulseDot from '@features/projects/components/ProjectDetail/PulseDot';
 
 // ── Main component ───────────────────────────────────────────────────────────
 const ProjectDetail = () => {
@@ -67,20 +60,10 @@ const ProjectDetail = () => {
 
   const hasCode = !!(project.github && project.github !== '#' && project.github !== null);
   const hasDoc = !!(project.docUrl && project.docUrl !== '#');
-  const hasLive = !!(project.liveUrl);
+  const hasLive = !!project.liveUrl;
 
   const { scrollYProgress } = useScroll({ target: pageRef, offset: ['start start', 'end end'] });
   const progressScaleX = useSpring(scrollYProgress, { stiffness: 180, damping: 28 });
-
-  useEffect(() => {
-    const els = SECTIONS.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
-    const obs = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) setActiveTOC(e.target.id); }),
-      { rootMargin: '-20% 0px -70% 0px' }
-    );
-    els.forEach((el) => obs.observe(el));
-    return () => obs.disconnect();
-  }, []);
 
   // Keyboard navigation for preview modal
   useEffect(() => {
@@ -173,167 +156,11 @@ const ProjectDetail = () => {
           </motion.p>
         </div>
 
-        {/* Bento Grid */}
+        {/* Main Content - Zen Bento Grid */}
         <ProjectBentoGrid project={project} />
 
-        <main className="mt-16 space-y-24">
-          {/* ════════════════════════════════════════════
-              00  ZEN OVERVIEW
-          ════════════════════════════════════════════ */}
-          <AnimatedSection id="overview" direction="up">
-            <SectionLabel num="00" title="Overview" />
-            <GlowText className="text-lg leading-relaxed text-center text-foreground/80 font-light">
-              {project.problem}
-            </GlowText>
-          </AnimatedSection>
-
-          {/* ════════════════════════════════════════════
-              01  THE MISSION
-          ════════════════════════════════════════════ */}
-          <AnimatedSection id="problem" direction="left" delay={0.05}>
-            <SectionLabel num="01" title="The Mission" />
-            <GlowText className="text-lg md:text-xl leading-relaxed text-center max-w-3xl mx-auto italic font-medium">
-              {project.solution}
-            </GlowText>
-          </AnimatedSection>
-
-          {/* ════════════════════════════════════════════
-              02  REAL-TIME ARCHITECTURE
-          ════════════════════════════════════════════ */}
-          <AnimatedSection id="system" direction="up" delay={0.05}>
-            <SectionLabel num="02" title="Real-time Architecture" />
-            <StreamingArchitecture
-              components={project.architecture.components}
-              description={project.architecture.description}
-            />
-          </AnimatedSection>
-
-
-
-          {/* ════════════════════════════════════════════
-              04  VISUAL EVIDENCE
-          ════════════════════════════════════════════ */}
-          <AnimatedSection id="evidence" direction="up">
-            <SectionLabel num="04" title="Visual Evidence" />
-
-            {/* Video Thumbnails */}
-            {project.videoLinks?.length > 0 && (
-              isDark ? (
-                <BorderGlow
-                  glowColor="124 92 252"
-                  className="mb-20 rounded-[40px] overflow-hidden"
-                  borderRadius={40}
-                >
-                  <div className="p-8 md:p-12">
-                    <h4 className="font-mono uppercase tracking-widest text-sm mb-8 text-center text-foreground/40">Demonstrations</h4>
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {project.videoLinks.map((vid: any, i: number) => (
-                        <a key={i} href={vid.url} target="_blank" rel="noopener noreferrer" className="group block">
-                          <div className={`relative aspect-video rounded-3xl overflow-hidden ${isDark ? 'bg-black/10' : 'bg-foreground/[0.03]'}`}>
-                            <img
-                              src={`https://picsum.photos/seed/video-${project.id}-${i}/800/450`}
-                              className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-all duration-500 group-hover:scale-105"
-                              alt={vid.title}
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div
-                                className={`w-16 h-16 rounded-full flex items-center justify-center border transition-all duration-500 group-hover:scale-110 ${isDark ? 'bg-white/10 border-white/30 backdrop-blur-md' : 'bg-foreground/5 border-foreground/10 backdrop-blur-xl'}`}
-                              >
-                                <div
-                                  className={`w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent ml-1 ${isDark ? 'border-l-white' : 'border-l-foreground/60'}`}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <p className="mt-4 text-center font-medium group-hover:text-crimson transition-colors">{vid.title}</p>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </BorderGlow>
-              ) : (
-                <div className="mb-20 rounded-[40px] overflow-hidden bg-foreground/[0.02] border border-foreground/[0.08] p-8 md:p-12 shadow-sm">
-                  <h4 className="font-mono uppercase tracking-widest text-sm mb-8 text-center text-foreground/30">Demonstrations</h4>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {project.videoLinks.map((vid: any, i: number) => (
-                      <a key={i} href={vid.url} target="_blank" rel="noopener noreferrer" className="group block">
-                        <div className="relative aspect-video rounded-3xl overflow-hidden bg-foreground/[0.03]">
-                          <img
-                            src={`https://picsum.photos/seed/video-${project.id}-${i}/800/450`}
-                            className="w-full h-full object-cover opacity-85 group-hover:opacity-100 transition-all duration-500 group-hover:scale-105"
-                            alt={vid.title}
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div
-                              className="w-16 h-16 rounded-full flex items-center justify-center border border-foreground/10 bg-white/40 backdrop-blur-xl transition-all duration-500 group-hover:scale-110"
-                            >
-                              <div
-                                className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-foreground/40 ml-1"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <p className="mt-4 text-center font-medium text-foreground/70 group-hover:text-crimson transition-colors tracking-tight">{vid.title}</p>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )
-            )}
-
-            {/* Screenshot Gallery */}
-            {project.screenshots?.length > 0 && (
-              <div className="flex justify-center mt-24">
-                <CardStack
-                  items={project.screenshots.map((shot: any, idx: number) => ({
-                    id: idx,
-                    title: shot.caption || `Artifact ${idx + 1}`,
-                    imageSrc: (isDark ? shot.image : (shot.lightImage || shot.image)) || `https://picsum.photos/seed/${project.id}-${idx}/900/600`,
-                  }))}
-                  cardWidth={cardDims.w}
-                  cardHeight={cardDims.h}
-                  autoAdvance
-                  intervalMs={4500}
-                  renderCard={(item) => (
-                    <div
-                      className="relative h-full w-full overflow-hidden rounded-[32px] cursor-zoom-in group shadow-2xl"
-                      onClick={() => setPreviewIndex(item.id as number)}
-                    >
-                      <img
-                        src={item.imageSrc}
-                        className={`w-full h-full object-cover transition-all duration-700 ${isDark ? 'grayscale-[0.4] group-hover:grayscale-0' : 'grayscale-[0.1] group-hover:grayscale-0'}`}
-                        alt={item.title}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <div className="absolute bottom-6 left-6 text-white opacity-0 group-hover:opacity-100 transition-opacity font-mono text-xs tracking-widest">
-                        {item.title}
-                      </div>
-                    </div>
-                  )}
-                />
-              </div>
-            )}
-          </AnimatedSection>
-
-          {/* ════════════════════════════════════════════
-              05  EXECUTION LOG
-          ════════════════════════════════════════════ */}
-          <AnimatedSection id="timeline" direction="left" delay={0.05}>
-            <SectionLabel num="05" title="Execution Log" />
-            <Timeline items={project.timeline} />
-          </AnimatedSection>
-
-          {/* ════════════════════════════════════════════
-              06  RETROSPECTIVE
-          ════════════════════════════════════════════ */}
-          <AnimatedSection id="debrief" direction="up" delay={0.05}>
-            <SectionLabel num="06" title="Retrospective" />
-            <Debrief learnings={project.learnings} />
-          </AnimatedSection>
-        </main>
-
         {/* Final CTA (Zen) */}
-        <div className="mt-64 text-center">
+        <div className="mt-24 text-center pb-8">
           <p className="font-mono text-[10px] uppercase tracking-[4px] text-foreground/30 mb-8 font-bold">Colombo, Sri Lanka</p>
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -345,6 +172,14 @@ const ProjectDetail = () => {
           </motion.button>
         </div>
       </div>
+
+      {/* Bottom fade over project details */}
+      <div
+        className="relative w-full h-[22vh] pointer-events-none z-30 -mt-[22vh]"
+        style={{
+          background: 'linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)',
+        }}
+      />
 
       <Footer />
 
