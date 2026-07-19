@@ -25,4 +25,4 @@ import{Q as e,X as t,Y as n,et as r,rt as i,t as a,tt as o}from"./proxy-Dz-CVXSi
             padding: 60px 40px !important;
           }
         }
-      `})]})};export{A as n,ie as t};
+      `}),(0,m.jsx)(`div`,{className:`absolute inset-x-0 bottom-0 h-[22vh] pointer-events-none z-30`,style:{background:`linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)`}})]})};export{A as n,ie as t};
