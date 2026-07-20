@@ -2,6 +2,7 @@ import { useRef, useMemo } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
 import Magnetic from '@components/animations/Magnetic';
+import dayHeroImg   from '@assets/images/hero/eve.png';
 import nightHeroImg from '@assets/images/hero/midnight.png';
 import camperImg from '@assets/images/hero/person_camping_area.png';
 
@@ -156,16 +157,19 @@ const Hero = () => {
   const contentOpacity = useTransform(smoothProgress, [0, 0.7], [1, 0]);
 
   const c = useMemo(() => ({
-    eyebrow: '#00D4FF',
-    name: '#FFFFFF',
-    nameGlow: '0 0 40px rgba(0,212,255,0.25), 0 0 80px rgba(124,92,252,0.15)',
-    tagline: 'rgba(255,255,255,0.95)',
-    desc: 'rgba(255,255,255,0.65)',
-    scroll: 'rgba(255,255,255,0.35)',
-    btnPrimary: 'linear-gradient(135deg, #7C5CFC 0%, #00D4FF 100%)',
-    btnSecBorder: 'rgba(0,212,255,0.3)',
-    btnSecText: '#FFFFFF',
-  }), []);
+  eyebrow: isDark ? '#00D4FF' : '#B8783C',
+  name: isDark ? '#FFFFFF' : '#2E271F',
+  nameGlow: 'none',
+  tagline: isDark ? 'rgba(255,255,255,0.95)' : 'rgba(46,39,31,0.88)',
+  desc: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(46,39,31,0.62)',
+  scroll: isDark ? 'rgba(255,255,255,0.35)' : 'rgba(46,39,31,0.4)',
+  btnPrimary: 'linear-gradient(135deg, #7C5CFC 0%, #00D4FF 100%)',
+  btnSecBorder: isDark ? 'rgba(0,212,255,0.3)' : 'rgba(46,39,31,0.22)',
+  btnSecText: isDark ? '#FFFFFF' : '#2E271F',
+  btnSecBg: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.35)',
+  btnSecHoverBorder: isDark ? '#00D4FF' : '#B8783C',
+  btnSecHoverBg: isDark ? 'rgba(0,212,255,0.08)' : 'rgba(184,120,60,0.10)',
+}), [isDark]);
 
   // Fireflies near the lantern
   const fireflies = useMemo(() => [
@@ -196,37 +200,41 @@ const Hero = () => {
       className="relative h-[100dvh] w-full overflow-hidden bg-black"
       aria-label="Hero section"
     >
-      {/* ═══════════════════════════════════════════════════════════
-          LAYER 1: Cosmic Background
+            {/* ═══════════════════════════════════════════════════════════
+          LAYER 1: Background
           ═══════════════════════════════════════════════════════════ */}
       <motion.div 
         className="absolute inset-0 -z-30"
         style={{ y: bgY, scale: bgScale, willChange: 'transform' }}
       >
         <motion.img
-          src={nightHeroImg}
-          alt="Cosmic night sky"
+          src={isDark ? nightHeroImg : dayHeroImg}
+          alt={isDark ? 'Cosmic night sky' : 'Morning landscape'}
           className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{ filter: 'brightness(0.7) saturate(1.1)' }}
+          style={{ filter: isDark ? 'brightness(0.7) saturate(1.1)' : 'brightness(1.05) saturate(1.05)' }}
           initial={{ scale: 1.12, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
           loading="eager"
         />
-        {/* Vignette — pulls focus to center-left */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'radial-gradient(ellipse 65% 100% at 25% 60%, transparent 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.75) 100%)',
-          }}
-        />
-        {/* Night darkness overlay */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.5) 100%)',
-          }}
-        />
+
+        {/* Vignette & night darkness — dark mode only */}
+        {isDark && (
+          <>
+            <div
+              className="absolute inset-0"
+              style={{
+                background: 'radial-gradient(ellipse 65% 100% at 25% 60%, transparent 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.75) 100%)',
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.5) 100%)',
+              }}
+            />
+          </>
+        )}
       </motion.div>
 
       {/* ═══════════════════════════════════════════════════════════
@@ -245,79 +253,84 @@ const Hero = () => {
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         >
           <img
-            src={camperImg}
-            alt="Camper overlooking the horizon"
-            className="w-[58vw] max-w-[750px] min-w-[300px] h-auto object-contain object-bottom"
-            style={{ 
-              filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.7)) drop-shadow(0 0 40px rgba(0,0,0,0.4)) brightness(0.85)',
-            }}
-            loading="eager"
-          />
+  src={camperImg}
+  alt="Camper overlooking the horizon"
+  className="w-[58vw] max-w-[750px] min-w-[300px] h-auto object-contain object-bottom"
+  style={{
+    filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.7)) drop-shadow(0 0 40px rgba(0,0,0,0.4)) brightness(0.85)',
+    mixBlendMode: isDark ? 'normal' : 'multiply',
+  }}
+  loading="eager"
+/>
         </motion.div>
       </motion.div>
 
-      {/* ═══════════════════════════════════════════════════════════
-          LAYER 3: Atmospheric Effects
+            {/* ═══════════════════════════════════════════════════════════
+          LAYER 3: Atmospheric Effects (night only)
           ═══════════════════════════════════════════════════════════ */}
-      {/* Dark overlay on campsite area for night realism */}
-      <div
-        className="absolute bottom-0 left-0 w-[60vw] h-[55vh] pointer-events-none z-[5]"
-        style={{
-          background: 'radial-gradient(ellipse at 15% 90%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 40%, transparent 70%)',
-          maskImage: 'linear-gradient(to right, black 60%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to right, black 60%, transparent 100%)',
-        }}
-      />
-      <div
-        className="absolute bottom-0 left-0 w-[45vw] h-[40vh] pointer-events-none z-[5]"
-        style={{
-          background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)',
-          maskImage: 'linear-gradient(to right, black 50%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to right, black 50%, transparent 100%)',
-        }}
-      />
+      {isDark && (
+        <>
+          {/* Dark overlay on campsite area for night realism */}
+          <div
+            className="absolute bottom-0 left-0 w-[60vw] h-[55vh] pointer-events-none z-[5]"
+            style={{
+              background: 'radial-gradient(ellipse at 15% 90%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 40%, transparent 70%)',
+              maskImage: 'linear-gradient(to right, black 60%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to right, black 60%, transparent 100%)',
+            }}
+          />
+          <div
+            className="absolute bottom-0 left-0 w-[45vw] h-[40vh] pointer-events-none z-[5]"
+            style={{
+              background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)',
+              maskImage: 'linear-gradient(to right, black 50%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to right, black 50%, transparent 100%)',
+            }}
+          />
 
-      {/* Realistic lantern warm glow — blends with cosmic sky */}
-      <LanternGlow x="8%" y="82%" scale={1.2} />
-      <LanternGlow x="12%" y="85%" scale={0.9} />
-      <LanternGlow x="6%" y="88%" scale={0.7} />
+          {/* Realistic lantern warm glow — blends with cosmic sky */}
+          <LanternGlow x="8%" y="82%" scale={1.2} />
+          <LanternGlow x="12%" y="85%" scale={0.9} />
+          <LanternGlow x="6%" y="88%" scale={0.7} />
 
-      {/* Light rays emanating from lanterns */}
-      <LightRay x="8%" y="82%" rotation={-25} width={80} delay={0} />
-      <LightRay x="8%" y="82%" rotation={-10} width={60} delay={1.5} />
-      <LightRay x="12%" y="85%" rotation={-35} width={50} delay={0.8} />
-      <LightRay x="6%" y="88%" rotation={-15} width={40} delay={2} />
+          {/* Light rays emanating from lanterns */}
+          <LightRay x="8%" y="82%" rotation={-25} width={80} delay={0} />
+          <LightRay x="8%" y="82%" rotation={-10} width={60} delay={1.5} />
+          <LightRay x="12%" y="85%" rotation={-35} width={50} delay={0.8} />
+          <LightRay x="6%" y="88%" rotation={-15} width={40} delay={2} />
 
-      {/* Warm ambient ground reflection */}
-      <motion.div
-        className="absolute pointer-events-none z-[6]"
-        style={{ 
-          left: '2%', 
-          bottom: '5%', 
-          width: '25vw', 
-          height: '15vh',
-          background: 'radial-gradient(ellipse at center, rgba(255,160,60,0.08) 0%, transparent 70%)',
-          filter: 'blur(20px)',
-        }}
-        animate={{ opacity: [0.5, 0.8, 0.5] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-      />
+          {/* Warm ambient ground reflection */}
+          <motion.div
+            className="absolute pointer-events-none z-[6]"
+            style={{ 
+              left: '2%', 
+              bottom: '5%', 
+              width: '25vw', 
+              height: '15vh',
+              background: 'radial-gradient(ellipse at center, rgba(255,160,60,0.08) 0%, transparent 70%)',
+              filter: 'blur(20px)',
+            }}
+            animate={{ opacity: [0.5, 0.8, 0.5] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          />
 
-      {fireflies.map((fly, i) => (
-        <Firefly key={i} {...fly} />
-      ))}
+          {fireflies.map((fly, i) => (
+            <Firefly key={i} {...fly} />
+          ))}
 
-      {dustMotes.map((mote, i) => (
-        <DustMote key={`dust-${i}`} {...mote} />
-      ))}
+          {dustMotes.map((mote, i) => (
+            <DustMote key={`dust-${i}`} {...mote} />
+          ))}
 
-      {/* Subtle nebula dust near camper */}
-      <div 
-        className="absolute bottom-0 left-0 w-[40vw] h-[40vh] pointer-events-none z-0 mix-blend-screen opacity-25"
-        style={{
-          background: 'radial-gradient(ellipse at 20% 80%, rgba(124,92,252,0.12) 0%, transparent 60%)',
-        }}
-      />
+          {/* Subtle nebula dust near camper */}
+          <div 
+            className="absolute bottom-0 left-0 w-[40vw] h-[40vh] pointer-events-none z-0 mix-blend-screen opacity-25"
+            style={{
+              background: 'radial-gradient(ellipse at 20% 80%, rgba(124,92,252,0.12) 0%, transparent 60%)',
+            }}
+          />
+        </>
+      )}
 
       {/* ═══════════════════════════════════════════════════════════
           LAYER 4: Content (right-aligned)
@@ -349,17 +362,18 @@ const Hero = () => {
         {/* Name */}
         <div className="relative overflow-hidden">
           <h1
-            className="select-none uppercase font-winner"
-            style={{
-              fontSize: 'clamp(32px, 7vw, 80px)',
-              lineHeight: 0.9,
-              color: c.name,
-              letterSpacing: '0.04em',
-              perspective: '600px',
-              fontWeight: 700,
-            }}
-            aria-label="Gayan Kavinda"
-          >
+  className="select-none uppercase font-winner"
+  style={{
+    fontSize: 'clamp(32px, 7vw, 80px)',
+    lineHeight: 0.9,
+    color: c.name,
+    textShadow: c.nameGlow,
+    letterSpacing: '0.04em',
+    perspective: '600px',
+    fontWeight: 700,
+  }}
+  aria-label="Gayan Kavinda"
+>
             <span className="block overflow-hidden">
               <MotionSplitChars text="GAYAN" delay={0.7} />
             </span>
@@ -433,33 +447,33 @@ const Hero = () => {
           >
             <Magnetic strength={0.15}>
               <button
-                className="group relative focus:outline-none focus:ring-2 focus:ring-white/20"
-                style={{
-                  fontFamily: "'Audiowide', sans-serif",
-                  fontSize: 'clamp(10px, 1vw, 11px)',
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                  padding: '14px 40px',
-                  border: `1.5px solid ${c.btnSecBorder}`,
-                  color: c.btnSecText,
-                  background: 'rgba(0,0,0,0.2)',
-                  clipPath: CLIP_BTN,
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
-                  transition: 'border-color 0.3s ease, background 0.3s ease',
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = '#00D4FF';
-                  e.currentTarget.style.background = 'rgba(0,212,255,0.08)';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = c.btnSecBorder;
-                  e.currentTarget.style.background = 'rgba(0,0,0,0.2)';
-                }}
-                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                Let's Connect
-              </button>
+  className="group relative focus:outline-none focus:ring-2 focus:ring-white/20"
+  style={{
+    fontFamily: "'Audiowide', sans-serif",
+    fontSize: 'clamp(10px, 1vw, 11px)',
+    letterSpacing: '0.14em',
+    textTransform: 'uppercase',
+    padding: '14px 40px',
+    border: `1.5px solid ${c.btnSecBorder}`,
+    color: c.btnSecText,
+    background: c.btnSecBg,
+    clipPath: CLIP_BTN,
+    backdropFilter: 'blur(12px)',
+    WebkitBackdropFilter: 'blur(12px)',
+    transition: 'border-color 0.3s ease, background 0.3s ease',
+  }}
+  onMouseEnter={e => {
+    e.currentTarget.style.borderColor = c.btnSecHoverBorder;
+    e.currentTarget.style.background = c.btnSecHoverBg;
+  }}
+  onMouseLeave={e => {
+    e.currentTarget.style.borderColor = c.btnSecBorder;
+    e.currentTarget.style.background = c.btnSecBg;
+  }}
+  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+>
+  Let's Connect
+</button>
             </Magnetic>
           </motion.div>
         </div>
@@ -472,18 +486,24 @@ const Hero = () => {
           transition={{ duration: 0.6, delay: 2.1 }}
         >
           {['React', 'Go', 'Kubernetes', 'AWS', 'Terraform'].map((tech, i) => (
-            <span 
-              key={tech}
-              className="px-3 py-1 rounded-full text-[clamp(10px,1.1vw,12px)] font-medium"
-              style={{ 
-                background: i % 2 === 0 ? 'rgba(124,92,252,0.12)' : 'rgba(0,212,255,0.10)',
-                color: i % 2 === 0 ? '#A78BFA' : '#67E8F9',
-                border: `1px solid ${i % 2 === 0 ? 'rgba(124,92,252,0.2)' : 'rgba(0,212,255,0.15)'}`,
-              }}
-            >
-              {tech}
-            </span>
-          ))}
+  <span 
+    key={tech}
+    className="px-3 py-1 rounded-full text-[clamp(10px,1.1vw,12px)] font-semibold"
+    style={{ 
+      background: isDark
+        ? (i % 2 === 0 ? 'rgba(124,92,252,0.22)' : 'rgba(0,212,255,0.18)')
+        : 'rgba(46,39,31,0.10)',
+      color: isDark
+        ? (i % 2 === 0 ? '#C4B5FD' : '#7DF9FF')
+        : 'rgba(46,39,31,0.75)',
+      border: `1px solid ${isDark
+        ? (i % 2 === 0 ? 'rgba(124,92,252,0.4)' : 'rgba(0,212,255,0.35)')
+        : 'rgba(46,39,31,0.18)'}`,
+    }}
+  >
+    {tech}
+  </span>
+))}
         </motion.div>
       </motion.div>
 
