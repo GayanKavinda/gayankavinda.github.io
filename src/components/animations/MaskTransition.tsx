@@ -3,15 +3,11 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { animate, createTimeline } from "animejs";
 import { useTheme } from "@app/providers/theme-provider";
 import AtmosphericParticles from "./AtmosphericParticles";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const clamp = (v: number, min = 0, max = 1) =>
-  Math.max(min, Math.min(max, v));
+const clamp = (v: number, min = 0, max = 1) => Math.max(min, Math.min(max, v));
 
 const MATERIAL_CONFIG = {
   baseRoughness: 0.45,
@@ -27,17 +23,220 @@ const MATERIAL_CONFIG = {
 };
 
 /* ============================================================
+   SHARED SCROLL STATE
+   A single plain object that anime.js mutates directly. It is
+   read every frame by the 3D scene AND written to the DOM text
+   layers, so there is exactly one source of truth for "where
+   are we in the scroll story".
+============================================================ */
+
+type SceneState = {
+  modelY: number;
+  modelRotY: number;
+  modelRotX: number;
+  modelScale: number;
+  camRadius: number;
+  camAzimuth: number;
+  camPolar: number;
+  lookAtY: number;
+  lightHue: number;
+  ghostY: number;
+  ghostOpacity: number;
+  kanjiY: number;
+  kanjiOpacity: number;
+  ch1Y: number;
+  ch1Opacity: number;
+  ch2Y: number;
+  ch2Opacity: number;
+  ch3Y: number;
+  ch3Opacity: number;
+};
+
+function createSceneState(): SceneState {
+  return {
+    modelY: -8,
+    modelRotY: -Math.PI * 0.6,
+    modelRotX: 0,
+    modelScale: 4.2,
+    camRadius: 13,
+    camAzimuth: 0,
+    camPolar: Math.PI * 0.4,
+    lookAtY: 0.5,
+    lightHue: 0,
+    ghostY: 0,
+    ghostOpacity: 0,
+    kanjiY: 0,
+    kanjiOpacity: 0,
+    ch1Y: 55,
+    ch1Opacity: 0,
+    ch2Y: 55,
+    ch2Opacity: 0,
+    ch3Y: 55,
+    ch3Opacity: 0,
+  };
+}
+
+/**
+ * Builds a paused anime.js timeline that is scrubbed with .seek().
+ * Every keyframe below is a direct translation of the original
+ * piecewise lerp logic, just expressed as anime.js segments with
+ * absolute offsets (offset = startProgress * 1000ms).
+ */
+function buildScrollTimeline(state: SceneState, isDark: boolean) {
+  const tl = createTimeline({ autoplay: false });
+
+  // Model vertical entrance
+  tl.add(state, { modelY: [-8, -2], duration: 200, ease: "outQuad" }, 0);
+  tl.add(state, { modelY: [-2, 0], duration: 200, ease: "outQuad" }, 200);
+
+  // Initial turn into frame, then a settle at the end
+  tl.add(state, { modelRotY: [-Math.PI * 0.6, 0], duration: 300, ease: "outCubic" }, 0);
+  tl.add(state, { modelRotX: [0, -0.2], duration: 300, ease: "inOutSine" }, 700);
+
+  // Scale breathing across the whole scroll arc
+  tl.add(state, { modelScale: [4.2, 5], duration: 400, ease: "outQuad" }, 0);
+  tl.add(state, { modelScale: [5, 5.4], duration: 150, ease: "inQuad" }, 850);
+
+  // Orbit camera
+  tl.add(state, { camRadius: [13, 10], duration: 500, ease: "inOutSine" }, 0);
+  tl.add(state, { camRadius: [10, 9], duration: 500, ease: "inOutSine" }, 500);
+  tl.add(state, { camAzimuth: [0, Math.PI * 1.3], duration: 1000, ease: "linear" }, 0);
+  tl.add(state, { camPolar: [Math.PI * 0.4, Math.PI * 0.58], duration: 1000, ease: "linear" }, 0);
+  tl.add(state, { lookAtY: [0.5, 0.2], duration: 250, ease: "inOutSine" }, 750);
+
+  // Lighting mood shift, direction depends on theme
+  const hueRange = isDark ? [260, 190] : [200, 30];
+  tl.add(state, { lightHue: hueRange, duration: 1000, ease: "linear" }, 0);
+
+  // L1 — ghost word, slow parallax, longest hang time
+  tl.add(state, { ghostY: [0, -160], duration: 1000, ease: "linear" }, 0);
+  tl.add(state, { ghostOpacity: [0, 0.07], duration: 120, ease: "outSine" }, 0);
+  tl.add(state, { ghostOpacity: [0.07, 0], duration: 200, ease: "inSine" }, 720);
+
+  // L2 — kanji, faster parallax
+  tl.add(state, { kanjiY: [0, -240], duration: 1000, ease: "linear" }, 0);
+  tl.add(state, { kanjiOpacity: [0, 0.055], duration: 180, ease: "outSine" }, 0);
+  tl.add(state, { kanjiOpacity: [0.055, 0], duration: 180, ease: "inSine" }, 480);
+
+  // L3 — chapter 1
+  tl.add(state, { ch1Y: [55, 0], duration: 180, ease: "outBack" }, 50);
+  tl.add(state, { ch1Opacity: [0, 1], duration: 180, ease: "outSine" }, 50);
+  tl.add(state, { ch1Y: [0, -70], duration: 140, ease: "inSine" }, 300);
+  tl.add(state, { ch1Opacity: [1, 0], duration: 140, ease: "inSine" }, 300);
+
+  // L4 — chapter 2
+  tl.add(state, { ch2Y: [55, 0], duration: 140, ease: "outBack" }, 380);
+  tl.add(state, { ch2Opacity: [0, 1], duration: 140, ease: "outSine" }, 380);
+  tl.add(state, { ch2Y: [0, -70], duration: 120, ease: "inSine" }, 550);
+  tl.add(state, { ch2Opacity: [1, 0], duration: 120, ease: "inSine" }, 550);
+
+  // L5 — chapter 3
+  tl.add(state, { ch3Y: [55, 0], duration: 140, ease: "outBack" }, 620);
+  tl.add(state, { ch3Opacity: [0, 1], duration: 140, ease: "outSine" }, 620);
+  tl.add(state, { ch3Y: [0, -70], duration: 120, ease: "inSine" }, 800);
+  tl.add(state, { ch3Opacity: [1, 0], duration: 120, ease: "inSine" }, 800);
+
+  return tl;
+}
+
+/* ============================================================
+   SCROLL DRIVER
+   Lives inside the Canvas so it can share a single rAF tick
+   with R3F, seeks the anime timeline every frame, and pushes
+   the resolved values straight onto the DOM text refs.
+============================================================ */
+
+function ScrollDriver({
+  containerRef,
+  sceneState,
+  timelineRef,
+  ghostWordRef,
+  kanjiRef,
+  ch1Ref,
+  ch2Ref,
+  ch3Ref,
+  bloomRef,
+  isDarkRef,
+}: {
+  containerRef: React.RefObject<HTMLDivElement>;
+  sceneState: SceneState;
+  timelineRef: React.MutableRefObject<anime.AnimeTimelineInstance | null>;
+  ghostWordRef: React.RefObject<HTMLDivElement>;
+  kanjiRef: React.RefObject<HTMLDivElement>;
+  ch1Ref: React.RefObject<HTMLDivElement>;
+  ch2Ref: React.RefObject<HTMLDivElement>;
+  ch3Ref: React.RefObject<HTMLDivElement>;
+  bloomRef: React.MutableRefObject<any>;
+  isDarkRef: React.MutableRefObject<boolean>;
+}) {
+  const smoothProgress = useRef(0);
+  const prevSmooth = useRef(0);
+
+  useFrame(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const total = rect.height - vh;
+    const raw = total > 0 ? clamp(-rect.top / total) : 0;
+
+    // scrub smoothing, this is what gave GSAP's scrub:1 its softness
+    smoothProgress.current += (raw - smoothProgress.current) * 0.09;
+    const p = smoothProgress.current;
+    const velocity = Math.abs(p - prevSmooth.current);
+    prevSmooth.current = p;
+
+    timelineRef.current?.seek(p * 1000);
+
+    if (bloomRef.current) {
+      bloomRef.current.intensity =
+        (isDarkRef.current ? 0.6 : 0.3) + Math.min(velocity * 20, 0.2);
+    }
+
+    if (ghostWordRef.current) {
+      ghostWordRef.current.style.transform = `translate(-50%, calc(-50% + ${sceneState.ghostY}px))`;
+      ghostWordRef.current.style.opacity = String(sceneState.ghostOpacity);
+    }
+    if (kanjiRef.current) {
+      kanjiRef.current.style.transform = `translateY(${sceneState.kanjiY}px)`;
+      kanjiRef.current.style.opacity = String(sceneState.kanjiOpacity);
+    }
+    if (ch1Ref.current) {
+      ch1Ref.current.style.transform = `translate(-50%, ${sceneState.ch1Y}px)`;
+      ch1Ref.current.style.opacity = String(sceneState.ch1Opacity);
+    }
+    if (ch2Ref.current) {
+      ch2Ref.current.style.transform = `translateY(calc(-50% + ${sceneState.ch2Y}px))`;
+      ch2Ref.current.style.opacity = String(sceneState.ch2Opacity);
+    }
+    if (ch3Ref.current) {
+      ch3Ref.current.style.transform = `translateY(${sceneState.ch3Y}px)`;
+      ch3Ref.current.style.opacity = String(sceneState.ch3Opacity);
+    }
+  });
+
+  return null;
+}
+
+/* ============================================================
    SHRINE SCENE
+   Reads sceneState for the scroll-driven pose, then layers on
+   three anime.js-powered flourishes that scroll never touches:
+   an idle breathing loop, a glow pulse on the emissive parts,
+   and a pointer-parallax tilt.
 ============================================================ */
 
 function ShrineScene({
-  scrollProgress,
+  sceneState,
   directionalLightRef,
   isDark,
+  isLoaded,
 }: {
-  scrollProgress: React.MutableRefObject<number>;
+  sceneState: SceneState;
   directionalLightRef: React.RefObject<THREE.DirectionalLight>;
   isDark: boolean;
+  isLoaded: boolean;
 }) {
   const { scene } = useGLTF("/models/shrine.glb");
   const groupRef = useRef<THREE.Group>(null);
@@ -46,9 +245,19 @@ function ShrineScene({
   const MODEL_CENTER = new THREE.Vector3(0, 0.5, 0);
   const targetCameraPos = useRef(new THREE.Vector3());
   const targetLookAt = useRef(new THREE.Vector3());
-  const previousProgress = useRef(0);
   const scaleFactorRef = useRef(1);
   const isMobileRef = useRef(false);
+  const emissiveMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
+
+  // Free-spin accumulator for the 0.3 -> 0.8 "orbiting" window,
+  // same self-referential behaviour the original GSAP version had.
+  const spinRef = useRef(0);
+
+  // Anime.js-driven ambient state, all continuous/looping, none of it scroll-scrubbed.
+  const idleState = useRef({ scale: 1 }).current;
+  const glowState = useRef({ intensity: MATERIAL_CONFIG.emissiveIntensity }).current;
+  const entranceState = useRef({ scale: 0 }).current;
+  const mouseState = useRef({ x: 0, y: 0 }).current;
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,8 +269,60 @@ function ShrineScene({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Idle breathing loop, runs forever regardless of scroll position
+  useEffect(() => {
+    const idle = animate(idleState, {
+      scale: [1, 1.015],
+      duration: 3200,
+      ease: "inOutSine",
+      alternate: true,
+      loop: true,
+    });
+    return () => idle.pause();
+  }, [idleState]);
+
+  // Emissive glow pulse, independent loop on the crystal/gem/core parts
+  useEffect(() => {
+    const glow = animate(glowState, {
+      intensity: [MATERIAL_CONFIG.emissiveIntensity * 0.7, MATERIAL_CONFIG.emissiveIntensity * 1.4],
+      duration: 2400,
+      ease: "inOutQuad",
+      alternate: true,
+      loop: true,
+    });
+    return () => glow.pause();
+  }, [glowState]);
+
+  // Elastic entrance the moment the model actually appears
+  useEffect(() => {
+    if (!isLoaded) return;
+    animate(entranceState, {
+      scale: [0, 1],
+      duration: 1800,
+      ease: "outElastic(1, .6)",
+    });
+  }, [isLoaded, entranceState]);
+
+  // Pointer parallax, each move re-targets the same anime tween so it
+  // interrupts smoothly instead of snapping
+  useEffect(() => {
+    const handlePointerMove = (e: PointerEvent) => {
+      const nx = (e.clientX / window.innerWidth) * 2 - 1;
+      const ny = (e.clientY / window.innerHeight) * 2 - 1;
+      animate(mouseState, {
+        x: nx,
+        y: ny,
+        duration: 700,
+        ease: "outQuad",
+      });
+    };
+    window.addEventListener("pointermove", handlePointerMove);
+    return () => window.removeEventListener("pointermove", handlePointerMove);
+  }, [mouseState]);
+
   useEffect(() => {
     threeScene.fog = null;
+    const emissiveMats: THREE.MeshStandardMaterial[] = [];
 
     scene.traverse((child: any) => {
       if (child.isMesh) {
@@ -87,6 +348,7 @@ function ShrineScene({
         ) {
           mat.emissive = new THREE.Color(MATERIAL_CONFIG.emissiveColor);
           mat.emissiveIntensity = MATERIAL_CONFIG.emissiveIntensity;
+          emissiveMats.push(mat);
         }
 
         if (matName.includes("glass") || matName.includes("crystal") || matName.includes("gem")) {
@@ -105,76 +367,71 @@ function ShrineScene({
         }
       }
     });
+
+    emissiveMaterialsRef.current = emissiveMats;
   }, [scene, threeScene, isDark]);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (!groupRef.current) return;
 
-    const p = scrollProgress.current;
-
-    const positionY =
-      p < 0.2 ? THREE.MathUtils.lerp(-8, -2, p / 0.2)
-      : p < 0.4 ? THREE.MathUtils.lerp(-2, 0, (p - 0.2) / 0.2)
-      : 0;
-
-    const rotationY =
-      p < 0.3 ? THREE.MathUtils.lerp(-Math.PI * 0.6, 0, p / 0.3)
-      : p < 0.8 ? groupRef.current.rotation.y + 0.002
-      : THREE.MathUtils.lerp(groupRef.current.rotation.y, Math.PI * 0.3, (p - 0.8) / 0.2);
-
-    const rotationX = p > 0.7 ? THREE.MathUtils.lerp(0, -0.2, (p - 0.7) / 0.3) : 0;
+    const p = clamp(
+      // reverse-engineer progress from camAzimuth so this component
+      // doesn't need its own copy of the raw scroll value
+      sceneState.camAzimuth / (Math.PI * 1.3)
+    );
 
     const scaleFactor = scaleFactorRef.current;
 
-    const targetScale =
-      p < 0.4  ? THREE.MathUtils.lerp(4.2 * scaleFactor, 5 * scaleFactor, p / 0.4)
-      : p < 0.85 ? 5 * scaleFactor
-      : THREE.MathUtils.lerp(5 * scaleFactor, 5.4 * scaleFactor, (p - 0.85) / 0.15);
+    // rotation: entrance turn, then a free continuous spin, then settle
+    let rotationY: number;
+    if (p < 0.3) {
+      rotationY = sceneState.modelRotY;
+      spinRef.current = rotationY;
+    } else if (p < 0.8) {
+      spinRef.current += delta * 0.35;
+      rotationY = spinRef.current;
+    } else {
+      rotationY = THREE.MathUtils.lerp(spinRef.current, Math.PI * 0.3, (p - 0.8) / 0.2);
+    }
 
-    // Smoothly lerp to target scale to avoid any jumps
-    groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.1));
-    groupRef.current.position.y = positionY;
-    groupRef.current.rotation.y = rotationY;
-    groupRef.current.rotation.x = rotationX;
+    // combine scroll scale, idle breathing, and the elastic entrance
+    const targetScale =
+      sceneState.modelScale * scaleFactor * idleState.scale * entranceState.scale;
+
+    groupRef.current.scale.setScalar(
+      THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.12)
+    );
+    groupRef.current.position.y = sceneState.modelY;
+    groupRef.current.rotation.y = rotationY + mouseState.x * 0.08;
+    groupRef.current.rotation.x = sceneState.modelRotX + mouseState.y * 0.05;
 
     const radiusFactor = isMobileRef.current ? 1.15 : 1;
-    const radius =
-      (p < 0.5 ? THREE.MathUtils.lerp(13, 10, p / 0.5)
-      : THREE.MathUtils.lerp(10, 9, (p - 0.5) / 0.5)) * radiusFactor;
-
-    const azimuth = THREE.MathUtils.lerp(0, Math.PI * 1.3, p);
-    const polar   = THREE.MathUtils.lerp(Math.PI * 0.4, Math.PI * 0.58, p);
+    const radius = sceneState.camRadius * radiusFactor;
 
     targetCameraPos.current.set(
-      MODEL_CENTER.x + radius * Math.sin(polar) * Math.sin(azimuth),
-      MODEL_CENTER.y + radius * Math.cos(polar),
-      MODEL_CENTER.z + radius * Math.sin(polar) * Math.cos(azimuth)
+      MODEL_CENTER.x + radius * Math.sin(sceneState.camPolar) * Math.sin(sceneState.camAzimuth),
+      MODEL_CENTER.y + radius * Math.cos(sceneState.camPolar),
+      MODEL_CENTER.z + radius * Math.sin(sceneState.camPolar) * Math.cos(sceneState.camAzimuth)
     );
 
-    targetLookAt.current.set(
-      0,
-      THREE.MathUtils.lerp(0.5, 0.2, clamp((p - 0.75) / 0.25)),
-      0
-    );
+    // pointer parallax offset on the camera itself, subtle depth cue
+    targetCameraPos.current.x += mouseState.x * 0.35;
+    targetCameraPos.current.y += mouseState.y * 0.2;
+
+    targetLookAt.current.set(0, sceneState.lookAtY, 0);
 
     camera.position.lerp(targetCameraPos.current, 0.08);
     camera.lookAt(targetLookAt.current);
 
-    const velocity = Math.abs(p - previousProgress.current);
-    const shakeStrength = Math.min(velocity * 0.5, 0.02);
-    if (shakeStrength > 0.001) {
-      camera.position.x += (Math.random() - 0.5) * shakeStrength;
-      camera.position.y += (Math.random() - 0.5) * shakeStrength;
-    }
-    previousProgress.current = p;
-
     if (directionalLightRef.current) {
-      const hue = isDark
-        ? THREE.MathUtils.lerp(260, 190, p)
-        : THREE.MathUtils.lerp(200, 30, p);
       directionalLightRef.current.color.lerp(
-        new THREE.Color(`hsl(${hue}, 90%, 65%)`), 0.05
+        new THREE.Color(`hsl(${sceneState.lightHue}, 90%, 65%)`),
+        0.05
       );
+    }
+
+    for (const mat of emissiveMaterialsRef.current) {
+      mat.emissiveIntensity = glowState.intensity;
     }
   });
 
@@ -195,19 +452,19 @@ function GroundShadow() {
 ============================================================ */
 
 export default function MaskTransition() {
-  const containerRef     = useRef<HTMLDivElement>(null);
-  const scrollProgress   = useRef(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Layer refs
-  const ghostWordRef     = useRef<HTMLDivElement>(null); // L1: BREATHE
-  const kanjiRef         = useRef<HTMLDivElement>(null); // L2: 技
-  const ch1Ref           = useRef<HTMLDivElement>(null); // L3: chapter 1 h1
-  const ch2Ref           = useRef<HTMLDivElement>(null); // L4: chapter 2
-  const ch3Ref           = useRef<HTMLDivElement>(null); // L5: chapter 3
+  const ghostWordRef = useRef<HTMLDivElement>(null);
+  const kanjiRef     = useRef<HTMLDivElement>(null);
+  const ch1Ref       = useRef<HTMLDivElement>(null);
+  const ch2Ref       = useRef<HTMLDivElement>(null);
+  const ch3Ref       = useRef<HTMLDivElement>(null);
 
   const directionalLightRef = useRef<THREE.DirectionalLight>(null);
-  const bloomRef         = useRef<any>(null);
-  const previousProgress = useRef(0);
+  const bloomRef = useRef<any>(null);
+
+  const sceneState = useRef(createSceneState()).current;
+  const timelineRef = useRef<any>(null);
 
   const { theme } = useTheme();
   const isDark = theme === "dark";
@@ -215,90 +472,16 @@ export default function MaskTransition() {
   useEffect(() => { isDarkRef.current = isDark; }, [isDark]);
 
   const [isVisible, setIsVisible] = useState(false);
-  const [isLoaded,  setIsLoaded]  = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  /* ── ScrollTrigger ─────────────────────────────────────── */
+  // (Re)build the scrub timeline whenever the theme flips, since the
+  // light-hue keyframes depend on it. Rebuilding just re-seeks to the
+  // current progress, no visible jump.
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: containerRef.current,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 1,
-        onUpdate: (self) => {
-          const p = self.progress;
-          scrollProgress.current = p;
+    Object.assign(sceneState, createSceneState());
+    timelineRef.current = buildScrollTimeline(sceneState, isDark);
+  }, [isDark, sceneState]);
 
-          const velocity = Math.abs(self.getVelocity());
-          if (bloomRef.current) {
-            bloomRef.current.intensity =
-              (isDarkRef.current ? 0.6 : 0.3) + Math.min(velocity * 0.0001, 0.2);
-          }
-
-          /* ── L1: BREATHE
-             18vw ghost. Slowest parallax. Persists longest. ── */
-          if (ghostWordRef.current) {
-            const fadeIn  = clamp(p / 0.12);
-            const fadeOut = clamp((p - 0.72) / 0.2);
-            gsap.set(ghostWordRef.current, {
-              y: p * -160,
-              opacity: fadeIn * (1 - fadeOut) * 0.07,
-            });
-          }
-
-          /* ── L2: 技 kanji
-             12vw. Faster parallax. Bottom-right. Exits at 0.55. ── */
-          if (kanjiRef.current) {
-            const fadeIn  = clamp(p / 0.18);
-            const fadeOut = clamp((p - 0.48) / 0.18);
-            gsap.set(kanjiRef.current, {
-              y: p * -240,
-              opacity: fadeIn * (1 - fadeOut) * 0.055,
-            });
-          }
-
-          /* ── L3: Chapter 1 — "Cursed by craft. Bound by code."
-             Window: 0.05 → 0.42. Center bottom-third. ── */
-          if (ch1Ref.current) {
-            const reveal = clamp((p - 0.05) / 0.18);
-            const exit   = clamp((p - 0.30) / 0.14);
-            gsap.set(ch1Ref.current, {
-              y: (1 - reveal) * 55 - exit * 70,
-              opacity: reveal * (1 - exit),
-            });
-          }
-
-          /* ── L4: Chapter 2 — "Every line of code, a vow."
-             Window: 0.38 → 0.65. Slightly left of center. ── */
-          if (ch2Ref.current) {
-            const reveal = clamp((p - 0.38) / 0.14);
-            const exit   = clamp((p - 0.55) / 0.12);
-            gsap.set(ch2Ref.current, {
-              y: (1 - reveal) * 55 - exit * 70,
-              opacity: reveal * (1 - exit),
-            });
-          }
-
-          /* ── L5: Chapter 3 — "Every interface, a domain."
-             Window: 0.62 → 0.90. Slightly right, lower. ── */
-          if (ch3Ref.current) {
-            const reveal = clamp((p - 0.62) / 0.14);
-            const exit   = clamp((p - 0.80) / 0.12);
-            gsap.set(ch3Ref.current, {
-              y: (1 - reveal) * 55 - exit * 70,
-              opacity: reveal * (1 - exit),
-            });
-          }
-
-          previousProgress.current = p;
-        },
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  /* ── Intersection observer ─────────────────────────────── */
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -317,10 +500,9 @@ export default function MaskTransition() {
     return () => observer.disconnect();
   }, []);
 
-  const fg     = isDark ? "#FFFFFF" : "#0A0A0A";
-  const fgSub  = isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.42)";
+  const fg    = isDark ? "#FFFFFF" : "#0A0A0A";
+  const fgSub = isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.42)";
 
-  /* Shared h1 style — smaller, readable */
   const h1Style: React.CSSProperties = {
     fontFamily: "Instrument Serif",
     fontStyle: "italic",
@@ -333,7 +515,6 @@ export default function MaskTransition() {
     maxWidth: "460px",
   };
 
-  /* Chapter label style — DM Mono, tiny */
   const labelStyle: React.CSSProperties = {
     fontFamily: "DM Mono",
     fontSize: "clamp(0.55rem, 0.75vw, 0.7rem)",
@@ -350,12 +531,9 @@ export default function MaskTransition() {
         className="sticky top-0 h-[100dvh] overflow-hidden relative"
         style={{ background: isDark ? "#000000" : "#FFFFFF" }}
       >
-        {/* ══════════════════════════════════════════════════════════════════════════════════════════ */}
-        {/* TEXT LAYERS — z-0, behind canvas */}
-        {/* ══════════════════════════════════════════════════════════════════════════════════════════ */}
+        {/* TEXT LAYERS, z-0, behind canvas */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
 
-          {/* L1 — SCALABLE: 18vw, centered, ultra-ghost */}
           <div
             ref={ghostWordRef}
             aria-hidden="true"
@@ -363,7 +541,6 @@ export default function MaskTransition() {
               position: "absolute",
               top: "50%",
               left: "50%",
-              transform: "translate(-50%, -50%)",
               fontFamily: "Instrument Serif",
               fontStyle: "italic",
               fontSize: "clamp(4rem, 18vw, 20rem)",
@@ -379,7 +556,6 @@ export default function MaskTransition() {
             SCALABLE
           </div>
 
-          {/* L2 — 系: 12vw, bottom-right, ghost */}
           <div
             ref={kanjiRef}
             aria-hidden="true"
@@ -400,45 +576,36 @@ export default function MaskTransition() {
             系
           </div>
 
-          {/* L3 — Chapter 1: center, bottom-third */}
           <div
             ref={ch1Ref}
             style={{
               position: "absolute",
               bottom: "26%",
               left: "50%",
-              transform: "translateX(-50%)",
               textAlign: "center",
               opacity: 0,
               willChange: "transform, opacity",
             }}
           >
             <span style={labelStyle}>— i —</span>
-            <h2 style={h1Style}>
-              Event‑driven architecture
-            </h2>
+            <h2 style={h1Style}>Event‑driven architecture</h2>
           </div>
 
-          {/* L4 — Chapter 2: left-of-center, mid */}
           <div
             ref={ch2Ref}
             style={{
               position: "absolute",
               top: "50%",
               left: "18%",
-              transform: "translateY(-50%)",
               textAlign: "left",
               opacity: 0,
               willChange: "transform, opacity",
             }}
           >
             <span style={labelStyle}>— ii —</span>
-            <h2 style={h1Style}>
-              Observability‑first design
-            </h2>
+            <h2 style={h1Style}>Observability‑first design</h2>
           </div>
 
-          {/* L5 — Chapter 3: right-of-center, upper */}
           <div
             ref={ch3Ref}
             style={{
@@ -451,16 +618,12 @@ export default function MaskTransition() {
             }}
           >
             <span style={{ ...labelStyle, textAlign: "right" }}>— iii —</span>
-            <h2 style={h1Style}>
-              Zero‑downtime deployment
-            </h2>
+            <h2 style={h1Style}>Zero‑downtime deployment</h2>
           </div>
 
         </div>
 
-        {/* ════════════════════════════════════════════════════════════════════════════════════════ */}
-        {/* CANVAS — z-10, alpha:true */}
-        {/* ════════════════════════════════════════════════════════════════════════════════════════ */}
+        {/* CANVAS, z-10, alpha:true */}
         <div className="absolute inset-0 z-10">
           <Canvas
             shadows
@@ -502,12 +665,26 @@ export default function MaskTransition() {
               intensity={isDark ? 2.5 : 1.0}
             />
 
+            <ScrollDriver
+              containerRef={containerRef}
+              sceneState={sceneState}
+              timelineRef={timelineRef}
+              ghostWordRef={ghostWordRef}
+              kanjiRef={kanjiRef}
+              ch1Ref={ch1Ref}
+              ch2Ref={ch2Ref}
+              ch3Ref={ch3Ref}
+              bloomRef={bloomRef}
+              isDarkRef={isDarkRef}
+            />
+
             {isLoaded && (
               <Suspense fallback={null}>
                 <ShrineScene
-                  scrollProgress={scrollProgress}
+                  sceneState={sceneState}
                   directionalLightRef={directionalLightRef}
                   isDark={isDark}
+                  isLoaded={isLoaded}
                 />
               </Suspense>
             )}

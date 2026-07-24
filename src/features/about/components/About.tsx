@@ -1,13 +1,10 @@
 //src/components/sections/About.tsx
-// Changes from previous version:
-// - Removed the "status: available" line and all terminal/HUD framing
-// - Photo block redesigned as an editorial plate: sharp corners, single gold
-//   hairline accent, museum-placard caption bar below (name / role / mark)
-// - Socials are now understated text links with an animated underline reveal,
-//   set beneath the plate, not boxed or iconed, quieter and more senior
-// - Dark mode nebula glow and top/bottom section fades kept as-is
+// Fixed: removed duplicated/broken social icon block that caused a JSX syntax error
+// (a stray <circle> was used outside an <svg>, and closing tags no longer matched up).
+// New social icon design: glass circular buttons with a gradient ring that fades in on hover.
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { Github, Linkedin, Twitter } from 'lucide-react';
 import { useTheme } from '@app/providers/theme-provider';
 
 // Impact-driven stats
@@ -17,11 +14,38 @@ const stats = [
   { num: '12+', label: 'SYSTEMS', sub: 'Architected' },
 ];
 
-// Social links, plain text, underline reveal on hover
+// Social links with dual light/dark mode color profiles
 const socials = [
-  { name: 'GitHub', href: 'https://github.com' },
-  { name: 'LinkedIn', href: 'https://linkedin.com' },
-  { name: 'Twitter', href: 'https://twitter.com' },
+  {
+    name: 'GitHub',
+    href: 'https://github.com',
+    Icon: Github,
+    lightRing: 'from-slate-500 to-slate-700',
+    darkRing: 'dark:from-purple-400 dark:to-indigo-500',
+    lightIcon: 'text-slate-600',
+    darkIcon: 'dark:text-purple-300',
+    glow: 'rgba(167, 139, 250, 0.45)',
+  },
+  {
+    name: 'LinkedIn',
+    href: 'https://linkedin.com',
+    Icon: Linkedin,
+    lightRing: 'from-blue-500 to-blue-700',
+    darkRing: 'dark:from-cyan-400 dark:to-blue-500',
+    lightIcon: 'text-blue-600',
+    darkIcon: 'dark:text-cyan-300',
+    glow: 'rgba(34, 211, 238, 0.45)',
+  },
+  {
+    name: 'Twitter',
+    href: 'https://twitter.com',
+    Icon: Twitter,
+    lightRing: 'from-sky-400 to-sky-600',
+    darkRing: 'dark:from-sky-300 dark:to-pink-400',
+    lightIcon: 'text-sky-500',
+    darkIcon: 'dark:text-sky-200',
+    glow: 'rgba(125, 211, 252, 0.45)',
+  },
 ];
 
 const About = () => {
@@ -66,7 +90,7 @@ const About = () => {
       <div className="relative z-[1] max-w-[1100px] mx-auto px-6 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
 
-          {/* Editorial photo plate */}
+          {/* Photo with Framer Motion entry */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -74,52 +98,56 @@ const About = () => {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="relative w-fit mx-auto md:mx-0"
           >
-            <div className="relative flex">
-              {/* Single gold hairline accent, offset behind the frame */}
-              <div className="absolute -left-4 top-6 bottom-6 w-px bg-gradient-to-b from-transparent via-gold/50 to-transparent hidden md:block" />
-
-              <div className="relative w-[280px] h-[360px] md:w-[320px] md:h-[400px] bg-background/50 dark:bg-white/[0.015] border border-black/[0.06] dark:border-white/[0.08] shadow-2xl overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-crimson/[0.04] to-gold/[0.04]" />
-                {/* Fine grain texture for depth */}
-                <div
-                  className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none"
-                  style={{
-                    backgroundImage:
-                      "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='60' height='60' filter='url(%23n)'/%3E%3C/svg%3E\")",
-                  }}
-                />
-                <div className="relative z-10 h-full flex items-center justify-center">
-                  <span className="font-mono text-[13px] text-foreground/35 dark:text-white/25 font-medium tracking-tight">
-                    [ Engineering Persona ]
-                  </span>
-                </div>
-              </div>
+            <div className="w-[280px] h-[340px] md:w-[340px] md:h-[400px] rounded-2xl border border-black/5 dark:border-white/10 overflow-hidden bg-background/50 dark:bg-white/[0.02] backdrop-blur-sm shadow-xl flex items-center justify-center">
+              <div className="absolute inset-0 bg-gradient-to-br from-crimson/5 to-gold/5" />
+              <span className="relative z-10 font-mono text-[14px] text-foreground/40 dark:text-white/30 font-medium tracking-tight">[ Engineering Persona ]</span>
             </div>
 
-            {/* Placard caption, name / role / index mark */}
-            <div className="flex items-baseline justify-between mt-4 pt-3 border-t border-black/[0.08] dark:border-white/[0.1] w-[280px] md:w-[320px]">
-              <div>
-                <p className="font-jakarta font-semibold text-sm text-foreground tracking-tight">Gara Yaka</p>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-foreground/40 dark:text-white/35 mt-0.5">
-                  Software Engineer
-                </p>
-              </div>
-              <span className="font-mono text-[10px] text-foreground/25 dark:text-white/20">01</span>
-            </div>
-
-            {/* Socials, quiet underline-reveal text links */}
-            <div className="flex gap-6 mt-5">
-              {socials.map(({ name, href }) => (
-                <a
+            {/* Social row, glass ring icon buttons */}
+            <div className="flex gap-6 mt-8 justify-center">
+              {socials.map(({ name, href, Icon, lightRing, darkRing, lightIcon, darkIcon, glow }) => (
+                <motion.a
                   key={name}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group relative font-mono text-[11px] uppercase tracking-widest text-foreground/45 dark:text-white/40 hover:text-crimson transition-colors duration-300"
+                  aria-label={name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.1 }}
+                  whileHover={{ scale: 1.06, y: -3 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="group relative"
                 >
-                  {name}
-                  <span className="absolute left-0 -bottom-1 h-px w-0 bg-crimson transition-all duration-300 group-hover:w-full" />
-                </a>
+                  {/* Gradient ring, only appears on hover */}
+                  <div
+                    className={`absolute -inset-[1.5px] rounded-full bg-gradient-to-br ${lightRing} ${darkRing} opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-[1px]`}
+                  />
+
+                  {/* Glass circle body */}
+                  <div
+                    className="relative w-14 h-14 rounded-full flex items-center justify-center bg-background/70 dark:bg-white/[0.04] border border-black/5 dark:border-white/10 backdrop-blur-md transition-shadow duration-300"
+                    style={{ boxShadow: `0 0 0 rgba(0,0,0,0)` }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLDivElement).style.boxShadow = `0 0 22px ${glow}`;
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLDivElement).style.boxShadow = `0 0 0 rgba(0,0,0,0)`;
+                    }}
+                  >
+                    <Icon
+                      size={20}
+                      strokeWidth={1.8}
+                      className={`transition-colors duration-300 ${lightIcon} ${darkIcon} group-hover:text-foreground`}
+                    />
+                  </div>
+
+                  {/* Tooltip label */}
+                  <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.15em] text-foreground/50 dark:text-white/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    {name}
+                  </span>
+                </motion.a>
               ))}
             </div>
           </motion.div>

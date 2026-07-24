@@ -527,3 +527,17 @@ button:focus-visible {
   }
 }
 
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.duration-350 {
+  transition-duration: 350ms;
+}
+
+.duration-400 {
+  transition-duration: 400ms;
+}

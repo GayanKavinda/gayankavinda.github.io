@@ -13,6 +13,8 @@ export interface Project {
   featured?: boolean;
   gradient?: string;
   accentColor?: string; // HSL hue for spotlight tint (e.g., "262")
+  year?: string;      // e.g. "2024"
+  role?: string;      // e.g. "Lead Engineer"
   metrics?: string[];
   viz?: VizType;
   githubUrl?: string;

@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ModeToggle } from '@components/common/ThemeToggle';
 import { useTheme } from '@app/providers/theme-provider';
 
 // Thumbnails
@@ -68,46 +67,67 @@ const MenuIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const SunIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+  </svg>
+);
+
+const MoonIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+);
+
+// ─── Custom Theme Toggle ───────────────────────────────
+
+function ThemeSwitch({ isDark, onToggle }: { isDark: boolean; onToggle: () => void }) {
+  return (
+    <motion.button
+      onClick={onToggle}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.92 }}
+      aria-label="Toggle theme"
+      className="relative w-[52px] h-[28px] rounded-full flex items-center px-[3px] shrink-0"
+      style={{
+        background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+        border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)'}`,
+      }}
+    >
+      <motion.div
+        className="absolute w-[20px] h-[20px] rounded-full flex items-center justify-center"
+        style={{ background: 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)))' }}
+        animate={{ x: isDark ? 24 : 0 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+      >
+        {isDark ? <MoonIcon className="w-3 h-3 text-white" /> : <SunIcon className="w-3 h-3 text-white" />}
+      </motion.div>
+    </motion.button>
+  );
+}
+
 // ─── Main Component ────────────────────────────────────
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const leaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const isDark = theme === 'dark';
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleTriggerEnter = useCallback(() => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    hoverTimeoutRef.current = setTimeout(() => setIsOpen(true), 200);
-  }, []);
-
-  const handleTriggerLeave = useCallback(() => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-  }, []);
-
-  const handlePanelLeave = useCallback(() => {
-    if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
-    leaveTimeoutRef.current = setTimeout(() => {
-      setIsOpen(false);
-      setHoveredId(null);
-    }, 400);
-  }, []);
-
-  const handlePanelEnter = useCallback(() => {
-    if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
-  }, []);
+  const toggleTheme = useCallback(() => {
+    setTheme(isDark ? 'light' : 'dark');
+  }, [isDark, setTheme]);
 
   useEffect(() => {
-    return () => {
-      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-      if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
-    };
-  }, []);
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setIsOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen]);
 
   const go = (id: string) => {
     setIsOpen(false);
@@ -139,19 +159,17 @@ export default function Navbar() {
     ? '0 20px 40px -12px rgba(0,0,0,0.5), 0 0 40px rgba(0,0,0,0.3)'
     : '0 20px 40px -12px rgba(0,0,0,0.08), 0 0 40px rgba(0,0,0,0.06)';
   const glow = isDark
-    ? 'radial-gradient(circle at 50% -30%, rgba(236,72,153,0.35), rgba(236,72,153,0.12), transparent 70%)'
-    : 'radial-gradient(circle at 50% -30%, rgba(236,72,153,0.18), rgba(236,72,153,0.05), transparent 70%)';
-  const topLine = 'linear-gradient(90deg, transparent, rgba(236,72,153,0.4), rgba(236,72,153,0.2), transparent)';
+    ? 'radial-gradient(circle at 50% -30%, hsl(var(--primary) / 0.35), hsl(var(--primary) / 0.12), transparent 70%)'
+    : 'radial-gradient(circle at 50% -30%, hsl(var(--primary) / 0.18), hsl(var(--primary) / 0.05), transparent 70%)';
+  const topLine = 'linear-gradient(90deg, transparent, hsl(var(--primary) / 0.4), hsl(var(--secondary) / 0.3), transparent)';
   const divider = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)';
 
   const btnBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
   const btnBorder = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
-  const btnHover = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)';
 
   const iconMuted = isDark ? 'rgba(255,255,255,0.5)' : '#6b7280';
   const iconHover = isDark ? '#ffffff' : '#111827';
   const textPrimary = isDark ? '#ffffff' : '#111827';
-  const textSecondary = isDark ? 'rgba(255,255,255,0.7)' : '#4b5563';
 
   const logoBg = isDark ? '#1a1a1a' : '#f5f5f5';
   const logoBorder = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.15)';
@@ -159,10 +177,17 @@ export default function Navbar() {
   const closeBtnIcon = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
   const closeBtnHover = isDark ? '#ffffff' : '#000000';
 
-  const cardAccent = '#ec4899';
   const cardBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.12)';
-  const cardBorderHover = isDark ? 'rgba(236,72,153,0.45)' : 'rgba(236,72,153,0.55)';
-  const cardGlow = isDark ? 'rgba(236,72,153,0.18)' : 'rgba(236,72,153,0.12)';
+  const cardBorderHover = 'hsl(var(--primary) / 0.55)';
+  const cardGlow = 'hsl(var(--primary) / 0.16)';
+
+  const resumeGradient = 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%)';
+
+  const socials = [
+    { icon: GithubIcon, href: 'https://github.com', label: 'GitHub' },
+    { icon: LinkedinIcon, href: 'https://linkedin.com', label: 'LinkedIn' },
+    { icon: TwitterIcon, href: 'https://twitter.com', label: 'Twitter' },
+  ];
 
   return (
     <>
@@ -171,31 +196,27 @@ export default function Navbar() {
         style={{ fontFamily: '"NotoSans_SemiCondensed-Medium", sans-serif' }}
       >
         <AnimatePresence mode="wait">
-          {!isOpen && (
+          {!isOpen ? (
             <motion.div
               key="trigger"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
-              className="pointer-events-auto flex items-center gap-2.5"
+              exit={{ opacity: 0, y: -6, transition: { duration: 0.12 } }}
+              transition={{ duration: 0.2 }}
+              className="pointer-events-auto flex items-center gap-2"
             >
+              <ThemeSwitch isDark={isDark} onToggle={toggleTheme} />
+
               <motion.button
-                layoutId="nav-container"
                 onClick={() => setIsOpen(true)}
-                onMouseEnter={handleTriggerEnter}
-                onMouseLeave={handleTriggerLeave}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                transition={{ type: "spring", stiffness: 500, damping: 25, mass: 0.5 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 25, mass: 0.5 }}
                 className="relative"
               >
                 <div
-                  className="relative flex items-center justify-between w-[190px] px-3.5 py-2 rounded-2xl"
-                  style={{
-                    background: triggerBg,
-                    border: `1px solid ${triggerBorder}`,
-                    boxShadow: triggerShadow,
-                  }}
+                  className="relative flex items-center justify-between w-[170px] px-3.5 py-2 rounded-2xl"
+                  style={{ background: triggerBg, border: `1px solid ${triggerBorder}`, boxShadow: triggerShadow }}
                 >
                   <div className="flex items-center gap-2">
                     <div
@@ -208,18 +229,40 @@ export default function Navbar() {
                       Gara Yaka
                     </span>
                   </div>
-
                   <MenuIcon className="w-3.5 h-3.5" style={{ color: triggerIcon }} />
                 </div>
               </motion.button>
+
+              <div
+                className="hidden sm:flex items-center gap-0.5 px-1.5 py-1.5 rounded-2xl"
+                style={{ background: triggerBg, border: `1px solid ${triggerBorder}`, boxShadow: triggerShadow }}
+              >
+                {socials.map((social) => (
+                  <motion.a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.92 }}
+                    className="w-7 h-7 rounded-lg flex items-center justify-center"
+                    style={{ color: iconMuted }}
+                    onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = iconHover)}
+                    onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = iconMuted)}
+                    aria-label={social.label}
+                  >
+                    <social.icon className="w-3.5 h-3.5" />
+                  </motion.a>
+                ))}
+              </div>
 
               <motion.button
                 onClick={() => window.open('/resume.pdf', '_blank')}
                 whileHover={{ scale: 1.03, y: -1 }}
                 whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-1.5 px-4 py-2 text-[11px] font-semibold tracking-wide uppercase transition-all duration-200"
-                style={{ 
-                  background: isDark ? 'linear-gradient(135deg, #ec4899 0%, #f472b6 100%)' : 'linear-gradient(135deg, #db2777 0%, #f472b6 100%)', 
+                className="flex items-center gap-1.5 px-4 py-2 text-[11px] font-semibold tracking-wide uppercase"
+                style={{
+                  background: resumeGradient,
                   clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
                   color: '#ffffff',
                   boxShadow: triggerShadow,
@@ -229,55 +272,36 @@ export default function Navbar() {
                 <span>Resume</span>
               </motion.button>
             </motion.div>
-          )}
-          {isOpen && (
+          ) : (
             <motion.div
               key="panel"
-              layoutId="nav-container"
-              onMouseEnter={handlePanelEnter}
-              onMouseLeave={handlePanelLeave}
-              initial={{ opacity: 0, y: -6, scale: 0.98 }}
+              initial={{ opacity: 0, y: -8, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -6, scale: 0.98, transition: { duration: 0.15 } }}
-              transition={{ type: "spring", stiffness: 500, damping: 25, mass: 0.5 }}
+              exit={{ opacity: 0, y: -8, scale: 0.97, transition: { duration: 0.12 } }}
+              transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
               className="pointer-events-auto relative w-[calc(100vw-2rem)] sm:w-auto"
             >
-              {/* Ambient glow */}
               <div
-                className="absolute -inset-[30px] rounded-[3rem] opacity-50 pointer-events-none"
-                style={{ background: glow, filter: 'blur(32px)' }}
+                className="absolute -inset-5 rounded-[3rem] opacity-60 pointer-events-none"
+                style={{ background: glow, filter: 'blur(20px)' }}
               />
 
               <div
                 className="relative rounded-2xl overflow-hidden backdrop-blur-2xl"
                 style={{
                   background: isDark
-                    ? "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(236, 72, 153, 0.22), transparent 70%), rgba(10, 10, 10, 0.65)"
-                    : "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(236, 72, 153, 0.12), transparent 70%), rgba(255, 255, 255, 0.8)",
+                    ? 'radial-gradient(ellipse 80% 60% at 50% 0%, hsl(var(--primary) / 0.22), transparent 70%), rgba(10, 10, 10, 0.65)'
+                    : 'radial-gradient(ellipse 80% 60% at 50% 0%, hsl(var(--primary) / 0.12), transparent 70%), rgba(255, 255, 255, 0.8)',
                   border: `1px solid ${panelBorder}`,
                   boxShadow: `inset 0 1px 0 rgba(255,255,255,0.15), ${panelShadow}`,
                 }}
               >
-                {/* Single texture overlay */}
-                <div
-                  className="absolute inset-0 opacity-70 mix-blend-overlay pointer-events-none"
-                  style={{ backgroundImage: noiseSvg }}
-                />
-
-                {/* Top line */}
+                <div className="absolute inset-0 opacity-70 mix-blend-overlay pointer-events-none" style={{ backgroundImage: noiseSvg }} />
                 <div className="absolute top-0 left-8 right-8 h-px" style={{ background: topLine }} />
 
-                {/* Content */}
                 <div className="relative p-4">
-
-                  {/* Header */}
                   <div className="flex items-center justify-between mb-3.5">
-                    <motion.button
-                      onClick={() => go('home')}
-                      whileHover={{ scale: 1.04 }}
-                      whileTap={{ scale: 0.96 }}
-                      className="flex items-center gap-2 group"
-                    >
+                    <button onClick={() => go('home')} className="flex items-center gap-2 group">
                       <div
                         className="w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105"
                         style={{ background: logoBg, border: `1px solid ${logoBorder}` }}
@@ -287,7 +311,7 @@ export default function Navbar() {
                       <span className="text-[13px] font-semibold tracking-tight" style={{ color: textPrimary }}>
                         Gara Yaka
                       </span>
-                    </motion.button>
+                    </button>
 
                     <motion.button
                       onClick={() => setIsOpen(false)}
@@ -295,8 +319,8 @@ export default function Navbar() {
                       whileTap={{ scale: 0.9 }}
                       className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
                       style={{ background: btnBg, border: `1px solid ${btnBorder}`, color: closeBtnIcon }}
-                      onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = closeBtnHover}
-                      onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.color = closeBtnIcon}
+                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = closeBtnHover)}
+                      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = closeBtnIcon)}
                     >
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M18 6L6 18M6 6l12 12" />
@@ -304,7 +328,6 @@ export default function Navbar() {
                     </motion.button>
                   </div>
 
-                  {/* Cards */}
                   <div className="grid grid-cols-2 sm:flex sm:flex-nowrap justify-center gap-2.5">
                     {sections.map((section, index) => (
                       <NavCard
@@ -315,7 +338,6 @@ export default function Navbar() {
                         onHover={() => setHoveredId(section.id)}
                         onLeave={() => setHoveredId(null)}
                         onClick={() => go(section.id)}
-                        cardAccent={cardAccent}
                         cardBorder={cardBorder}
                         cardBorderHover={cardBorderHover}
                         cardGlow={cardGlow}
@@ -323,15 +345,7 @@ export default function Navbar() {
                     ))}
                   </div>
 
-                  {/* Footer */}
-                  <div
-                    className="mt-3.5 pt-3 flex flex-col sm:flex-row items-center justify-between gap-3"
-                    style={{ borderTop: `1px solid ${divider}` }}
-                  >
-                    <div className="flex items-center">
-                      <ModeToggle />
-                    </div>
-
+                  <div className="mt-3.5 pt-3 flex items-center justify-center" style={{ borderTop: `1px solid ${divider}` }}>
                     <motion.button
                       onClick={() => {
                         setIsOpen(false);
@@ -339,47 +353,17 @@ export default function Navbar() {
                       }}
                       whileHover={{ y: -1, scale: 1.02 }}
                       whileTap={{ scale: 0.97 }}
-                      className="flex items-center gap-1.5 px-4 py-2 text-[10px] font-semibold tracking-wide uppercase transition-all duration-200"
-                      style={{ 
-                        background: isDark ? 'linear-gradient(135deg, #ec4899 0%, #f472b6 100%)' : 'linear-gradient(135deg, #db2777 0%, #f472b6 100%)', 
+                      className="flex items-center gap-1.5 px-4 py-2 text-[10px] font-semibold tracking-wide uppercase"
+                      style={{
+                        background: resumeGradient,
                         clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
                         color: '#ffffff',
-                        boxShadow: isDark ? '0 0 15px rgba(236,72,153,0.3)' : 'none',
+                        boxShadow: isDark ? '0 0 15px hsl(var(--primary) / 0.3)' : 'none',
                       }}
                     >
                       <DownloadIcon className="w-3.5 h-3.5" />
                       <span>Resume</span>
                     </motion.button>
-
-                    <div className="flex items-center gap-0.5">
-                      {[
-                        { icon: GithubIcon, href: 'https://github.com', label: 'GitHub' },
-                        { icon: LinkedinIcon, href: 'https://linkedin.com', label: 'LinkedIn' },
-                        { icon: TwitterIcon, href: 'https://twitter.com', label: 'Twitter' },
-                      ].map((social) => (
-                        <motion.a
-                          key={social.label}
-                          href={social.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          whileHover={{ y: -2 }}
-                          whileTap={{ scale: 0.92 }}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200"
-                          style={{ color: iconMuted }}
-                          onMouseEnter={(e) => {
-                            (e.currentTarget as HTMLElement).style.color = iconHover;
-                            (e.currentTarget as HTMLElement).style.background = btnBg;
-                          }}
-                          onMouseLeave={(e) => {
-                            (e.currentTarget as HTMLElement).style.color = iconMuted;
-                            (e.currentTarget as HTMLElement).style.background = 'transparent';
-                          }}
-                          aria-label={social.label}
-                        >
-                          <social.icon className="w-4 h-4" />
-                        </motion.a>
-                      ))}
-                    </div>
                   </div>
                 </div>
               </div>
@@ -388,17 +372,16 @@ export default function Navbar() {
         </AnimatePresence>
       </div>
 
-      {/* Backdrop */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             key="backdrop"
-            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            animate={{ opacity: 1, backdropFilter: 'blur(4px)' }}
-            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 z-[998]"
+            className="fixed inset-0 z-[998] backdrop-blur-sm"
           />
         )}
       </AnimatePresence>
@@ -415,7 +398,6 @@ function NavCard({
   onHover,
   onLeave,
   onClick,
-  cardAccent,
   cardBorder,
   cardBorderHover,
   cardGlow,
@@ -426,7 +408,6 @@ function NavCard({
   onHover: () => void;
   onLeave: () => void;
   onClick: () => void;
-  cardAccent: string;
   cardBorder: string;
   cardBorderHover: string;
   cardGlow: string;
@@ -436,21 +417,15 @@ function NavCard({
       onClick={onClick}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
-      initial={{ opacity: 0, y: 15 }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        transition: { delay: index * 0.04, duration: 0.3, ease: [0.16, 1, 0.3, 1] }
-      }}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0, transition: { delay: index * 0.03, duration: 0.25, ease: [0.16, 1, 0.3, 1] } }}
       className="relative flex-shrink-0 w-full sm:w-[125px] group outline-none"
     >
       <div
         className="relative rounded-xl overflow-hidden transition-all duration-300"
         style={{
           border: `1px solid ${isHovered ? cardBorderHover : cardBorder}`,
-          boxShadow: isHovered
-            ? `0 10px 24px -8px ${cardGlow}, 0 0 14px ${cardGlow}`
-            : '0 3px 10px rgba(0,0,0,0.15)',
+          boxShadow: isHovered ? `0 10px 24px -8px ${cardGlow}, 0 0 14px ${cardGlow}` : '0 3px 10px rgba(0,0,0,0.15)',
         }}
       >
         <div className="relative aspect-[16/10] overflow-hidden">
@@ -459,45 +434,32 @@ function NavCard({
             alt={section.label}
             className="w-full h-full object-cover"
             animate={{ scale: isHovered ? 1.06 : 1 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           />
-
-          {/* Dark overlay on image only */}
           <div
             className="absolute inset-0"
-            style={{
-              background: `linear-gradient(to top, rgba(10,5,30,0.92) 0%, rgba(10,5,30,0.4) 55%, transparent 100%)`,
-            }}
+            style={{ background: 'linear-gradient(to top, rgba(10,5,30,0.92) 0%, rgba(10,5,30,0.4) 55%, transparent 100%)' }}
           />
-
           <div className="absolute bottom-0 left-0 right-0 p-2.5">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold tracking-[0.06em] uppercase text-white/90 font-mono">
                 {section.label}
               </span>
               <motion.svg
-                width="9"
-                height="9"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
+                width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"
                 animate={{ x: isHovered ? 2 : 0, opacity: isHovered ? 1 : 0.3 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.15 }}
               >
                 <path d="M7 17L17 7M17 7H7M17 7V17" />
               </motion.svg>
             </div>
           </div>
-
-          {/* Accent line */}
           <motion.div
             className="absolute bottom-0 left-0 right-0 h-[2px]"
-            style={{ background: cardAccent }}
+            style={{ background: 'hsl(var(--primary))' }}
             initial={{ scaleX: 0 }}
             animate={{ scaleX: isHovered ? 1 : 0 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           />
         </div>
       </div>
