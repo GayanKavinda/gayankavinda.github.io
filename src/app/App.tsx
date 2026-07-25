@@ -4,6 +4,7 @@ import { ReactLenis } from 'lenis/react';
 import { TooltipProvider } from "@components/ui/tooltip";
 import CustomCursor from "@components/layout/CustomCursor";
 import { ThemeProvider } from "@app/providers/theme-provider";
+import StickyResumeCTA from "@components/layout/StickyResumeCTA";
 
 
 import { lazy, Suspense } from 'react';
@@ -76,6 +77,7 @@ const App = () => (
 
 
               <CacheConsent />
+              <StickyResumeCTA />
             </BrowserRouter>
           </PreLoader>
         </TooltipProvider>

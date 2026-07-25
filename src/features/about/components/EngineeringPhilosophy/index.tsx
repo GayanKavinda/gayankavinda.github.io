@@ -3,16 +3,17 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
-import { ObservabilityMockup } from './mockups/ObservabilityMockup';
-import { SimplicityMockup } from './mockups/SimplicityMockup';
-import { TestingMockup } from './mockups/TestingMockup';
-import { FailureMockup } from './mockups/FailureMockup';
+import { DiscoveryMockup } from './mockups/DiscoveryMockup';
+import { DesignMockup } from './mockups/DesignMockup';
+import { DevelopmentMockup } from './mockups/DevelopmentMockup';
+import { DeliveryMockup } from './mockups/DeliveryMockup';
+import { QAMockup } from './mockups/QAMockup';
 
 // Canvas coordinate basis. All node boxes and connector paths are authored
 // against this pixel space, then converted to percentages so the whole
 // canvas can scale with an aspect-ratio wrapper without distorting curves.
-const VB_W = 1320;
-const VB_H = 600;
+const VB_W = 1850;
+const VB_H = 750;
 
 const pct = (px: number, axis: 'x' | 'y') => `${(px / (axis === 'x' ? VB_W : VB_H)) * 100}%`;
 
@@ -39,62 +40,77 @@ interface WorkflowNodeData {
 
 const NODES: WorkflowNodeData[] = [
   {
-    id: 'trigger',
+    id: 'discovery',
     kind: 'trigger',
     num: '01',
     colorVar: '--primary',
-    icon: '⚡',
-    title: 'Observability-first',
-    subtitle: 'Trigger · always on',
-    body: "If you can't measure it, you can't improve it. Instrumented from day one.",
-    tags: ['Traces', 'Metrics', 'Dashboards'],
-    Mockup: ObservabilityMockup,
-    box: { x: 30, y: 190, w: 260, h: 220 },
+    icon: '🔍',
+    title: 'Discovery & Strategy',
+    subtitle: 'Phase 1 · Research',
+    body: "Understanding the problem, defining the scope, and aligning on goals before writing a single line of code.",
+    tags: ['Research', 'Wireframes', 'Requirements'],
+    Mockup: DiscoveryMockup,
+    box: { x: 30, y: 190, w: 290, h: 220 },
     outYPct: 45,
   },
   {
-    id: 'simplicity',
+    id: 'design',
     kind: 'node',
     num: '02',
     colorVar: '--secondary',
-    icon: '◈',
-    title: 'Simplicity over cleverness',
-    subtitle: 'Node · code review',
-    body: 'Boring technology for boring problems. Complexity only where it earns its place.',
-    tags: ['Readable', 'Boring tech', 'Debuggable'],
-    Mockup: SimplicityMockup,
-    box: { x: 340, y: 40, w: 280, h: 220 },
+    icon: '🎨',
+    title: 'UI/UX Design',
+    subtitle: 'Phase 2 · Prototyping',
+    body: 'Crafting intuitive user experiences and pixel-perfect interfaces that delight users and drive engagement.',
+    tags: ['Figma', 'Prototyping', 'Design System'],
+    Mockup: DesignMockup,
+    box: { x: 400, y: 40, w: 290, h: 220 },
     inYPct: 55,
     outYPct: 70,
   },
   {
-    id: 'testing',
+    id: 'development',
     kind: 'node',
     num: '03',
     colorVar: '--primary',
-    icon: '◉',
-    title: 'Test at the boundaries',
-    subtitle: 'Node · CI pipeline',
-    body: 'Integration over unit tests. Mock at the network edge, not inside the domain.',
-    tags: ['Integration', 'Network mocks', 'Fast loop'],
-    Mockup: TestingMockup,
-    box: { x: 680, y: 285, w: 280, h: 220 },
+    icon: '💻',
+    title: 'Development & Implementation',
+    subtitle: 'Phase 3 · Code',
+    body: 'Building scalable, performant systems rapidly by combining deep engineering expertise with modern AI workflows.',
+    tags: ['Clean Code', 'Performance', 'Architecture'],
+    Mockup: DevelopmentMockup,
+    box: { x: 770, y: 285, w: 290, h: 220 },
     inYPct: 35,
     outYPct: 45,
   },
   {
-    id: 'failure',
+    id: 'qa',
     kind: 'node',
     num: '04',
     colorVar: '--secondary',
-    icon: '◇',
-    title: 'Design for failure',
-    subtitle: 'Node · resilience layer',
-    body: 'Circuit breakers and graceful degradation are first-class, never afterthoughts.',
-    tags: ['Circuit breakers', 'Retry budgets', 'Degradation'],
-    Mockup: FailureMockup,
-    box: { x: 1020, y: 160, w: 265, h: 220 },
+    icon: '🧪',
+    title: 'QA & Automated Testing',
+    subtitle: 'Phase 4 · Validation',
+    body: 'Ensuring absolute reliability through comprehensive integration tests, performance audits, and rigorous QA.',
+    tags: ['E2E Tests', 'Performance', 'Reliability'],
+    Mockup: QAMockup,
+    box: { x: 1140, y: 110, w: 290, h: 220 },
     inYPct: 60,
+    outYPct: 65,
+  },
+  {
+    id: 'delivery',
+    kind: 'node',
+    num: '05',
+    colorVar: '--primary',
+    icon: '🚀',
+    title: 'CI/CD Delivery',
+    subtitle: 'Phase 5 · Launch',
+    body: 'Deploying with confidence, monitoring performance, and iterating continuously based on real user feedback.',
+    tags: ['Pipelines', 'Analytics', 'Iteration'],
+    Mockup: DeliveryMockup,
+    box: { x: 1510, y: 300, w: 290, h: 220 },
+    inYPct: 40,
   },
 ];
 
@@ -106,7 +122,7 @@ const CONNECTIONS = [
     get path() {
       const a = { x: NODES[0].box.x + NODES[0].box.w, y: NODES[0].box.y + NODES[0].box.h * ((NODES[0].outYPct ?? 50) / 100) };
       const b = { x: NODES[1].box.x, y: NODES[1].box.y + NODES[1].box.h * ((NODES[1].inYPct ?? 50) / 100) };
-      const dx = Math.max(45, (b.x - a.x) * 0.5);
+      const dx = (b.x - a.x) * 0.5;
       return `M${a.x},${a.y} C${a.x + dx},${a.y} ${b.x - dx},${b.y} ${b.x},${b.y}`;
     },
   },
@@ -116,7 +132,7 @@ const CONNECTIONS = [
     get path() {
       const a = { x: NODES[1].box.x + NODES[1].box.w, y: NODES[1].box.y + NODES[1].box.h * ((NODES[1].outYPct ?? 50) / 100) };
       const b = { x: NODES[2].box.x, y: NODES[2].box.y + NODES[2].box.h * ((NODES[2].inYPct ?? 50) / 100) };
-      const dx = Math.max(45, (b.x - a.x) * 0.5);
+      const dx = (b.x - a.x) * 0.5;
       return `M${a.x},${a.y} C${a.x + dx},${a.y} ${b.x - dx},${b.y} ${b.x},${b.y}`;
     },
   },
@@ -126,7 +142,17 @@ const CONNECTIONS = [
     get path() {
       const a = { x: NODES[2].box.x + NODES[2].box.w, y: NODES[2].box.y + NODES[2].box.h * ((NODES[2].outYPct ?? 50) / 100) };
       const b = { x: NODES[3].box.x, y: NODES[3].box.y + NODES[3].box.h * ((NODES[3].inYPct ?? 50) / 100) };
-      const dx = Math.max(45, (b.x - a.x) * 0.5);
+      const dx = (b.x - a.x) * 0.5;
+      return `M${a.x},${a.y} C${a.x + dx},${a.y} ${b.x - dx},${b.y} ${b.x},${b.y}`;
+    },
+  },
+  {
+    from: NODES[3],
+    to: NODES[4],
+    get path() {
+      const a = { x: NODES[3].box.x + NODES[3].box.w, y: NODES[3].box.y + NODES[3].box.h * ((NODES[3].outYPct ?? 50) / 100) };
+      const b = { x: NODES[4].box.x, y: NODES[4].box.y + NODES[4].box.h * ((NODES[4].inYPct ?? 50) / 100) };
+      const dx = (b.x - a.x) * 0.5;
       return `M${a.x},${a.y} C${a.x + dx},${a.y} ${b.x - dx},${b.y} ${b.x},${b.y}`;
     },
   },
@@ -329,22 +355,19 @@ const CTASection = ({ isInView }: { isInView: boolean }) => (
   >
     <div className="flex flex-col items-center gap-3">
       <p className="max-w-[480px] text-sm leading-relaxed text-muted-foreground">
-        These principles guide every line of code I write. Want to see them in action?
+        Ready to start a project? Download my resume or get in touch to discuss how we can work together.
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         <a
-          href="#projects"
+          href="/resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           className="group inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary px-5 py-2.5 font-medium text-primary-foreground shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
         >
-          <span className="text-sm">View Projects</span>
-          <svg
-            className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          <svg className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
+          <span className="text-sm">Download Resume (PDF)</span>
         </a>
         <a
           href="#contact"
@@ -382,7 +405,7 @@ const EngineeringPhilosophy = () => {
         style={{ background: 'linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 100%)' }}
       />
 
-      <div className="relative z-20 mx-auto max-w-[1380px] px-6 md:px-10">
+      <div className="relative z-20 mx-auto max-w-[1850px] px-6 md:px-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -392,13 +415,13 @@ const EngineeringPhilosophy = () => {
           className="text-center mb-16 md:mb-20 flex flex-col items-center"
         >
           <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
-            Engineering{' '}
+            Workflow &{' '}
             <span className="font-playfair italic font-medium text-[#7C5CFC]">
-              Philosophy
+              Process
             </span>
           </h2>
           <p className="text-sm text-foreground/40 leading-relaxed max-w-[280px]">
-            Architecting scalable systems and refined sensory experiences across 10 years of engineering.
+            From initial concept to final deployment, here's how I bring ideas to life.
           </p>
         </motion.div>
 
