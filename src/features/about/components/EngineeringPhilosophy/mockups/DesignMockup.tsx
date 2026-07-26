@@ -40,9 +40,8 @@ export const DesignMockup = () => {
       {/* Button that gets redesigned */}
       <motion.rect 
         x="110" y="95" width="80" height="24" rx="4"
-        fill="#7C5CFC"
-        initial={{ backgroundColor: "var(--border)", opacity: 0.5 }}
-        animate={{ backgroundColor: "#7C5CFC", opacity: 1 }}
+        initial={{ fill: "hsl(var(--border))", opacity: 0.5 }}
+        animate={{ fill: "#7C5CFC", opacity: 1 }}
         transition={{ duration: 0.4, delay: 1.6 }}
       />
       

@@ -1,6 +1,6 @@
 // src/features/philosophy/components/EngineeringPhilosophy.tsx
 
-import { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
 import { DiscoveryMockup } from './mockups/DiscoveryMockup';
@@ -114,48 +114,12 @@ const NODES: WorkflowNodeData[] = [
   },
 ];
 
-// Individual connections with natural horizontal-tangent cubic S-curves connecting exact node entry/exit dots
-const CONNECTIONS = [
-  {
-    from: NODES[0],
-    to: NODES[1],
-    get path() {
-      const a = { x: NODES[0].box.x + NODES[0].box.w, y: NODES[0].box.y + NODES[0].box.h * ((NODES[0].outYPct ?? 50) / 100) };
-      const b = { x: NODES[1].box.x, y: NODES[1].box.y + NODES[1].box.h * ((NODES[1].inYPct ?? 50) / 100) };
-      const dx = (b.x - a.x) * 0.5;
-      return `M${a.x},${a.y} C${a.x + dx},${a.y} ${b.x - dx},${b.y} ${b.x},${b.y}`;
-    },
-  },
-  {
-    from: NODES[1],
-    to: NODES[2],
-    get path() {
-      const a = { x: NODES[1].box.x + NODES[1].box.w, y: NODES[1].box.y + NODES[1].box.h * ((NODES[1].outYPct ?? 50) / 100) };
-      const b = { x: NODES[2].box.x, y: NODES[2].box.y + NODES[2].box.h * ((NODES[2].inYPct ?? 50) / 100) };
-      const dx = (b.x - a.x) * 0.5;
-      return `M${a.x},${a.y} C${a.x + dx},${a.y} ${b.x - dx},${b.y} ${b.x},${b.y}`;
-    },
-  },
-  {
-    from: NODES[2],
-    to: NODES[3],
-    get path() {
-      const a = { x: NODES[2].box.x + NODES[2].box.w, y: NODES[2].box.y + NODES[2].box.h * ((NODES[2].outYPct ?? 50) / 100) };
-      const b = { x: NODES[3].box.x, y: NODES[3].box.y + NODES[3].box.h * ((NODES[3].inYPct ?? 50) / 100) };
-      const dx = (b.x - a.x) * 0.5;
-      return `M${a.x},${a.y} C${a.x + dx},${a.y} ${b.x - dx},${b.y} ${b.x},${b.y}`;
-    },
-  },
-  {
-    from: NODES[3],
-    to: NODES[4],
-    get path() {
-      const a = { x: NODES[3].box.x + NODES[3].box.w, y: NODES[3].box.y + NODES[3].box.h * ((NODES[3].outYPct ?? 50) / 100) };
-      const b = { x: NODES[4].box.x, y: NODES[4].box.y + NODES[4].box.h * ((NODES[4].inYPct ?? 50) / 100) };
-      const dx = (b.x - a.x) * 0.5;
-      return `M${a.x},${a.y} C${a.x + dx},${a.y} ${b.x - dx},${b.y} ${b.x},${b.y}`;
-    },
-  },
+// Data for connections
+const CONNECTIONS_DATA = [
+  { from: 'discovery', to: 'design' },
+  { from: 'design', to: 'development' },
+  { from: 'development', to: 'qa' },
+  { from: 'qa', to: 'delivery' },
 ];
 
 // ─── Dot-grid canvas background ─────────────────────────────────────────────
@@ -171,58 +135,75 @@ const CanvasGrid = () => (
 );
 
 // ─── Connector layer ─────────────────────────────────────────────────────────
-const ConnectorLayer = ({ isInView }: { isInView: boolean }) => (
-  <svg
-    viewBox={`0 0 ${VB_W} ${VB_H}`}
-    className="pointer-events-none absolute inset-0 hidden h-full w-full sm:block"
-    preserveAspectRatio="xMidYMid meet"
-  >
-    <defs>
-      <marker id="wf-arrow" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-        <path d="M0 0L8 4L0 8Z" fill={hslVar('--primary', 0.65)} />
-      </marker>
-    </defs>
+const ConnectorLayer = ({ isInView, anchors }: { isInView: boolean; anchors: Record<string, { x: number; y: number; outX: number; outY: number; inX: number; inY: number }> }) => {
+  if (Object.keys(anchors).length === 0) return null;
 
-    {CONNECTIONS.map((c, i) => {
-      const d = c.path;
-      return (
-        <g key={`${c.from.id}-${c.to.id}`}>
-          <motion.path
-            d={d}
-            fill="none"
-            stroke={hslVar(c.to.colorVar, 0.35)}
-            strokeWidth="2"
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-            markerEnd="url(#wf-arrow)"
-            initial={{ pathLength: 0 }}
-            animate={isInView ? { pathLength: 1 } : {}}
-            transition={{ duration: 1, delay: 0.25 + i * 0.2, ease: [0.16, 1, 0.3, 1] }}
-          />
-          {isInView && (
-            <motion.circle
-              r="3.5"
-              fill={hslVar(c.to.colorVar, 1)}
-              style={{ offsetPath: `path("${d}")`, offsetRotate: '0deg' }}
-              animate={{ offsetDistance: ['0%', '100%'], opacity: [0, 1, 1, 0] }}
-              transition={{ duration: 2.2, repeat: Infinity, ease: 'linear', delay: 1.2 + i * 0.5 }}
+  return (
+    <svg
+      className="pointer-events-none absolute inset-0 hidden h-full w-full sm:block"
+    >
+      <defs>
+        <marker id="wf-arrow" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0 0L8 4L0 8Z" fill={hslVar('--primary', 0.65)} />
+        </marker>
+      </defs>
+
+      {CONNECTIONS_DATA.map((c, i) => {
+        const fromNode = NODES.find((n) => n.id === c.from);
+        const toNode = NODES.find((n) => n.id === c.to);
+        if (!fromNode || !toNode) return null;
+
+        const fromAnchor = anchors[c.from];
+        const toAnchor = anchors[c.to];
+        if (!fromAnchor || !toAnchor) return null;
+
+        const a = { x: fromAnchor.outX, y: fromAnchor.outY };
+        const b = { x: toAnchor.inX, y: toAnchor.inY };
+        const dx = (b.x - a.x) * 0.5;
+        const d = `M${a.x},${a.y} C${a.x + dx},${a.y} ${b.x - dx},${b.y} ${b.x},${b.y}`;
+
+        return (
+          <g key={`${c.from}-${c.to}`}>
+            <motion.path
+              d={d}
+              fill="none"
+              stroke={hslVar(toNode.colorVar, 0.35)}
+              strokeWidth="2"
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+              markerEnd="url(#wf-arrow)"
+              initial={{ pathLength: 0 }}
+              animate={isInView ? { pathLength: 1 } : {}}
+              transition={{ duration: 1, delay: 0.25 + i * 0.2, ease: [0.16, 1, 0.3, 1] }}
             />
-          )}
-        </g>
-      );
-    })}
-  </svg>
-);
+            {isInView && (
+              <motion.circle
+                r="3.5"
+                fill={hslVar(toNode.colorVar, 1)}
+                style={{ offsetPath: `path("${d}")`, offsetRotate: '0deg' }}
+                animate={{ offsetDistance: ['0%', '100%'], opacity: [0, 1, 1, 0] }}
+                transition={{ duration: 2.2, repeat: Infinity, ease: 'linear', delay: 1.2 + i * 0.5 }}
+              />
+            )}
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
 
 // ─── Workflow node ───────────────────────────────────────────────────────────
-const WorkflowNode = ({ node, index }: { node: WorkflowNodeData; index: number }) => {
+const WorkflowNode = ({ node, index, registerNode }: { node: WorkflowNodeData; index: number; registerNode: (id: string, el: HTMLDivElement | null) => void }) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-40px' });
   const isTrigger = node.kind === 'trigger';
 
   return (
     <motion.div
-      ref={ref}
+      ref={(el) => {
+        if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
+        registerNode(node.id, el);
+      }}
       initial={{ opacity: 0, scale: 0.92 }}
       animate={isInView ? { opacity: 1, scale: 1 } : {}}
       transition={{ duration: 0.5, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
@@ -386,6 +367,51 @@ const EngineeringPhilosophy = () => {
   const isInView = useInView(sectionRef, { once: false, margin: '-100px' });
   const canvasRef = useRef<HTMLDivElement>(null);
   const canvasInView = useInView(canvasRef, { once: true, margin: '-120px' });
+  
+  const nodeRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [anchors, setAnchors] = useState<Record<string, {x:number;y:number;outX:number;outY:number;inX:number;inY:number}>>({});
+
+  const registerNode = (id: string, el: HTMLDivElement | null) => {
+    nodeRefs.current[id] = el;
+  };
+
+  useEffect(() => {
+    const measure = () => {
+      if (!canvasRef.current) return;
+      const canvasRect = canvasRef.current.getBoundingClientRect();
+      const next: typeof anchors = {};
+      
+      NODES.forEach((node) => {
+        const el = nodeRefs.current[node.id];
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        next[node.id] = {
+          x: r.left - canvasRect.left,
+          y: r.top - canvasRect.top,
+          outX: r.right - canvasRect.left,
+          outY: r.top - canvasRect.top + r.height * ((node.outYPct ?? 50) / 100),
+          inX: r.left - canvasRect.left,
+          inY: r.top - canvasRect.top + r.height * ((node.inYPct ?? 50) / 100),
+        };
+      });
+      
+      setAnchors(next);
+    };
+
+    // Use ResizeObserver for accurate sizing changes, plus window resize as backup
+    const resizeObserver = new ResizeObserver(() => measure());
+    if (canvasRef.current) {
+      resizeObserver.observe(canvasRef.current);
+    }
+    
+    measure();
+    window.addEventListener('resize', measure);
+    
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, []);
 
   return (
     <section
@@ -433,9 +459,9 @@ const EngineeringPhilosophy = () => {
         >
           <CanvasGrid />
           <CanvasChrome />
-          <ConnectorLayer isInView={canvasInView} />
+          <ConnectorLayer isInView={canvasInView} anchors={anchors} />
           {NODES.map((node, i) => (
-            <WorkflowNode key={node.id} node={node} index={i} />
+            <WorkflowNode key={node.id} node={node} index={i} registerNode={registerNode} />
           ))}
         </div>
 

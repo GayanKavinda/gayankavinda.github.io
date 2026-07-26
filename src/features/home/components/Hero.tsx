@@ -1,5 +1,17 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
+  return isMobile;
+}
 import { useTheme } from '@app/providers/theme-provider';
 import Magnetic from '@components/animations/Magnetic';
 import dayHeroImg   from '@assets/images/hero/eve.png';
@@ -143,6 +155,7 @@ const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const isMobile = useIsMobile();
 
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
 
@@ -257,7 +270,7 @@ const Hero = () => {
   alt="Camper overlooking the horizon"
   className="w-[58vw] max-w-[750px] min-w-[300px] h-auto object-contain object-bottom"
   style={{
-    filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.7)) drop-shadow(0 0 40px rgba(0,0,0,0.4)) brightness(0.85)',
+    filter: isMobile ? 'brightness(0.85)' : 'drop-shadow(0 30px 60px rgba(0,0,0,0.7)) drop-shadow(0 0 40px rgba(0,0,0,0.4)) brightness(0.85)',
     mixBlendMode: isDark ? 'normal' : 'multiply',
   }}
   loading="eager"
@@ -314,11 +327,11 @@ const Hero = () => {
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           />
 
-          {fireflies.map((fly, i) => (
+          {!isMobile && fireflies.map((fly, i) => (
             <Firefly key={i} {...fly} />
           ))}
 
-          {dustMotes.map((mote, i) => (
+          {!isMobile && dustMotes.map((mote, i) => (
             <DustMote key={`dust-${i}`} {...mote} />
           ))}
 

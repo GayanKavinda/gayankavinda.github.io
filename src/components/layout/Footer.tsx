@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
 import { QRCode } from '@components/ui/qr-code';
+import logoMask from '@/assets/images/mask.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -175,7 +176,10 @@ const Footer = () => {
           {/* Column 1: Brand */}
           <div style={{ flex: '1 1 280px', minWidth: '240px' }} className="footer-col">
             <div className="mb-8 flex items-center gap-4">
-               <div className="w-[24px] h-[24px] rounded-full bg-gradient-to-br from-crimson/5 to-gold/5" />
+               <div
+                  className="w-6 h-6 rounded-md flex items-center justify-center overflow-hidden" >
+                  <img src={logoMask} alt="Logo" className="w-full h-full object-cover" />
+                </div>
                <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '18px', fontWeight: 700, color: t1, letterSpacing: '-0.02em' }}>Gayan Kavinda</span>
             </div>
             <p style={{ fontSize: '13px', color: t2, maxWidth: '210px', marginBottom: '24px', lineHeight: '1.6' }}>
