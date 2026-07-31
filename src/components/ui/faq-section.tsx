@@ -77,7 +77,11 @@ const FaqSection = React.forwardRef<HTMLElement, FaqSectionProps>(
               <p className="text-xs text-muted-foreground mb-4">
                 {contactInfo.description}
               </p>
-              <Button size="sm" onClick={contactInfo.onContact}>
+              <Button 
+                size="sm" 
+                onClick={contactInfo.onContact}
+                className="bg-[#d60d86] text-white hover:bg-[#d60d86]/90 border border-[#d60d86]/30 shadow-sm"
+              >
                 {contactInfo.buttonText}
               </Button>
             </motion.div>
@@ -140,7 +144,7 @@ const FaqItem = React.forwardRef<
           className={cn(
             "p-0.5 rounded-full flex-shrink-0",
             "transition-colors duration-200",
-            isOpen ? "text-primary" : "text-muted-foreground"
+            isOpen ? "text-[#d60d86]" : "text-muted-foreground"
           )}
         >
           <ChevronDown className="h-4 w-4" />

@@ -168,7 +168,7 @@ const About = () => {
             <motion.div variants={{ hidden: { opacity: 0, y: 15 }, visible: { opacity: 1, y: 0 } }} className="mb-8">
               <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
                 About the{' '}
-                <span className="font-playfair italic font-medium text-[#7C5CFC]">
+                <span className="font-playfair italic font-medium text-[#d60d86]">
                   Engineer
                 </span>
               </h2>

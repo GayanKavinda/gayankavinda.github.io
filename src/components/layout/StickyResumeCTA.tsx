@@ -19,7 +19,7 @@ export const StickyResumeCTA = () => {
           rel="noopener noreferrer"
           className="group flex items-center gap-3 overflow-hidden rounded-full bg-white/30 dark:bg-white/20 p-2.5 shadow-[0_4px_16px_rgba(0,0,0,0.08)] backdrop-blur-2xl transition-all duration-500 hover:bg-white/40 dark:hover:bg-white/30 hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] border-none"
         >
-          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary transition-transform duration-300 group-hover:scale-110">
+          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#d60d86]/20 text-[#d60d86] transition-transform duration-300 group-hover:scale-110">
             <FileText className="absolute h-5 w-5 transition-all duration-300 group-hover:scale-0 group-hover:opacity-0" />
             <Download className="absolute h-5 w-5 scale-0 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100" />
           </div>

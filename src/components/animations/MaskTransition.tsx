@@ -23,11 +23,47 @@ const MATERIAL_CONFIG = {
 };
 
 /* ============================================================
+   CHAPTER CONFIG
+============================================================ */
+
+type ChapterConfig = {
+  id: "ch1" | "ch2" | "ch3";
+  numeral: string;
+  title: string;
+  detail: string;
+  position: { top?: string; bottom?: string; left?: string; right?: string };
+  align: "left" | "right" | "center";
+};
+
+const CHAPTERS: ChapterConfig[] = [
+  {
+    id: "ch1",
+    numeral: "i",
+    title: "Event-driven architecture",
+    detail: "Systems that react, not poll.",
+    position: { bottom: "26%", left: "50%" },
+    align: "center",
+  },
+  {
+    id: "ch2",
+    numeral: "ii",
+    title: "Observability-first design",
+    detail: "If you can't see it, you can't ship it.",
+    position: { top: "50%", left: "18%" },
+    align: "left",
+  },
+  {
+    id: "ch3",
+    numeral: "iii",
+    title: "Zero-downtime deployment",
+    detail: "The user never notices the change.",
+    position: { top: "30%", right: "12%" },
+    align: "right",
+  },
+];
+
+/* ============================================================
    SHARED SCROLL STATE
-   A single plain object that anime.js mutates directly. It is
-   read every frame by the 3D scene AND written to the DOM text
-   layers, so there is exactly one source of truth for "where
-   are we in the scroll story".
 ============================================================ */
 
 type SceneState = {
@@ -40,10 +76,6 @@ type SceneState = {
   camPolar: number;
   lookAtY: number;
   lightHue: number;
-  ghostY: number;
-  ghostOpacity: number;
-  kanjiY: number;
-  kanjiOpacity: number;
   ch1Y: number;
   ch1Opacity: number;
   ch2Y: number;
@@ -63,10 +95,6 @@ function createSceneState(): SceneState {
     camPolar: Math.PI * 0.4,
     lookAtY: 0.5,
     lightHue: 0,
-    ghostY: 0,
-    ghostOpacity: 0,
-    kanjiY: 0,
-    kanjiOpacity: 0,
     ch1Y: 55,
     ch1Opacity: 0,
     ch2Y: 55,
@@ -78,9 +106,6 @@ function createSceneState(): SceneState {
 
 /**
  * Builds a paused anime.js timeline that is scrubbed with .seek().
- * Every keyframe below is a direct translation of the original
- * piecewise lerp logic, just expressed as anime.js segments with
- * absolute offsets (offset = startProgress * 1000ms).
  */
 function buildScrollTimeline(state: SceneState, isDark: boolean) {
   const tl = createTimeline({ autoplay: false });
@@ -108,16 +133,6 @@ function buildScrollTimeline(state: SceneState, isDark: boolean) {
   const hueRange = isDark ? [260, 190] : [200, 30];
   tl.add(state, { lightHue: hueRange, duration: 1000, ease: "linear" }, 0);
 
-  // L1 — ghost word, slow parallax, longest hang time
-  tl.add(state, { ghostY: [0, -160], duration: 1000, ease: "linear" }, 0);
-  tl.add(state, { ghostOpacity: [0, 0.07], duration: 120, ease: "outSine" }, 0);
-  tl.add(state, { ghostOpacity: [0.07, 0], duration: 200, ease: "inSine" }, 720);
-
-  // L2 — kanji, faster parallax
-  tl.add(state, { kanjiY: [0, -240], duration: 1000, ease: "linear" }, 0);
-  tl.add(state, { kanjiOpacity: [0, 0.055], duration: 180, ease: "outSine" }, 0);
-  tl.add(state, { kanjiOpacity: [0.055, 0], duration: 180, ease: "inSine" }, 480);
-
   // L3 — chapter 1
   tl.add(state, { ch1Y: [55, 0], duration: 180, ease: "outBack" }, 50);
   tl.add(state, { ch1Opacity: [0, 1], duration: 180, ease: "outSine" }, 50);
@@ -141,31 +156,24 @@ function buildScrollTimeline(state: SceneState, isDark: boolean) {
 
 /* ============================================================
    SCROLL DRIVER
-   Lives inside the Canvas so it can share a single rAF tick
-   with R3F, seeks the anime timeline every frame, and pushes
-   the resolved values straight onto the DOM text refs.
 ============================================================ */
 
 function ScrollDriver({
   containerRef,
   sceneState,
   timelineRef,
-  ghostWordRef,
-  kanjiRef,
-  ch1Ref,
-  ch2Ref,
-  ch3Ref,
+  chapterRefs,
+  progressDotRef,
   bloomRef,
   isDarkRef,
 }: {
   containerRef: React.RefObject<HTMLDivElement>;
   sceneState: SceneState;
   timelineRef: React.MutableRefObject<anime.AnimeTimelineInstance | null>;
-  ghostWordRef: React.RefObject<HTMLDivElement>;
-  kanjiRef: React.RefObject<HTMLDivElement>;
-  ch1Ref: React.RefObject<HTMLDivElement>;
-  ch2Ref: React.RefObject<HTMLDivElement>;
-  ch3Ref: React.RefObject<HTMLDivElement>;
+  chapterRefs: React.MutableRefObject<
+    Partial<Record<"ch1" | "ch2" | "ch3", { el: HTMLDivElement }>>
+  >;
+  progressDotRef: React.RefObject<HTMLDivElement>;
   bloomRef: React.MutableRefObject<any>;
   isDarkRef: React.MutableRefObject<boolean>;
 }) {
@@ -181,7 +189,7 @@ function ScrollDriver({
     const total = rect.height - vh;
     const raw = total > 0 ? clamp(-rect.top / total) : 0;
 
-    // scrub smoothing, this is what gave GSAP's scrub:1 its softness
+    // scrub smoothing
     smoothProgress.current += (raw - smoothProgress.current) * 0.09;
     const p = smoothProgress.current;
     const velocity = Math.abs(p - prevSmooth.current);
@@ -194,25 +202,22 @@ function ScrollDriver({
         (isDarkRef.current ? 0.6 : 0.3) + Math.min(velocity * 20, 0.2);
     }
 
-    if (ghostWordRef.current) {
-      ghostWordRef.current.style.transform = `translate(-50%, calc(-50% + ${sceneState.ghostY}px))`;
-      ghostWordRef.current.style.opacity = String(sceneState.ghostOpacity);
-    }
-    if (kanjiRef.current) {
-      kanjiRef.current.style.transform = `translateY(${sceneState.kanjiY}px)`;
-      kanjiRef.current.style.opacity = String(sceneState.kanjiOpacity);
-    }
-    if (ch1Ref.current) {
-      ch1Ref.current.style.transform = `translate(-50%, ${sceneState.ch1Y}px)`;
-      ch1Ref.current.style.opacity = String(sceneState.ch1Opacity);
-    }
-    if (ch2Ref.current) {
-      ch2Ref.current.style.transform = `translateY(calc(-50% + ${sceneState.ch2Y}px))`;
-      ch2Ref.current.style.opacity = String(sceneState.ch2Opacity);
-    }
-    if (ch3Ref.current) {
-      ch3Ref.current.style.transform = `translateY(${sceneState.ch3Y}px)`;
-      ch3Ref.current.style.opacity = String(sceneState.ch3Opacity);
+    // Focus-pull chapters
+    (["ch1", "ch2", "ch3"] as const).forEach((id) => {
+      const refs = chapterRefs.current[id];
+      if (!refs) return;
+      const y = sceneState[`${id}Y` as const];
+      const focus = clamp(sceneState[`${id}Opacity` as const] * 1.6); // stays visible longer, sharpens late
+
+      refs.el.style.filter = `blur(${(1 - focus) * 9}px)`;
+      refs.el.style.transform = `scale(${1 + (1 - focus) * 0.07}) translateY(${y * 0.35}px)`;
+      refs.el.style.opacity = String(Math.min(focus + 0.15, 1));
+    });
+
+    // Quiet progress dot
+    if (progressDotRef.current) {
+      const travel = window.innerHeight * 0.6; // matches the 20%..80% thread span
+      progressDotRef.current.style.transform = `translateY(${p * travel}px)`;
     }
   });
 
@@ -221,10 +226,6 @@ function ScrollDriver({
 
 /* ============================================================
    SHRINE SCENE
-   Reads sceneState for the scroll-driven pose, then layers on
-   three anime.js-powered flourishes that scroll never touches:
-   an idle breathing loop, a glow pulse on the emissive parts,
-   and a pointer-parallax tilt.
 ============================================================ */
 
 function ShrineScene({
@@ -249,11 +250,8 @@ function ShrineScene({
   const isMobileRef = useRef(false);
   const emissiveMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
 
-  // Free-spin accumulator for the 0.3 -> 0.8 "orbiting" window,
-  // same self-referential behaviour the original GSAP version had.
   const spinRef = useRef(0);
 
-  // Anime.js-driven ambient state, all continuous/looping, none of it scroll-scrubbed.
   const idleState = useRef({ scale: 1 }).current;
   const glowState = useRef({ intensity: MATERIAL_CONFIG.emissiveIntensity }).current;
   const entranceState = useRef({ scale: 0 }).current;
@@ -269,7 +267,6 @@ function ShrineScene({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Idle breathing loop, runs forever regardless of scroll position
   useEffect(() => {
     const idle = animate(idleState, {
       scale: [1, 1.015],
@@ -281,10 +278,12 @@ function ShrineScene({
     return () => idle.pause();
   }, [idleState]);
 
-  // Emissive glow pulse, independent loop on the crystal/gem/core parts
   useEffect(() => {
     const glow = animate(glowState, {
-      intensity: [MATERIAL_CONFIG.emissiveIntensity * 0.7, MATERIAL_CONFIG.emissiveIntensity * 1.4],
+      intensity: [
+        MATERIAL_CONFIG.emissiveIntensity * 0.7,
+        MATERIAL_CONFIG.emissiveIntensity * 1.4,
+      ],
       duration: 2400,
       ease: "inOutQuad",
       alternate: true,
@@ -293,7 +292,6 @@ function ShrineScene({
     return () => glow.pause();
   }, [glowState]);
 
-  // Elastic entrance the moment the model actually appears
   useEffect(() => {
     if (!isLoaded) return;
     animate(entranceState, {
@@ -303,8 +301,6 @@ function ShrineScene({
     });
   }, [isLoaded, entranceState]);
 
-  // Pointer parallax, each move re-targets the same anime tween so it
-  // interrupts smoothly instead of snapping
   useEffect(() => {
     const handlePointerMove = (e: PointerEvent) => {
       const nx = (e.clientX / window.innerWidth) * 2 - 1;
@@ -341,17 +337,25 @@ function ShrineScene({
 
         const matName = mat.name?.toLowerCase() || "";
         if (
-          matName.includes("skull") || matName.includes("bull") ||
-          matName.includes("horn") || matName.includes("core") ||
-          matName.includes("gem")  || matName.includes("crystal") ||
-          matName.includes("eye")  || matName.includes("accent")
+          matName.includes("skull") ||
+          matName.includes("bull") ||
+          matName.includes("horn") ||
+          matName.includes("core") ||
+          matName.includes("gem") ||
+          matName.includes("crystal") ||
+          matName.includes("eye") ||
+          matName.includes("accent")
         ) {
           mat.emissive = new THREE.Color(MATERIAL_CONFIG.emissiveColor);
           mat.emissiveIntensity = MATERIAL_CONFIG.emissiveIntensity;
           emissiveMats.push(mat);
         }
 
-        if (matName.includes("glass") || matName.includes("crystal") || matName.includes("gem")) {
+        if (
+          matName.includes("glass") ||
+          matName.includes("crystal") ||
+          matName.includes("gem")
+        ) {
           child.material = new THREE.MeshPhysicalMaterial({
             color: mat.color.clone(),
             transmission: MATERIAL_CONFIG.glassTransmission,
@@ -374,15 +378,10 @@ function ShrineScene({
   useFrame((_, delta) => {
     if (!groupRef.current) return;
 
-    const p = clamp(
-      // reverse-engineer progress from camAzimuth so this component
-      // doesn't need its own copy of the raw scroll value
-      sceneState.camAzimuth / (Math.PI * 1.3)
-    );
+    const p = clamp(sceneState.camAzimuth / (Math.PI * 1.3));
 
     const scaleFactor = scaleFactorRef.current;
 
-    // rotation: entrance turn, then a free continuous spin, then settle
     let rotationY: number;
     if (p < 0.3) {
       rotationY = sceneState.modelRotY;
@@ -391,10 +390,13 @@ function ShrineScene({
       spinRef.current += delta * 0.35;
       rotationY = spinRef.current;
     } else {
-      rotationY = THREE.MathUtils.lerp(spinRef.current, Math.PI * 0.3, (p - 0.8) / 0.2);
+      rotationY = THREE.MathUtils.lerp(
+        spinRef.current,
+        Math.PI * 0.3,
+        (p - 0.8) / 0.2
+      );
     }
 
-    // combine scroll scale, idle breathing, and the elastic entrance
     const targetScale =
       sceneState.modelScale * scaleFactor * idleState.scale * entranceState.scale;
 
@@ -409,12 +411,13 @@ function ShrineScene({
     const radius = sceneState.camRadius * radiusFactor;
 
     targetCameraPos.current.set(
-      MODEL_CENTER.x + radius * Math.sin(sceneState.camPolar) * Math.sin(sceneState.camAzimuth),
+      MODEL_CENTER.x +
+        radius * Math.sin(sceneState.camPolar) * Math.sin(sceneState.camAzimuth),
       MODEL_CENTER.y + radius * Math.cos(sceneState.camPolar),
-      MODEL_CENTER.z + radius * Math.sin(sceneState.camPolar) * Math.cos(sceneState.camAzimuth)
+      MODEL_CENTER.z +
+        radius * Math.sin(sceneState.camPolar) * Math.cos(sceneState.camAzimuth)
     );
 
-    // pointer parallax offset on the camera itself, subtle depth cue
     targetCameraPos.current.x += mouseState.x * 0.35;
     targetCameraPos.current.y += mouseState.y * 0.2;
 
@@ -435,12 +438,20 @@ function ShrineScene({
     }
   });
 
-  return <group ref={groupRef}><primitive object={scene} /></group>;
+  return (
+    <group ref={groupRef}>
+      <primitive object={scene} />
+    </group>
+  );
 }
 
 function GroundShadow() {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
+    <mesh
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[0, -0.01, 0]}
+      receiveShadow
+    >
       <planeGeometry args={[50, 50]} />
       <shadowMaterial opacity={0.3} />
     </mesh>
@@ -454,11 +465,10 @@ function GroundShadow() {
 export default function MaskTransition() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const ghostWordRef = useRef<HTMLDivElement>(null);
-  const kanjiRef     = useRef<HTMLDivElement>(null);
-  const ch1Ref       = useRef<HTMLDivElement>(null);
-  const ch2Ref       = useRef<HTMLDivElement>(null);
-  const ch3Ref       = useRef<HTMLDivElement>(null);
+  const chapterRefs = useRef<
+    Partial<Record<"ch1" | "ch2" | "ch3", { el: HTMLDivElement }>>
+  >({});
+  const progressDotRef = useRef<HTMLDivElement>(null);
 
   const directionalLightRef = useRef<THREE.DirectionalLight>(null);
   const bloomRef = useRef<any>(null);
@@ -469,14 +479,13 @@ export default function MaskTransition() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const isDarkRef = useRef(isDark);
-  useEffect(() => { isDarkRef.current = isDark; }, [isDark]);
+  useEffect(() => {
+    isDarkRef.current = isDark;
+  }, [isDark]);
 
   const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // (Re)build the scrub timeline whenever the theme flips, since the
-  // light-hue keyframes depend on it. Rebuilding just re-seeks to the
-  // current progress, no visible jump.
   useEffect(() => {
     Object.assign(sceneState, createSceneState());
     timelineRef.current = buildScrollTimeline(sceneState, isDark);
@@ -500,30 +509,8 @@ export default function MaskTransition() {
     return () => observer.disconnect();
   }, []);
 
-  const fg    = isDark ? "#FFFFFF" : "#0A0A0A";
+  const fg = isDark ? "#FFFFFF" : "#0A0A0A";
   const fgSub = isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.42)";
-
-  const h1Style: React.CSSProperties = {
-    fontFamily: "Instrument Serif",
-    fontStyle: "italic",
-    fontSize: "clamp(1.4rem, 3.2vw, 3.6rem)",
-    lineHeight: 1.2,
-    letterSpacing: "-0.02em",
-    color: fg,
-    margin: 0,
-    width: "90vw",
-    maxWidth: "460px",
-  };
-
-  const labelStyle: React.CSSProperties = {
-    fontFamily: "DM Mono",
-    fontSize: "clamp(0.55rem, 0.75vw, 0.7rem)",
-    letterSpacing: "0.22em",
-    textTransform: "uppercase" as const,
-    color: fgSub,
-    marginBottom: "0.75rem",
-    display: "block",
-  };
 
   return (
     <div ref={containerRef} style={{ height: "450vh" }}>
@@ -531,99 +518,92 @@ export default function MaskTransition() {
         className="sticky top-0 h-[100dvh] overflow-hidden relative"
         style={{ background: isDark ? "#000000" : "#FFFFFF" }}
       >
-        {/* TEXT LAYERS, z-0, behind canvas */}
+        {/* TEXT LAYERS */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          {CHAPTERS.map((c) => (
+            <div
+              key={c.id}
+              ref={(el) => {
+                if (el) chapterRefs.current[c.id] = { el };
+              }}
+              style={{
+                position: "absolute",
+                ...c.position,
+                textAlign: c.align,
+                willChange: "transform, filter, opacity",
+                maxWidth: "460px",
+                // center the first chapter properly
+                ...(c.align === "center" ? { transform: "translateX(-50%)" } : {}),
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "Instrument Serif",
+                  fontStyle: "italic",
+                  fontSize: "0.85rem",
+                  color: fgSub,
+                  marginRight: "0.5rem",
+                  verticalAlign: "top",
+                }}
+              >
+                {c.numeral}.
+              </span>
+              <h2
+                style={{
+                  fontFamily: "Instrument Serif",
+                  fontStyle: "italic",
+                  fontSize: "clamp(1.6rem, 3.4vw, 3.8rem)",
+                  lineHeight: 1.15,
+                  letterSpacing: "-0.02em",
+                  color: fg,
+                  margin: "0.15rem 0 0.4rem",
+                  display: "inline",
+                }}
+              >
+                {c.title}
+              </h2>
+              <p
+                style={{
+                  fontFamily: "DM Mono",
+                  fontSize: "0.72rem",
+                  color: fgSub,
+                  letterSpacing: "0.01em",
+                  marginTop: "0.3rem",
+                }}
+              >
+                {c.detail}
+              </p>
+            </div>
+          ))}
 
+          {/* Quiet progress marker */}
           <div
-            ref={ghostWordRef}
-            aria-hidden="true"
             style={{
               position: "absolute",
-              top: "50%",
-              left: "50%",
-              fontFamily: "Instrument Serif",
-              fontStyle: "italic",
-              fontSize: "clamp(4rem, 18vw, 20rem)",
-              fontWeight: 400,
-              letterSpacing: "-0.04em",
-              lineHeight: 1,
-              color: fg,
-              opacity: 0,
-              willChange: "transform, opacity",
-              userSelect: "none",
+              left: "4%",
+              top: "20%",
+              bottom: "20%",
+              width: "1px",
+              background: fgSub,
+              opacity: 0.15,
             }}
-          >
-            SCALABLE
-          </div>
-
+          />
           <div
-            ref={kanjiRef}
-            aria-hidden="true"
+            ref={progressDotRef}
             style={{
               position: "absolute",
-              bottom: "10%",
-              right: "6%",
-              fontFamily: "serif",
-              fontSize: "clamp(4rem, 12vw, 14rem)",
-              fontWeight: 900,
-              color: fg,
-              opacity: 0,
-              willChange: "transform, opacity",
-              userSelect: "none",
-              lineHeight: 1,
+              left: "calc(4% - 3px)",
+              top: "20%",
+              width: "7px",
+              height: "7px",
+              borderRadius: "50%",
+              background: "var(--primary)",
+              willChange: "transform",
             }}
-          >
-            系
-          </div>
-
-          <div
-            ref={ch1Ref}
-            style={{
-              position: "absolute",
-              bottom: "26%",
-              left: "50%",
-              textAlign: "center",
-              opacity: 0,
-              willChange: "transform, opacity",
-            }}
-          >
-            <span style={labelStyle}>— i —</span>
-            <h2 style={h1Style}>Event‑driven architecture</h2>
-          </div>
-
-          <div
-            ref={ch2Ref}
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "18%",
-              textAlign: "left",
-              opacity: 0,
-              willChange: "transform, opacity",
-            }}
-          >
-            <span style={labelStyle}>— ii —</span>
-            <h2 style={h1Style}>Observability‑first design</h2>
-          </div>
-
-          <div
-            ref={ch3Ref}
-            style={{
-              position: "absolute",
-              top: "30%",
-              right: "12%",
-              textAlign: "right",
-              opacity: 0,
-              willChange: "transform, opacity",
-            }}
-          >
-            <span style={{ ...labelStyle, textAlign: "right" }}>— iii —</span>
-            <h2 style={h1Style}>Zero‑downtime deployment</h2>
-          </div>
-
+          />
         </div>
 
-        {/* CANVAS, z-10, alpha:true */}
+        {/* CANVAS */}
         <div className="absolute inset-0 z-10">
           <Canvas
             shadows
@@ -669,11 +649,8 @@ export default function MaskTransition() {
               containerRef={containerRef}
               sceneState={sceneState}
               timelineRef={timelineRef}
-              ghostWordRef={ghostWordRef}
-              kanjiRef={kanjiRef}
-              ch1Ref={ch1Ref}
-              ch2Ref={ch2Ref}
-              ch3Ref={ch3Ref}
+              chapterRefs={chapterRefs}
+              progressDotRef={progressDotRef}
               bloomRef={bloomRef}
               isDarkRef={isDarkRef}
             />
@@ -711,7 +688,7 @@ export default function MaskTransition() {
           </Canvas>
         </div>
 
-        <div className="section-fade-top"    style={{ zIndex: 50 }} />
+        <div className="section-fade-top" style={{ zIndex: 50 }} />
         <div className="section-fade-bottom" style={{ zIndex: 50 }} />
       </div>
     </div>

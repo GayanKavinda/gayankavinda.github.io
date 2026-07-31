@@ -343,7 +343,7 @@ const CTASection = ({ isInView }: { isInView: boolean }) => (
           href="/resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="group inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary px-5 py-2.5 font-medium text-primary-foreground shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+          className="group inline-flex items-center gap-2 rounded-lg border border-[#d60d86]/30 bg-[#d60d86] px-5 py-2.5 font-medium text-white shadow-sm transition-all hover:border-[#d60d86]/50 hover:shadow-md"
         >
           <svg className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -442,7 +442,7 @@ const EngineeringPhilosophy = () => {
         >
           <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
             Workflow &{' '}
-            <span className="font-playfair italic font-medium text-[#7C5CFC]">
+            <span className="font-playfair italic font-medium text-[#d60d86]">
               Process
             </span>
           </h2>

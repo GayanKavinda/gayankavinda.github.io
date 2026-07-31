@@ -221,7 +221,7 @@ export default function Navbar() {
                   <div className="flex items-center gap-2">
                     <div
                       className="w-6 h-6 rounded-md flex items-center justify-center overflow-hidden"
-                      style={{ background: logoBg, border: `1px solid ${logoBorder}` }}
+                      style={{ background: logoBg }}
                     >
                       <img src={logoMask} alt="Logo" className="w-full h-full object-cover" />
                     </div>

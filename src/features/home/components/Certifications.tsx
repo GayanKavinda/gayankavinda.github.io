@@ -171,7 +171,7 @@ const Certifications = () => {
         >
           <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
             Professional{' '}
-            <span className="font-playfair italic font-medium text-[#7C5CFC]">
+            <span className="font-playfair italic font-medium text-[#d60d86]">
               Credentials
             </span>
           </h2>

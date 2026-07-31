@@ -1,532 +1,335 @@
-//src/components/sections/Contact.tsx
+import { useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Button } from '@components/ui/button';
 import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
 import { Textarea } from '@components/ui/textarea';
 
-import { useTheme } from '@app/providers/theme-provider';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import emailjs from '@emailjs/browser';
-import * as z from 'zod';
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
-gsap.registerPlugin(ScrollTrigger);
+// ─── Schema ──────────────────────────────────────────────────────────────────
 
 const contactSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().min(1, 'Email is required').email('Please enter a valid email'),
-  message: z.string().min(10, 'Message too short (min 10 characters)').max(800),
-  topic: z.string(),
-  timeline: z.string(),
+  name: z.string().min(1, 'Name required'),
+  email: z.string().min(1, 'Email required').email('Enter valid email'),
+  budget: z.string().optional(),
+  message: z.string().min(1, 'Message required'),
+  services: z.array(z.string()).optional(),
 });
+
 type ContactFormData = z.infer<typeof contactSchema>;
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// ─── Data ────────────────────────────────────────────────────────────────────
 
-const TOPICS = [
-  { id: 'project', label: 'Project', icon: '◆' },
-  { id: 'job', label: 'Job', icon: '◇' },
-  { id: 'collab', label: 'Collab', icon: '⟐' },
-  { id: 'consult', label: 'Consult', icon: '◎' },
-  { id: 'hello', label: 'Hi!', icon: '◦' },
+const SERVICES = [
+  { id: 'website-design', label: 'Website Design' },
+  { id: 'ux-design', label: 'UX Design' },
+  { id: 'content-creation', label: 'Content Creation' },
+  { id: 'strategy-consulting', label: 'Strategy & Consulting' },
 ];
 
-const TIMELINES = [
-  { id: 'asap', label: 'ASAP' },
-  { id: '1-3mo', label: '1–3 mo' },
-  { id: '3-6mo', label: '3–6 mo' },
-  { id: 'flexible', label: 'Flexible' },
+const LOGOS = [
+  { name: 'STAR', src: 'https://placehold.co/80x30/transparent/888888?text=STAR' },
+  { name: 'Brand2', src: 'https://placehold.co/80x30/transparent/888888?text=BRAND' },
+  { name: 'Shemaroo', src: 'https://placehold.co/80x30/transparent/888888?text=Shemaroo' },
+  { name: 'Mercedes-Benz', src: 'https://placehold.co/100x30/transparent/888888?text=Mercedes-Benz' },
+  { name: 'University of Mississippi', src: 'https://placehold.co/110x30/transparent/888888?text=MISSISSIPPI' },
 ];
 
-// ─── inputCls ─────────────────────────────────────────────────────────────────
+// ─── Icons ───────────────────────────────────────────────────────────────────
 
-function inputCls(isDark: boolean) {
-  return [
-    'w-full rounded-xl px-4 py-2.5 text-[14px] font-sans transition-all duration-150',
-    'border focus-visible:outline-none focus-visible:ring-0',
-    'placeholder:text-foreground/30',
-    isDark
-      ? 'bg-[hsl(0_0%_10%)] border-[hsl(0_0%_100%/0.10)] text-[hsl(248_30%_94%)] focus-visible:border-[#7C5CFC]/70 focus-visible:ring-1 focus-visible:ring-[#7C5CFC]/30'
-      : 'bg-white border-[hsl(246_20%_12%/0.14)] text-[hsl(246_20%_12%)] focus-visible:border-[#7C5CFC]/60 focus-visible:ring-1 focus-visible:ring-[#7C5CFC]/20',
-  ].join(' ');
-}
-
-// ─── ChipGroup ────────────────────────────────────────────────────────────────
-
-function ChipGroup({
-  options, selected, onChange, isDark, withIcon = false,
-}: {
-  options: { id: string; label: string; icon?: string }[];
-  selected: string;
-  onChange: (id: string) => void;
-  isDark: boolean;
-  withIcon?: boolean;
-}) {
-  return (
-    <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={withIcon ? "Select topic" : "Select timeline"}>
-      {options.map((o) => {
-        const active = selected === o.id;
-        return (
-          <button
-            key={o.id}
-            type="button"
-            role="radio"
-            aria-checked={active}
-            onClick={() => onChange(o.id)}
-            className="font-sans text-[11px] px-3 py-1.5 rounded-lg transition-all duration-150 cursor-pointer select-none"
-            style={{
-              background: active ? 'rgba(124,92,252,0.12)' : isDark ? 'hsl(0 0% 10%)' : 'hsl(0 0% 97%)',
-              color: active ? '#7C5CFC' : 'hsl(var(--foreground)/0.50)',
-              border: `1px solid ${active ? 'rgba(124,92,252,0.30)' : isDark ? 'hsl(0 0% 100% / 0.07)' : 'hsl(220 15% 15% / 0.08)'}`,
-              fontWeight: active ? 600 : 400,
-            }}
-          >
-            {withIcon && o.icon && <span className="mr-1 opacity-70">{o.icon}</span>}
-            {o.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-// ─── FieldRow ─────────────────────────────────────────────────────────────────
-
-const FieldRow = ({ id, label, children, error }: {
-  id: string; label: string; children: React.ReactNode; error?: string;
-}) => (
-  <div className="flex flex-col gap-1">
-    <Label htmlFor={id} className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/75">
-      {label}
-    </Label>
-    {children}
-    {error && (
-      <p className="font-sans text-[11px] text-[#7C5CFC] flex items-center gap-1.5">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1" />
-          <path d="M6 3v3M6 8v.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-        </svg>
-        {error}
-      </p>
-    )}
-  </div>
+const SendIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <line x1="22" y1="2" x2="11" y2="13" />
+    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+  </svg>
 );
 
-// ─── File helpers ─────────────────────────────────────────────────────────────
+const InstagramIcon = ({ className }: { className?: string }) => (
+  <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+  </svg>
+);
 
-interface AF { file: File; id: string; }
-const fmtSize = (b: number) =>
-  b > 1_000_000 ? `${(b / 1_000_000).toFixed(1)} MB` : `${Math.round(b / 1024)} KB`;
+const DribbbleIcon = ({ className }: { className?: string }) => (
+  <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M8.56 2.75c4.37 6 6 9.42 8 17.72" />
+    <path d="M12.84 20.7a10 10 0 0 1-11.8-10.74" />
+    <path d="M2.86 8.53a10 10 0 0 1 18.28-2.5" />
+  </svg>
+);
 
-const FileChip = ({ af, isDark, onRemove }: { af: AF; isDark: boolean; onRemove: () => void; }) => {
-  const ext = af.file.name.split('.').pop()?.toUpperCase() ?? 'FILE';
-  const isImg = af.file.type.startsWith('image/');
-  return (
-    <div
-      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border"
-      style={{
-        background: isDark ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
-        borderColor: isDark ? 'hsl(0 0% 100% / 0.09)' : 'hsl(220 15% 15% / 0.10)',
-      }}
-    >
-      <div
-        className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 font-mono text-[8px] font-bold"
-        style={{
-          background: isImg ? 'rgba(124,92,252,0.10)' : 'rgba(0,212,255,0.12)',
-          color: isImg ? '#7C5CFC' : '#00D4FF',
-        }}
-      >
-        {isImg ? '⎋' : ext.slice(0, 3)}
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="font-sans text-[11px] text-foreground truncate leading-tight">{af.file.name}</p>
-        <p className="font-mono text-[9px] text-foreground/35">{fmtSize(af.file.size)}</p>
-      </div>
-      <button
-        type="button"
-        onClick={onRemove}
-        aria-label={`Remove ${af.file.name}`}
-        className="w-4 h-4 flex items-center justify-center rounded-full hover:bg-[#7C5CFC]/10 transition-colors text-foreground/30 hover:text-[#7C5CFC]"
-      >
-        <svg width="8" height="8" viewBox="0 0 9 9" fill="none">
-          <line x1="1" y1="1" x2="8" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          <line x1="8" y1="1" x2="1" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      </button>
-    </div>
-  );
-};
+const LinkedinIcon = ({ className }: { className?: string }) => (
+  <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+    <rect x="2" y="9" width="4" height="12" />
+    <circle cx="4" cy="4" r="2" />
+  </svg>
+);
 
-const UploadZone = ({ files, isDark, onAdd, onRemove, error }: {
-  files: AF[]; isDark: boolean; onAdd: (f: File[]) => void; onRemove: (id: string) => void; error?: string;
-}) => {
-  const [drag, setDrag] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const drop = useCallback((e: React.DragEvent) => {
-    e.preventDefault(); setDrag(false); onAdd(Array.from(e.dataTransfer.files));
-  }, [onAdd]);
+const GithubIcon = ({ className }: { className?: string }) => (
+  <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+  </svg>
+);
 
-  return (
-    <div className="space-y-1.5">
-      <div className="flex items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/40">Attachments</span>
-        <span className="font-mono text-[9px] px-2 py-0.5 rounded-full"
-          style={{ background: 'rgba(0,212,255,0.12)', color: '#00D4FF', border: '1px solid rgba(0,212,255,0.22)' }}>
-          optional
-        </span>
-      </div>
-      <div
-        role="button" tabIndex={0}
-        onClick={() => inputRef.current?.click()}
-        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && inputRef.current?.click()}
-        onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
-        onDragLeave={() => setDrag(false)}
-        onDrop={drop}
-        className="w-full rounded-xl border-2 border-dashed cursor-pointer flex items-center gap-3 px-4 py-2.5 transition-all duration-150"
-        style={{
-          borderColor: error ? 'rgba(124,92,252,0.4)' : drag ? 'rgba(124,92,252,0.5)' : isDark ? 'hsl(0 0% 100%/0.09)' : 'hsl(220 15% 15%/0.12)',
-          background: drag ? 'rgba(124,92,252,0.04)' : 'transparent',
-        }}
-        aria-label="Upload files"
-      >
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-          style={{ background: drag ? 'rgba(124,92,252,0.10)' : isDark ? 'hsl(0 0% 14%)' : 'hsl(220 14% 96%)' }}>
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-            <path d="M8 11V3M8 3L5 6M8 3L11 6" stroke={drag ? '#7C5CFC' : 'hsl(var(--foreground)/0.45)'}
-              strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M2.5 13h11" stroke={drag ? '#7C5CFC' : 'hsl(var(--foreground)/0.25)'}
-              strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-sans text-[12px] text-foreground/65">
-            Drop files or <span style={{ color: '#7C5CFC' }}>browse</span>
-          </p>
-          <p className="font-mono text-[9px] text-foreground/30">PDF · DOCX · PNG · JPG · ZIP — max 10 MB</p>
-        </div>
-        <input
-          ref={inputRef} type="file" multiple
-          accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.zip,.txt"
-          className="sr-only"
-          onChange={(e) => { onAdd(Array.from(e.target.files ?? [])); e.target.value = ''; }}
-          aria-label="File upload input"
-        />
-      </div>
-      {error && (
-        <p className="font-sans text-[11px] text-[#C41E3A] flex items-center gap-1.5">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1" />
-            <path d="M6 3v3M6 8v.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-          </svg>
-          {error}
-        </p>
-      )}
-      {files.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {files.map((af) => (
-            <FileChip key={af.id} af={af} isDark={isDark} onRemove={() => onRemove(af.id)} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
+// ─── Main Component ──────────────────────────────────────────────────────────
 
-// ─── Contact (main) ───────────────────────────────────────────────────────────
-
-const Contact = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  const [files, setFiles] = useState<AF[]>([]);
-  const [fileError, setFileError] = useState<string | undefined>();
+export default function Contact() {
   const [sending, setSending] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
 
   const {
-    register, handleSubmit, watch, control, reset,
+    register,
+    handleSubmit,
+    control,
+    reset,
     formState: { errors },
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
-    defaultValues: { name: '', email: '', message: '', topic: 'project', timeline: 'flexible' },
-    mode: 'onTouched',
+    defaultValues: {
+      name: '',
+      email: '',
+      budget: '',
+      message: '',
+      services: [],
+    },
   });
-
-  const nameVal = watch('name');
-  const emailVal = watch('email');
-  const msgVal  = watch('message');
-
-  const addFiles = useCallback((incoming: File[]) => {
-    let errorStr: string | undefined;
-    const validFiles: AF[] = [];
-    incoming.forEach((f) => {
-      if (f.size > 10 * 1024 * 1024) errorStr = `${f.name} exceeds 10 MB limit`;
-      else validFiles.push({ file: f, id: `${f.name}-${Date.now()}-${Math.random()}` });
-    });
-    if (errorStr) { setFileError(errorStr); setTimeout(() => setFileError(undefined), 4000); }
-    if (validFiles.length > 0) setFiles((prev) => [...prev, ...validFiles]);
-  }, []);
-
-  const removeFile = useCallback(
-    (id: string) => setFiles((prev) => prev.filter((f) => f.id !== id)), [],
-  );
 
   const onSubmit = (_data: ContactFormData) => {
     setSending(true);
     setTimeout(() => {
-      setSending(false); setSubmitted(true); reset(); setFiles([]);
-      setTimeout(() => setSubmitted(false), 10000);
-    }, 1400);
+      setSending(false);
+      reset();
+    }, 1500);
   };
 
-  const ready = nameVal?.trim() && emailVal?.trim() && msgVal?.trim() && Object.keys(errors).length === 0;
-
-  const cardBg  = isDark ? 'rgba(15, 15, 15, 0.45)' : 'rgba(255, 255, 255, 0.60)';
-  const cardBdr = isDark ? 'hsl(0 0% 100% / 0.09)'     : 'hsl(220 15% 15% / 0.15)';
-  const blockBdr= isDark ? 'hsl(0 0% 100% / 0.07)'     : 'hsl(220 15% 15% / 0.08)';
-
-  // Background images removed per request - keeping only parallax overlay
-
   return (
-    <section
-      id="contact"
-      ref={sectionRef}
-      className="py-[60px] sm:py-[80px] md:py-[100px] relative overflow-hidden"
-    >
-      {/* Parallax Overlay */}
-      <motion.div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          pointerEvents: 'none',
-          transform: `translateY(${useTransform(useScroll({ target: sectionRef, offset: ['start center', 'end center'] }).scrollY, [0, 1], [100, -100])}px)`
-        }}
-      >
-        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[80px]" />
-      </motion.div>
-
-      <div className="max-w-[860px] mx-auto px-4 sm:px-6 md:px-10 relative z-10">
-
-        {/* Header */}
-        <div className="text-center mb-8 md:mb-10 flex flex-col items-center">
-          <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-4">
-            Let&apos;s{' '}
-            <span className="font-playfair italic font-medium text-[#7C5CFC]">Connect</span>
-          </h2>
-          <p className="text-sm text-foreground/50 dark:text-foreground/60 leading-relaxed max-w-[320px]">
-            Architecting scalable systems and refined sensory experiences across 10 years of engineering.
-          </p>
+    <section id="contact" className="py-12 md:py-20 bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Header Section */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-10 items-end">
+          <div className="md:col-span-5 space-y-2">
+            <span className="inline-block px-2.5 py-1 text-[11px] font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 rounded-sm">
+              Get in Touch
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-neutral-900 dark:text-white flex items-center gap-2">
+              Connect With Me <span className="text-2xl md:text-3xl">👋</span>
+            </h2>
+          </div>
+          
+          <div className="md:col-span-7">
+            <p className="text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-lg leading-relaxed">
+              Whether you&apos;re looking for more information, have a suggestion, or need help with something, we&apos;re here for you.
+            </p>
+          </div>
         </div>
 
-        {/* Form card */}
-        <div
-          className="rounded-2xl p-5 sm:p-6 md:p-7"
-          style={{
-            background: cardBg,
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            border: `1px solid ${cardBdr}`,
-            boxShadow: isDark ? '0 20px 50px rgba(0,0,0,0.3)' : '0 20px 50px rgba(0,0,0,0.05)',
-          }}
-        >
-          {submitted ? (
-            <div className="flex items-center gap-4 py-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: 'rgba(34,197,94,0.10)', border: '1px solid rgba(34,197,94,0.25)' }}>
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path d="M4 10.5l4 4L16 6" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <div className="flex-1">
-                <h3 className="font-display text-[18px] font-bold text-foreground leading-tight">
-                  Sent. I&apos;ll be in touch.
-                </h3>
-                <p className="font-sans text-[12px] text-foreground/50 mt-0.5">
-                  You&apos;ll hear back from a real email, not a no-reply.
-                </p>
-              </div>
-              <button
-                onClick={() => setSubmitted(false)}
-                className="font-mono text-[10px] uppercase tracking-widest text-foreground/35 hover:text-[hsl(var(--crimson))] transition-colors flex-shrink-0"
-              >
-                ← Another
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3.5" noValidate>
-
-              {/* Row 1: title + topic inline */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
-                <div className="flex items-center gap-3">
-                  <h3 className="font-display text-[16px] sm:text-[18px] font-bold text-foreground leading-tight">
-                    Send a message
-                  </h3>
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
-                    <div className="w-1.5 h-1.5 rounded-full"
-                      style={{ background: '#22c55e', boxShadow: '0 0 0 3px rgba(34,197,94,0.12)' }} />
-                    <span className="font-mono text-[9px] text-foreground/40 uppercase tracking-wider">~24h</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/50 hidden sm:block">Topic</span>
-                  <Controller
-                    name="topic" control={control}
-                    render={({ field }) => (
-                      <ChipGroup options={TOPICS} selected={field.value} onChange={field.onChange} isDark={isDark} withIcon />
-                    )}
-                  />
-                </div>
-              </div>
-
-              <div style={{ borderBottom: `1px solid ${blockBdr}` }} />
-
-              {/* Row 2: Name + Email */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <FieldRow id="cf-name" label="Name" error={errors.name?.message}>
-                  <Input id="cf-name" className={inputCls(isDark)} placeholder="Ada Lovelace"
-                    {...register('name')} aria-invalid={!!errors.name} />
-                </FieldRow>
-                <FieldRow id="cf-email" label="Email" error={errors.email?.message}>
-                  <Input id="cf-email" type="email" className={inputCls(isDark)} placeholder="ada@example.com"
-                    {...register('email')} aria-invalid={!!errors.email} />
-                </FieldRow>
-              </div>
-
-              {/* Row 3: Message */}
-              <FieldRow id="cf-msg" label="Message" error={errors.message?.message}>
-                <div className="relative">
-                  <Textarea
-                    id="cf-msg"
-                    className={inputCls(isDark) + ' min-h-[90px] resize-none pr-14'}
-                    placeholder="Tell me about the project, the role, or just say hello."
-                    maxLength={800}
-                    {...register('message')}
-                    aria-invalid={!!errors.message}
-                  />
-                  <span
-                    className="absolute bottom-2.5 right-4 font-mono text-[10px] pointer-events-none"
-                    style={{ color: (msgVal?.length ?? 0) > 720 ? 'hsl(var(--crimson))' : 'hsl(var(--foreground)/0.22)' }}
-                    aria-live="polite" aria-atomic="true"
-                  >
-                    {msgVal?.length ?? 0}/800
-                  </span>
-                </div>
-              </FieldRow>
-
-              {/* Row 4: Timeline + Attachments */}
-              <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-3.5 items-start">
-                <div className="flex flex-col gap-1.5">
-                  <Label className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/75">Timeline</Label>
-                  <Controller
-                    name="timeline" control={control}
-                    render={({ field }) => (
-                      <ChipGroup options={TIMELINES} selected={field.value} onChange={field.onChange} isDark={isDark} />
-                    )}
-                  />
-                </div>
-                <UploadZone files={files} isDark={isDark} onAdd={addFiles} onRemove={removeFile} error={fileError} />
-              </div>
-
-              <div style={{ borderBottom: `1px solid ${blockBdr}` }} />
-
-              {/* Row 5: Submit + trust */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-5">
-                <Button
-                  type="submit"
-                  disabled={sending || !ready}
-                  className="w-full sm:w-auto font-display font-bold text-[13px] tracking-wide rounded-xl px-7 py-2.5 h-auto relative overflow-hidden transition-all duration-200"
-                  style={{
-                    background: ready && !sending ? 'hsl(var(--crimson))' : isDark ? 'hsl(0 0% 14%)' : 'hsl(220 14% 92%)',
-                    color: ready && !sending ? '#fff' : 'hsl(var(--foreground)/0.28)',
-                    border: 'none',
-                    cursor: ready && !sending ? 'pointer' : 'not-allowed',
-                  }}
-                >
-                  {sending ? (
-                    <span className="flex items-center gap-2 justify-center">
-                      <svg className="animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-                        <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5"
-                          strokeDasharray="18" strokeDashoffset="6" strokeLinecap="round" />
-                      </svg>
-                      Sending…
-                    </span>
-                  ) : (
-                    <>
-                      Send message →
-                      {ready && (
-                        <span aria-hidden="true" className="absolute inset-0 pointer-events-none"
-                          style={{
-                            background: 'linear-gradient(105deg,transparent 38%,rgba(255,255,255,0.12) 50%,transparent 62%)',
-                            backgroundSize: '200% 100%',
-                            animation: 'cshimmer 2.8s linear infinite',
-                          }} />
-                      )}
-                    </>
+        {/* Content Section: Form & Profile Card */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Left Column: Form Box */}
+          <div className="lg:col-span-6 bg-neutral-50/50 dark:bg-neutral-900/40 border border-neutral-200/80 dark:border-neutral-800 rounded-3xl p-6 sm:p-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+              
+              {/* Name */}
+              <div className="space-y-1.5">
+                <Label htmlFor="cf-name" className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+                  Name
+                </Label>
+                <Input
+                  id="cf-name"
+                  placeholder="Enter your name here..."
+                  className={cn(
+                    'h-11 rounded-xl bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-xs sm:text-sm placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus-visible:ring-1 focus-visible:ring-neutral-400',
+                    errors.name && 'border-red-500'
                   )}
-                </Button>
+                  {...register('name')}
+                />
+                {errors.name && <p className="text-[11px] text-red-500">{errors.name.message}</p>}
+              </div>
 
-                {files.length > 0 && (
-                  <span className="font-mono text-[10px] text-foreground/35">
-                    {files.length} file{files.length > 1 ? 's' : ''} attached
-                  </span>
-                )}
+              {/* Email */}
+              <div className="space-y-1.5">
+                <Label htmlFor="cf-email" className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+                  Email
+                </Label>
+                <Input
+                  id="cf-email"
+                  type="email"
+                  placeholder="Enter your Email here..."
+                  className={cn(
+                    'h-11 rounded-xl bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-xs sm:text-sm placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus-visible:ring-1 focus-visible:ring-neutral-400',
+                    errors.email && 'border-red-500'
+                  )}
+                  {...register('email')}
+                />
+                {errors.email && <p className="text-[11px] text-red-500">{errors.email.message}</p>}
+              </div>
 
-                <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1 sm:ml-auto">
-                  {[
-                    { icon: 'star', label: 'No spam' },
-                    { icon: 'mail', label: 'NDA-friendly' },
-                    { icon: 'clock', label: 'Same-day reply' },
-                  ].map(({ icon, label }) => (
-                    <span key={label} className="flex items-center gap-1">
-                      {icon === 'star' && (
-                        <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                          <path d="M6 1L7.5 4.5L11 5L8.5 7.5L9 11L6 9.5L3 11L3.5 7.5L1 5L4.5 4.5L6 1Z"
-                            fill="hsl(var(--gold)/0.55)" stroke="hsl(var(--gold)/0.7)" strokeWidth="0.5" />
-                        </svg>
-                      )}
-                      {icon === 'mail' && (
-                        <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                          <rect x="1.5" y="4" width="9" height="6.5" rx="1" stroke="hsl(var(--gold)/0.5)" strokeWidth="0.9" />
-                          <path d="M1.5 5.5L6 8L10.5 5.5" stroke="hsl(var(--gold)/0.5)" strokeWidth="0.9" />
-                        </svg>
-                      )}
-                      {icon === 'clock' && (
-                        <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                          <circle cx="6" cy="6" r="4.5" stroke="hsl(var(--gold)/0.5)" strokeWidth="0.9" />
-                          <path d="M6 3.5V6L7.5 7" stroke="hsl(var(--gold)/0.5)" strokeWidth="0.9" strokeLinecap="round" />
-                        </svg>
-                      )}
-                      <span className="font-sans text-[10px] text-foreground/30">{label}</span>
-                    </span>
-                  ))}
-                </div>
+              {/* Budget */}
+              <div className="space-y-1.5">
+                <Label htmlFor="cf-budget" className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+                  Budget
+                </Label>
+                <Input
+                  id="cf-budget"
+                  placeholder="Enter the amount"
+                  className="h-11 rounded-xl bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-xs sm:text-sm placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus-visible:ring-1 focus-visible:ring-neutral-400"
+                  {...register('budget')}
+                />
+              </div>
+
+              {/* Message */}
+              <div className="space-y-1.5">
+                <Label htmlFor="cf-message" className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+                  Message
+                </Label>
+                <Textarea
+                  id="cf-message"
+                  placeholder="Enter your message"
+                  className={cn(
+                    'min-h-[120px] rounded-xl bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-xs sm:text-sm placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus-visible:ring-1 focus-visible:ring-neutral-400 resize-y',
+                    errors.message && 'border-red-500'
+                  )}
+                  {...register('message')}
+                />
+                {errors.message && <p className="text-[11px] text-red-500">{errors.message.message}</p>}
+              </div>
+
+              {/* Services Checkboxes */}
+              <div className="space-y-2.5 pt-1">
+                <Label className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+                  Services
+                </Label>
+                <Controller
+                  name="services"
+                  control={control}
+                  render={({ field }) => {
+                    const currentValues = field.value || [];
+                    const toggleService = (id: string) => {
+                      if (currentValues.includes(id)) {
+                        field.onChange(currentValues.filter((v) => v !== id));
+                      } else {
+                        field.onChange([...currentValues, id]);
+                      }
+                    };
+
+                    return (
+                      <div className="grid grid-cols-2 gap-y-3 gap-x-4">
+                        {SERVICES.map((s) => {
+                          const isChecked = currentValues.includes(s.id);
+                          return (
+                            <label key={s.id} className="flex items-center gap-2.5 cursor-pointer group select-none">
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => toggleService(s.id)}
+                                className="w-4 h-4 rounded border-neutral-300 dark:border-neutral-700 text-neutral-900 focus:ring-0 cursor-pointer"
+                              />
+                              <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
+                                {s.label}
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    );
+                  }}
+                />
+              </div>
+
+              {/* Submit Button */}
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={sending}
+                  className="w-full h-11 inline-flex items-center justify-center gap-2 rounded-xl bg-[#18181b] dark:bg-white text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-100 text-xs font-semibold transition-all disabled:opacity-50"
+                >
+                  <span>{sending ? 'Sending...' : 'Send Message'}</span>
+                  <SendIcon className="w-3.5 h-3.5" />
+                </button>
               </div>
             </form>
-          )}
+          </div>
+
+          {/* Right Column: Profile Image & Info & Clients Logos */}
+          <div className="lg:col-span-6 flex flex-col items-center">
+            
+            {/* Image Card Container */}
+            <div className="relative w-full aspect-[4/3] sm:aspect-[1.15/1] rounded-3xl overflow-hidden mb-6 bg-neutral-200 dark:bg-neutral-800">
+              <img
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1000"
+                alt="Profile portrait"
+                className="w-full h-full object-cover object-center"
+              />
+              
+              {/* Badge Overlay */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md shadow-sm border border-neutral-200/50 dark:border-neutral-800">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span className="text-xs font-medium text-neutral-800 dark:text-neutral-200 whitespace-nowrap">
+                    Available for Hire
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Profile Info */}
+            <div className="text-center space-y-3 mb-8">
+              <div className="flex items-center justify-center gap-2 text-base md:text-lg">
+                <span className="font-bold text-neutral-900 dark:text-white">John Doe</span>
+                <span className="text-neutral-300 dark:text-neutral-700">•</span>
+                <span className="text-neutral-500 dark:text-neutral-400 font-normal">UI/UX Designer</span>
+              </div>
+
+              {/* Social Links */}
+              <div className="flex items-center justify-center gap-4 text-neutral-700 dark:text-neutral-300">
+                <a href="#" className="hover:text-neutral-900 dark:hover:text-white transition-colors" aria-label="Instagram">
+                  <InstagramIcon />
+                </a>
+                <a href="#" className="hover:text-neutral-900 dark:hover:text-white transition-colors" aria-label="Dribbble">
+                  <DribbbleIcon />
+                </a>
+                <a href="#" className="hover:text-neutral-900 dark:hover:text-white transition-colors" aria-label="LinkedIn">
+                  <LinkedinIcon />
+                </a>
+                <a href="#" className="hover:text-neutral-900 dark:hover:text-white transition-colors" aria-label="GitHub">
+                  <GithubIcon />
+                </a>
+              </div>
+            </div>
+
+            {/* Client / Partner Logos Strip */}
+            <div className="w-full pt-2 border-t border-neutral-100 dark:border-neutral-900 flex items-center justify-between opacity-60 grayscale hover:grayscale-0 transition-all gap-4 overflow-x-auto">
+              {LOGOS.map((logo, index) => (
+                <img key={index} src={logo.src} alt={logo.name} className="h-6 object-contain flex-shrink-0" />
+              ))}
+            </div>
+
+          </div>
+
         </div>
       </div>
-
-      <style>{`
-        @keyframes cshimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-      `}</style>
-      {/* Tactical Fade into Footer */}
-      <div 
-        className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none z-30" 
-        style={{ background: 'linear-gradient(to top, hsl(var(--background)), transparent)' }} 
-      />
     </section>
   );
-};
-
-export default Contact;
+}
