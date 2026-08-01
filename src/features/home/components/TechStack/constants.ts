@@ -1,7 +1,7 @@
 //src/components/sections/TechStack/constants.ts
 
-export const CR  = '#7C5CFC';
-export const GD  = '#00D4FF';
+const CR = '#7C5CFC';
+const GD = '#00D4FF';
 
 export const CAT_META: Record<string, { label: string; color: string }> = {
   fe:    { label: 'Frontend',       color: GD },

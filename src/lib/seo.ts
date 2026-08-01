@@ -126,25 +126,7 @@ export function injectPersonSchema(): void {
   injectSchema('person-schema', schema);
 }
 
-export const getArticleSchema = (post: { title: string; description: string; date: string; url: string; image?: string; tags: string[] }) => {
-  const schema = {
-    '@context':       'https://schema.org',
-    '@type':          'BlogPosting',
-    headline:         post.title,
-    description:      post.description,
-    datePublished:    post.date,
-    url:              post.url,
-    image:            post.image ?? DEFAULTS.image,
-    keywords:         post.tags.join(', '),
-    author: { '@type': 'Person', name: 'Gayan Kavinda', url: 'https://gayankavinda.github.io' },
-    publisher: {
-      '@type':  'Person',
-      name:     'Gayan Kavinda',
-      logo:     { '@type': 'ImageObject', url: DEFAULTS.image },
-    },
-  };
-  injectSchema('article-schema', schema);
-}
+
 
 function injectSchema(id: string, data: object): void {
   const script = document.createElement('script');

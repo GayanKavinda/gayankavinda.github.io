@@ -20,11 +20,7 @@
       "@lib": ["./src/lib"],
       "@lib/*": ["./src/lib/*"],
       "@pages": ["./src/pages"],
-      "@pages/*": ["./src/pages/*"],
-      "@registry": ["./src/registry"],
-      "@registry/*": ["./src/registry/*"],
-      "@constants": ["./src/constants"],
-      "@constants/*": ["./src/constants/*"]
+      "@pages/*": ["./src/pages/*"]
     },
     "skipLibCheck": true,
     "strictNullChecks": false
