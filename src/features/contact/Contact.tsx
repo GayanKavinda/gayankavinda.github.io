@@ -124,23 +124,23 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-10 md:py-16 bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100">
+    <section id="contact" className="py-16 md:py-24 bg-background text-foreground relative overflow-hidden">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header Section */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8 items-end">
           <div className="md:col-span-5 space-y-2">
-            <span className="inline-block px-2.5 py-1 text-[10px] font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 rounded-sm">
+            <span className="inline-block px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider bg-muted text-muted-foreground rounded-sm">
               Get in Touch
             </span>
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-neutral-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
               Connect With <span style={{ color: ACCENT }}>Me</span>
               <span className="text-xl md:text-2xl">👋</span>
             </h2>
           </div>
 
           <div className="md:col-span-7">
-            <p className="text-xs md:text-sm text-neutral-500 dark:text-neutral-400 max-w-lg leading-relaxed">
+            <p className="text-xs md:text-sm text-muted-foreground max-w-lg leading-relaxed">
               Have a project in mind or just want to say hi, drop a message and I&apos;ll get back to you.
             </p>
           </div>
@@ -150,19 +150,19 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
           {/* Left Column: Form Box */}
-          <div className="lg:col-span-6 bg-neutral-50/50 dark:bg-neutral-900/40 border border-neutral-200/80 dark:border-neutral-800 rounded-2xl p-5 sm:p-6">
+          <div className="lg:col-span-6 bg-card/80 border border-border/80 rounded-2xl p-5 sm:p-6 backdrop-blur-sm shadow-sm">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
 
               {/* Name */}
               <div className="space-y-1.5">
-                <Label htmlFor="cf-name" className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+                <Label htmlFor="cf-name" className="text-xs font-medium text-foreground">
                   Name
                 </Label>
                 <Input
                   id="cf-name"
                   placeholder="Your name"
                   className={cn(
-                    'h-10 rounded-lg bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-xs placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus-visible:ring-1',
+                    'h-10 rounded-lg bg-background border-border text-foreground text-xs placeholder:text-muted-foreground focus-visible:ring-1',
                     errors.name && 'border-red-500'
                   )}
                   style={{ ['--tw-ring-color' as any]: ACCENT }}
@@ -173,7 +173,7 @@ export default function Contact() {
 
               {/* Email */}
               <div className="space-y-1.5">
-                <Label htmlFor="cf-email" className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+                <Label htmlFor="cf-email" className="text-xs font-medium text-foreground">
                   Email
                 </Label>
                 <Input
@@ -181,7 +181,7 @@ export default function Contact() {
                   type="email"
                   placeholder="you@email.com"
                   className={cn(
-                    'h-10 rounded-lg bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-xs placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus-visible:ring-1',
+                    'h-10 rounded-lg bg-background border-border text-foreground text-xs placeholder:text-muted-foreground focus-visible:ring-1',
                     errors.email && 'border-red-500'
                   )}
                   style={{ ['--tw-ring-color' as any]: ACCENT }}
@@ -192,14 +192,14 @@ export default function Contact() {
 
               {/* Message */}
               <div className="space-y-1.5">
-                <Label htmlFor="cf-message" className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+                <Label htmlFor="cf-message" className="text-xs font-medium text-foreground">
                   Message
                 </Label>
                 <Textarea
                   id="cf-message"
                   placeholder="Tell me about your project"
                   className={cn(
-                    'min-h-[100px] rounded-lg bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-xs placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus-visible:ring-1 resize-y',
+                    'min-h-[100px] rounded-lg bg-background border-border text-foreground text-xs placeholder:text-muted-foreground focus-visible:ring-1 resize-y',
                     errors.message && 'border-red-500'
                   )}
                   style={{ ['--tw-ring-color' as any]: ACCENT }}
@@ -210,7 +210,7 @@ export default function Contact() {
 
               {/* Services Checkboxes */}
               <div className="space-y-2 pt-1">
-                <Label className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+                <Label className="text-xs font-medium text-foreground">
                   What do you need?
                 </Label>
                 <Controller
@@ -236,10 +236,10 @@ export default function Contact() {
                                 type="checkbox"
                                 checked={isChecked}
                                 onChange={() => toggleService(s.id)}
-                                className="w-3.5 h-3.5 rounded border-neutral-300 dark:border-neutral-700 focus:ring-0 cursor-pointer"
+                                className="w-3.5 h-3.5 rounded border-border focus:ring-0 cursor-pointer"
                                 style={{ accentColor: ACCENT }}
                               />
-                              <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
+                              <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                                 {s.label}
                               </span>
                             </label>
@@ -256,7 +256,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={sending}
-                  className="w-full h-10 inline-flex items-center justify-center gap-2 rounded-lg text-white text-xs font-semibold transition-all disabled:opacity-50 hover:brightness-90"
+                  className="w-full h-10 inline-flex items-center justify-center gap-2 rounded-lg text-white text-xs font-semibold transition-all disabled:opacity-50 hover:brightness-90 cursor-pointer shadow-md"
                   style={{ backgroundColor: ACCENT }}
                 >
                   <span>{sending ? 'Sending...' : 'Send Message'}</span>
@@ -270,7 +270,7 @@ export default function Contact() {
           <div className="lg:col-span-6 flex flex-col items-center">
 
             {/* Image Card Container */}
-            <div className="relative w-full aspect-[4/3] sm:aspect-[1.3/1] rounded-2xl overflow-hidden bg-neutral-200 dark:bg-neutral-800">
+            <div className="relative w-full aspect-[4/3] sm:aspect-[1.3/1] rounded-2xl overflow-hidden bg-card border border-border shadow-sm">
               <img
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1000"
                 alt="Profile portrait"
@@ -280,9 +280,9 @@ export default function Contact() {
 
             {/* Badge, straddling the bottom edge of the image, centered */}
             <div className="relative z-10 -mt-3.5 flex justify-center">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-neutral-900 shadow-md border border-neutral-200/60 dark:border-neutral-800">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className="text-[11px] font-medium text-neutral-800 dark:text-neutral-200 whitespace-nowrap">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card shadow-md border border-border backdrop-blur-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[11px] font-medium text-foreground whitespace-nowrap">
                   Available for Hire
                 </span>
               </div>
@@ -291,36 +291,36 @@ export default function Contact() {
             {/* Profile Info */}
             <div className="text-center space-y-2.5 mt-5 mb-6">
               <div className="flex items-center justify-center gap-2 text-sm md:text-base">
-                <span className="font-bold text-neutral-900 dark:text-white">John Doe</span>
-                <span className="text-neutral-300 dark:text-neutral-700 text-xl leading-none">•</span>
-                <span className="text-neutral-500 dark:text-neutral-400 font-normal">UI/UX Designer</span>
+                <span className="font-bold text-foreground">Gayan Kavinda</span>
+                <span className="text-muted-foreground/40 text-xl leading-none">•</span>
+                <span className="text-muted-foreground font-normal">Senior Software Engineer</span>
               </div>
 
               {/* Social Links */}
-              <div className="flex items-center justify-center gap-3.5 text-neutral-700 dark:text-neutral-300">
-                <a href="#" className="hover:text-neutral-900 dark:hover:text-white transition-colors" aria-label="Instagram">
+              <div className="flex items-center justify-center gap-3.5 text-muted-foreground">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors" aria-label="Instagram">
                   <InstagramIcon />
                 </a>
-                <a href="#" className="hover:text-neutral-900 dark:hover:text-white transition-colors" aria-label="Dribbble">
+                <a href="https://dribbble.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors" aria-label="Dribbble">
                   <DribbbleIcon />
                 </a>
-                <a href="#" className="hover:text-neutral-900 dark:hover:text-white transition-colors" aria-label="LinkedIn">
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors" aria-label="LinkedIn">
                   <LinkedinIcon />
                 </a>
-                <a href="#" className="hover:text-neutral-900 dark:hover:text-white transition-colors" aria-label="GitHub">
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors" aria-label="GitHub">
                   <GithubIcon />
                 </a>
               </div>
             </div>
 
             {/* Client / Partner Logos Strip */}
-            <div className="w-full pt-2 border-t border-neutral-100 dark:border-neutral-900 flex items-center justify-between gap-4 overflow-x-auto">
+            <div className="w-full pt-4 border-t border-border flex items-center justify-between gap-4 overflow-x-auto">
               {LOGOS.map((logo) => (
                 <img
                   key={logo.slug}
                   src={`https://cdn.simpleicons.org/${logo.slug}`}
                   alt={logo.name}
-                  className="h-5 object-contain flex-shrink-0 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all"
+                  className="h-5 object-contain flex-shrink-0 opacity-40 dark:opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all"
                 />
               ))}
             </div>

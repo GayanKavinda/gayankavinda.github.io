@@ -68,7 +68,7 @@ const App = () => (
             >
               <ScrollToTop />
               <Suspense fallback={
-                <div className="fixed inset-0 bg-neutral-50 dark:bg-neutral-950 flex items-center justify-center z-[9999]">
+                <div className="fixed inset-0 bg-background flex items-center justify-center z-[9999]">
                   <div className="w-12 h-[1px] bg-gold animate-pulse" />
                 </div>
               }>

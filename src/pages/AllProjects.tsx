@@ -42,7 +42,7 @@ const AllProjects = () => {
   }, []);
 
   return (
-    <div className="min-h-[100dvh] bg-neutral-50 dark:bg-neutral-950 transition-colors duration-500 selection:bg-gold/30 selection:text-gold relative overflow-hidden">
+    <div className="min-h-[100dvh] bg-background text-foreground transition-colors duration-500 selection:bg-gold/30 selection:text-gold relative overflow-hidden">
       {/* Background Aesthetics - Removed per request */}
       {/*
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
