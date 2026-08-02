@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 interface FaqSectionProps extends React.HTMLAttributes<HTMLElement> {
-  title: string;
-  description?: string;
+  title: React.ReactNode;
+  description?: React.ReactNode;
   items: {
     question: string;
     answer: string;
@@ -32,7 +32,7 @@ const FaqSection = React.forwardRef<HTMLElement, FaqSectionProps>(
         )}
         {...props}
       >
-        <div className="container">
+        <div className="container px-4 sm:px-6">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -40,7 +40,7 @@ const FaqSection = React.forwardRef<HTMLElement, FaqSectionProps>(
             transition={{ duration: 0.5 }}
             className="max-w-2xl mx-auto text-center mb-12"
           >
-            <h2 className="text-3xl font-semibold mb-3 bg-gradient-to-r from-foreground via-foreground/80 to-foreground bg-clip-text text-transparent">
+            <h2 className="text-3xl font-semibold mb-3 text-foreground">
               {title}
             </h2>
             {description && (
@@ -124,11 +124,11 @@ const FaqItem = React.forwardRef<
       <Button
         variant="ghost"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-6 py-4 h-auto justify-between hover:bg-transparent"
+        className="w-full px-4 sm:px-6 py-3 sm:py-4 h-auto justify-between hover:bg-transparent"
       >
         <h3
           className={cn(
-            "text-base font-medium transition-colors duration-200 text-left",
+            "text-sm sm:text-base font-medium transition-colors duration-200 text-left pr-3",
             "text-foreground/70",
             isOpen && "text-foreground"
           )}

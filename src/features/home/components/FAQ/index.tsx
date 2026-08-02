@@ -23,7 +23,14 @@ const FAQ = () => {
   return (
     <section style={{ position: 'relative', overflow: 'hidden' }}>
       <FaqSection
-        title="Frequently Asked Questions"
+        title={
+          <>
+            Frequently Asked{' '}
+            <span className="font-playfair italic font-medium text-[#d60d86]">
+              Questions
+            </span>
+          </>
+        }
         description="Common questions clients ask before we start working together."
         items={DEV_FAQS}
         contactInfo={{

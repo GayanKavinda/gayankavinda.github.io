@@ -5,7 +5,11 @@ const CustomCursor = () => {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
 
+  // Don't attach on touch-only devices
+  const isTouchDevice = typeof window !== 'undefined' && !window.matchMedia('(pointer: fine)').matches;
+
   useEffect(() => {
+    if (isTouchDevice) return;
     let rafId: number;
     const onMove = (e: MouseEvent) => {
       cancelAnimationFrame(rafId);
@@ -23,16 +27,16 @@ const CustomCursor = () => {
       window.removeEventListener('mousemove', onMove);
       cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [isTouchDevice]);
+
+  if (isTouchDevice) return null;
 
   return (
-    <>
+    <div data-custom-cursor>
       <div ref={dotRef} className="cursor-dot" />
       <div ref={ringRef} className="cursor-ring" />
-    </>
+    </div>
   );
 };
 
 export default CustomCursor;
-
-

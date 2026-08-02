@@ -151,12 +151,32 @@
     body {
       @apply bg-background text-foreground;
       font-family: 'Instrument Sans', sans-serif;
-      cursor: none;
+      /* cursor:none only on pointer:fine devices (mouse/trackpad) */
       min-height: 100dvh;
       overflow-x: clip;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      /* Remove 300ms tap delay on mobile */
+      touch-action: manipulation;
+    }
+
+    /* Hide default cursor only on devices that have a fine pointer (mouse) */
+    @media (pointer: fine) {
+      body {
+        cursor: none;
+      }
+    }
+
+    /* On touch devices: restore cursor and hide the custom cursor element */
+    @media (pointer: coarse) {
+      body {
+        cursor: auto;
+      }
+      /* CustomCursor component: hide on touch */
+      [data-custom-cursor] {
+        display: none !important;
+      }
     }
     ::selection {
       background: hsl(252 95% 68% / 0.18);
