@@ -144,7 +144,7 @@ const Certifications = () => {
     <section
       id="certifications"
       ref={sectionRef}
-      className="relative py-[100px] md:py-[140px] min-h-[70vh] md:min-h-[800px] flex items-center overflow-hidden"
+      className="relative py-14 md:py-20 flex items-center overflow-hidden"
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }}
     >
       {/* Parallax Overlay */}

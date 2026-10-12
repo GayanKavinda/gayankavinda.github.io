@@ -417,7 +417,7 @@ const EngineeringPhilosophy = () => {
     <section
       id="philosophy"
       ref={sectionRef}
-      className="relative w-full overflow-hidden bg-background py-[90px] md:py-[120px]"
+      className="relative w-full overflow-hidden bg-background py-14 md:py-20"
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-30 dark:opacity-100"

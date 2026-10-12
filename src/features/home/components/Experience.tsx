@@ -353,7 +353,7 @@ const Experience = () => {
     <section
       id="experience"
       ref={sectionRef}
-      className="relative py-[100px] md:py-[140px] overflow-hidden"
+      className="relative py-14 md:py-20 overflow-hidden"
       style={{ contentVisibility: 'auto', containIntrinsicSize: '0 900px' }}
     >
       {/* Ambient glow — tighter, more intentional */}

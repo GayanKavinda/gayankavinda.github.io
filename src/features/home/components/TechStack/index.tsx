@@ -7,7 +7,7 @@ const TechStack = () => {
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section id="skills" ref={sectionRef} className="py-[80px] md:py-[100px] relative overflow-hidden">
+    <section id="skills" ref={sectionRef} className="py-10 md:py-14 relative overflow-hidden">
       <div className="max-w-[1280px] mx-auto px-6 md:px-12">
         <motion.div
           className="relative z-10 text-center mb-14 flex flex-col items-center"

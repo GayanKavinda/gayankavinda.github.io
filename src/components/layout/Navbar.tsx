@@ -91,8 +91,9 @@ function ThemeSwitch({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
       aria-label="Toggle theme"
       className="relative w-[52px] h-[28px] rounded-full flex items-center px-[3px] shrink-0"
       style={{
-        background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+        background: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff',
         border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)'}`,
+        boxShadow: isDark ? 'none' : '0 2px 6px rgba(0,0,0,0.06)',
       }}
     >
       <motion.div

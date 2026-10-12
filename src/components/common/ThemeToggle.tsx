@@ -1,4 +1,4 @@
-//src/components/common/ThemeToggle.tsx
+// src/components/common/ThemeToggle.tsx
 
 import { useTheme } from '@app/providers/theme-provider';
 
@@ -17,7 +17,8 @@ export function ModeToggle() {
         borderRadius: '0px',
         clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)',
         border: isDark ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(0,0,0,0.15)',
-        background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
+        background: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff',
+        boxShadow: isDark ? 'none' : '0 2px 8px rgba(0,0,0,0.08)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -28,18 +29,18 @@ export function ModeToggle() {
         overflow: 'hidden',
       }}
       onMouseEnter={e => {
-        e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)';
-        e.currentTarget.style.borderColor = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.18)';
+        e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.12)' : '#f4f4f5';
+        e.currentTarget.style.borderColor = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.25)';
       }}
       onMouseLeave={e => {
-        e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
-        e.currentTarget.style.borderColor = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.10)';
+        e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.06)' : '#ffffff';
+        e.currentTarget.style.borderColor = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.15)';
       }}
     >
       {/* Sun icon (shown in dark mode) */}
       <svg
         width="15" height="15" viewBox="0 0 24 24" fill="none"
-        stroke={isDark ? 'rgba(245,240,232,0.8)' : 'transparent'}
+        stroke={isDark ? '#f4f4f5' : 'transparent'}
         strokeWidth="1.8" strokeLinecap="round"
         style={{ position: 'absolute', transition: 'all 0.3s ease', opacity: isDark ? 1 : 0, transform: isDark ? 'rotate(0deg) scale(1)' : 'rotate(-90deg) scale(0.5)' }}
       >
@@ -49,7 +50,7 @@ export function ModeToggle() {
       {/* Moon icon (shown in light mode) */}
       <svg
         width="14" height="14" viewBox="0 0 24 24" fill="none"
-        stroke={!isDark ? 'rgba(26,26,46,0.7)' : 'transparent'}
+        stroke={!isDark ? '#09090b' : 'transparent'}
         strokeWidth="1.8" strokeLinecap="round"
         style={{ position: 'absolute', transition: 'all 0.3s ease', opacity: !isDark ? 1 : 0, transform: !isDark ? 'rotate(0deg) scale(1)' : 'rotate(90deg) scale(0.5)' }}
       >
@@ -57,6 +58,4 @@ export function ModeToggle() {
       </svg>
     </button>
   );
-}
-
-
+}

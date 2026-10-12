@@ -182,7 +182,7 @@ const Projects = () => {
     <section
       id="projects"
       ref={containerRef}
-      className="py-[100px] md:py-[140px] relative z-20 overflow-hidden"
+      className="py-14 md:py-20 relative z-20 overflow-hidden"
       style={{
         contentVisibility: 'auto',
         containIntrinsicSize: '0 1000px',
