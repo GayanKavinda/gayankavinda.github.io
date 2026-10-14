@@ -1,570 +1,594 @@
-// src/components/sections/About.tsx
-import { useRef, useState, useEffect, useCallback } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Github, Linkedin, Twitter, MapPin, ArrowUpRight } from 'lucide-react';
-import { useTheme } from '@app/providers/theme-provider';
+// src/features/about/components/About.tsx
+import { useRef, useState, useEffect } from 'react';
+import {
+  Github,
+  Linkedin,
+  Twitter,
+  ArrowUpRight,
+  Music,
+  Globe,
+  GraduationCap,
+  Code2,
+  MapPin,
+  Play,
+  Pause,
+  SkipForward,
+  SkipBack,
+  Shuffle,
+  Volume2,
+  VolumeX,
+} from 'lucide-react';
+import { FEATURED_TRACKS } from '../data/playlist';
 
-/* ═════════════════════════════════════════════════════════════════
-   TYPES & DATA
-   ═════════════════════════════════════════════════════════════════ */
+// Asset imports (Vite resolves these correctly)
+import portraitImg from '@/assets/images/about/Cinematic Professional Portrait.png';
+import sliitLogo   from '@/assets/images/about/sliit-campus-seeklogo.png';
+import mapDark     from '@/assets/images/map-dark.webp';
+import mapLight    from '@/assets/images/map-white.webp';
 
-interface TechItem {
-  id: string;
-  name: string;
-  description: string;
-  color: string;
-  glowColor: string;
-  svg: React.ReactNode;
-  delay: number;
-}
-
-interface SpotifyTrack {
-  isPlaying: boolean;
-  title: string;
-  artist: string;
-  albumArt: string;
-  trackUrl: string;
-}
-
-// Impact-driven stats (preserved from original)
-const stats = [
-  { num: '10+', label: 'YEARS', sub: 'Engineering' },
-  { num: '50+', label: 'PROJECTS', sub: 'Shipped' },
-  { num: '12+', label: 'SYSTEMS', sub: 'Architected' },
-];
-
-// Social links (preserved, redesigned into list cards)
 const socials = [
-  {
-    name: 'GitHub',
-    href: 'https://github.com',
-    Icon: Github,
-    handle: '@garayaka',
-  },
-  {
-    name: 'LinkedIn',
-    href: 'https://linkedin.com',
-    Icon: Linkedin,
-    handle: '/in/garayaka',
-  },
-  {
-    name: 'Twitter',
-    href: 'https://twitter.com',
-    Icon: Twitter,
-    handle: '@garayaka',
-  },
+  { name: 'GitHub',    href: import.meta.env.VITE_CONTACT_GITHUB   || 'https://github.com/GayanKavinda', Icon: Github },
+  { name: 'LinkedIn',  href: import.meta.env.VITE_CONTACT_LINKEDIN || 'https://linkedin.com/in/yourprofile', Icon: Linkedin },
+  { name: 'Twitter/X', href: import.meta.env.VITE_CONTACT_X        || 'https://twitter.com', Icon: Twitter },
+].map(({ name, href, Icon }) => {
+  const path = href.replace(/^https?:\/\/[^/]+/, '').replace(/\/+$/, '');
+  const handle = name === 'LinkedIn' ? path : `@${path.replace(/^\//, '')}`;
+  return { name, href, Icon, handle };
+});
+
+const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/';
+const techStack = [
+  { id: 'react',      name: 'React',      category: 'Frontend UI',    icon: 'react/react-original.svg' },
+  { id: 'typescript', name: 'TypeScript', category: 'Type Safety',    icon: 'typescript/typescript-original.svg' },
+  { id: 'git',        name: 'Git',        category: 'Version Control', icon: 'git/git-original.svg' },
+  { id: 'gitlab',     name: 'GitLab CI',  category: 'DevOps & CI/CD', icon: 'gitlab/gitlab-original.svg' },
+  { id: 'vscode',     name: 'VS Code',    category: 'Primary IDE',    icon: 'vscode/vscode-original.svg' },
+  { id: 'android',    name: 'Android',    category: 'Native Mobile',  icon: 'android/android-original.svg' },
+  { id: 'docker',     name: 'Docker',     category: 'Containers',     icon: 'docker/docker-original.svg' },
+  { id: 'figma',      name: 'Figma',      category: 'UI/UX Design',   icon: 'figma/figma-original.svg' },
 ];
 
-// Arsenal / Tech stack with custom SVG icons matching screenshot
-const techStack: TechItem[] = [
-  {
-    id: 'react',
-    name: 'React',
-    description: 'Component-based UI architecture',
-    color: '#61DAFB',
-    glowColor: 'rgba(97, 218, 251, 0.35)',
-    delay: 0,
-    svg: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="2" fill="#61DAFB" />
-        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" strokeWidth="1.2" fill="none" />
-        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" strokeWidth="1.2" fill="none" transform="rotate(60 12 12)" />
-        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" strokeWidth="1.2" fill="none" transform="rotate(120 12 12)" />
-      </svg>
-    ),
-  },
-  {
-    id: 'git',
-    name: 'Git',
-    description: 'Distributed version control',
-    color: '#F05032',
-    glowColor: 'rgba(240, 80, 50, 0.35)',
-    delay: 0.5,
-    svg: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="10" stroke="#ffffff" strokeWidth="1.5" fill="none" opacity="0.9" />
-        <path d="M12 8v8M8 12h8" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" opacity="0.9" />
-      </svg>
-    ),
-  },
-  {
-    id: 'gitlab',
-    name: 'GitLab CI',
-    description: 'DevOps & CI/CD pipelines',
-    color: '#FC6D26',
-    glowColor: 'rgba(252, 109, 38, 0.35)',
-    delay: 1,
-    svg: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2L14.5 9.5H22L16 14L18.5 22L12 17.5L5.5 22L8 14L2 9.5H9.5L12 2Z" fill="#FC6D26" />
-      </svg>
-    ),
-  },
-  {
-    id: 'vscode',
-    name: 'VS Code',
-    description: 'Primary code editor & extensions',
-    color: '#007ACC',
-    glowColor: 'rgba(0, 122, 204, 0.35)',
-    delay: 1.5,
-    svg: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M4 4L16 12L4 20V4Z" fill="#007ACC" />
-        <path d="M16 12L20 8V16L16 12Z" fill="#007ACC" opacity="0.6" />
-      </svg>
-    ),
-  },
-  {
-    id: 'android',
-    name: 'Android',
-    description: 'Mobile native development',
-    color: '#3DDC84',
-    glowColor: 'rgba(61, 220, 132, 0.35)',
-    delay: 0.3,
-    svg: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M6 18c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-8H6v8zM3 10h18v5H3z" fill="#3DDC84" />
-        <path d="M8 6V4m8 2V4" stroke="#3DDC84" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="9" cy="13" r="0.8" fill="#000" />
-        <circle cx="15" cy="13" r="0.8" fill="#000" />
-      </svg>
-    ),
-  },
-  {
-    id: 'postman',
-    name: 'Postman',
-    description: 'API testing & documentation',
-    color: '#FF6C37',
-    glowColor: 'rgba(255, 108, 55, 0.35)',
-    delay: 0.8,
-    svg: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="9" stroke="#FF6C37" strokeWidth="1.5" fill="none" />
-        <path d="M12 7v5l3 3" stroke="#FF6C37" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    id: 'figma',
-    name: 'Figma',
-    description: 'Interface design & prototyping',
-    color: '#F24E1E',
-    glowColor: 'rgba(242, 78, 30, 0.35)',
-    delay: 1.2,
-    svg: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-        <path d="M8 24c2.2 0 4-1.8 4-4v-4H8c-2.2 0-4 1.8-4 4s1.8 4 4 4z" fill="#0ACF83" />
-        <path d="M4 12c0-2.2 1.8-4 4-4h4v8H8c-2.2 0-4-1.8-4-4z" fill="#A259FF" />
-        <path d="M4 4c0-2.2 1.8-4 4-4h4v8H8C5.8 8 4 6.2 4 4z" fill="#F24E1E" />
-        <path d="M12 0h4c2.2 0 4 1.8 4 4s-1.8 4-4 4h-4V0z" fill="#FF7262" />
-        <path d="M20 12c0 2.2-1.8 4-4 4s-4-1.8-4-4 1.8-4 4-4 4 1.8 4 4z" fill="#1ABCFE" />
-      </svg>
-    ),
-  },
-  {
-    id: 'docker',
-    name: 'Docker',
-    description: 'Containerization & orchestration',
-    color: '#2496ED',
-    glowColor: 'rgba(36, 150, 237, 0.35)',
-    delay: 1.7,
-    svg: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-        <path d="M4 10h2v2H4zM7 10h2v2H7zM10 10h2v2h-2zM4 7h2v2H4zM7 7h2v2H7zM10 7h2v2h-2zM13 7h2v2h-2zM7 4h2v2H7zM10 4h2v2h-2z" fill="#2496ED" />
-        <path d="M2 13h16c0 3.3-2.7 6-6 6H8c-3.3 0-6-2.7-6-6z" fill="#2496ED" opacity="0.8" />
-      </svg>
-    ),
-  },
-];
+const card = 'relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06)] transition-all duration-300 hover:shadow-[0_12px_30px_-4px_rgba(0,0,0,0.1)] dark:border-zinc-800 dark:bg-[#0E0E14] dark:shadow-[0_4px_20px_rgba(0,0,0,0.5)]';
+const eyebrow = 'text-[10.5px] font-normal tracking-[0.13em] text-slate-400 dark:text-zinc-500 uppercase';
 
-/* ═════════════════════════════════════════════════════════════════
-   SUB-COMPONENTS
-   ═════════════════════════════════════════════════════════════════ */
-
-/** Animated audio equalizer bars for Spotify card */
-function AudioBars({ isPlaying }: { isPlaying: boolean }) {
-  const [heights, setHeights] = useState([4, 7, 5, 9, 6]);
-
-  useEffect(() => {
-    if (!isPlaying) return;
-    const interval = setInterval(() => {
-      setHeights(prev => prev.map(() => 3 + Math.random() * 9));
-    }, 180);
-    return () => clearInterval(interval);
-  }, [isPlaying]);
-
+function ProfileCard() {
   return (
-    <div className="flex items-end gap-[3px] h-[14px]">
-      {heights.map((h, i) => (
-        <motion.div
-          key={i}
-          className="w-[3px] rounded-full bg-[#1DB954]"
-          animate={{ height: isPlaying ? h : 3 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        />
-      ))}
-    </div>
-  );
-}
-
-/** Spotify Now Playing / Recently Played Card */
-function SpotifyCard() {
-  const [track, setTrack] = useState<SpotifyTrack>({
-    isPlaying: false,
-    title: 'Dalada Mal',
-    artist: 'JANANA',
-    albumArt: '',
-    trackUrl: '#',
-  });
-
-  // Fetch from your API endpoint — wire this up to your Spotify integration
-  useEffect(() => {
-    // Example: fetch('/api/spotify').then(r => r.json()).then(setTrack)
-    // For now, simulate a "recently played" state
-    const timer = setTimeout(() => {
-      setTrack(prev => ({ ...prev, isPlaying: true }));
-    }, 800);
-    return () => clearTimeout(timer);
-  }, []);
-
-  return (
-    <div className="relative h-full rounded-2xl border border-black/[0.06] dark:border-white/[0.06] bg-black/[0.02] dark:bg-white/[0.02] backdrop-blur-sm p-5 flex flex-col justify-between overflow-hidden group">
-      {/* Subtle inner glow */}
-      <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-[#1DB954]/5 dark:bg-[#1DB954]/10 blur-3xl pointer-events-none" />
-
-      {/* Header */}
-      <div className="relative z-10 flex items-center justify-between">
-        <div className="w-9 h-9 rounded-full bg-[#1DB954]/10 dark:bg-[#1DB954]/15 flex items-center justify-center">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#1DB954">
-            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
-          </svg>
-        </div>
-        <AudioBars isPlaying={track.isPlaying} />
-      </div>
-
-      {/* Track Info */}
-      <div className="relative z-10 mt-auto pt-8">
-        <div className="flex items-end gap-3">
-          {/* Album Art Placeholder */}
-          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-zinc-300 to-zinc-400 dark:from-zinc-700 dark:to-zinc-600 flex items-center justify-center shrink-0 overflow-hidden">
-            {track.albumArt ? (
-              <img src={track.albumArt} alt={track.title} className="w-full h-full object-cover" />
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/60">
-                <path d="M9 18V5l12-2v13" />
-                <circle cx="6" cy="18" r="3" />
-                <circle cx="18" cy="16" r="3" />
-              </svg>
-            )}
+    <div className={`${card} col-span-1 md:col-span-2`} style={{ padding: 0 }}>
+      <div className="flex h-full min-h-[340px] flex-col sm:flex-row">
+        {/* LEFT: Portrait */}
+        <div className="relative w-full sm:w-[42%] shrink-0 min-h-[280px] sm:min-h-0 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+          <span aria-hidden className="absolute inset-0 flex items-center justify-center select-none text-[9rem] font-['Playfair_Display',serif] leading-none z-0" style={{ color: 'transparent', WebkitTextStroke: '1px rgba(214,13,134,0.12)' }}>GK</span>
+          <img src={portraitImg} alt="Gayan Kavinda" className="absolute inset-0 h-full w-full object-cover object-center z-10 transition-transform duration-700 hover:scale-[1.025]" />
+          <div className="absolute bottom-0 left-0 right-0 z-20 px-5 pb-5 pt-14" style={{ background: 'linear-gradient(to top, rgba(8,8,14,0.9) 0%, rgba(8,8,14,0.45) 55%, transparent 100%)' }}>
+            <p className="font-['Playfair_Display',serif] text-[1.05rem] font-normal italic leading-snug text-white/90">Gayan Kavinda</p>
+            <p className="mt-0.5 text-[10px] font-normal uppercase tracking-[0.18em]" style={{ color: '#d60d86' }}>Full-Stack & DevOps Engineer</p>
           </div>
-
-          <div className="min-w-0">
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#1DB954] font-medium mb-0.5">
-              {track.isPlaying ? 'Now Playing' : 'Recently Played'}
-            </p>
-            <a
-              href={track.trackUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-sm font-semibold text-foreground truncate hover:underline decoration-[#1DB954]/50 underline-offset-2"
-            >
-              {track.title}
-            </a>
-            <p className="text-xs text-foreground/50 truncate">{track.artist}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/** Arsenal Card with floating icons & cursor tooltips */
-function ArsenalCard() {
-  const [hovered, setHovered] = useState<TechItem | null>(null);
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent, tech: TechItem) => {
-    setTooltipPos({ x: e.clientX, y: e.clientY });
-    setHovered(tech);
-  }, []);
-
-  return (
-    <div ref={cardRef} className="relative h-full rounded-2xl border border-black/[0.06] dark:border-white/[0.06] bg-black/[0.02] dark:bg-white/[0.02] backdrop-blur-sm p-5 overflow-hidden">
-      <h3 className="text-sm font-semibold text-foreground mb-4 tracking-tight">My Arsenal</h3>
-
-      <div className="grid grid-cols-4 gap-3">
-        {techStack.map((tech) => (
-          <motion.div
-            key={tech.id}
-            className="relative flex items-center justify-center aspect-square rounded-xl border border-black/[0.05] dark:border-white/[0.05] bg-background/50 dark:bg-white/[0.03] cursor-pointer transition-colors duration-300 hover:bg-background dark:hover:bg-white/[0.06]"
-            animate={{ y: [0, -6, 0] }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: tech.delay,
-            }}
-            onMouseMove={(e) => handleMouseMove(e, tech)}
-            onMouseEnter={(e) => handleMouseMove(e, tech)}
-            onMouseLeave={() => setHovered(null)}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.95 }}
-            style={{
-              boxShadow: hovered?.id === tech.id ? `0 0 20px ${tech.glowColor}` : 'none',
-            }}
-          >
-            {tech.svg}
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Cursor-following tooltip */}
-      {hovered && (
-        <motion.div
-          className="fixed z-[9999] pointer-events-none"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-            x: tooltipPos.x + 16,
-            y: tooltipPos.y - 16,
-          }}
-          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-        >
-          <div className="px-3 py-2 rounded-lg bg-background/95 dark:bg-[#141422]/95 border border-black/10 dark:border-white/10 backdrop-blur-md shadow-xl">
-            <p className="text-xs font-semibold text-foreground whitespace-nowrap">{hovered.name}</p>
-            <p className="text-[10px] text-foreground/60 whitespace-nowrap mt-0.5">{hovered.description}</p>
-          </div>
-        </motion.div>
-      )}
-    </div>
-  );
-}
-
-/** Location Card */
-function LocationCard() {
-  return (
-    <div className="relative h-full rounded-2xl border border-black/[0.06] dark:border-white/[0.06] bg-black/[0.02] dark:bg-white/[0.02] backdrop-blur-sm p-5 flex flex-col justify-between overflow-hidden">
-      {/* Grid pattern background */}
-      <div
-        className="absolute inset-0 opacity-[0.03] dark:opacity-[0.04]"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.4) 1px, transparent 1px)`,
-          backgroundSize: '24px 24px',
-        }}
-      />
-
-      <div className="relative z-10 flex items-start justify-between">
-        <div className="w-10 h-10 rounded-full border border-black/10 dark:border-white/10 bg-background/60 dark:bg-white/[0.04] flex items-center justify-center">
-          <MapPin size={18} className="text-foreground/70" />
-        </div>
-        <span className="px-2.5 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider border border-black/10 dark:border-white/10 text-foreground/60 bg-background/60 dark:bg-white/[0.04]">
-          Remote Ready
-        </span>
-      </div>
-
-      <div className="relative z-10 mt-auto pt-10">
-        <p className="text-xl font-semibold text-foreground tracking-tight">Colombo, LK</p>
-        <p className="text-xs text-foreground/50 font-mono mt-0.5">GMT+5:30</p>
-      </div>
-    </div>
-  );
-}
-
-/** Social Links Card */
-function SocialCard() {
-  return (
-    <div className="relative h-full rounded-2xl border border-black/[0.06] dark:border-white/[0.06] bg-black/[0.02] dark:bg-white/[0.02] backdrop-blur-sm p-5 flex flex-col justify-center overflow-hidden">
-      <div className="space-y-2">
-        {socials.map((social, i) => (
-          <motion.a
-            key={social.name}
-            href={social.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, x: -10 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className="group flex items-center justify-between p-3 rounded-xl border border-transparent hover:border-black/[0.06] dark:hover:border-white/[0.08] hover:bg-background/60 dark:hover:bg-white/[0.04] transition-all duration-300"
-          >
-            <div className="flex items-center gap-3">
-              <social.Icon size={18} strokeWidth={1.6} className="text-foreground/60 group-hover:text-foreground transition-colors" />
-              <div>
-                <p className="text-sm font-medium text-foreground/90 group-hover:text-foreground transition-colors">{social.name}</p>
-                <p className="text-[10px] font-mono text-foreground/40">{social.handle}</p>
-              </div>
-            </div>
-            <ArrowUpRight
-              size={14}
-              className="text-foreground/30 group-hover:text-foreground/70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"
-            />
-          </motion.a>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ═════════════════════════════════════════════════════════════════
-   MAIN COMPONENT
-   ═════════════════════════════════════════════════════════════════ */
-
-const About = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
-  return (
-    <section
-      id="about"
-      ref={sectionRef}
-      className="py-14 md:py-24 relative overflow-hidden"
-      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 900px' }}
-    >
-      {/* Dark mode magenta nebula glow (preserved) */}
-      {isDark && (
-        <div
-          className="absolute inset-0 z-0 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(236, 72, 153, 0.18), transparent 70%)',
-          }}
-        />
-      )}
-
-      {/* Top fade, blends Hero bottom into About (preserved) */}
-      <div
-        className="absolute inset-x-0 top-0 h-[20vh] pointer-events-none z-10"
-        style={{
-          background: 'linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 100%)',
-        }}
-      />
-
-      {/* Bottom fade, blends About bottom into next section (preserved) */}
-      <div
-        className="absolute inset-x-0 bottom-0 h-[20vh] pointer-events-none z-10"
-        style={{
-          background: 'linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)',
-        }}
-      />
-
-      <div className="relative z-[1] max-w-[1000px] mx-auto px-6 md:px-10">
-        {/* Section Header — preserved bio content, compacted */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-10 md:mb-14"
-        >
-          <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-4">
-            About the{' '}
-            <span className="font-playfair italic font-medium text-[#d60d86]">
-              Engineer
+          <div className="absolute top-4 left-4 z-30">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-black/40 px-2.5 py-1 text-[10px] text-emerald-300 backdrop-blur-md">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+              Available
             </span>
-          </h2>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <p className="text-sm text-foreground/50 dark:text-foreground/60 leading-relaxed max-w-[380px]">
-              Architecting scalable systems and refined sensory experiences across 10 years of engineering.
-            </p>
+          </div>
+        </div>
 
-            {/* Stats row — preserved from original, moved to header */}
-            <div className="flex gap-6 md:gap-8">
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="text-center"
-                >
-                  <span className="font-jakarta font-bold text-xl text-foreground block">{stat.num}</span>
-                  <span className="font-mono text-[10px] text-foreground/50 uppercase tracking-wider block">{stat.label}</span>
-                  <span className="font-mono text-[10px] text-foreground/40 block">{stat.sub}</span>
-                </motion.div>
+        {/* RIGHT: Content */}
+        <div className="relative flex flex-1 flex-col justify-between p-6 sm:px-7 sm:py-6">
+          <div aria-hidden className="absolute left-0 top-10 bottom-10 w-[1.5px] hidden sm:block rounded-full" style={{ background: 'linear-gradient(to bottom, transparent, #d60d86 25%, #d60d86 75%, transparent)' }} />
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <Code2 size={13} className="text-[#d60d86]" />
+              <span className={eyebrow}>Software Engineer</span>
+            </div>
+            <p className="text-sm leading-[1.8] text-slate-600 dark:text-zinc-400">
+              I build things that scale — web platforms, cloud microservices, reactive interfaces. I care about architecture that{' '}
+              <em className="not-italic text-slate-900 dark:text-white underline underline-offset-2 decoration-[#d60d86]/40">makes sense</em>
+              {' '}six months later.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-1.5">
+              {['Laravel', 'React', 'Next.js', 'Docker', 'Ansible', 'DevOps'].map((t) => (
+                <span key={t} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-[5px] text-[11px] text-slate-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">{t}</span>
               ))}
             </div>
           </div>
-        </motion.div>
+          <div className="mt-6 grid grid-cols-3 divide-x divide-slate-100 dark:divide-zinc-800 border-t border-slate-100 dark:border-zinc-800 pt-5">
+            {[{ num: '10+', label: 'Years' }, { num: '50+', label: 'Projects' }, { num: '12+', label: 'Systems' }].map((s) => (
+              <div key={s.label} className="text-center px-2">
+                <span className="block font-['Playfair_Display',serif] text-[1.3rem] italic text-slate-900 dark:text-white leading-none">{s.num}</span>
+                <span className="block text-[9.5px] uppercase tracking-wider text-slate-400 mt-1">{s.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-        {/* Bio paragraph — preserved content */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="mb-10"
-        >
-          <ul className="space-y-2 text-sm text-foreground/60 dark:text-foreground/50 max-w-[720px]">
-            <li className="flex gap-2">
-              <span className="text-[#d60d86] mt-1.5">◆</span>
-              <span>Designed a multi‑region, event‑driven platform handling {'>'}2M RPS with {'<'}50 ms p99 latency.</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-[#d60d86] mt-1.5">◆</span>
-              <span>Introduced observability‑first practices (OpenTelemetry, SLO‑based alerting) reducing MTTR by 40%.</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-[#d60d86] mt-1.5">◆</span>
-              <span>Led migration from monolith to Kubernetes‑microservices, reducing deploy‑time from hours to {'<'}15 min.</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-[#d60d86] mt-1.5">◆</span>
-              <span>Authored internal library for distributed tracing adopted by 8+ teams.</span>
-            </li>
+function EducationCard() {
+  return (
+    <div className={`${card} p-6`}>
+      <div>
+        <div className="flex items-start justify-between gap-3">
+          <img src={sliitLogo} alt="SLIIT" className="h-9 w-auto object-contain" />
+          <span className="text-[10px] text-slate-400 mt-1 shrink-0">2019 – present</span>
+        </div>
+        <div className="mt-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <GraduationCap size={13} className="text-[#d60d86]" />
+            <span className={eyebrow}>Education</span>
+          </div>
+          <p className="text-[11px] text-[#d60d86] mt-2">BSc (Hons) Software Engineering</p>
+          <h3 className="text-sm font-normal tracking-tight text-slate-900 dark:text-white mt-0.5 leading-snug">Sri Lanka Institute of<br />Information Technology</h3>
+          <p className="text-[11px] text-slate-400 dark:text-zinc-500 mt-1">Faculty of Computing</p>
+        </div>
+      </div>
+      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-zinc-800">
+        <p className="text-[11px] text-slate-500 dark:text-zinc-400">Software Architecture · Distributed Systems</p>
+      </div>
+    </div>
+  );
+}
+
+function LocationCard() {
+  const [localTime, setLocalTime] = useState('--:--');
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Colombo', hour: '2-digit', minute: '2-digit', hour12: false });
+    const tick = () => setLocalTime(fmt.format(new Date()));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const sync = () => setIsDark(document.documentElement.classList.contains('dark'));
+    sync();
+    const obs = new MutationObserver(sync);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div className={`${card} p-6`}>
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-1.5">
+            <MapPin size={13} className="text-[#d60d86]" />
+            <span className={eyebrow}>Location</span>
+          </div>
+          <span className="text-[10px] text-slate-400">LK</span>
+        </div>
+        <div className="relative w-full h-[100px] overflow-hidden rounded-xl mb-4">
+          <img src={isDark ? mapDark : mapLight} alt="Sri Lanka" className="absolute inset-0 h-full w-full object-cover object-center" />
+          <div className="absolute z-10" style={{ bottom: '38%', left: '22%' }} title="Colombo">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#d60d86] opacity-50" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#d60d86]" />
+            </span>
+          </div>
+        </div>
+        <h3 className="text-base font-normal text-slate-900 dark:text-white">Colombo</h3>
+        <p className="text-[11px] text-slate-400 mt-0.5">Western Province, Sri Lanka</p>
+      </div>
+      <div className="mt-3 flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400">
+        <Globe size={12} className="text-slate-400 shrink-0" />
+        <span className="tabular-nums">{localTime}</span>
+        <span className="text-slate-300 dark:text-zinc-600">·</span>
+        <span className="text-slate-400 text-[10.5px]">GMT+5:30</span>
+      </div>
+    </div>
+  );
+}
+
+function SocialCard() {
+  return (
+    <div className={`${card} p-6`}>
+      <div className="flex items-center justify-between mb-4">
+        <span className={eyebrow}>Connect</span>
+        <span className="text-[10px] text-slate-400">3 channels</span>
+      </div>
+      <div className="space-y-2">
+        {socials.map((s) => (
+          <a key={s.name} href={s.href} target="_blank" rel="noopener noreferrer"
+            className="group flex items-center justify-between rounded-xl border border-slate-200/70 bg-slate-50/50 p-2.5 transition-all duration-200 hover:border-[#d60d86]/30 hover:bg-slate-100/60 dark:border-zinc-800 dark:bg-zinc-900/30 dark:hover:border-[#d60d86]/30 dark:hover:bg-zinc-900">
+            <div className="flex items-center gap-3">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200/80 bg-white text-slate-700 transition-colors group-hover:bg-slate-900 group-hover:text-white dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:group-hover:bg-white dark:group-hover:text-slate-900">
+                <s.Icon size={13} />
+              </div>
+              <div>
+                <p className="text-[11.5px] text-slate-800 dark:text-zinc-200">{s.name}</p>
+                <p className="text-[10px] text-slate-400">{s.handle}</p>
+              </div>
+            </div>
+            <ArrowUpRight size={13} className="text-slate-300 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#d60d86] dark:text-zinc-600" />
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SpotifyCard() {
+  const [trackIndex, setTrackIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progressSec, setProgressSec] = useState(0);
+  const [durationSec, setDurationSec] = useState(30);
+  const [volume, setVolume] = useState(0.7);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showVolume, setShowVolume] = useState(false);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const track = FEATURED_TRACKS[trackIndex] || FEATURED_TRACKS[0];
+
+  // Initialize or change audio element source
+  useEffect(() => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio();
+    }
+    const audio = audioRef.current;
+    audio.volume = isMuted ? 0 : volume;
+
+    if (track.previewUrl) {
+      audio.src = track.previewUrl;
+      audio.load();
+      if (isPlaying) {
+        audio.play().catch(() => setIsPlaying(false));
+      }
+    } else {
+      audio.pause();
+    }
+
+    const onTimeUpdate = () => {
+      setProgressSec(audio.currentTime);
+      if (audio.duration && !isNaN(audio.duration)) {
+        setDurationSec(audio.duration);
+      }
+    };
+
+    const onEnded = () => {
+      // Auto-advance to next track
+      setTrackIndex((prev) => (prev + 1) % FEATURED_TRACKS.length);
+    };
+
+    audio.addEventListener('timeupdate', onTimeUpdate);
+    audio.addEventListener('ended', onEnded);
+
+    return () => {
+      audio.removeEventListener('timeupdate', onTimeUpdate);
+      audio.removeEventListener('ended', onEnded);
+    };
+  }, [trackIndex, track.previewUrl]);
+
+  // Handle play / pause state changes
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) {
+      if (track.previewUrl) {
+        audio.play().catch(() => setIsPlaying(false));
+      }
+    } else {
+      audio.pause();
+    }
+  }, [isPlaying, track.previewUrl]);
+
+  // Handle volume changes
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : volume;
+    }
+  }, [volume, isMuted]);
+
+  const handleNextTrack = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setTrackIndex((prev) => (prev + 1) % FEATURED_TRACKS.length);
+    setProgressSec(0);
+  };
+
+  const handlePrevTrack = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setTrackIndex((prev) => (prev - 1 + FEATURED_TRACKS.length) % FEATURED_TRACKS.length);
+    setProgressSec(0);
+  };
+
+  const handleShuffle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const nextIdx = Math.floor(Math.random() * FEATURED_TRACKS.length);
+    setTrackIndex(nextIdx);
+    setProgressSec(0);
+  };
+
+  const togglePlay = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setIsPlaying((prev) => !prev);
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setIsMuted((prev) => !prev);
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+    const targetTime = ratio * durationSec;
+    if (audioRef.current && track.previewUrl) {
+      audioRef.current.currentTime = targetTime;
+    }
+    setProgressSec(targetTime);
+  };
+
+  const formatTime = (sec: number) => {
+    const mins = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${mins}:${s < 10 ? '0' : ''}${s}`;
+  };
+
+  const displayDuration = track.previewUrl ? durationSec : track.durationSec;
+  const progressPercent = Math.min(100, (progressSec / (displayDuration || 1)) * 100);
+
+  return (
+    <div className={`${card} overflow-hidden group`} style={{ padding: 0 }}>
+      {/* Blurred album-art background with smooth transition */}
+      <div
+        aria-hidden
+        className="absolute inset-0 z-0 transition-all duration-700 ease-out"
+        style={{
+          background: `url("${track.albumArt}") center/cover no-repeat`,
+          filter: 'blur(26px) saturate(1.7) brightness(0.35)',
+          transform: 'scale(1.15)',
+        }}
+      />
+      <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/85 via-black/40 to-black/60" />
+
+      <div className="relative z-10 flex flex-col justify-between h-full p-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <span className="relative flex h-2 w-2">
+              {isPlaying && (
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1DB954] opacity-75" />
+              )}
+              <span className={`relative inline-flex rounded-full h-2 w-2 ${isPlaying ? 'bg-[#1DB954]' : 'bg-slate-400'}`} />
+            </span>
+            <span className="text-[10px] uppercase tracking-[0.16em] text-white/60">
+              {isPlaying ? 'Now Playing' : 'Paused'}
+            </span>
+            <span className="text-[9.5px] text-white/40 ml-1">
+              ({trackIndex + 1}/{FEATURED_TRACKS.length})
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Volume Control Popout */}
+            <div
+              className="relative flex items-center"
+              onMouseEnter={() => setShowVolume(true)}
+              onMouseLeave={() => setShowVolume(false)}
+            >
+              <button
+                onClick={toggleMute}
+                className="h-6 w-6 rounded-full flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+                aria-label={isMuted ? 'Unmute' : 'Mute'}
+                title={isMuted ? 'Unmute' : 'Mute'}
+              >
+                {isMuted || volume === 0 ? <VolumeX size={13} /> : <Volume2 size={13} />}
+              </button>
+
+              <div
+                className={`transition-all duration-200 overflow-hidden flex items-center ${
+                  showVolume ? 'w-20 opacity-100 ml-1' : 'w-0 opacity-0'
+                }`}
+              >
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={isMuted ? 0 : volume}
+                  onChange={(e) => {
+                    setVolume(parseFloat(e.target.value));
+                    if (isMuted) setIsMuted(false);
+                  }}
+                  className="w-18 h-1 accent-[#1DB954] cursor-pointer bg-white/20 rounded-lg"
+                  aria-label="Volume slider"
+                />
+              </div>
+            </div>
+
+            <a
+              href={track.spotifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open on Spotify"
+              className="flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 backdrop-blur-md transition-all hover:bg-white/20 hover:scale-105"
+            >
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="#1DB954">
+                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+              </svg>
+              <span className="text-[10px] font-medium text-white/90">Spotify</span>
+            </a>
+          </div>
+        </div>
+
+        {/* Track info and real album cover */}
+        <div className="mt-4 flex items-center gap-3.5">
+          <a
+            href={track.spotifyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group/cover relative h-12 w-12 shrink-0 rounded-lg overflow-hidden shadow-xl ring-1 ring-white/15 transition-transform duration-300 hover:scale-105"
+          >
+            <img
+              src={track.albumArt}
+              alt={track.title}
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover/cover:opacity-100 transition-opacity flex items-center justify-center">
+              <ArrowUpRight size={14} className="text-white" />
+            </div>
+          </a>
+
+          <div className="min-w-0 flex-1">
+            <a
+              href={track.spotifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block truncate text-[13px] font-medium text-white hover:underline leading-tight"
+            >
+              {track.title}
+            </a>
+            <p className="truncate text-[11px] text-white/65 mt-0.5">{track.artist}</p>
+          </div>
+
+          <div className="flex items-center gap-1 text-white/70">
+            <button
+              onClick={handleShuffle}
+              className="h-7 w-7 rounded-full flex items-center justify-center hover:bg-white/10 hover:text-white transition-all active:scale-95"
+              aria-label="Shuffle"
+              title="Shuffle track"
+            >
+              <Shuffle size={12} />
+            </button>
+            <button
+              onClick={handlePrevTrack}
+              className="h-7 w-7 rounded-full flex items-center justify-center hover:bg-white/10 hover:text-white transition-all active:scale-95"
+              aria-label="Previous track"
+              title="Previous track"
+            >
+              <SkipBack size={13} />
+            </button>
+            <button
+              onClick={togglePlay}
+              className="h-8 w-8 rounded-full flex items-center justify-center bg-[#1DB954] hover:bg-[#1ed760] text-black shadow-lg shadow-[#1DB954]/30 transition-all active:scale-95"
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+            >
+              {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" className="ml-0.5" />}
+            </button>
+            <button
+              onClick={handleNextTrack}
+              className="h-7 w-7 rounded-full flex items-center justify-center hover:bg-white/10 hover:text-white transition-all active:scale-95"
+              aria-label="Next track"
+              title="Next track"
+            >
+              <SkipForward size={13} />
+            </button>
+          </div>
+        </div>
+
+        {/* Interactive Seek Bar and Sound Equalizer */}
+        <div className="mt-4">
+          <div
+            onClick={handleSeek}
+            className="group/seek h-[5px] w-full cursor-pointer relative flex items-center rounded-full bg-white/20 backdrop-blur-sm"
+            title="Click to seek"
+          >
+            <div
+              className="h-full rounded-full bg-[#1DB954] group-hover/seek:bg-[#1ed760] transition-all duration-150"
+              style={{
+                width: `${progressPercent}%`,
+                boxShadow: '0 0 10px rgba(29,185,84,0.8)',
+              }}
+            />
+            <div
+              className="absolute h-2.5 w-2.5 rounded-full bg-white shadow-md opacity-0 group-hover/seek:opacity-100 transition-opacity -translate-x-1/2 pointer-events-none"
+              style={{ left: `${progressPercent}%` }}
+            />
+          </div>
+          <div className="mt-1.5 flex justify-between items-center text-[9.5px] text-white/45">
+            <span>{formatTime(progressSec)}</span>
+            <div className="flex items-center gap-1">
+              {isPlaying && (
+                <div className="flex items-end gap-0.5 h-2.5">
+                  <span className="w-0.5 bg-[#1DB954] rounded-full animate-[pulse_0.8s_ease-in-out_infinite] h-2" />
+                  <span className="w-0.5 bg-[#1DB954] rounded-full animate-[pulse_0.6s_ease-in-out_infinite] h-3" />
+                  <span className="w-0.5 bg-[#1DB954] rounded-full animate-[pulse_1s_ease-in-out_infinite] h-1.5" />
+                </div>
+              )}
+            </div>
+            <span>{formatTime(displayDuration)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ArsenalCard() {
+  return (
+    <div className={`${card} p-6`}>
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <span className={eyebrow}>Tech Stack</span>
+          <h4 className="text-sm font-normal text-slate-900 dark:text-white mt-0.5">Engineering Arsenal</h4>
+        </div>
+        <span className="text-[10.5px] text-slate-400">{techStack.length} tools</span>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        {techStack.map((tech) => (
+          <div key={tech.id} className="group flex items-center gap-2.5 rounded-xl border border-slate-200/80 bg-slate-50/50 p-2.5 transition-all duration-200 hover:border-slate-300 hover:bg-white dark:border-zinc-800 dark:bg-zinc-900/30 dark:hover:border-zinc-700 dark:hover:bg-zinc-900">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200/60 bg-white p-1 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+              <img src={DEVICON_BASE + tech.icon} alt={tech.name} className="h-4 w-4 object-contain" loading="lazy" />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-[11.5px] text-slate-800 dark:text-zinc-200">{tech.name}</p>
+              <p className="truncate text-[10px] text-slate-400">{tech.category}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const About = () => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  return (
+    <section id="about" ref={sectionRef} className="py-20 md:py-24 relative">
+      <div className="max-w-[1040px] mx-auto px-6 md:px-10">
+        {/* Header */}
+        <div className="mb-10 md:mb-12">
+          <p className={`${eyebrow} mb-2`}>About</p>
+          <h2 className="text-2xl md:text-[1.75rem] font-normal text-slate-900 dark:text-white tracking-tight leading-snug">
+            The <span className="font-['Playfair_Display',serif] italic text-[#d60d86]">Engineer</span>
+          </h2>
+          <p className="mt-3 text-sm text-slate-500 dark:text-zinc-400 leading-relaxed max-w-xl">
+            10 years building scalable systems. Obsessed with performance, clean architecture, and shipping things that{' '}
+            <em className="not-italic text-slate-700 dark:text-zinc-300">actually work</em>.
+          </p>
+        </div>
+
+        {/* Highlights */}
+        <div className="mb-6 rounded-xl border border-slate-200/80 bg-white/60 dark:bg-zinc-900/40 dark:border-zinc-800 px-5 py-4 backdrop-blur-sm">
+          <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[12.5px] text-slate-600 dark:text-zinc-300 leading-relaxed">
+            {[
+              'Multi-region event-driven platform — >2M RPS, <50ms p99 latency.',
+              'Observability-first practices (OpenTelemetry, SLO alerting) — MTTR ↓40%.',
+              'Monolith → Kubernetes microservices — deploy time hours → <15 min.',
+              'Internal distributed-tracing library adopted by 8+ teams.',
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-2">
+                <span className="text-[#d60d86] mt-[2px] shrink-0 text-[10px]">◆</span>
+                <span>{item}</span>
+              </li>
+            ))}
           </ul>
-        </motion.div>
+        </div>
 
-        {/* ═══════════════════════════════════════════════════════════
-            BENTO GRID — 2x2 Layout matching screenshot
-            ═══════════════════════════════════════════════════════════ */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
-          {/* Top Left — Location */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-50px' }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="min-h-[180px] md:min-h-[200px]"
-          >
-            <LocationCard />
-          </motion.div>
-
-          {/* Top Right — Socials */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-50px' }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="min-h-[180px] md:min-h-[200px]"
-          >
-            <SocialCard />
-          </motion.div>
-
-          {/* Bottom Left — Spotify */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-50px' }}
-            transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="min-h-[180px] md:min-h-[200px]"
-          >
-            <SpotifyCard />
-          </motion.div>
-
-          {/* Bottom Right — Arsenal */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-50px' }}
-            transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="min-h-[180px] md:min-h-[200px]"
-          >
-            <ArsenalCard />
-          </motion.div>
+        {/* Bento grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <ProfileCard />
+          <EducationCard />
+          <LocationCard />
+          <SocialCard />
+          <SpotifyCard />
+          <div className="md:col-span-3"><ArsenalCard /></div>
         </div>
       </div>
     </section>

@@ -6,7 +6,7 @@ import { ChevronDown, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-interface FaqSectionProps extends React.HTMLAttributes<HTMLElement> {
+interface FaqSectionProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
   title: React.ReactNode;
   description?: React.ReactNode;
   items: {

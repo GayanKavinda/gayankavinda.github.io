@@ -1,160 +1,68 @@
-import { motion, useMotionTemplate, useMotionValue, useTransform, useScroll } from 'framer-motion';
-import React, { useRef, useState } from 'react';
-import { Badge } from '@components/ui/badge';
+import { motion } from 'framer-motion';
+import { Award, GraduationCap, Sparkles } from 'lucide-react';
 import { useTheme } from '@app/providers/theme-provider';
-import { useImageLoader } from '@hooks/useImageLoader';
-
-// Asset imports removed - background images removed per requirements
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-const educationData = [
-  {
-    degree: 'Bachelor of Science in Computer Science',
-    institution: 'University of Colombo',
-    period: '2018 — 2022',
-    status: 'Graduated',
-    description: 'Focused on distributed systems, algorithms, and software engineering principles. Completed with First Class Honours.',
-    highlights: ['Dean\'s List 2020, 2021', 'Thesis on Distributed Consensus'],
-    color: 'var(--primary-hsl)',
-    span: 'md:col-span-2'
-  },
-  {
-    degree: 'Advanced Diploma in Software Engineering',
+const degree = {
+  institution: 'University of Colombo',
+  title: 'Bachelor of Science in Computer Science',
+  period: '2018 — 2022',
+  status: 'Graduated',
+  description:
+    'Focused on distributed systems, algorithms, and software engineering principles. Completed with First Class Honours.',
+  highlights: ["Dean's List 2020, 2021", 'Thesis on Distributed Consensus'],
+  earlier: {
+    title: 'Advanced Diploma in Software Engineering',
     institution: 'Institute of Software',
     period: '2016 — 2018',
-    status: 'Completed',
-    description: 'Core programming fundamentals, databases, and web development.',
-    highlights: ['Best Capstone Project'],
-    color: 'var(--secondary-hsl)',
-    span: 'md:col-span-1'
-  }
-];
-
-// ─── Bento Card Component ─────────────────────────────────────────────────────
-
-const BentoCard = ({ item, index }: { item: typeof educationData[0], index: number }) => {
-  const [hovered, setHovered] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    mouseX.set(e.clientX - rect.left);
-    mouseY.set(e.clientY - rect.top);
-  };
-
-  const spotlightBg = useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, hsla(${item.color}, 0.15), transparent 40%)`;
-
-  return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -4 }}
-      className={`
-        relative overflow-hidden rounded-3xl cursor-pointer
-        border transition-[border-color,box-shadow] duration-500 glass shimmer-border elevation-card
-        ${hovered
-          ? 'border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.4)]'
-          : 'border-white/[0.04] shadow-none'
-        }
-        ${item.span}
-      `}
-    >
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
-        style={{ background: spotlightBg, opacity: hovered ? 1 : 0 }}
-      />
-
-      {/* Top accent line */}
-      <div
-        className="absolute top-0 left-0 right-0 h-[2px] opacity-50"
-        style={{ background: `linear-gradient(90deg, hsla(${item.color}, 1), transparent)` }}
-      />
-
-      <div className="relative z-10 p-5 md:p-8 h-full flex flex-col">
-        <div className="flex justify-between items-start mb-6 gap-4">
-          <div>
-            <h3 className="font-jakarta font-semibold text-lg md:text-2xl text-foreground/80 dark:text-foreground tracking-tight leading-tight mb-2">
-              {item.degree}
-            </h3>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[12px] text-foreground/40 uppercase tracking-wider font-medium">
-                {item.institution}
-              </span>
-              <span className="text-foreground/20 text-xs">·</span>
-              <span className="font-mono text-[11px] text-foreground/40">
-                {item.period}
-              </span>
-            </div>
-          </div>
-          <Badge variant="premium" className="shrink-0 text-[10px] uppercase tracking-wider">
-            {item.status}
-          </Badge>
-        </div>
-
-        <p className="text-sm text-foreground/60 leading-relaxed mb-8 flex-grow">
-          {item.description}
-        </p>
-
-        <div className="flex flex-wrap gap-2 mt-auto">
-          {item.highlights.map(highlight => (
-            <span
-              key={highlight}
-              className="font-mono text-[10px] uppercase tracking-widest text-foreground/50 border border-white/10 rounded-full px-3 py-1.5 bg-white/5"
-            >
-              {highlight}
-            </span>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  );
+  },
 };
+
+const HIGHLIGHT_ICONS = [Award, Sparkles];
+
+// Quiet stars drifting in the card — echo of the Hero night sky
+const STARS = [
+  { x: '12%', y: '18%', size: 2, delay: 0, duration: 6 },
+  { x: '86%', y: '26%', size: 1.5, delay: 1.4, duration: 7.5 },
+  { x: '72%', y: '12%', size: 2.5, delay: 2.6, duration: 5.5 },
+  { x: '24%', y: '78%', size: 1.5, delay: 0.9, duration: 6.8 },
+];
 
 // ─── Main Section ─────────────────────────────────────────────────────────────
 
 const Education = () => {
-  const sectionRef = useRef<HTMLElement>(null);
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
   return (
     <section
       id="education"
-      ref={sectionRef}
-      className="relative py-14 md:py-20 overflow-hidden"
-      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 600px' }}
+      className="relative py-14 md:py-24 overflow-hidden"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '0 560px' }}
     >
-      {/* Parallax Overlay */}
+      {/* First light — slow breathing warmth, mirroring the Hero's lantern glow */}
       <motion.div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-[40%] h-[420px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[110px]"
         style={{
-          position: 'absolute',
-          inset: 0,
-          pointerEvents: 'none',
-          transform: `translateY(${useTransform(useScroll({ target: sectionRef, offset: ['start center', 'end center'] }).scrollY, [0, 1], [100, -100])}px)`
+          background: isDark
+            ? 'radial-gradient(ellipse at center, rgba(255,178,102,0.10) 0%, rgba(124,92,252,0.05) 45%, transparent 70%)'
+            : 'radial-gradient(ellipse at center, rgba(184,120,60,0.10) 0%, rgba(184,120,60,0.03) 45%, transparent 70%)',
         }}
-      >
-        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[80px]" />
-      </motion.div>
+        animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.05, 1] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-3xl px-6 lg:px-8">
 
-        {/* Header */}
+        {/* ── Centered header ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.55 }}
-          className="mb-12 md:mb-16"
+          className="mb-10 text-center md:mb-14"
         >
           <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
             Academic{' '}
@@ -162,18 +70,130 @@ const Education = () => {
               Foundation
             </span>
           </h2>
-          <p className="text-sm text-foreground/40 leading-relaxed max-w-[400px]">
-            Cultivating the theoretical roots of engineering excellence through rigorous academic study and applied computer science.
+          <p className="mx-auto max-w-[420px] text-sm text-foreground/40 leading-relaxed">
+            Where the journey began — the academic roots that shaped how I build systems today.
           </p>
         </motion.div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {educationData.map((item, index) => (
-            <BentoCard key={index} item={item} index={index} />
-          ))}
-        </div>
+        {/* ── Degree card ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="relative overflow-hidden rounded-2xl border border-black/[0.06] dark:border-white/[0.06] bg-black/[0.02] dark:bg-white/[0.02] backdrop-blur-sm p-10 md:p-16"
+        >
+          {/* Horizon wash at the base of the card */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-44"
+            style={{
+              background: isDark
+                ? 'linear-gradient(to top, rgba(255,178,102,0.05), transparent)'
+                : 'linear-gradient(to top, rgba(184,120,60,0.06), transparent)',
+            }}
+          />
 
+          {/* Quiet stars (dark only) */}
+          {isDark &&
+            STARS.map((star, i) => (
+              <motion.span
+                key={i}
+                aria-hidden
+                className="pointer-events-none absolute rounded-full bg-white"
+                style={{ left: star.x, top: star.y, width: star.size, height: star.size }}
+                animate={{ opacity: [0.12, 0.5, 0.12] }}
+                transition={{ duration: star.duration, delay: star.delay, repeat: Infinity, ease: 'easeInOut' }}
+              />
+            ))}
+
+          <div className="relative z-10 flex flex-col items-center text-center">
+            {/* Icon with breathing halo */}
+            <div className="relative mb-7">
+              <motion.div
+                aria-hidden
+                className="absolute -inset-3.5 rounded-full blur-md"
+                style={{
+                  background: isDark
+                    ? 'radial-gradient(circle, rgba(255,190,110,0.22), transparent 70%)'
+                    : 'radial-gradient(circle, rgba(184,120,60,0.16), transparent 70%)',
+                }}
+                animate={{ opacity: [0.45, 1, 0.45], scale: [0.94, 1.07, 0.94] }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-black/[0.08] dark:border-white/[0.08] bg-background/60 dark:bg-white/[0.03]">
+                <GraduationCap strokeWidth={1.5} className="h-5 w-5 text-foreground/70" />
+              </div>
+            </div>
+
+            {/* Institution */}
+            <span className="mb-4 font-mono text-[10px] uppercase tracking-[0.25em] text-[#B8783C] dark:text-[#F5B86B]/80">
+              {degree.institution}
+            </span>
+
+            {/* Degree title */}
+            <h3 className="font-jakarta font-semibold text-xl md:text-[26px] text-foreground tracking-tight leading-[1.25] max-w-[400px]">
+              {degree.title}
+            </h3>
+
+            {/* Hairline divider with a single diamond */}
+            <div className="my-6 flex w-full max-w-[240px] items-center gap-3">
+              <span className="h-px flex-1 bg-gradient-to-r from-transparent to-black/[0.12] dark:to-white/[0.12]" />
+              <span className="text-[8px] text-[#d60d86]">◆</span>
+              <span className="h-px flex-1 bg-gradient-to-l from-transparent to-black/[0.12] dark:to-white/[0.12]" />
+            </div>
+
+            {/* Meta row */}
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-mono text-[11px] text-foreground/45">
+              <span>{degree.period}</span>
+              <span className="text-foreground/20">·</span>
+              <span className="inline-flex items-center gap-1.5 text-emerald-600/80 dark:text-emerald-400/80">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                </span>
+                {degree.status}
+              </span>
+            </div>
+
+            {/* Description */}
+            <p className="mx-auto mt-7 max-w-[46ch] text-sm leading-[1.9] text-foreground/55">
+              {degree.description}
+            </p>
+
+            {/* Highlights */}
+            <div className="mt-8 flex flex-wrap justify-center gap-2">
+              {degree.highlights.map((highlight, i) => {
+                const Icon = HIGHLIGHT_ICONS[i] ?? Award;
+                return (
+                  <motion.span
+                    key={highlight}
+                    initial={{ opacity: 0, y: 8 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.45, delay: 0.25 + i * 0.1 }}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] dark:border-white/[0.08] px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-foreground/50"
+                  >
+                    <Icon strokeWidth={1.5} className="h-3 w-3 text-foreground/40" />
+                    {highlight}
+                  </motion.span>
+                );
+              })}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── Earlier credential — quiet footnote ── */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-8 text-center font-mono text-[11px] text-foreground/35"
+        >
+          Earlier — {degree.earlier.title} · {degree.earlier.institution} ·{' '}
+          {degree.earlier.period}
+        </motion.p>
       </div>
     </section>
   );

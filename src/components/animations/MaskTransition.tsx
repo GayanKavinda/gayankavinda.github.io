@@ -169,7 +169,7 @@ function ScrollDriver({
 }: {
   containerRef: React.RefObject<HTMLDivElement>;
   sceneState: SceneState;
-  timelineRef: React.MutableRefObject<anime.AnimeTimelineInstance | null>;
+  timelineRef: React.MutableRefObject<ReturnType<typeof buildScrollTimeline> | null>;
   chapterRefs: React.MutableRefObject<
     Partial<Record<"ch1" | "ch2" | "ch3", { el: HTMLDivElement }>>
   >;
@@ -275,7 +275,9 @@ function ShrineScene({
       alternate: true,
       loop: true,
     });
-    return () => idle.pause();
+    return () => {
+      idle.pause();
+    };
   }, [idleState]);
 
   useEffect(() => {
@@ -289,7 +291,9 @@ function ShrineScene({
       alternate: true,
       loop: true,
     });
-    return () => glow.pause();
+    return () => {
+      glow.pause();
+    };
   }, [glowState]);
 
   useEffect(() => {

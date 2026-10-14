@@ -23,8 +23,8 @@ export const CacheConsent = () => {
   });
 
   const { theme } = useTheme();
-  // Using direct theme check for zero-latency detection
-  const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  // The provider already resolves the OS preference into 'dark' | 'light' at init
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     const saved = localStorage.getItem('gara-yaka-consent');
