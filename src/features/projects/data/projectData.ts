@@ -115,7 +115,7 @@ export const allProjects: Project[] = [
     desc: 'Scalable chat infrastructure handling 10K concurrent users with end-to-end encryption.',
     tags: ['Node.js', 'WebSocket', 'Redis'],
     cat: 'Web',
-    gradient: 'dark:from-blue-900/40 from-blue-100 dark:via-cyan-900/25 via-cyan-50',
+    gradient: 'dark:from-blue-900/40 from-blue-100 dark:via-cyan-900/25 via-blue-50',
     accentColor: '217',
     metrics: ['10K concurrent'],
     viz: 'stream',

@@ -209,89 +209,143 @@ function SocialCard() {
   );
 }
 
-function SpotifyCard() {
+declare global {
+  interface Window {
+    onYouTubeIframeAPIReady?: () => void;
+    YT?: any;
+  }
+}
+
+function YouTubeMusicCard() {
   const [trackIndex, setTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progressSec, setProgressSec] = useState(0);
-  const [durationSec, setDurationSec] = useState(30);
-  const [volume, setVolume] = useState(0.7);
+  const [durationSec, setDurationSec] = useState(200);
+  const [volume, setVolume] = useState(70);
   const [isMuted, setIsMuted] = useState(false);
   const [showVolume, setShowVolume] = useState(false);
+  const [playerReady, setPlayerReady] = useState(false);
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const playerRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const track = FEATURED_TRACKS[trackIndex] || FEATURED_TRACKS[0];
 
-  // Initialize or change audio element source
+  // Load YouTube Iframe API once
   useEffect(() => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio();
+    if (!window.YT) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
     }
-    const audio = audioRef.current;
-    audio.volume = isMuted ? 0 : volume;
 
-    if (track.previewUrl) {
-      audio.src = track.previewUrl;
-      audio.load();
-      if (isPlaying) {
-        audio.play().catch(() => setIsPlaying(false));
-      }
+    const initPlayer = () => {
+      if (!window.YT || !window.YT.Player || playerRef.current) return;
+      playerRef.current = new window.YT.Player('yt-audio-player', {
+        height: '0',
+        width: '0',
+        videoId: track.ytId,
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          rel: 0,
+          modestbranding: 1,
+          playsinline: 1,
+        },
+        events: {
+          onReady: (event: any) => {
+            setPlayerReady(true);
+            event.target.setVolume(isMuted ? 0 : volume);
+          },
+          onStateChange: (event: any) => {
+            // YT.PlayerState: 1 = PLAYING, 2 = PAUSED, 0 = ENDED
+            if (event.data === 1) {
+              setIsPlaying(true);
+              const dur = event.target.getDuration();
+              if (dur && !isNaN(dur)) setDurationSec(dur);
+            } else if (event.data === 2) {
+              setIsPlaying(false);
+            } else if (event.data === 0) {
+              // Auto-advance on track completion
+              setTrackIndex((prev) => (prev + 1) % FEATURED_TRACKS.length);
+            }
+          },
+        },
+      });
+    };
+
+    if (window.YT && window.YT.Player) {
+      initPlayer();
     } else {
-      audio.pause();
+      window.onYouTubeIframeAPIReady = initPlayer;
     }
-
-    const onTimeUpdate = () => {
-      setProgressSec(audio.currentTime);
-      if (audio.duration && !isNaN(audio.duration)) {
-        setDurationSec(audio.duration);
-      }
-    };
-
-    const onEnded = () => {
-      // Auto-advance to next track
-      setTrackIndex((prev) => (prev + 1) % FEATURED_TRACKS.length);
-    };
-
-    audio.addEventListener('timeupdate', onTimeUpdate);
-    audio.addEventListener('ended', onEnded);
 
     return () => {
-      audio.removeEventListener('timeupdate', onTimeUpdate);
-      audio.removeEventListener('ended', onEnded);
-    };
-  }, [trackIndex, track.previewUrl]);
-
-  // Handle play / pause state changes
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isPlaying) {
-      if (track.previewUrl) {
-        audio.play().catch(() => setIsPlaying(false));
+      if (playerRef.current && playerRef.current.destroy) {
+        try {
+          playerRef.current.destroy();
+          playerRef.current = null;
+        } catch (e) {}
       }
-    } else {
-      audio.pause();
-    }
-  }, [isPlaying, track.previewUrl]);
+    };
+  }, []);
 
-  // Handle volume changes
+  // When track index changes, load the new YouTube video ID
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = isMuted ? 0 : volume;
+    if (playerRef.current && playerRef.current.loadVideoById) {
+      playerRef.current.loadVideoById(track.ytId);
+      if (!isPlaying) {
+        playerRef.current.pauseVideo();
+      }
+      setProgressSec(0);
+      setDurationSec(track.durationSec);
     }
-  }, [volume, isMuted]);
+  }, [trackIndex, track.ytId]);
+
+  // Polling for progress time
+  useEffect(() => {
+    if (!isPlaying) return;
+    const interval = setInterval(() => {
+      if (playerRef.current && playerRef.current.getCurrentTime) {
+        const cur = playerRef.current.getCurrentTime();
+        if (typeof cur === 'number') {
+          setProgressSec(cur);
+        }
+        const dur = playerRef.current.getDuration();
+        if (dur && !isNaN(dur) && dur > 0) {
+          setDurationSec(dur);
+        }
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
+  // Handle play / pause toggle
+  const togglePlay = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!playerRef.current) return;
+    if (isPlaying) {
+      playerRef.current.pauseVideo();
+      setIsPlaying(false);
+    } else {
+      playerRef.current.playVideo();
+      setIsPlaying(true);
+    }
+  };
 
   const handleNextTrack = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     setTrackIndex((prev) => (prev + 1) % FEATURED_TRACKS.length);
-    setProgressSec(0);
   };
 
   const handlePrevTrack = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     setTrackIndex((prev) => (prev - 1 + FEATURED_TRACKS.length) % FEATURED_TRACKS.length);
-    setProgressSec(0);
   };
 
   const handleShuffle = (e: React.MouseEvent) => {
@@ -299,19 +353,30 @@ function SpotifyCard() {
     e.preventDefault();
     const nextIdx = Math.floor(Math.random() * FEATURED_TRACKS.length);
     setTrackIndex(nextIdx);
-    setProgressSec(0);
-  };
-
-  const togglePlay = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setIsPlaying((prev) => !prev);
   };
 
   const toggleMute = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    setIsMuted((prev) => !prev);
+    const newMuted = !isMuted;
+    setIsMuted(newMuted);
+    if (playerRef.current) {
+      if (newMuted) {
+        playerRef.current.mute();
+      } else {
+        playerRef.current.unMute();
+        playerRef.current.setVolume(volume);
+      }
+    }
+  };
+
+  const handleVolumeChange = (newVol: number) => {
+    setVolume(newVol);
+    if (isMuted) setIsMuted(false);
+    if (playerRef.current) {
+      playerRef.current.unMute();
+      playerRef.current.setVolume(newVol);
+    }
   };
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -319,8 +384,8 @@ function SpotifyCard() {
     const clickX = e.clientX - rect.left;
     const ratio = Math.max(0, Math.min(1, clickX / rect.width));
     const targetTime = ratio * durationSec;
-    if (audioRef.current && track.previewUrl) {
-      audioRef.current.currentTime = targetTime;
+    if (playerRef.current && playerRef.current.seekTo) {
+      playerRef.current.seekTo(targetTime, true);
     }
     setProgressSec(targetTime);
   };
@@ -331,11 +396,15 @@ function SpotifyCard() {
     return `${mins}:${s < 10 ? '0' : ''}${s}`;
   };
 
-  const displayDuration = track.previewUrl ? durationSec : track.durationSec;
-  const progressPercent = Math.min(100, (progressSec / (displayDuration || 1)) * 100);
+  const progressPercent = Math.min(100, (progressSec / (durationSec || 1)) * 100);
 
   return (
     <div className={`${card} overflow-hidden group`} style={{ padding: 0 }}>
+      {/* Hidden YouTube Iframe Audio Host */}
+      <div style={{ position: 'absolute', top: -9999, left: -9999, pointerEvents: 'none' }}>
+        <div id="yt-audio-player" />
+      </div>
+
       {/* Blurred album-art background with smooth transition */}
       <div
         aria-hidden
@@ -353,12 +422,12 @@ function SpotifyCard() {
           <div className="flex items-center gap-1.5">
             <span className="relative flex h-2 w-2">
               {isPlaying && (
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1DB954] opacity-75" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF0000] opacity-75" />
               )}
-              <span className={`relative inline-flex rounded-full h-2 w-2 ${isPlaying ? 'bg-[#1DB954]' : 'bg-slate-400'}`} />
+              <span className={`relative inline-flex rounded-full h-2 w-2 ${isPlaying ? 'bg-[#FF0000]' : 'bg-slate-400'}`} />
             </span>
             <span className="text-[10px] uppercase tracking-[0.16em] text-white/60">
-              {isPlaying ? 'Now Playing' : 'Paused'}
+              {isPlaying ? 'Now Playing (Full Song)' : 'Paused'}
             </span>
             <span className="text-[9.5px] text-white/40 ml-1">
               ({trackIndex + 1}/{FEATURED_TRACKS.length})
@@ -389,30 +458,28 @@ function SpotifyCard() {
                 <input
                   type="range"
                   min="0"
-                  max="1"
-                  step="0.05"
+                  max="100"
+                  step="2"
                   value={isMuted ? 0 : volume}
-                  onChange={(e) => {
-                    setVolume(parseFloat(e.target.value));
-                    if (isMuted) setIsMuted(false);
-                  }}
-                  className="w-18 h-1 accent-[#1DB954] cursor-pointer bg-white/20 rounded-lg"
+                  onChange={(e) => handleVolumeChange(parseInt(e.target.value, 10))}
+                  className="w-18 h-1 accent-[#FF0000] cursor-pointer bg-white/20 rounded-lg"
                   aria-label="Volume slider"
                 />
               </div>
             </div>
 
             <a
-              href={track.spotifyUrl}
+              href={track.ytMusicUrl}
               target="_blank"
               rel="noopener noreferrer"
-              title="Open on Spotify"
+              title="Open on YouTube Music"
               className="flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 backdrop-blur-md transition-all hover:bg-white/20 hover:scale-105"
             >
-              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="#1DB954">
-                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+              {/* YouTube Music Red Logo */}
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="#FF0000">
+                <path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7zm-2-10.5v7l6-3.5-6-3.5z" />
               </svg>
-              <span className="text-[10px] font-medium text-white/90">Spotify</span>
+              <span className="text-[10px] font-medium text-white/90">YT Music</span>
             </a>
           </div>
         </div>
@@ -420,7 +487,7 @@ function SpotifyCard() {
         {/* Track info and real album cover */}
         <div className="mt-4 flex items-center gap-3.5">
           <a
-            href={track.spotifyUrl}
+            href={track.ytMusicUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="group/cover relative h-12 w-12 shrink-0 rounded-lg overflow-hidden shadow-xl ring-1 ring-white/15 transition-transform duration-300 hover:scale-105"
@@ -437,7 +504,7 @@ function SpotifyCard() {
 
           <div className="min-w-0 flex-1">
             <a
-              href={track.spotifyUrl}
+              href={track.ytMusicUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="block truncate text-[13px] font-medium text-white hover:underline leading-tight"
@@ -466,7 +533,7 @@ function SpotifyCard() {
             </button>
             <button
               onClick={togglePlay}
-              className="h-8 w-8 rounded-full flex items-center justify-center bg-[#1DB954] hover:bg-[#1ed760] text-black shadow-lg shadow-[#1DB954]/30 transition-all active:scale-95"
+              className="h-8 w-8 rounded-full flex items-center justify-center bg-[#FF0000] hover:bg-[#ff3333] text-white shadow-lg shadow-[#FF0000]/30 transition-all active:scale-95"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" className="ml-0.5" />}
@@ -490,10 +557,10 @@ function SpotifyCard() {
             title="Click to seek"
           >
             <div
-              className="h-full rounded-full bg-[#1DB954] group-hover/seek:bg-[#1ed760] transition-all duration-150"
+              className="h-full rounded-full bg-[#FF0000] group-hover/seek:bg-[#ff3333] transition-all duration-150"
               style={{
                 width: `${progressPercent}%`,
-                boxShadow: '0 0 10px rgba(29,185,84,0.8)',
+                boxShadow: '0 0 10px rgba(255,0,0,0.8)',
               }}
             />
             <div
@@ -506,13 +573,13 @@ function SpotifyCard() {
             <div className="flex items-center gap-1">
               {isPlaying && (
                 <div className="flex items-end gap-0.5 h-2.5">
-                  <span className="w-0.5 bg-[#1DB954] rounded-full animate-[pulse_0.8s_ease-in-out_infinite] h-2" />
-                  <span className="w-0.5 bg-[#1DB954] rounded-full animate-[pulse_0.6s_ease-in-out_infinite] h-3" />
-                  <span className="w-0.5 bg-[#1DB954] rounded-full animate-[pulse_1s_ease-in-out_infinite] h-1.5" />
+                  <span className="w-0.5 bg-[#FF0000] rounded-full animate-[pulse_0.8s_ease-in-out_infinite] h-2" />
+                  <span className="w-0.5 bg-[#FF0000] rounded-full animate-[pulse_0.6s_ease-in-out_infinite] h-3" />
+                  <span className="w-0.5 bg-[#FF0000] rounded-full animate-[pulse_1s_ease-in-out_infinite] h-1.5" />
                 </div>
               )}
             </div>
-            <span>{formatTime(displayDuration)}</span>
+            <span>{formatTime(durationSec)}</span>
           </div>
         </div>
       </div>
@@ -587,7 +654,7 @@ const About = () => {
           <EducationCard />
           <LocationCard />
           <SocialCard />
-          <SpotifyCard />
+          <YouTubeMusicCard />
           <div className="md:col-span-3"><ArsenalCard /></div>
         </div>
       </div>
