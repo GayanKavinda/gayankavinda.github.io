@@ -217,7 +217,7 @@ const Hero = () => {
           LAYER 1: Background
           ═══════════════════════════════════════════════════════════ */}
       <motion.div 
-        className="absolute inset-0 -z-30"
+        className="absolute -top-[15%] left-0 right-0 bottom-0 -z-30"
         style={{ y: bgY, scale: bgScale, willChange: 'transform' }}
       >
         <motion.img

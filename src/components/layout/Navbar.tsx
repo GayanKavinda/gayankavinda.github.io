@@ -3,33 +3,21 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
 
-// Thumbnails
-import projectsThumbDark from '@/assets/images/selected-projects/gojo-dark-left.webp';
-import projectsThumbLight from '@/assets/images/selected-projects/gojo-white-left.webp';
-import experienceThumbDark from '@/assets/images/experience/yuta-dark.webp';
-import experienceThumbLight from '@/assets/images/experience/yuta-white.webp';
-import aboutThumbDark from '@/assets/images/about/nobara-dark-right_side.webp';
-import aboutThumbLight from '@/assets/images/about/nobara-white-right_side.webp';
-import contactThumbDark from '@/assets/images/contact/Yuji_Itadori_dark.webp';
-import contactThumbLight from '@/assets/images/contact/Yuji_Itadori_white.webp';
-
 // Logo
 import logoMask from '@/assets/images/mask.png';
 
-type Section = {
+interface NavItem {
   id: string;
   label: string;
-  thumb: { dark: string; light: string };
-};
+}
 
-const sections: Section[] = [
-  { id: 'projects', label: 'Projects', thumb: { dark: projectsThumbDark, light: projectsThumbLight } },
-  { id: 'experience', label: 'Experience', thumb: { dark: experienceThumbDark, light: experienceThumbLight } },
-  { id: 'about', label: 'About', thumb: { dark: aboutThumbDark, light: aboutThumbLight } },
-  { id: 'contact', label: 'Contact', thumb: { dark: contactThumbDark, light: contactThumbLight } },
+const navItems: NavItem[] = [
+  { id: 'home', label: 'Home' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'about', label: 'About' },
+  { id: 'contact', label: 'Contact' },
 ];
-
-const noiseSvg = `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E")`;
 
 // ─── Icons ─────────────────────────────────────────────
 
@@ -59,14 +47,6 @@ const DownloadIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const MenuIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
-  <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <line x1="4" y1="6" x2="20" y2="6" />
-    <line x1="4" y1="12" x2="20" y2="12" />
-    <line x1="4" y1="18" x2="20" y2="18" />
-  </svg>
-);
-
 const SunIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="4" />
@@ -80,29 +60,37 @@ const MoonIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-// ─── Custom Theme Toggle ───────────────────────────────
+// ─── Theme Toggle Button ───────────────────────────────
 
-function ThemeSwitch({ isDark, onToggle }: { isDark: boolean; onToggle: () => void }) {
+function ThemeButton({ isDark, onToggle }: { isDark: boolean; onToggle: () => void }) {
   return (
     <motion.button
       onClick={onToggle}
-      whileHover={{ scale: 1.05 }}
+      whileHover={{ scale: 1.08 }}
       whileTap={{ scale: 0.92 }}
       aria-label="Toggle theme"
-      className="relative w-[52px] h-[28px] rounded-full flex items-center px-[3px] shrink-0"
+      className="relative w-8 h-8 rounded-full flex items-center justify-center transition-all overflow-hidden"
       style={{
-        background: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff',
-        border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)'}`,
-        boxShadow: isDark ? 'none' : '0 2px 6px rgba(0,0,0,0.06)',
+        background: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(241, 245, 249, 0.9)',
+        border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(15, 23, 42, 0.08)'}`,
+        boxShadow: isDark
+          ? 'none'
+          : '0 1px 3px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
       }}
     >
       <motion.div
-        className="absolute w-[20px] h-[20px] rounded-full flex items-center justify-center"
-        style={{ background: 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)))' }}
-        animate={{ x: isDark ? 24 : 0 }}
-        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        key={isDark ? 'dark' : 'light'}
+        initial={{ rotate: -90, scale: 0.6, opacity: 0 }}
+        animate={{ rotate: 0, scale: 1, opacity: 1 }}
+        exit={{ rotate: 90, scale: 0.6, opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        className="flex items-center justify-center"
       >
-        {isDark ? <MoonIcon className="w-3 h-3 text-white" /> : <SunIcon className="w-3 h-3 text-white" />}
+        {isDark ? (
+          <MoonIcon className="w-3.5 h-3.5 text-amber-300" />
+        ) : (
+          <SunIcon className="w-3.5 h-3.5 text-amber-500" />
+        )}
       </motion.div>
     </motion.button>
   );
@@ -111,8 +99,9 @@ function ThemeSwitch({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
 // ─── Main Component ────────────────────────────────────
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeId, setActiveId] = useState<string>('home');
+  const [hoveredTab, setHoveredTab] = useState<string | null>(null);
 
   const { theme, setTheme } = useTheme();
   const isDark = theme === 'dark';
@@ -123,15 +112,42 @@ export default function Navbar() {
     setTheme(isDark ? 'light' : 'dark');
   }, [isDark, setTheme]);
 
+  // Track active section on scroll
   useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setIsOpen(false);
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [isOpen]);
+    if (location.pathname !== '/') return;
+
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + 200;
+      const sectionElements = navItems
+        .filter((item) => item.id !== 'home')
+        .map((item) => ({
+          id: item.id,
+          el: document.getElementById(item.id),
+        }))
+        .filter((item): item is { id: string; el: HTMLElement } => item.el !== null);
+
+      if (window.scrollY < 300) {
+        setActiveId('home');
+        return;
+      }
+
+      for (let i = sectionElements.length - 1; i >= 0; i--) {
+        const item = sectionElements[i];
+        if (item.el.offsetTop <= scrollPos) {
+          setActiveId(item.id);
+          return;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [location.pathname]);
 
   const go = (id: string) => {
-    setIsOpen(false);
+    setMobileMenuOpen(false);
+    setActiveId(id);
     if (id === 'home') {
       if (location.pathname !== '/') navigate('/');
       else window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -148,322 +164,279 @@ export default function Navbar() {
     }
   };
 
-  // ─── Theme Tokens ─────────────────────────────────
-  const triggerBg = isDark ? '#09090b' : '#ffffff';
-  const triggerBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)';
-  const triggerShadow = isDark ? '0 4px 24px rgba(0,0,0,0.4)' : '0 4px 24px rgba(0,0,0,0.08)';
-  const triggerText = isDark ? '#ffffff' : '#1f2937';
-  const triggerIcon = isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)';
-
-  const panelBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.15)';
-  const panelShadow = isDark
-    ? '0 20px 40px -12px rgba(0,0,0,0.5), 0 0 40px rgba(0,0,0,0.3)'
-    : '0 20px 40px -12px rgba(0,0,0,0.08), 0 0 40px rgba(0,0,0,0.06)';
-  const glow = isDark
-    ? 'radial-gradient(circle at 50% -30%, hsl(var(--primary) / 0.35), hsl(var(--primary) / 0.12), transparent 70%)'
-    : 'radial-gradient(circle at 50% -30%, hsl(var(--primary) / 0.18), hsl(var(--primary) / 0.05), transparent 70%)';
-  const topLine = 'linear-gradient(90deg, transparent, hsl(var(--primary) / 0.4), hsl(var(--secondary) / 0.3), transparent)';
-  const divider = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)';
-
-  const btnBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
-  const btnBorder = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
-
-  const iconMuted = isDark ? 'rgba(255,255,255,0.5)' : '#6b7280';
-  const iconHover = isDark ? '#ffffff' : '#111827';
-  const textPrimary = isDark ? '#ffffff' : '#111827';
-
-  const logoBg = isDark ? '#1a1a1a' : '#f5f5f5';
-  const logoBorder = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.15)';
-
-  const closeBtnIcon = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
-  const closeBtnHover = isDark ? '#ffffff' : '#000000';
-
-  const cardBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.12)';
-  const cardBorderHover = 'hsl(var(--primary) / 0.55)';
-  const cardGlow = 'hsl(var(--primary) / 0.16)';
-
-  const resumeGradient = 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%)';
-
   const socials = [
     { icon: GithubIcon, href: 'https://github.com', label: 'GitHub' },
     { icon: LinkedinIcon, href: 'https://linkedin.com', label: 'LinkedIn' },
     { icon: TwitterIcon, href: 'https://twitter.com', label: 'Twitter' },
   ];
 
+  // Island container styles (Enhanced for clean contrast and glass depth)
+  const islandBg = isDark
+    ? 'rgba(13, 14, 20, 0.75)'
+    : 'rgba(255, 255, 255, 0.88)';
+  const islandBorder = isDark
+    ? 'rgba(255, 255, 255, 0.12)'
+    : 'rgba(15, 23, 42, 0.09)';
+  const islandShadow = isDark
+    ? '0 16px 40px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.12)'
+    : '0 12px 32px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04), inset 0 1px 0 #ffffff';
+
+  const textActive = isDark ? '#ffffff' : '#0f172a';
+  const textMuted = isDark ? 'rgba(255, 255, 255, 0.65)' : '#64748b';
+  const dividerColor = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(15, 23, 42, 0.1)';
+
   return (
     <>
-      <div
-        className="fixed z-[999] top-4 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none"
+      <nav
+        aria-label="Main Navigation"
+        className="fixed z-[999] top-3.5 sm:top-5 left-1/2 -translate-x-1/2 flex items-center justify-center max-w-[96vw]"
         style={{ fontFamily: '"NotoSans_SemiCondensed-Medium", sans-serif' }}
       >
-        <AnimatePresence mode="wait">
-          {!isOpen ? (
-            <motion.div
-              key="trigger"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6, transition: { duration: 0.12 } }}
-              transition={{ duration: 0.2 }}
-              className="pointer-events-auto flex items-center gap-1.5 sm:gap-2 max-w-[94vw] px-1"
+        {/* Unified Floating Island */}
+        <div
+          className="relative flex items-center gap-1 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-full backdrop-blur-2xl transition-all duration-300"
+          style={{
+            background: islandBg,
+            border: `1px solid ${islandBorder}`,
+            boxShadow: islandShadow,
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+          }}
+        >
+          {/* Brand Logo & Name */}
+          <button
+            onClick={() => go('home')}
+            className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full group outline-none"
+            aria-label="Go to home"
+          >
+            <div
+              className="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-105"
+              style={{
+                background: isDark ? 'rgba(255, 255, 255, 0.08)' : '#f1f5f9',
+                border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(15, 23, 42, 0.08)'}`,
+                boxShadow: isDark ? 'none' : '0 1px 2px rgba(0,0,0,0.05)',
+              }}
             >
-              <ThemeSwitch isDark={isDark} onToggle={toggleTheme} />
-
-              <motion.button
-                onClick={() => setIsOpen(true)}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                transition={{ type: 'spring', stiffness: 500, damping: 25, mass: 0.5 }}
-                className="relative"
-              >
-                <div
-  className="relative flex items-center justify-between w-[130px] sm:w-[170px] px-2.5 sm:px-3.5 py-2 rounded-2xl"
-  style={{ background: triggerBg, border: `1px solid ${triggerBorder}`, boxShadow: triggerShadow }}
->
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-6 h-6 rounded-md flex items-center justify-center overflow-hidden"
-                      style={{ background: logoBg }}
-                    >
-                      <img src={logoMask} alt="Logo" className="w-full h-full object-cover" />
-                    </div>
-                    <span className="hidden xs:inline text-[12px] font-semibold tracking-tight truncate" style={{ color: triggerText }}>
-      Gara Yaka
-    </span>
-                  </div>
-                  <MenuIcon className="w-3.5 h-3.5" style={{ color: triggerIcon }} />
-                </div>
-              </motion.button>
-
-              <div
-                className="hidden sm:flex items-center gap-0.5 px-1.5 py-1.5 rounded-2xl"
-                style={{ background: triggerBg, border: `1px solid ${triggerBorder}`, boxShadow: triggerShadow }}
-              >
-                {socials.map((social) => (
-                  <motion.a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.92 }}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center"
-                    style={{ color: iconMuted }}
-                    onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = iconHover)}
-                    onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = iconMuted)}
-                    aria-label={social.label}
-                  >
-                    <social.icon className="w-3.5 h-3.5" />
-                  </motion.a>
-                ))}
-              </div>
-
-              <motion.button
-  onClick={() => window.open('/resume.pdf', '_blank')}
-  whileHover={{ scale: 1.03, y: -1 }}
-  whileTap={{ scale: 0.97 }}
-  className="flex items-center gap-1.5 px-2.5 sm:px-4 py-2 text-[11px] font-semibold tracking-wide uppercase"
-  style={{
-    background: resumeGradient,
-    clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
-    color: '#ffffff',
-    boxShadow: triggerShadow,
-  }}
->
-  <DownloadIcon className="w-3.5 h-3.5" />
-  <span className="hidden sm:inline">Resume</span>
-</motion.button>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="panel"
-              initial={{ opacity: 0, y: -8, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -8, scale: 0.97, transition: { duration: 0.12 } }}
-              transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-              className="pointer-events-auto relative w-[calc(100vw-2rem)] sm:w-auto"
+              <img src={logoMask} alt="Gara Yaka Logo" className="w-full h-full object-cover" />
+            </div>
+            <span
+              className="hidden md:inline text-[13px] font-bold tracking-tight"
+              style={{ color: textActive }}
             >
-              <div
-                className="absolute -inset-5 rounded-[3rem] opacity-60 pointer-events-none"
-                style={{ background: glow, filter: 'blur(20px)' }}
-              />
+              Gara Yaka
+            </span>
+          </button>
 
-              <div
-                className="relative rounded-2xl overflow-hidden backdrop-blur-2xl"
-                style={{
-                  background: isDark
-                    ? 'radial-gradient(ellipse 80% 60% at 50% 0%, hsl(var(--primary) / 0.22), transparent 70%), rgba(10, 10, 10, 0.65)'
-                    : 'radial-gradient(ellipse 80% 60% at 50% 0%, hsl(var(--primary) / 0.12), transparent 70%), rgba(255, 255, 255, 0.8)',
-                  border: `1px solid ${panelBorder}`,
-                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.15), ${panelShadow}`,
-                }}
-              >
-                <div className="absolute inset-0 opacity-70 mix-blend-overlay pointer-events-none" style={{ backgroundImage: noiseSvg }} />
-                <div className="absolute top-0 left-8 right-8 h-px" style={{ background: topLine }} />
+          {/* Desktop Nav Items */}
+          <div className="hidden lg:flex items-center gap-1 relative px-1">
+            {navItems.map((item) => {
+              const isActive = activeId === item.id;
+              const isHovered = hoveredTab === item.id;
 
-                <div className="relative p-4">
-                  <div className="flex items-center justify-between mb-3.5">
-                    <button onClick={() => go('home')} className="flex items-center gap-2 group">
-                      <div
-                        className="w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105"
-                        style={{ background: logoBg, border: `1px solid ${logoBorder}` }}
-                      >
-                        <img src={logoMask} alt="Logo" className="w-full h-full object-cover" />
-                      </div>
-                      <span className="text-[13px] font-semibold tracking-tight" style={{ color: textPrimary }}>
-                        Gara Yaka
-                      </span>
-                    </button>
-
-                    <motion.button
-                      onClick={() => setIsOpen(false)}
-                      whileHover={{ scale: 1.1, rotate: 90 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-                      style={{ background: btnBg, border: `1px solid ${btnBorder}`, color: closeBtnIcon }}
-                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = closeBtnHover)}
-                      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = closeBtnIcon)}
-                    >
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <path d="M18 6L6 18M6 6l12 12" />
-                      </svg>
-                    </motion.button>
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:flex sm:flex-nowrap justify-center gap-2.5">
-                    {sections.map((section, index) => (
-                      <NavCard
-                        key={section.id}
-                        section={section}
-                        index={index}
-                        isHovered={hoveredId === section.id}
-                        onHover={() => setHoveredId(section.id)}
-                        onLeave={() => setHoveredId(null)}
-                        onClick={() => go(section.id)}
-                        cardBorder={cardBorder}
-                        cardBorderHover={cardBorderHover}
-                        cardGlow={cardGlow}
-                      />
-                    ))}
-                  </div>
-
-                  <div className="mt-3.5 pt-3 flex items-center justify-center" style={{ borderTop: `1px solid ${divider}` }}>
-                    <motion.button
-                      onClick={() => {
-                        setIsOpen(false);
-                        window.open('/resume.pdf', '_blank');
-                      }}
-                      whileHover={{ y: -1, scale: 1.02 }}
-                      whileTap={{ scale: 0.97 }}
-                      className="flex items-center gap-1.5 px-4 py-2 text-[10px] font-semibold tracking-wide uppercase"
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => go(item.id)}
+                  onMouseEnter={() => setHoveredTab(item.id)}
+                  onMouseLeave={() => setHoveredTab(null)}
+                  className="relative px-3 py-1.5 text-[12px] font-semibold tracking-tight rounded-full transition-colors duration-200 outline-none"
+                  style={{
+                    color: isActive ? (isDark ? '#ffffff' : '#0f172a') : isHovered ? (isDark ? '#ffffff' : '#1e293b') : textMuted,
+                  }}
+                >
+                  {/* Floating active pill background */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="active-nav-pill"
+                      className="absolute inset-0 rounded-full"
                       style={{
-                        background: resumeGradient,
-                        clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
-                        color: '#ffffff',
-                        boxShadow: isDark ? '0 0 15px hsl(var(--primary) / 0.3)' : 'none',
+                        background: isDark
+                          ? 'rgba(255, 255, 255, 0.12)'
+                          : 'rgba(255, 255, 255, 0.95)',
+                        border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.18)' : 'rgba(15, 23, 42, 0.08)'}`,
+                        boxShadow: isDark
+                          ? '0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
+                          : '0 2px 8px -1px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04), inset 0 1px 0 #ffffff',
+                      }}
+                      transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                    />
+                  )}
+
+                  {/* Hover preview indicator */}
+                  {!isActive && isHovered && (
+                    <motion.div
+                      layoutId="hover-nav-pill"
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        background: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(15, 23, 42, 0.04)',
+                      }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                    />
+                  )}
+
+                  <span className="relative z-10">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Divider */}
+          <div className="hidden sm:block w-px h-4 mx-0.5" style={{ background: dividerColor }} />
+
+          {/* Social Links */}
+          <div className="hidden sm:flex items-center gap-0.5">
+            {socials.map((social) => (
+              <motion.a
+                key={social.label}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ y: -1.5, scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                className="w-7 h-7 rounded-full flex items-center justify-center transition-colors"
+                style={{ color: textMuted }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = textActive)}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = textMuted)}
+                aria-label={social.label}
+              >
+                <social.icon className="w-3.5 h-3.5" />
+              </motion.a>
+            ))}
+          </div>
+
+          {/* Divider */}
+          <div className="w-px h-4 mx-0.5" style={{ background: dividerColor }} />
+
+          {/* Theme Toggle Button */}
+          <ThemeButton isDark={isDark} onToggle={toggleTheme} />
+
+          {/* Resume CTA Button */}
+          <motion.button
+            onClick={() => window.open('/resume.pdf', '_blank')}
+            whileHover={{ scale: 1.04, y: -0.5 }}
+            whileTap={{ scale: 0.96 }}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold tracking-wide uppercase rounded-full transition-shadow duration-200"
+            style={{
+              background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%)',
+              color: '#ffffff',
+              boxShadow: isDark
+                ? '0 3px 14px hsl(var(--primary) / 0.4), inset 0 1px 0 rgba(255,255,255,0.3)'
+                : '0 3px 12px hsl(var(--primary) / 0.3), inset 0 1px 0 rgba(255,255,255,0.4)',
+            }}
+          >
+            <DownloadIcon className="w-3.5 h-3.5" />
+            <span className="hidden xs:inline">Resume</span>
+          </motion.button>
+
+          {/* Mobile Menu Toggle Button */}
+          <motion.button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+            className="lg:hidden w-8 h-8 rounded-full flex items-center justify-center transition-colors ml-0.5"
+            style={{
+              background: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.04)',
+              border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)'}`,
+              color: textActive,
+            }}
+            aria-label="Toggle Navigation Menu"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+              {mobileMenuOpen ? (
+                <path d="M18 6L6 18M6 6l12 12" />
+              ) : (
+                <>
+                  <line x1="4" y1="7" x2="20" y2="7" />
+                  <line x1="4" y1="12" x2="20" y2="12" />
+                  <line x1="4" y1="17" x2="20" y2="17" />
+                </>
+              )}
+            </svg>
+          </motion.button>
+        </div>
+
+        {/* Mobile Dropdown Menu (Clean, Modern Glass Sheet) */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.96 }}
+              transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute top-full mt-2.5 w-[240px] p-2 rounded-2xl backdrop-blur-2xl overflow-hidden"
+              style={{
+                background: isDark ? 'rgba(15, 16, 24, 0.88)' : 'rgba(255, 255, 255, 0.92)',
+                border: `1px solid ${islandBorder}`,
+                boxShadow: isDark
+                  ? '0 16px 40px -8px rgba(0, 0, 0, 0.7), 0 0 24px rgba(0, 0, 0, 0.4)'
+                  : '0 16px 40px -8px rgba(0, 0, 0, 0.12)',
+              }}
+            >
+              <div className="flex flex-col gap-1">
+                {navItems.map((item) => {
+                  const isActive = activeId === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => go(item.id)}
+                      className="flex items-center justify-between px-3.5 py-2 text-[12px] font-medium rounded-xl transition-all"
+                      style={{
+                        background: isActive
+                          ? isDark
+                            ? 'rgba(255, 255, 255, 0.1)'
+                            : 'rgba(0, 0, 0, 0.05)'
+                          : 'transparent',
+                        color: isActive ? textActive : textMuted,
                       }}
                     >
-                      <DownloadIcon className="w-3.5 h-3.5" />
-                      <span>Resume</span>
-                    </motion.button>
-                  </div>
+                      <span>{item.label}</span>
+                      {isActive && (
+                        <span
+                          className="w-1.5 h-1.5 rounded-full"
+                          style={{ background: 'hsl(var(--primary))' }}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+
+                {/* Mobile Socials Row */}
+                <div
+                  className="flex items-center justify-around pt-2 mt-1"
+                  style={{ borderTop: `1px solid ${dividerColor}` }}
+                >
+                  {socials.map((social) => (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+                      aria-label={social.label}
+                    >
+                      <social.icon className="w-4 h-4" />
+                    </a>
+                  ))}
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </nav>
 
+      {/* Backdrop for mobile drawer */}
       <AnimatePresence>
-        {isOpen && (
+        {mobileMenuOpen && (
           <motion.div
-            key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            onClick={() => setIsOpen(false)}
-            className="fixed inset-0 z-[998] backdrop-blur-sm"
+            onClick={() => setMobileMenuOpen(false)}
+            className="fixed inset-0 z-[998] bg-black/20 backdrop-blur-xs"
           />
         )}
       </AnimatePresence>
     </>
-  );
-}
-
-// ─── Navigation Card ───────────────────────────────────
-
-function NavCard({
-  section,
-  index,
-  isHovered,
-  onHover,
-  onLeave,
-  onClick,
-  cardBorder,
-  cardBorderHover,
-  cardGlow,
-}: {
-  section: Section;
-  index: number;
-  isHovered: boolean;
-  onHover: () => void;
-  onLeave: () => void;
-  onClick: () => void;
-  cardBorder: string;
-  cardBorderHover: string;
-  cardGlow: string;
-}) {
-  return (
-    <motion.button
-      onClick={onClick}
-      onMouseEnter={onHover}
-      onMouseLeave={onLeave}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0, transition: { delay: index * 0.03, duration: 0.25, ease: [0.16, 1, 0.3, 1] } }}
-      className="relative flex-shrink-0 w-full sm:w-[125px] group outline-none"
-    >
-      <div
-        className="relative rounded-xl overflow-hidden transition-all duration-300"
-        style={{
-          border: `1px solid ${isHovered ? cardBorderHover : cardBorder}`,
-          boxShadow: isHovered ? `0 10px 24px -8px ${cardGlow}, 0 0 14px ${cardGlow}` : '0 3px 10px rgba(0,0,0,0.15)',
-        }}
-      >
-        <div className="relative aspect-[16/10] overflow-hidden">
-          <motion.img
-            src={section.thumb.dark}
-            alt={section.label}
-            className="w-full h-full object-cover"
-            animate={{ scale: isHovered ? 1.06 : 1 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          />
-          <div
-            className="absolute inset-0"
-            style={{ background: 'linear-gradient(to top, rgba(10,5,30,0.92) 0%, rgba(10,5,30,0.4) 55%, transparent 100%)' }}
-          />
-          <div className="absolute bottom-0 left-0 right-0 p-2.5">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold tracking-[0.06em] uppercase text-white/90 font-mono">
-                {section.label}
-              </span>
-              <motion.svg
-                width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"
-                animate={{ x: isHovered ? 2 : 0, opacity: isHovered ? 1 : 0.3 }}
-                transition={{ duration: 0.15 }}
-              >
-                <path d="M7 17L17 7M17 7H7M17 7V17" />
-              </motion.svg>
-            </div>
-          </div>
-          <motion.div
-            className="absolute bottom-0 left-0 right-0 h-[2px]"
-            style={{ background: 'hsl(var(--primary))' }}
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: isHovered ? 1 : 0 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          />
-        </div>
-      </div>
-    </motion.button>
   );
 }

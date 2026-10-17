@@ -164,8 +164,8 @@ export function TiltedGridHero({
       const next = measure(width, height, tileHeight, aspectRatio, gap, bend);
       setLayout((prev) =>
         prev?.columns === next.columns &&
-        prev.sweep === next.sweep &&
-        prev.unit === next.unit
+          prev.sweep === next.sweep &&
+          prev.unit === next.unit
           ? prev
           : next,
       );
@@ -213,9 +213,8 @@ export function TiltedGridHero({
 
   const share = aspectRatio / SLICES;
   const duration = columns * speed;
-  const mask = `linear-gradient(90deg,transparent,#000 ${fade}%,#000 ${
-    100 - fade
-  }%,transparent)`;
+  const mask = `linear-gradient(90deg,transparent,#000 ${fade}%,#000 ${100 - fade
+    }%,transparent)`;
 
   return (
     <div

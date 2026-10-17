@@ -79,7 +79,7 @@ const Footer = () => {
   return (
     <footer
       ref={footerRef}
-      className="relative w-full h-dvh overflow-hidden flex flex-col justify-between"
+      className="relative w-full overflow-hidden flex flex-col justify-between"
       style={{ background: bg }}
     >
       <motion.div
@@ -101,76 +101,76 @@ const Footer = () => {
         }}
       />
 
-      <div className="flex-1 min-h-0 overflow-hidden" style={{ padding: 'clamp(20px, 4vw, 60px) clamp(16px, 5vw, 60px) 0' }}>
-        <motion.div
-          initial={{ y: 24, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="footer-grid-container h-full"
-          style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', justifyContent: 'space-between' }}
-        >
-          {/* ── Header — the site's section-header language ── */}
-          <div
-            className="footer-header"
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              textAlign: 'center',
-              gap: '22px',
-              paddingBottom: 'clamp(24px, 4vh, 44px)',
-              marginBottom: 'clamp(24px, 4vh, 44px)',
-              borderBottom: `1px solid ${hairline}`,
-            }}
-          >
-            <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1]">
-              Ready to architect the{' '}
-              <span className="font-playfair italic font-medium text-primary dark:text-[#d60d86]">
-                future
+      <div className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pt-14 pb-8 flex flex-col justify-between min-h-full">
+        {/* ── Top Header / Call to Action ── */}
+        <div className="pb-10 sm:pb-14 border-b border-foreground/[0.08]">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8">
+            <div className="max-w-2xl">
+              <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80 mb-3 block">
+                ✦ Get In Touch
               </span>
-              .
-            </h2>
-            <a
-              href="/#contact"
-              className="footer-cta-btn"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                fontSize: '10px',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: '#ffffff',
-                textDecoration: 'none',
-                background: `linear-gradient(135deg, ${CRIMSON} 0%, ${GOLD} 100%)`,
-                clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
-                boxShadow: isDark ? '0 0 18px rgba(124,92,252,0.3)' : '0 8px 22px rgba(124,92,252,0.22)',
-                transition: 'transform 160ms',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
-            >
-              Start a conversation
-              <span aria-hidden="true">→</span>
-            </a>
-          </div>
-
-          <div style={{ flex: '1 1 220px', minWidth: '200px' }} className="footer-col">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="w-6 h-6 rounded-md flex items-center justify-center overflow-hidden">
-                <img src={logoMask} alt="Logo" className="w-full h-full object-cover" />
-              </div>
-              <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '16px', fontWeight: 700, color: t1, letterSpacing: '-0.02em' }}>
-                Gayan Kavinda
-              </span>
+              <h2 className="font-jakarta font-bold text-3xl sm:text-4xl lg:text-5xl text-foreground tracking-tight leading-[1.1]">
+                Ready to architect the{' '}
+                <span className="font-playfair italic font-medium text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+                  future
+                </span>
+                ?
+              </h2>
+              <p className="mt-3 text-sm sm:text-base text-foreground/60 max-w-lg leading-relaxed">
+                Open for senior frontend architectures, modern interactive web experiences, and scalable digital solutions.
+              </p>
             </div>
-            <p style={{ fontSize: '12px', color: t2, maxWidth: '210px', marginBottom: '16px', lineHeight: '1.5' }}>
-              Architecting precision-driven digital systems. heritage meets modern engineering.
-            </p>
-            <div style={{ display: 'flex', gap: '8px' }}>
+
+            <div className="flex items-center gap-4 shrink-0">
+              <a
+                href="/#contact"
+                className="group relative inline-flex items-center gap-2.5 px-6 py-3.5 text-xs font-semibold tracking-wider uppercase text-white transition-all duration-300"
+                style={{
+                  background: `linear-gradient(135deg, ${CRIMSON} 0%, ${GOLD} 100%)`,
+                  clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)',
+                  boxShadow: isDark ? '0 4px 20px rgba(124, 92, 252, 0.4)' : '0 6px 20px rgba(124, 92, 252, 0.25)',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+              >
+                <span>Start a conversation</span>
+                <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Content Grid (Brand, Links, Vision) ── */}
+        <div className="py-10 sm:py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-12">
+          {/* Brand & Bio */}
+          <div className="lg:col-span-5 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden shadow-sm"
+                  style={{
+                    background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+                    border: `1px solid ${hairline}`,
+                  }}
+                >
+                  <img src={logoMask} alt="Logo" className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <span className="font-jakarta text-lg font-bold tracking-tight text-foreground block">
+                    Gayan Kavinda
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-foreground/40 block">
+                    Software Engineer & Architect
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-sm text-foreground/60 leading-relaxed max-w-sm mb-6">
+                Architecting precision-driven digital systems where cultural heritage and authentic craftsmanship meet modern software engineering.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2.5">
               {SOCIAL_LINKS.map((s) => (
                 <a
                   key={s.label}
@@ -178,19 +178,24 @@ const Footer = () => {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={s.label}
+                  className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200"
                   style={{
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '50%',
                     border: `1px solid ${iconBdr}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
                     color: t2,
-                    transition: 'all 0.2s ease',
+                    background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = t1; e.currentTarget.style.borderColor = t1; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = t2; e.currentTarget.style.borderColor = iconBdr; }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = t1;
+                    e.currentTarget.style.borderColor = CRIMSON;
+                    e.currentTarget.style.background = isDark ? 'rgba(124,92,252,0.1)' : 'rgba(124,92,252,0.06)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = t2;
+                    e.currentTarget.style.borderColor = iconBdr;
+                    e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
                 >
                   {s.icon}
                 </a>
@@ -198,35 +203,66 @@ const Footer = () => {
             </div>
           </div>
 
-          <div
-            style={{ padding: '0 28px', borderRight: `1px solid ${hairline}`, borderLeft: `1px solid ${hairline}` }}
-            className="footer-col footer-nav-col"
-          >
+          {/* Navigation Links */}
+          <div className="lg:col-span-3">
             <span className={colHeadClass}>Navigation</span>
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <ul className="mt-4 space-y-2.5 list-none p-0 m-0">
               {NAV_LINKS.map((l) => (
                 <li key={l.label}>
-                  <a href={l.href} style={linkStyle(l.label)} onMouseEnter={() => setHov(l.label)} onMouseLeave={() => setHov(null)}>
-                    {l.label}
+                  <a
+                    href={l.href}
+                    style={linkStyle(l.label)}
+                    onMouseEnter={() => setHov(l.label)}
+                    onMouseLeave={() => setHov(null)}
+                    className="hover:translate-x-1 transition-transform"
+                  >
+                    <span className="text-primary/60 font-mono text-xs">/</span>
+                    <span>{l.label}</span>
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div style={{ flex: '1 1 220px', minWidth: '200px' }} className="footer-col footer-vision-col">
-            <span className={colHeadClass}>Vision</span>
-            <p className="text-[12px] text-foreground/70 leading-relaxed">
-              Long-term thinking over short-term hacks. Systems built to outlive their authors.
-            </p>
+          {/* Vision & Ethics */}
+          <div className="lg:col-span-4 flex flex-col justify-between">
+            <div>
+              <span className={colHeadClass}>Philosophy</span>
+              <p className="mt-4 text-sm text-foreground/70 leading-relaxed font-sans">
+                "Long-term thinking over short-term hacks. Systems and experiences designed with enduring resilience, intentional aesthetics, and precision performance."
+              </p>
+            </div>
+
+            <div
+              className="mt-6 p-4 rounded-xl border backdrop-blur-md"
+              style={{
+                borderColor: hairline,
+                background: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+              }}
+            >
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="font-mono text-[10px] uppercase tracking-wider text-emerald-500 font-semibold">
+                  Status: Open for Opportunities
+                </span>
+              </div>
+              <p className="text-xs text-foreground/60 leading-normal">
+                Based in Sri Lanka (UTC+05:30), collaborating with teams worldwide.
+              </p>
+            </div>
           </div>
+        </div>
 
-        </motion.div>
-      </div>
-
-      <div style={{ width: '100%', flexShrink: 0 }} className="footer-bottom-block">
-        <div className="footer-watermark" style={{ width: '100%', overflow: 'hidden', userSelect: 'none', pointerEvents: 'none' }}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1440 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true" style={{ display: 'block' }}>
+        {/* ── Brand Watermark (contained, non-overlapping) ── */}
+        <div className="w-full overflow-hidden select-none pointer-events-none my-2 sm:my-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100%"
+            viewBox="0 0 1440 85"
+            preserveAspectRatio="xMidYMid meet"
+            aria-hidden="true"
+            className="block opacity-40 dark:opacity-35"
+          >
             <defs>
               <linearGradient id="wm-brand" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor={CRIMSON} />
@@ -235,99 +271,48 @@ const Footer = () => {
               </linearGradient>
               <linearGradient id="wm-mask" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="white" stopOpacity="1" />
-                <stop offset="45%" stopColor="white" stopOpacity="0.6" />
+                <stop offset="60%" stopColor="white" stopOpacity="0.5" />
                 <stop offset="100%" stopColor="white" stopOpacity="0" />
               </linearGradient>
               <mask id="wm-fade-mask">
-                <rect x="0" y="0" width="1440" height="100" fill="url(#wm-mask)" />
+                <rect x="0" y="0" width="1440" height="85" fill="url(#wm-mask)" />
               </mask>
-              <linearGradient id="wm-stroke" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor={CRIMSON} stopOpacity={isDark ? 0.3 : 0.2} />
-                <stop offset="50%" stopColor={GOLD} stopOpacity={isDark ? 0.25 : 0.15} />
-                <stop offset="100%" stopColor={CRIMSON} stopOpacity={isDark ? 0.3 : 0.2} />
-              </linearGradient>
             </defs>
             <text
               x="720"
-              y="80"
+              y="68"
               textAnchor="middle"
               fontFamily="'Plus Jakarta Sans', sans-serif"
               fontWeight="900"
-              fontSize="92"
+              fontSize="84"
               letterSpacing="-2"
               fill="url(#wm-brand)"
-              stroke="url(#wm-stroke)"
-              strokeWidth="0.6"
-              paintOrder="stroke fill"
               mask="url(#wm-fade-mask)"
-              opacity={isDark ? 0.55 : 0.45}
             >
               Gayan Kavinda
             </text>
           </svg>
         </div>
 
-        <div style={{ width: '100%', padding: '0 clamp(16px, 5vw, 60px) 14px' }}>
-          <div
-            style={{
-              borderTop: `1px solid ${hairline}`,
-              paddingTop: '10px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '8px',
-            }}
+        {/* ── Bottom Sub-footer Bar ── */}
+        <div className="pt-6 border-t border-foreground/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span className="font-mono text-[11px] text-foreground/50 text-center sm:text-left">
+            © {YEAR} Gayan Kavinda. All rights reserved.
+          </span>
+
+          <span className="hidden md:inline-block font-mono text-[11px] text-foreground/40">
+            React 18 · Framer Motion · TypeScript · Tailwind CSS
+          </span>
+
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="group flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-foreground/60 hover:text-foreground transition-colors"
           >
-            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '9px', color: t4 }}>
-              © {YEAR} Gayan Kavinda. All rights reserved.
-            </span>
-            <span className="footer-stack-tag" style={{ fontFamily: "'DM Mono', monospace", fontSize: '9px', color: t4 }}>
-              React · Framer Motion · TypeScript · R3F
-            </span>
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              style={{ background: 'none', border: 'none', color: t3, cursor: 'pointer', fontFamily: "'DM Mono', monospace", fontSize: '9px', textTransform: 'uppercase' }}
-            >
-              Back to top ↑
-            </button>
-          </div>
+            <span>Back to top</span>
+            <span className="transition-transform duration-200 group-hover:-translate-y-0.5">↑</span>
+          </button>
         </div>
       </div>
-
-      <style>{`
-        @media (max-width: 1024px) {
-          .footer-grid-container {
-            display: grid !important;
-            grid-template-columns: 1fr 1fr !important;
-            gap: 24px !important;
-            align-content: start;
-          }
-          .footer-col { border: none !important; padding: 0 !important; }
-          .footer-vision-col { grid-column: 1 / -1; }
-        }
-
-        @media (max-width: 640px) {
-          .footer-grid-container {
-            grid-template-columns: 1fr !important;
-            gap: 16px !important;
-            overflow-y: auto;
-          }
-          .footer-nav-col { display: none !important; }
-          .footer-watermark { display: none !important; }
-          .footer-stack-tag { display: none !important; }
-          .footer-col p { margin-bottom: 10px !important; }
-        }
-
-        @media (max-width: 380px) {
-          .footer-bottom-block > div:last-child { padding-bottom: 10px !important; }
-        }
-      `}</style>
-
-      <div
-        className="absolute inset-x-0 bottom-0 h-[18vh] pointer-events-none z-30"
-        style={{ background: 'linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)' }}
-      />
     </footer>
   );
 };
