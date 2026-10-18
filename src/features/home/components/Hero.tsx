@@ -366,16 +366,16 @@ const Hero = () => {
       )}
 
       {/* ═══════════════════════════════════════════════════════════
-          LAYER 4: Content (right-aligned)
+          LAYER 4: Content (responsive: centered on mobile, right-aligned on desktop)
           ═══════════════════════════════════════════════════════════ */}
       <motion.div
         style={{ y: contentY, opacity: contentOpacity, willChange: 'transform, opacity' }}
-        className="relative z-20 h-full flex flex-col items-end justify-center pr-6 sm:pr-12 md:pr-20 lg:pr-28 xl:pr-36 text-right"
+        className="relative z-20 h-full flex flex-col items-center md:items-end justify-center px-6 sm:px-12 md:pr-16 lg:pr-24 xl:pr-32 text-center md:text-right"
       >
         {/* Eyebrow */}
         <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
           className="mb-3"
         >
@@ -395,7 +395,7 @@ const Hero = () => {
           <h1
             className="select-none uppercase font-roboto tracking-tight font-black"
             style={{
-              fontSize: 'clamp(42px, 8vw, 92px)',
+              fontSize: 'clamp(38px, 7.8vw, 92px)',
               lineHeight: 0.92,
               color: c.name,
               letterSpacing: '-0.02em',
@@ -417,8 +417,8 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
-          className="font-roboto font-normal leading-snug mt-4 max-w-[460px]"
-          style={{ fontSize: 'clamp(15px, 1.8vw, 19px)', color: c.tagline, letterSpacing: '-0.01em' }}
+          className="font-roboto font-normal leading-snug mt-3 sm:mt-4 max-w-[460px]"
+          style={{ fontSize: 'clamp(14px, 1.8vw, 19px)', color: c.tagline, letterSpacing: '-0.01em' }}
         >
           Architecting systems that scale beyond the horizon
         </motion.h2>
@@ -428,14 +428,14 @@ const Hero = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.6, ease: [0.16, 1, 0.3, 1] }}
-          className="font-roboto leading-relaxed mt-4 max-w-[460px] font-normal"
-          style={{ fontSize: 'clamp(13px, 1.3vw, 15px)', color: c.desc }}
+          className="font-roboto leading-relaxed mt-3 sm:mt-4 max-w-[460px] font-normal"
+          style={{ fontSize: 'clamp(12.5px, 1.3vw, 15px)', color: c.desc }}
         >
           I design and operate high‑performance distributed systems that power global‑scale products — combining cloud‑native architecture, observability‑first thinking, and clean, scalable code.
         </motion.p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row flex-wrap justify-end items-center gap-3.5 mt-7 w-full sm:w-auto">
+        <div className="flex flex-row flex-wrap justify-center md:justify-end items-center gap-3 sm:gap-3.5 mt-6 sm:mt-7 w-full sm:w-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -511,7 +511,7 @@ const Hero = () => {
 
         {/* Tech Stack Pills */}
         <motion.div 
-          className="flex flex-wrap justify-end gap-2.5 mt-7"
+          className="flex flex-wrap justify-center md:justify-end gap-2 sm:gap-2.5 mt-6 sm:mt-7"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 2.1 }}
