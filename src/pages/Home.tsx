@@ -6,13 +6,13 @@ import MaskTransition from '@components/animations/MaskTransition';
 import Projects from '@features/projects/components/Projects';
 import TechStack from '@features/home/components/TechStack/index';
 import Experience from '@features/home/components/Experience';
-import Education from '@features/home/components/Education';
 import Certifications from '@features/home/components/Certifications';
 import About from '@features/about/components/About';
 import EngineeringPhilosophy from '@features/about/components/EngineeringPhilosophy/index';
 import Contact from '@features/contact/Contact';
 import Footer from '@components/layout/Footer';
 import SideNav from '@components/layout/SideNav';
+import SectionReveal from '@components/animations/SectionReveal';
 import { setSEO, injectPersonSchema } from '@lib/seo';
 import FAQ from '@features/home/components/FAQ/index';
 
@@ -30,9 +30,14 @@ const Home = () => {
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.replace('#', '');
-      setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      requestAnimationFrame(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      });
+      // Clear the hash so the URL stays clean (no #contact visible)
+      if (typeof window !== 'undefined') {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
     }
   }, [location.hash]);
 
@@ -45,20 +50,43 @@ const Home = () => {
         <Hero />
       </div>
 
-      <About />
-      <Experience />
+      <SectionReveal id="about" variant="scale" threshold={0.2}>
+        <About />
+      </SectionReveal>
+
+      <SectionReveal id="experience" variant="rise" threshold={0.15}>
+        <Experience />
+      </SectionReveal>
+
       <MaskTransition />
-      <Projects />
-      <EngineeringPhilosophy />
-      <TechStack />
 
-      <Education />
-      <Certifications />
+      <SectionReveal id="projects" variant="scale" threshold={0.15}>
+        <Projects />
+      </SectionReveal>
 
-      <FAQ />
+      <SectionReveal variant="rise" threshold={0.15}>
+        <EngineeringPhilosophy />
+      </SectionReveal>
 
-      <Contact />
-      <Footer />
+      <SectionReveal id="skills" variant="fade" threshold={0.15}>
+        <TechStack />
+      </SectionReveal>
+
+      <SectionReveal variant="rise" threshold={0.15}>
+        <Certifications />
+      </SectionReveal>
+
+      <SectionReveal variant="fade" threshold={0.2}>
+        <FAQ />
+      </SectionReveal>
+
+      <SectionReveal id="contact" variant="scale" threshold={0.2}>
+        <Contact />
+      </SectionReveal>
+
+      <SectionReveal variant="fade" threshold={0.1}>
+        <Footer />
+      </SectionReveal>
     </>
   );
 };

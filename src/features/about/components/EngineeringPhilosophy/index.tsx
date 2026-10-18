@@ -343,7 +343,7 @@ const CTASection = ({ isInView }: { isInView: boolean }) => (
           href="/resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 px-7 h-12 font-sans font-medium text-white shadow-[0_4px_20px_rgba(16,185,129,0.35)] transition-all duration-300 hover:from-emerald-500 hover:to-emerald-600 hover:shadow-[0_8px_28px_rgba(16,185,129,0.5)] hover:-translate-y-0.5 active:translate-y-0 dark:from-emerald-500 dark:to-emerald-600"
+          className="group inline-flex items-center gap-2.5 rounded-full bg-foreground text-background px-7 h-12 font-sans font-medium text-sm shadow-sm transition-all duration-300 hover:bg-foreground/90 hover:-translate-y-0.5 active:translate-y-0"
         >
           <svg className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -352,10 +352,10 @@ const CTASection = ({ isInView }: { isInView: boolean }) => (
         </a>
         <a
           href="#contact"
-          className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-card/80 backdrop-blur-md px-7 h-12 font-medium text-foreground shadow-sm transition-all duration-300 hover:border-gold/60 hover:text-gold dark:hover:text-gold hover:shadow-[0_4px_20px_rgba(217,119,6,0.2)] hover:-translate-y-0.5"
+          className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-card/80 backdrop-blur-md px-7 h-12 font-medium text-foreground shadow-sm transition-all duration-300 hover:border-foreground/30 hover:-translate-y-0.5 active:translate-y-0"
         >
           <span className="text-sm">Get in Touch</span>
-          <span className="text-xs text-gold">→</span>
+          <span className="text-xs text-foreground/50">→</span>
         </a>
       </div>
     </div>

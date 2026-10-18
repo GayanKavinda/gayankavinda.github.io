@@ -106,24 +106,41 @@ function ProfileCard() {
 
 function EducationCard() {
   return (
-    <div className={`${card} p-6`}>
+    <div className={`${card} p-6 relative overflow-hidden`}>
+      {/* Top accent bar */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#10B981] to-transparent" />
       <div>
         <div className="flex items-start justify-between gap-3">
-          <img src={sliitLogo} alt="SLIIT" className="h-9 w-auto object-contain" />
-          <span className="text-[10px] text-slate-400 mt-1 shrink-0">2019 – present</span>
-        </div>
-        <div className="mt-4">
-          <div className="flex items-center gap-1.5 mb-1">
-            <GraduationCap size={13} className="text-[#10B981]" />
-            <span className={eyebrow}>Education</span>
+          <div className="flex items-center gap-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#10B981]/20 bg-[#10B981]/5">
+              <GraduationCap size={16} className="text-[#10B981]" />
+            </div>
+            <img src={sliitLogo} alt="SLIIT" className="h-7 w-auto object-contain" />
           </div>
-          <p className="text-[11px] text-[#10B981] mt-2">BSc (Hons) Software Engineering</p>
-          <h3 className="text-sm font-normal tracking-tight text-slate-900 dark:text-white mt-0.5 leading-snug">Sri Lanka Institute of<br />Information Technology</h3>
-          <p className="text-[11px] text-slate-400 dark:text-zinc-500 mt-1">Faculty of Computing</p>
+          <span className="text-[10px] font-mono text-slate-400 mt-1 shrink-0">2018 FEB – 2024 SEP</span>
+        </div>
+        <div className="mt-4 space-y-2">
+          <div className="flex items-center gap-1.5">
+            <span className={eyebrow}>Education</span>
+            <span className="text-[9px] text-[#10B981] font-mono">BSc (Hons)</span>
+          </div>
+          <h3 className="text-sm font-semibold tracking-tight text-slate-900 dark:text-white leading-snug">
+            Sri Lanka Institute of Information Technology
+          </h3>
+          <p className="text-[11px] text-slate-500 dark:text-zinc-400">Faculty of Computing · BSc in Information Technology</p>
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {['Software Architecture', 'Distributed Systems', 'Cloud Engineering'].map((skill) => (
+              <span key={skill} className="rounded-md border border-[#10B981]/20 bg-[#10B981]/5 px-2 py-0.5 text-[10px] text-[#10B981] font-medium">
+                {skill}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
       <div className="mt-4 pt-3 border-t border-slate-100 dark:border-zinc-800">
-        <p className="text-[11px] text-slate-500 dark:text-zinc-400">Software Architecture · Distributed Systems</p>
+        <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed">
+          Specialized in Information Technology with a focus on building scalable systems, cloud-native architectures, and modern software engineering practices.
+        </p>
       </div>
     </div>
   );
@@ -132,6 +149,7 @@ function EducationCard() {
 function LocationCard() {
   const [localTime, setLocalTime] = useState('--:--');
   const [isDark, setIsDark] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Colombo', hour: '2-digit', minute: '2-digit', hour12: false });
@@ -159,12 +177,25 @@ function LocationCard() {
           </div>
           <span className="text-[10px] text-slate-400">LK</span>
         </div>
-        <div className="relative w-full h-[100px] overflow-hidden rounded-xl mb-4">
-          <img src={isDark ? mapDark : mapLight} alt="Sri Lanka" className="absolute inset-0 h-full w-full object-cover object-center" />
+        <div className="relative w-full h-[100px] overflow-hidden rounded-xl mb-4 group/map cursor-pointer">
+          <img
+            src={isDark ? mapDark : mapLight}
+            alt="Sri Lanka"
+            className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover/map:scale-110"
+            onClick={() => setExpanded(!expanded)}
+          />
           <div className="absolute z-10" style={{ bottom: '38%', left: '22%' }} title="Colombo">
             <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-50" />
               <span className="relative inline-flex rounded-full h-3 w-3 bg-[#10B981]" />
+            </span>
+          </div>
+          <div
+            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/map:opacity-100 transition-opacity bg-black/30 cursor-pointer"
+            onClick={() => setExpanded(!expanded)}
+          >
+            <span className="text-white text-[10px] font-medium tracking-wide uppercase bg-black/50 px-2.5 py-1 rounded-full backdrop-blur-sm">
+              {expanded ? 'Collapse' : 'View Full Map'}
             </span>
           </div>
         </div>
@@ -177,6 +208,26 @@ function LocationCard() {
         <span className="text-slate-300 dark:text-zinc-600">·</span>
         <span className="text-slate-400 text-[10.5px]">GMT+5:30</span>
       </div>
+      {/* Expanded full map view */}
+      {expanded && (
+        <div className="mt-4 rounded-xl overflow-hidden border border-slate-200 dark:border-zinc-800 shadow-lg animate-fade-in">
+          <img
+            src={isDark ? mapDark : mapLight}
+            alt="Sri Lanka Full Map"
+            className="w-full h-[200px] object-cover"
+          />
+          <div className="p-3 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-50" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]" />
+              </span>
+              <span className="text-[11px] text-slate-700 dark:text-zinc-300 font-medium">Colombo, Sri Lanka</span>
+            </div>
+            <p className="text-[10px] text-slate-400 mt-1">Based in Sri Lanka (UTC+05:30), collaborating with teams worldwide.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -191,9 +242,9 @@ function SocialCard() {
       <div className="space-y-2">
         {socials.map((s) => (
           <a key={s.name} href={s.href} target="_blank" rel="noopener noreferrer"
-            className="group flex items-center justify-between rounded-xl border border-slate-200/70 bg-slate-50/50 p-2.5 transition-all duration-200 hover:border-[#10B981]/30 hover:bg-slate-100/60 dark:border-zinc-800 dark:bg-zinc-900/30 dark:hover:border-[#10B981]/30 dark:hover:bg-zinc-900">
+            className="group flex items-center justify-between rounded-xl border border-slate-200/70 bg-slate-50/50 p-2.5 transition-all duration-200 hover:border-[#10B981]/40 hover:bg-[#10B981]/5 dark:border-zinc-800 dark:bg-zinc-900/30 dark:hover:border-[#10B981]/40 dark:hover:bg-[#10B981]/10">
             <div className="flex items-center gap-3">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200/80 bg-white text-slate-700 transition-colors group-hover:bg-slate-900 group-hover:text-white dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:group-hover:bg-white dark:group-hover:text-slate-900">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200/80 bg-white text-slate-700 transition-colors group-hover:border-[#10B981]/40 group-hover:bg-[#10B981] group-hover:text-white dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:group-hover:border-[#10B981]/40 dark:group-hover:bg-[#10B981] dark:group-hover:text-white">
                 <s.Icon size={13} />
               </div>
               <div>
@@ -229,6 +280,18 @@ function YouTubeMusicCard() {
   const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const track = FEATURED_TRACKS[trackIndex] || FEATURED_TRACKS[0];
+
+  // Dynamic color palette inspired by YouTube Music's spectrum visualizer
+  const PALETTE = [
+    '#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#007AFF',
+    '#5856D6', '#AF52DE', '#FF2D55', '#FF375F', '#64D2FF',
+    '#BF5AF0', '#FF9F0A', '#30D158', '#64D2FF', '#BF5AF0',
+    '#FF9F0A', '#30D158', '#FF375F', '#5856D6', '#007AFF',
+    '#FFCC00', '#FF9500', '#FF3B30', '#AF52DE', '#34C759',
+    '#FF2D55', '#64D2FF', '#BF5AF0', '#FF9F0A', '#30D158',
+    '#FF375F', '#5856D6', '#007AFF', '#FFCC00', '#FF9500',
+  ];
+  const accentColor = PALETTE[trackIndex % PALETTE.length];
 
   // Load YouTube Iframe API once
   useEffect(() => {
@@ -405,7 +468,7 @@ function YouTubeMusicCard() {
         <div id="yt-audio-player" />
       </div>
 
-      {/* Blurred album-art background with smooth transition */}
+      {/* Blurred album-art background with smooth transition and dynamic color tint */}
       <div
         aria-hidden
         className="absolute inset-0 z-0 transition-all duration-700 ease-out"
@@ -413,6 +476,13 @@ function YouTubeMusicCard() {
           background: `url("${track.albumArt}") center/cover no-repeat`,
           filter: 'blur(26px) saturate(1.7) brightness(0.35)',
           transform: 'scale(1.15)',
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 z-0 transition-all duration-700"
+        style={{
+          background: `linear-gradient(135deg, ${accentColor}55 0%, ${accentColor}15 50%, transparent 100%)`,
         }}
       />
       <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/85 via-black/40 to-black/60" />
@@ -492,11 +562,19 @@ function YouTubeMusicCard() {
             rel="noopener noreferrer"
             className="group/cover relative h-12 w-12 shrink-0 rounded-lg overflow-hidden shadow-xl ring-1 ring-white/15 transition-transform duration-300 hover:scale-105"
           >
-            <img
-              src={track.albumArt}
-              alt={track.title}
-              className="h-full w-full object-cover"
-            />
+            <div
+              className={`relative h-full w-full rounded-lg overflow-hidden transition-transform duration-500`}
+              style={{
+                animation: isPlaying ? 'spin 4s linear infinite' : 'none',
+                transformOrigin: 'center center',
+              }}
+            >
+              <img
+                src={track.albumArt}
+                alt={track.title}
+                className="h-full w-full object-cover"
+              />
+            </div>
             <div className="absolute inset-0 bg-black/30 opacity-0 group-hover/cover:opacity-100 transition-opacity flex items-center justify-center">
               <ArrowUpRight size={14} className="text-white" />
             </div>
@@ -533,7 +611,11 @@ function YouTubeMusicCard() {
             </button>
             <button
               onClick={togglePlay}
-              className="h-8 w-8 rounded-full flex items-center justify-center bg-[#FF0000] hover:bg-[#ff3333] text-white shadow-lg shadow-[#FF0000]/30 transition-all active:scale-95"
+              className="h-8 w-8 rounded-full flex items-center justify-center text-white shadow-lg transition-all active:scale-95"
+              style={{
+                backgroundColor: accentColor,
+                boxShadow: `0 4px 14px ${accentColor}55`,
+              }}
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" className="ml-0.5" />}
@@ -556,13 +638,14 @@ function YouTubeMusicCard() {
             className="group/seek h-[5px] w-full cursor-pointer relative flex items-center rounded-full bg-white/20 backdrop-blur-sm"
             title="Click to seek"
           >
-            <div
-              className="h-full rounded-full bg-[#FF0000] group-hover/seek:bg-[#ff3333] transition-all duration-150"
-              style={{
-                width: `${progressPercent}%`,
-                boxShadow: '0 0 10px rgba(255,0,0,0.8)',
-              }}
-            />
+<div
+            className="h-full rounded-full transition-all duration-150"
+            style={{
+              width: `${progressPercent}%`,
+              backgroundColor: accentColor,
+              boxShadow: `0 0 10px ${accentColor}AA`,
+            }}
+          />
             <div
               className="absolute h-2.5 w-2.5 rounded-full bg-white shadow-md opacity-0 group-hover/seek:opacity-100 transition-opacity -translate-x-1/2 pointer-events-none"
               style={{ left: `${progressPercent}%` }}

@@ -19,7 +19,7 @@ const NotFound = lazy(() => import("@pages/NotFound"));
 
 import { PreLoader } from "@components/layout/PreLoader";
 import { CacheConsent } from "@components/layout/CacheConsent";
-import ScrollToTop from "@components/layout/ScrollToTop";
+import SmartScroll from "@components/layout/SmartScroll";
 
 const queryClient = new QueryClient();
 
@@ -66,7 +66,7 @@ const App = () => (
                 v7_relativeSplatPath: true,
               }}
             >
-              <ScrollToTop />
+              <SmartScroll />
               <Suspense fallback={
                 <div className="fixed inset-0 bg-background flex items-center justify-center z-[9999]">
                   <div className="w-12 h-[1px] bg-gold animate-pulse" />

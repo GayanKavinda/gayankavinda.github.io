@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import contactArtDark from "@/assets/images/contact/Yuji_Itadori_dark.webp";
 import contactArtLight from "@/assets/images/contact/Yuji_Itadori_white.webp";
 import {
-  ArrowRight,
+  ArrowUpRight,
   Github,
   Linkedin,
   Twitter,
@@ -333,7 +333,7 @@ export default function ContactWithGlobe({
               <button
                 type="submit"
                 disabled={sending}
-                className="group inline-flex items-center gap-2.5 h-12 px-8 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-sans font-medium text-sm shadow-[0_4px_20px_rgba(16,185,129,0.35)] transition-all duration-300 hover:from-emerald-500 hover:to-emerald-600 hover:shadow-[0_8px_28px_rgba(16,185,129,0.55)] hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer dark:from-emerald-500 dark:to-emerald-600"
+                className="group inline-flex items-center gap-2.5 h-11 px-8 rounded-full bg-foreground text-background font-sans font-medium text-sm shadow-sm transition-all duration-300 hover:bg-foreground/90 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
               >
                 {sending ? (
                   "Sending…"
@@ -345,7 +345,7 @@ export default function ContactWithGlobe({
                 ) : (
                   <>
                     Send it
-                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                    <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                   </>
                 )}
               </button>

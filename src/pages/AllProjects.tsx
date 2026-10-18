@@ -7,6 +7,7 @@ import { ChevronLeft } from 'lucide-react';
 
 import Navbar from '@components/layout/Navbar';
 import Footer from '@components/layout/Footer';
+import SectionReveal from '@components/animations/SectionReveal';
 import { setSEO } from '@lib/seo';
 
 import { allProjects } from '@features/projects/data/projectData';
@@ -64,44 +65,43 @@ const AllProjects = () => {
         <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-primary/10 via-gold/10 to-transparent blur-[80px]" />
       </motion.div>
 
-      <Navbar />
+<Navbar />
 
       <main ref={mainRef} className="relative z-10 pt-12 pb-12 max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+        <SectionReveal variant="rise" threshold={0.15}>
+          {/* Navigation / Back */}
+          <motion.button
+            onClick={() => navigate('/#projects')}
+            className="group flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.2em] text-foreground/40 hover:text-crimson transition-colors mb-6"
+          >
+            <div className="w-5 h-5 rounded-full border border-black/5 dark:border-white/5 flex items-center justify-center group-hover:bg-crimson/5 group-hover:border-crimson/20 transition-all">
+              <ChevronLeft className="w-2.5 h-2.5" />
+            </div>
+            Back to Featured
+          </motion.button>
 
-        {/* Navigation / Back */}
-        <motion.button
-          onClick={() => navigate('/#projects')}
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="group flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.2em] text-foreground/40 hover:text-crimson transition-colors mb-6"
-        >
-          <div className="w-5 h-5 rounded-full border border-black/5 dark:border-white/5 flex items-center justify-center group-hover:bg-crimson/5 group-hover:border-crimson/20 transition-all">
-            <ChevronLeft className="w-2.5 h-2.5" />
-          </div>
-          Back to Featured
-        </motion.button>
+          {/* Header Section */}
+          <header className="mb-8">
+             <motion.h1
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.6, delay: 0.1 }}
+               className="font-playfair font-bold text-3xl md:text-4xl tracking-tight text-foreground mb-3"
+             >
+              Selected{' '}
+              <span className="font-playfair italic font-medium text-primary">Projects</span>
+             </motion.h1>
 
-        {/* Header Section */}
-        <header className="mb-8">
-           <motion.h1
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ duration: 0.6, delay: 0.1 }}
-             className="font-playfair font-bold text-3xl md:text-4xl tracking-tight text-foreground mb-3"
-           >
-             Selected{' '}
-             <span className="font-playfair italic font-medium text-primary">Projects</span>
-           </motion.h1>
-
-           <motion.p
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ duration: 0.6, delay: 0.2 }}
-             className="text-xs md:text-sm text-foreground/50 max-w-2xl leading-relaxed italic font-medium"
-           >
-             A curated collection of engineering solutions, from high-throughput distributed systems to pixel-perfect mobile interfaces. Use the filters below to browse by technical focus.
-           </motion.p>
-        </header>
+             <motion.p
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.6, delay: 0.2 }}
+               className="text-xs md:text-sm text-foreground/50 max-w-2xl leading-relaxed italic font-medium"
+             >
+               A curated collection of engineering solutions, from high-throughput distributed systems to pixel-perfect mobile interfaces. Use the filters below to browse by technical focus.
+             </motion.p>
+          </header>
+        </SectionReveal>
 
         {/* Filters & Grid */}
         <LayoutGroup>
@@ -118,7 +118,9 @@ const AllProjects = () => {
 
       </main>
 
-      <Footer />
+      <SectionReveal variant="fade" threshold={0.1}>
+        <Footer />
+      </SectionReveal>
     </div>
   );
 };

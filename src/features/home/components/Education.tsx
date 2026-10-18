@@ -1,17 +1,17 @@
 import { motion } from 'framer-motion';
-import { Award, GraduationCap, Sparkles } from 'lucide-react';
+import { Award, GraduationCap, Sparkles, Code2 } from 'lucide-react';
 import { useTheme } from '@app/providers/theme-provider';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const degree = {
-  institution: 'University of Colombo',
-  title: 'Bachelor of Science in Computer Science',
-  period: '2018 — 2022',
+  institution: 'Sri Lanka Institute of Information Technology (SLIIT)',
+  title: 'Bachelor of Science in Information Technology',
+  period: '2018 FEB — 2024 SEP',
   status: 'Graduated',
   description:
-    'Focused on distributed systems, algorithms, and software engineering principles. Completed with First Class Honours.',
-  highlights: ["Dean's List 2020, 2021", 'Thesis on Distributed Consensus'],
+    'Specialized in Information Technology with a focus on software architecture, distributed systems, and cloud engineering. Built a strong foundation in full-stack development, DevOps practices, and scalable backend services.',
+  highlights: ['Faculty of Computing', 'BSc (Hons) IT', 'Distributed Systems', 'Cloud Engineering'],
   earlier: {
     title: 'Advanced Diploma in Software Engineering',
     institution: 'Institute of Software',
@@ -19,7 +19,7 @@ const degree = {
   },
 };
 
-const HIGHLIGHT_ICONS = [Award, Sparkles];
+const HIGHLIGHT_ICONS = [Award, Sparkles, Code2, GraduationCap];
 
 // Quiet stars drifting in the card — echo of the Hero night sky
 const STARS = [
@@ -191,8 +191,7 @@ const Education = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-8 text-center font-mono text-[11px] text-foreground/35"
         >
-          Earlier — {degree.earlier.title} · {degree.earlier.institution} ·{' '}
-          {degree.earlier.period}
+          Earlier — {degree.earlier.title} · {degree.earlier.institution} · {degree.earlier.period}
         </motion.p>
       </div>
     </section>

@@ -124,11 +124,11 @@ const Footer = () => {
             <div className="flex items-center gap-4 shrink-0">
               <a
                 href="/#contact"
-                className="group relative inline-flex items-center gap-2.5 px-6 py-3.5 text-xs font-semibold tracking-wider uppercase text-white transition-all duration-300"
+                className="group relative inline-flex items-center gap-2.5 px-6 py-3.5 text-xs font-semibold tracking-wider uppercase text-white transition-all duration-300 hover:scale-105"
                 style={{
-                  background: `linear-gradient(135deg, ${CRIMSON} 0%, ${GOLD} 100%)`,
+                  background: `linear-gradient(135deg, ${GOLD} 0%, hsl(38 65% 32%) 100%)`,
                   clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)',
-                  boxShadow: isDark ? '0 4px 20px rgba(124, 92, 252, 0.4)' : '0 6px 20px rgba(124, 92, 252, 0.25)',
+                  boxShadow: isDark ? '0 4px 20px rgba(217,119,6,0.4)' : '0 6px 20px rgba(217,119,6,0.35)',
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}

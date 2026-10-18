@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@components/layout/Navbar';
 import Footer from '@components/layout/Footer';
+import SectionReveal from '@components/animations/SectionReveal';
 import { setSEO } from '@lib/seo';
 
 const LAST_UPDATED = 'March 2026';
@@ -69,49 +70,53 @@ export const Now = () => {
           Home
         </button>
 
-        {/* Header */}
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8A820] mb-3">// Now</p>
-        <h1 className="font-playfair font-black text-[clamp(36px,6vw,56px)] text-foreground leading-tight tracking-tight">
-          What I'm doing{' '}
-          <em className="italic text-[#10B981]">right now</em>
-        </h1>
-        <div className="flex items-center gap-3 mt-4 mb-3">
-          <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#10B981]" />
-          <div className="w-1.5 h-1.5 rounded-full bg-[#D4891A]" />
-        </div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground/30 mb-10">
-          Last updated: {LAST_UPDATED}
-        </p>
-
-        {/* Items */}
-        <div className="space-y-6">
-          {NOW_ITEMS.map((item) => (
-            <div key={item.title} className="rounded-xl border border-border bg-card elevation-card p-6 relative overflow-hidden group hover:-translate-y-[2px] transition-all duration-200">
-              <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: item.color }} />
-              <div className="flex items-center gap-2 mb-3">
-                <span className="font-mono text-[9px] uppercase tracking-[0.12em] px-2.5 py-1 rounded-full border"
-                  style={{ color: item.color, borderColor: `${item.color}30`, background: `${item.color}10` }}>
-                  {item.tag}
-                </span>
-              </div>
-              <h2 className="font-jakarta font-bold text-[17px] text-foreground mb-2 tracking-tight">{item.title}</h2>
-              <p className="font-sans text-[14px] text-foreground/60 leading-[1.75]">{item.body}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* What is this? */}
-        <div className="mt-14 pt-8 border-t border-border">
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/25 mb-3">// What is this page?</p>
-          <p className="font-sans text-[13px] text-foreground/45 leading-relaxed">
-            A "now page" tells you what someone is focused on at this point in their life.
-            It's different from an about page — those don't change much.
-            Inspired by{' '}
-            <a href="https://nownownow.com" target="_blank" rel="noreferrer" className="text-[#D4891A] hover:underline">nownownow.com</a>.
+        <SectionReveal variant="rise" threshold={0.15}>
+          {/* Header */}
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8A820] mb-3">// Now</p>
+          <h1 className="font-playfair font-black text-[clamp(36px,6vw,56px)] text-foreground leading-tight tracking-tight">
+            What I'm doing{' '}
+            <em className="italic text-[#10B981]">right now</em>
+          </h1>
+          <div className="flex items-center gap-3 mt-4 mb-3">
+            <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#10B981]" />
+            <div className="w-1.5 h-1.5 rounded-full bg-[#D4891A]" />
+          </div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground/30 mb-10">
+            Last updated: {LAST_UPDATED}
           </p>
-        </div>
+
+          {/* Items */}
+          <div className="space-y-6">
+            {NOW_ITEMS.map((item) => (
+              <div key={item.title} className="rounded-xl border border-border bg-card elevation-card p-6 relative overflow-hidden group hover:-translate-y-[2px] transition-all duration-200">
+                <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: item.color }} />
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="font-mono text-[9px] uppercase tracking-[0.12em] px-2.5 py-1 rounded-full border"
+                    style={{ color: item.color, borderColor: `${item.color}30`, background: `${item.color}10` }}>
+                    {item.tag}
+                  </span>
+                </div>
+                <h2 className="font-jakarta font-bold text-[17px] text-foreground mb-2 tracking-tight">{item.title}</h2>
+                <p className="font-sans text-[14px] text-foreground/60 leading-[1.75]">{item.body}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* What is this? */}
+          <div className="mt-14 pt-8 border-t border-border">
+            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/25 mb-3">// What is this page?</p>
+            <p className="font-sans text-[13px] text-foreground/45 leading-relaxed">
+              A "now page" tells you what someone is focused on at this point in their life.
+              It's different from an about page — those don't change much.
+              Inspired by{' '}
+              <a href="https://nownownow.com" target="_blank" rel="noreferrer" className="text-[#D4891A] hover:underline">nownownow.com</a>.
+            </p>
+          </div>
+        </SectionReveal>
       </div>
-      <Footer />
+      <SectionReveal variant="fade" threshold={0.1}>
+        <Footer />
+      </SectionReveal>
     </div>
   );
 };
@@ -215,49 +220,53 @@ export const Uses = () => {
           Home
         </button>
 
-        {/* Header */}
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8A820] mb-3">// Setup</p>
-        <h1 className="font-playfair font-black text-[clamp(36px,6vw,56px)] text-foreground leading-tight tracking-tight">
-          What I <em className="italic text-[#10B981]">use</em>
-        </h1>
-        <div className="flex items-center gap-3 mt-4 mb-6">
-          <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#10B981]" />
-          <div className="w-1.5 h-1.5 rounded-full bg-[#D4891A]" />
-        </div>
-        <p className="font-sans text-[15px] text-foreground/55 leading-relaxed max-w-[540px] mb-12">
-          The tools I reach for daily. Opinionated choices, not sponsored suggestions.
-        </p>
-
-        {/* Sections */}
-        <div className="space-y-10">
-          {SECTIONS.map((section) => (
-            <div key={section.title}>
-              <div className="flex items-center gap-3 mb-4">
-                <h2 className="font-mono text-[11px] uppercase tracking-[0.16em]" style={{ color: section.color }}>{section.title}</h2>
-                <div className="flex-1 h-px" style={{ background: `${section.color}20` }} />
-              </div>
-              <div className="space-y-2">
-                {section.items.map((item) => (
-                  <div key={item.name} className="rounded-lg border border-border bg-card elevation-card px-5 py-3.5 flex items-start gap-4 hover:border-foreground/15 transition-colors group">
-                    <span className="font-jakarta font-semibold text-[14px] text-foreground min-w-[160px] flex-shrink-0 group-hover:text-[#D4891A] transition-colors">{item.name}</span>
-                    <span className="font-sans text-[13px] text-foreground/50 leading-relaxed">{item.note}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Footer note */}
-        <div className="mt-14 pt-8 border-t border-border">
-          <p className="font-sans text-[13px] text-foreground/35 leading-relaxed">
-            This page is updated irregularly. Last major update: {LAST_UPDATED}.
-            If something changed, I've probably linked it on{' '}
-            <a href="https://x.com/gayankav" target="_blank" rel="noopener noreferrer" className="text-[#D4891A] hover:underline">Twitter / X</a>.
+        <SectionReveal variant="rise" threshold={0.15}>
+          {/* Header */}
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8A820] mb-3">// Setup</p>
+          <h1 className="font-playfair font-black text-[clamp(36px,6vw,56px)] text-foreground leading-tight tracking-tight">
+            What I <em className="italic text-[#10B981]">use</em>
+          </h1>
+          <div className="flex items-center gap-3 mt-4 mb-6">
+            <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#10B981]" />
+            <div className="w-1.5 h-1.5 rounded-full bg-[#D4891A]" />
+          </div>
+          <p className="font-sans text-[15px] text-foreground/55 leading-relaxed max-w-[540px] mb-12">
+            The tools I reach for daily. Opinionated choices, not sponsored suggestions.
           </p>
-        </div>
+
+          {/* Sections */}
+          <div className="space-y-10">
+            {SECTIONS.map((section) => (
+              <div key={section.title}>
+                <div className="flex items-center gap-3 mb-4">
+                  <h2 className="font-mono text-[11px] uppercase tracking-[0.16em]" style={{ color: section.color }}>{section.title}</h2>
+                  <div className="flex-1 h-px" style={{ background: `${section.color}20` }} />
+                </div>
+                <div className="space-y-2">
+                  {section.items.map((item) => (
+                    <div key={item.name} className="rounded-lg border border-border bg-card elevation-card px-5 py-3.5 flex items-start gap-4 hover:border-foreground/15 transition-colors group">
+                      <span className="font-jakarta font-semibold text-[14px] text-foreground min-w-[160px] flex-shrink-0 group-hover:text-[#D4891A] transition-colors">{item.name}</span>
+                      <span className="font-sans text-[13px] text-foreground/50 leading-relaxed">{item.note}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Footer note */}
+          <div className="mt-14 pt-8 border-t border-border">
+            <p className="font-sans text-[13px] text-foreground/35 leading-relaxed">
+              This page is updated irregularly. Last major update: {LAST_UPDATED}.
+              If something changed, I've probably linked it on{' '}
+              <a href="https://x.com/gayankav" target="_blank" rel="noopener noreferrer" className="text-[#D4891A] hover:underline">Twitter / X</a>.
+            </p>
+          </div>
+        </SectionReveal>
       </div>
-      <Footer />
+      <SectionReveal variant="fade" threshold={0.1}>
+        <Footer />
+      </SectionReveal>
     </div>
   );
 };

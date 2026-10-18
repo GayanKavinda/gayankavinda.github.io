@@ -80,7 +80,7 @@ const FaqSection = React.forwardRef<HTMLElement, FaqSectionProps>(
               <Button 
                 size="sm" 
                 onClick={contactInfo.onContact}
-                className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-500 hover:to-emerald-600 rounded-full px-5 shadow-[0_4px_16px_rgba(16,185,129,0.3)] hover:shadow-[0_6px_22px_rgba(16,185,129,0.45)] hover:-translate-y-0.5 transition-all dark:from-emerald-500 dark:to-emerald-600"
+                className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-5 py-2 text-xs font-medium shadow-sm transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
               >
                 {contactInfo.buttonText}
               </Button>

@@ -240,6 +240,11 @@
     100% { transform: translateX(0); }
   }
 
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
   .animate-marquee-left {
     animation: marquee-left 30s linear infinite;
   }

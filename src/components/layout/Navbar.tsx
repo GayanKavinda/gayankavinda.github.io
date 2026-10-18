@@ -179,14 +179,16 @@ export default function Navbar() {
       else window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
+    // Scroll to section WITHOUT modifying the URL hash
     if (location.pathname !== '/') {
       navigate('/');
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         const el = document.getElementById(id);
         if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 150);
+      });
     } else {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -305,9 +307,9 @@ export default function Navbar() {
             whileTap={{ scale: 0.95 }}
             className="flex items-center gap-1.5 px-3.5 py-1.5 text-[11px] font-semibold tracking-wide uppercase rounded-full transition-all duration-300"
             style={{
-              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-              color: '#ffffff',
-              boxShadow: '0 4px 16px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.35)',
+              background: 'hsl(var(--foreground))',
+              color: 'hsl(var(--background))',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
             }}
           >
             <DownloadIcon className="w-3.5 h-3.5" />

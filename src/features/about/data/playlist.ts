@@ -5,6 +5,7 @@ export interface FeaturedTrack {
   ytId: string;
   ytMusicUrl: string;
   durationSec: number;
+  accentColor?: string;
 }
 
 export const FEATURED_TRACKS: FeaturedTrack[] = [

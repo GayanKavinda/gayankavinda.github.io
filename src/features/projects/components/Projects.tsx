@@ -3,7 +3,7 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
-import { ArrowRight, ChevronLeft, ChevronRight, Sparkles, Layers, ArrowUpRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowUpRight } from 'lucide-react';
 import { CircularCarousel, CircularCarouselItem } from '@components/ui/circular-carousel';
 import { useTheme } from '@app/providers/theme-provider';
 import { allProjects } from '../data/projectData';
@@ -63,7 +63,6 @@ const Projects = () => {
 
   // Theme-aware fade and background colors
   const fadeColor = isDark ? '#000000' : '#ffffff';
-  const currentProject = carouselItems[activeIndex] || carouselItems[0];
 
   return (
     <section
@@ -104,14 +103,9 @@ const Projects = () => {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center gap-2"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium tracking-wide uppercase bg-primary/10 dark:bg-white/5 border border-primary/20 dark:border-white/10 text-primary dark:text-[#f472b6]">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Interactive 3D Showcase</span>
-          </div>
-
           <h2 className="font-jakarta font-semibold text-3xl sm:text-4xl md:text-5xl text-foreground tracking-tight leading-[1.1]">
             Selected{' '}
-            <span className="font-playfair italic font-medium text-primary dark:text-[#6C63FF]">
+            <span className="font-playfair italic font-medium text-[#10B981]">
               Projects
             </span>
           </h2>
@@ -169,8 +163,8 @@ const Projects = () => {
                 className={`absolute inset-0 p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 rounded-[16px] border ${
                   isHovered
                     ? isDark
-                      ? 'bg-neutral-950/90 backdrop-blur-md border-[#6C63FF]/45 shadow-2xl shadow-primary/25'
-                      : 'bg-white/95 backdrop-blur-md border-primary/30 shadow-2xl shadow-black/15'
+                      ? 'bg-neutral-950/90 backdrop-blur-md border-foreground/20 shadow-2xl shadow-black/25'
+                      : 'bg-white/95 backdrop-blur-md border-foreground/20 shadow-2xl shadow-black/15'
                     : 'bg-gradient-to-t from-black/85 via-black/25 to-transparent border-transparent'
                 }`}
               >
@@ -180,8 +174,8 @@ const Projects = () => {
                     className={`text-[10px] font-mono tracking-wider uppercase px-2.5 py-0.5 rounded-full font-medium transition-colors ${
                       isHovered
                         ? isDark
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                          : 'bg-emerald-50 text-emerald-700 border border-emerald-300'
+                          ? 'bg-foreground/15 text-foreground border border-foreground/30'
+                          : 'bg-foreground/10 text-foreground border border-foreground/20'
                         : 'bg-black/60 text-white border border-white/20 backdrop-blur-sm'
                     }`}
                   >
@@ -191,7 +185,7 @@ const Projects = () => {
                   <span
                     className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${
                       isHovered
-                        ? 'bg-emerald-500 text-white scale-105 shadow-md shadow-emerald-500/40'
+                        ? 'bg-foreground text-background scale-105 shadow-md shadow-black/20'
                         : 'bg-white/10 text-white/60 opacity-0'
                     }`}
                   >
@@ -266,50 +260,35 @@ const Projects = () => {
           />
         </div>
 
-        {/* Bottom Interactive Bar: Arrow Buttons + Live Dots/Counter + View All Button */}
-        <div className="mt-0 sm:mt-1 flex flex-col sm:flex-row items-center justify-between gap-3 max-w-4xl mx-auto px-6 z-20 relative">
-          
+        {/* Bottom bar: prev/next arrows + View All CTA */}
+        <div className="mt-0 sm:mt-1 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-4xl mx-auto px-6 z-20 relative">
+
           {/* Left: Previous / Next Carousel Steppers */}
-          <div className="flex items-center gap-2 order-2 sm:order-1">
+          <div className="flex items-center gap-1">
             <button
               onClick={() => carouselControlsRef.current?.stepBy(-1)}
               aria-label="Previous project"
-              className="w-9 h-9 rounded-full flex items-center justify-center border border-border/60 bg-background/80 hover:bg-muted text-foreground transition-all duration-200 active:scale-95 shadow-sm hover:border-primary/40 cursor-pointer"
+              className="w-9 h-9 rounded-full flex items-center justify-center border border-border/60 bg-background/80 hover:bg-foreground/5 hover:border-foreground/20 text-foreground/60 hover:text-foreground transition-all duration-200 active:scale-95"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={() => carouselControlsRef.current?.stepBy(1)}
               aria-label="Next project"
-              className="w-9 h-9 rounded-full flex items-center justify-center border border-border/60 bg-background/80 hover:bg-muted text-foreground transition-all duration-200 active:scale-95 shadow-sm hover:border-primary/40 cursor-pointer"
+              className="w-9 h-9 rounded-full flex items-center justify-center border border-border/60 bg-background/80 hover:bg-foreground/5 hover:border-foreground/20 text-foreground/60 hover:text-foreground transition-all duration-200 active:scale-95"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
-
-            {/* Current Project Pill / Index Indicator */}
-            <div className="hidden md:flex items-center gap-2 ml-2 px-3 py-1.5 rounded-full bg-background/70 border border-border/40 text-[11px] font-mono text-muted-foreground backdrop-blur-xs">
-              <span className="font-semibold text-foreground">
-                {String(activeIndex + 1).padStart(2, '0')}
-              </span>
-              <span className="opacity-40">/</span>
-              <span>{String(carouselItems.length).padStart(2, '0')}</span>
-              <span className="w-1 h-1 rounded-full bg-primary/70 mx-1" />
-              <span className="text-foreground/80 truncate max-w-[140px]">
-                {currentProject?.title}
-              </span>
-            </div>
           </div>
 
           {/* Right: View All Projects CTA */}
-          <div className="order-1 sm:order-2">
-            <button
-              onClick={() => navigate('/projects')}
-              className="group inline-flex items-center gap-2.5 h-12 px-7 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-sans font-medium text-sm transition-all duration-300 hover:from-emerald-500 hover:to-emerald-600 shadow-[0_4px_20px_rgba(16,185,129,0.35)] hover:shadow-[0_8px_28px_rgba(16,185,129,0.55)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer dark:from-emerald-500 dark:to-emerald-600 dark:text-white"
-            >
-              View All Projects
-              <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-            </button>
-          </div>
+          <button
+            onClick={() => navigate('/projects')}
+            className="group inline-flex items-center gap-2.5 h-11 px-6 rounded-full bg-foreground text-background font-sans font-medium text-sm transition-all duration-300 hover:bg-foreground/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+          >
+            View All Projects
+            <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </button>
 
         </div>
       </motion.div>

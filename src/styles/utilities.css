@@ -4,54 +4,62 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── Custom Cursor ──────────────────────────────────────────────────────── */
-.cursor-dot {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 6px;
-  height: 6px;
-  background: hsl(var(--crimson));
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 100000;
-  /* GPU-composited only — never paint */
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
-  transition: transform 0.06s linear, opacity 0.2s ease;
-}
+  .cursor-dot {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 8px;
+    height: 8px;
+    background: hsl(var(--gold));
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 100000;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    box-shadow:
+      0 0 0 1.5px hsl(var(--background)),
+      0 0 10px hsl(var(--gold) / 0.8),
+      0 0 20px hsl(var(--gold) / 0.4);
+    transition: transform 0.06s linear, opacity 0.2s ease;
+  }
 
-.cursor-ring {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 28px;
-  height: 28px;
-  border: 1.5px solid hsl(var(--secondary) / 0.55);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 99999;
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
-  transition:
-    transform 0.12s cubic-bezier(0.16, 1, 0.3, 1),
-    width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-    height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.3s ease,
-    opacity 0.3s ease;
-}
+  .cursor-ring {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 32px;
+    height: 32px;
+    border: 1.5px solid hsl(var(--gold) / 0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    transition:
+      transform 0.12s cubic-bezier(0.16, 1, 0.3, 1),
+      width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      height 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.25s ease,
+      opacity 0.25s ease;
+  }
 
-/* Hover state — expand ring over interactive targets */
-.cursor-ring.is-hovering {
-  width: 44px;
-  height: 44px;
-  border-color: hsl(var(--crimson) / 0.5);
-}
+  /* Hover state — ring expands and border brightens */
+  .cursor-ring.is-hovering {
+    width: 50px;
+    height: 50px;
+    border-color: hsl(var(--gold) / 0.95);
+    border-width: 2px;
+  }
 
-/* Click state — collapse */
-.cursor-dot.is-clicking {
-  transform: translate3d(0, 0, 0) scale(2.5);
-  background: hsl(var(--gold));
-}
+  /* Click state — dot flashes and ring contracts */
+  .cursor-dot.is-clicking {
+    transform: translate3d(0, 0, 0) scale(2.4);
+    background: hsl(var(--gold));
+    box-shadow:
+      0 0 0 1.5px hsl(var(--background)),
+      0 0 14px hsl(var(--gold) / 0.95),
+      0 0 28px hsl(var(--gold) / 0.55);
+  }
 
 /* ── Scrollbar ──────────────────────────────────────────────────────────── */
 .scrollbar-hidden::-webkit-scrollbar { display: none; }
