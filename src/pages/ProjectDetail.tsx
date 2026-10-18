@@ -108,7 +108,7 @@ const ProjectDetail = () => {
               <LightRays raysColor="#4f46e5" raysSpeed={0.45} noiseAmount={0.01} />
               <LightPillar
                 topColor="#10B981"
-                bottomColor="#F59E0B"
+                bottomColor="hsl(var(--gold))"
                 intensity={0.6}
                 pillarWidth={2.5}
                 glowAmount={0.003}

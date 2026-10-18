@@ -1,7 +1,7 @@
 //src/components/sections/TechStack/constants.ts
 
 const CR = '#10B981'; // Royal Emerald
-const GD = '#F59E0B'; // Liquid Gold
+const GD = 'hsl(var(--gold))'; // Golden Amber
 
 export const CAT_META: Record<string, { label: string; color: string }> = {
   fe:    { label: 'Frontend',       color: GD },

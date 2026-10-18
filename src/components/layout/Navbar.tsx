@@ -88,9 +88,9 @@ function ThemeButton({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
         className="flex items-center justify-center"
       >
         {isDark ? (
-          <MoonIcon className="w-3.5 h-3.5 text-amber-300" />
-        ) : (
-          <SunIcon className="w-3.5 h-3.5 text-amber-500" />
+<MoonIcon className="w-3.5 h-3.5 text-gold" />
+          ) : (
+          <SunIcon className="w-3.5 h-3.5 text-gold" />
         )}
       </motion.div>
     </motion.button>

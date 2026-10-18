@@ -343,7 +343,7 @@ const CTASection = ({ isInView }: { isInView: boolean }) => (
           href="/resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 px-7 h-12 font-sans font-medium text-white shadow-[0_4px_20px_rgba(16,185,129,0.35)] transition-all duration-300 hover:from-emerald-400 hover:to-emerald-500 hover:shadow-[0_8px_28px_rgba(16,185,129,0.5)] hover:-translate-y-0.5 active:translate-y-0"
+          className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 px-7 h-12 font-sans font-medium text-white shadow-[0_4px_20px_rgba(16,185,129,0.35)] transition-all duration-300 hover:from-emerald-500 hover:to-emerald-600 hover:shadow-[0_8px_28px_rgba(16,185,129,0.5)] hover:-translate-y-0.5 active:translate-y-0 dark:from-emerald-500 dark:to-emerald-600"
         >
           <svg className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -352,10 +352,10 @@ const CTASection = ({ isInView }: { isInView: boolean }) => (
         </a>
         <a
           href="#contact"
-          className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-card/80 backdrop-blur-md px-7 h-12 font-medium text-foreground shadow-sm transition-all duration-300 hover:border-amber-500/60 hover:text-amber-500 dark:hover:text-amber-400 hover:shadow-[0_4px_20px_rgba(245,158,11,0.2)] hover:-translate-y-0.5"
+          className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-card/80 backdrop-blur-md px-7 h-12 font-medium text-foreground shadow-sm transition-all duration-300 hover:border-gold/60 hover:text-gold dark:hover:text-gold hover:shadow-[0_4px_20px_rgba(217,119,6,0.2)] hover:-translate-y-0.5"
         >
           <span className="text-sm">Get in Touch</span>
-          <span className="text-xs text-amber-500">→</span>
+          <span className="text-xs text-gold">→</span>
         </a>
       </div>
     </div>
@@ -441,13 +441,13 @@ const EngineeringPhilosophy = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16 md:mb-20 flex flex-col items-center"
         >
-          <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
+          <h2 className="font-jakarta font-bold text-4xl md:text-5xl text-foreground tracking-tight leading-[1.1] mb-5">
             Workflow &{' '}
             <span className="font-playfair italic font-medium text-[#10B981]">
               Process
             </span>
           </h2>
-          <p className="text-sm text-foreground/40 leading-relaxed max-w-[280px]">
+          <p className="text-sm text-foreground/70 dark:text-foreground/80 leading-relaxed max-w-[280px]">
             From initial concept to final deployment, here's how I bring ideas to life.
           </p>
         </motion.div>

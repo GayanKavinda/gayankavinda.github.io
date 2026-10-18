@@ -46,7 +46,7 @@
       --secondary-foreground: 220 25% 10%;
       --muted: 210 20% 98%;                /* #F8FAFC Alternate section */
       --muted-foreground: 215 16% 47%;     /* #64748B Cool Silver-Slate */
-      --accent: 38 92% 50%;                /* #F59E0B Liquid Gold */
+      --accent: 38 65% 42%;                /* #D97706 Golden Amber */
       --accent-foreground: 0 0% 100%;
       --accent-soft: 152 76% 96%;         /* #ECFDF5 Subtle emerald surface */
       --lavender-mist: 45 93% 94%;         /* #FEF9C3 Pale Gold Mist */
@@ -58,7 +58,7 @@
 
       /* ── Brand Aliases ───────────────────────────────────────── */
       --crimson: 158 79% 42%;             /* points to primary emerald */
-      --gold: 38 92% 50%;                  /* points to liquid gold #F59E0B */
+      --gold: 38 65% 42%;                  /* points to golden amber #D97706 */
       --bone: 220 25% 10%;
       --card-bg: 0 0% 100%;
       --dark-bg: 0 0% 100%;
@@ -82,7 +82,7 @@
       /* Semantic Premium Colors */
       --emerald: 158 79% 42%;
       --indigo: 217 91% 60%;
-      --amber: 38 92% 50%;
+      --amber: 38 65% 42%;
       --rose: 350 89% 60%;
       --slate: 215 16% 47%;
       --ocean: 199 89% 48%;
@@ -105,7 +105,7 @@
       --secondary-foreground: 210 40% 98%;
       --muted: 223 47% 12%;                /* #111827 Alternate section */
       --muted-foreground: 215 20% 70%;     /* #94A3B8 Secondary Text */
-      --accent: 45 93% 54%;                /* #FBBF24 Liquid Gold Accent */
+      --accent: 45 65% 48%;                /* #FBBF24 Golden Amber Accent */
       --accent-foreground: 222 47% 7%;
       --accent-soft: 160 84% 12%;          /* #064E3B Subtle emerald surface */
       --lavender-mist: 45 50% 18%;         /* Gold tint surface */
@@ -116,13 +116,13 @@
 
       /* ── Brand Aliases ───────────────────────────────────────── */
       --crimson: 160 84% 45%;
-      --gold: 45 93% 54%;
+      --gold: 45 65% 48%;
       --bone: 210 40% 98%;
 
       /* Semantic Premium Colors (Dark) */
       --emerald: 160 84% 45%;
       --indigo: 217 91% 68%;
-      --amber: 45 93% 54%;
+      --amber: 45 65% 48%;
       --rose: 350 89% 65%;
       --slate: 215 20% 70%;
       --ocean: 199 89% 56%;

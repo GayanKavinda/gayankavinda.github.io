@@ -19,7 +19,7 @@ const badgeVariants = cva(
         crimson: "text-crimson",
         emerald: "text-emerald",
         indigo: "text-indigo",
-        amber: "text-amber",
+        amber: "text-gold",
         rose: "text-rose",
         slate: "text-slate",
         ocean: "text-ocean",

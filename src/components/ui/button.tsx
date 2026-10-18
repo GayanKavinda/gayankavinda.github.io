@@ -9,13 +9,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-400 hover:to-emerald-500 shadow-[0_4px_20px_rgba(16,185,129,0.35)] hover:shadow-[0_8px_28px_rgba(16,185,129,0.5)] hover:-translate-y-0.5 active:translate-y-0",
+        default: "bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-500 hover:to-emerald-600 shadow-[0_4px_20px_rgba(16,185,129,0.35)] hover:shadow-[0_8px_28px_rgba(16,185,129,0.5)] hover:-translate-y-0.5 active:translate-y-0 dark:from-emerald-500 dark:to-emerald-600",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
-        outline: "border border-amber-500/30 bg-card/80 text-foreground hover:bg-amber-500/10 hover:border-amber-500/60 hover:text-amber-500 dark:hover:text-amber-400 transition-all shadow-sm hover:-translate-y-0.5",
+        outline: "border border-gold/30 bg-card/80 text-foreground hover:bg-gold/10 hover:border-gold/60 hover:text-gold dark:hover:text-gold transition-all shadow-sm hover:-translate-y-0.5",
         secondary: "border border-border bg-card/60 backdrop-blur-md text-foreground hover:bg-emerald-500/10 hover:border-emerald-500/40 hover:text-emerald-500 dark:hover:text-emerald-400 transition-all hover:-translate-y-0.5",
         ghost: "hover:bg-emerald-500/10 hover:text-emerald-500 dark:hover:text-emerald-400 text-foreground transition-colors",
         link: "text-foreground hover:text-emerald-500 underline-offset-4 hover:underline p-0 h-auto",
-        gold: "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-semibold hover:from-amber-400 hover:to-amber-500 shadow-[0_4px_20px_rgba(245,158,11,0.35)] hover:shadow-[0_8px_28px_rgba(245,158,11,0.5)] hover:-translate-y-0.5 active:translate-y-0",
+        gold: "bg-gradient-to-r from-gold to-gold/80 text-slate-950 font-semibold hover:from-gold/90 hover:to-gold/70 shadow-[0_4px_20px_rgba(217,119,6,0.35)] hover:shadow-[0_8px_28px_rgba(217,119,6,0.5)] hover:-translate-y-0.5 active:translate-y-0",
       },
       size: {
         default: "h-12 px-7 text-sm",

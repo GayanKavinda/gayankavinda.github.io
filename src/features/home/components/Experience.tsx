@@ -215,7 +215,7 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
 
         {/* Cyan/Violet top-edge accent on current role */}
         {entry.current && (
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#10B981] via-[#F59E0B] to-transparent" />
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-gold to-transparent" />
         )}
 
         <div className="relative z-10 p-6 md:p-7">
@@ -225,7 +225,7 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
             <div className="flex-1 min-w-0">
               {/* Year + current badge */}
               <div className="flex items-center gap-2.5 mb-1.5">
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#F59E0B]/70">
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-gold/70">
                   {entry.year}
                 </span>
                 {entry.current && (
@@ -273,7 +273,7 @@ const ExperienceCard = React.memo(({ entry, index }: { entry: Entry; index: numb
 
               <div className="w-16 h-1 rounded-full bg-white/8 dark:bg-white/[0.06] overflow-hidden">
                 <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-[#10B981] to-[#F59E0B]"
+                  className="h-full rounded-full bg-gradient-to-r from-primary to-gold"
                   initial={{ width: 0 }}
                   whileInView={{ width: `${pct}%` }}
                   viewport={{ once: true }}
@@ -369,7 +369,7 @@ const Experience = () => {
           transform: `translateY(${parallaxY}px)`
         }}
       >
-        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#10B981]/10 via-[#F59E0B]/10 to-transparent blur-[80px]" />
+        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-primary/10 via-gold/10 to-transparent blur-[80px]" />
       </motion.div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8">
@@ -415,7 +415,7 @@ const Experience = () => {
 
             {/* Divider */}
             <motion.div
-              className="h-px bg-gradient-to-r from-[#F59E0B]/20 to-transparent"
+              className="h-px bg-gradient-to-r from-gold/20 to-transparent"
               initial={{ scaleX: 0, originX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
@@ -439,7 +439,7 @@ const Experience = () => {
                 <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/40">Past role</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-1 rounded-full bg-gradient-to-r from-[#10B981] to-[#F59E0B]" />
+                <div className="w-8 h-1 rounded-full bg-gradient-to-r from-primary to-gold" />
                 <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/40">Tenure length</span>
               </div>
             </motion.div>
@@ -451,7 +451,7 @@ const Experience = () => {
             {/* Vertical spine — only visible on md+ */}
             <div className="absolute left-0 top-4 bottom-4 w-[2px] bg-white/[0.06] hidden md:block overflow-hidden">
               <motion.div
-                className="w-full bg-gradient-to-b from-[#10B981] via-[#F59E0B] to-transparent origin-top will-change-[height]"
+                className="w-full bg-gradient-to-b from-primary via-gold to-transparent origin-top will-change-[height]"
                 style={{ height: spineHeight }}
               />
             </div>

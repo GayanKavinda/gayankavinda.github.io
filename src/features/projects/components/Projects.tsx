@@ -304,7 +304,7 @@ const Projects = () => {
           <div className="order-1 sm:order-2">
             <button
               onClick={() => navigate('/projects')}
-              className="group inline-flex items-center gap-2.5 h-12 px-7 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-sans font-medium text-sm transition-all duration-300 hover:from-emerald-400 hover:to-emerald-500 shadow-[0_4px_20px_rgba(16,185,129,0.35)] hover:shadow-[0_8px_28px_rgba(16,185,129,0.55)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              className="group inline-flex items-center gap-2.5 h-12 px-7 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-sans font-medium text-sm transition-all duration-300 hover:from-emerald-500 hover:to-emerald-600 shadow-[0_4px_20px_rgba(16,185,129,0.35)] hover:shadow-[0_8px_28px_rgba(16,185,129,0.55)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer dark:from-emerald-500 dark:to-emerald-600 dark:text-white"
             >
               View All Projects
               <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>

@@ -7,7 +7,7 @@ const TechStack = () => {
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section id="skills" ref={sectionRef} className="py-10 md:py-14 relative overflow-hidden">
+    <section id="skills" ref={sectionRef} className="py-10 md:py-14 relative overflow-hidden bg-background">
       <div className="max-w-[1280px] mx-auto px-6 md:px-12">
         <motion.div
           className="relative z-10 text-center mb-14 flex flex-col items-center"
@@ -15,11 +15,11 @@ const TechStack = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
+          <h2 className="font-jakarta font-bold text-4xl md:text-5xl text-foreground tracking-tight leading-[1.1] mb-5">
             Technical{' '}
             <span className="font-playfair italic font-medium text-[#10B981]">Stack</span>
           </h2>
-          <p className="text-sm text-foreground/50 dark:text-foreground/60 leading-relaxed max-w-[280px]">
+          <p className="text-sm text-foreground/70 dark:text-foreground/80 leading-relaxed max-w-[280px]">
             Architecting scalable systems and refined sensory experiences.
           </p>
         </motion.div>

@@ -121,7 +121,7 @@ export const PreLoader = ({ children }: { children: React.ReactNode }) => {
               >
                 <motion.div
                   className="h-full rounded-full"
-                  style={{ background: 'linear-gradient(90deg, #10B981, #F59E0B)' }}
+                  style={{ background: 'linear-gradient(90deg, hsl(var(--primary)), hsl(var(--gold)))' }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.4, ease: 'easeOut' }}
                 />

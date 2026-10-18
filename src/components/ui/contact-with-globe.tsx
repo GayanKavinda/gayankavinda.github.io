@@ -333,7 +333,7 @@ export default function ContactWithGlobe({
               <button
                 type="submit"
                 disabled={sending}
-                className="group inline-flex items-center gap-2.5 h-12 px-8 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-sans font-medium text-sm shadow-[0_4px_20px_rgba(16,185,129,0.35)] transition-all duration-300 hover:from-emerald-400 hover:to-emerald-500 hover:shadow-[0_8px_28px_rgba(16,185,129,0.55)] hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                className="group inline-flex items-center gap-2.5 h-12 px-8 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-sans font-medium text-sm shadow-[0_4px_20px_rgba(16,185,129,0.35)] transition-all duration-300 hover:from-emerald-500 hover:to-emerald-600 hover:shadow-[0_8px_28px_rgba(16,185,129,0.55)] hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer dark:from-emerald-500 dark:to-emerald-600"
               >
                 {sending ? (
                   "Sending…"

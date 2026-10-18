@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
 import logoMask from '@/assets/images/mask.png';
-const CRIMSON = '#10B981';
-const GOLD    = '#F59E0B';
+const CRIMSON = 'hsl(var(--primary))';
+  const GOLD    = 'hsl(var(--gold))';
 const YEAR    = new Date().getFullYear();
 
 const NAV_LINKS = [
@@ -90,7 +90,7 @@ const Footer = () => {
           y: glowY,
         }}
       >
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#10B981]/10 via-[#F59E0B]/10 to-transparent blur-[80px]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-primary/10 via-gold/10 to-transparent blur-[80px]" />
       </motion.div>
 
       <div
@@ -301,7 +301,7 @@ const Footer = () => {
           </span>
 
           <span className="hidden md:inline-block font-mono text-[11px] text-foreground/40">
-            React 18 · Framer Motion · TypeScript · Tailwind CSS
+
           </span>
 
           <button
