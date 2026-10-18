@@ -28,11 +28,11 @@ const NotFound = () => {
           transform: `translateY(${useTransform(useScroll({ target: sectionRef, offset: ['start center', 'end center'] }).scrollY, [0, 1], [100, -100])}px)`
         }}
       >
-        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[80px]" />
+        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#6C63FF]/10 via-[#8E86FF]/10 to-transparent blur-[80px]" />
       </motion.div>
 
       <div className="relative z-10 text-center px-6">
-        <p className="font-mono text-[12px] uppercase tracking-[0.3em] text-[#7C5CFC] mb-4">// System.Error: 404</p>
+        <p className="font-mono text-[12px] uppercase tracking-[0.3em] text-[#6C63FF] mb-4">// System.Error: 404</p>
         <h1 className="font-playfair font-black text-[clamp(80px,15vw,160px)] leading-none text-foreground tracking-tighter mb-4 opacity-10">404</h1>
 
         <div className="max-w-[400px] mx-auto bg-card border border-border rounded-2xl p-8 elevation-card relative -mt-12 md:-mt-20">
@@ -42,7 +42,7 @@ const NotFound = () => {
           </p>
           <a
             href="/"
-            className="inline-flex items-center justify-center w-full bg-foreground text-background font-mono text-[12px] uppercase tracking-wider py-4 rounded hover:bg-[#7C5CFC] hover:text-white transition-all"
+            className="inline-flex items-center justify-center w-full bg-foreground text-background font-mono text-[12px] uppercase tracking-wider py-4 rounded hover:bg-[#6C63FF] hover:text-white transition-all"
           >
             Return to Cluster Root
           </a>

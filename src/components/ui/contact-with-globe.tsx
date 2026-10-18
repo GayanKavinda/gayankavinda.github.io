@@ -39,7 +39,7 @@ const letterClass =
   "text-[17px] md:text-[19px] leading-[2.1] text-foreground/85";
 
 const blankClass =
-  "inline-block bg-transparent border-0 border-b border-dotted border-foreground/30 hover:border-foreground/50 focus:border-solid focus:border-[#7C5CFC] outline-none px-1.5 py-1 text-[17px] md:text-[19px] leading-snug text-foreground placeholder:text-foreground/30 caret-[#7C5CFC] transition-colors align-baseline";
+  "inline-block bg-transparent border-0 border-b border-dotted border-foreground/30 hover:border-foreground/50 focus:border-solid focus:border-[#10B981] outline-none px-1.5 py-1 text-[17px] md:text-[19px] leading-snug text-foreground placeholder:text-foreground/30 caret-[#10B981] transition-colors align-baseline";
 
 // ─── The fill-in blank ────────────────────────────────────────────────────────
 
@@ -192,7 +192,7 @@ export default function ContactWithGlobe({
               : "linear-gradient(to right, black 55%, transparent 100%)",
           }}
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#7C5CFC]/10 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-[#7C5CFC]/10" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#10B981]/10 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-[#10B981]/10" />
 
         {/* Rubber stamp, pressed by hand */}
         <motion.div
@@ -200,7 +200,7 @@ export default function ContactWithGlobe({
           whileInView={{ opacity: 1, rotate: -5, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.55, ease: smoothEase }}
-          className="absolute bottom-10 left-6 md:bottom-14 md:left-10 border-2 border-[#d60d86] text-[#d60d86] font-mono text-[10px] uppercase tracking-[0.25em] px-3 py-1.5 bg-white/70 dark:bg-black/40 backdrop-blur-sm"
+          className="absolute bottom-10 left-6 md:bottom-14 md:left-10 border-2 border-[#10B981] text-[#10B981] font-mono text-[10px] uppercase tracking-[0.25em] px-3 py-1.5 bg-white/70 dark:bg-black/40 backdrop-blur-sm"
         >
           Open to work
         </motion.div>
@@ -217,7 +217,7 @@ export default function ContactWithGlobe({
         >
           <h2 className="font-jakarta font-semibold text-[34px] md:text-[42px] leading-[1.05] tracking-[-0.02em] text-foreground">
             Talk to me like a{" "}
-            <span className="font-playfair italic font-medium text-[#d60d86]">
+            <span className="font-playfair italic font-medium text-[#10B981]">
               person
             </span>
             .
@@ -286,8 +286,8 @@ export default function ContactWithGlobe({
                 }}
                 className={`inline-flex items-center gap-2 text-[13px] transition-colors cursor-pointer ${
                   dragging
-                    ? "text-[#7C5CFC]"
-                    : "text-foreground/40 hover:text-[#7C5CFC]"
+                    ? "text-[#10B981]"
+                    : "text-foreground/40 hover:text-[#10B981]"
                 }`}
               >
                 <Paperclip className="w-3.5 h-3.5" />
@@ -333,28 +333,19 @@ export default function ContactWithGlobe({
               <button
                 type="submit"
                 disabled={sending}
-                className="group flex items-center gap-2 px-6 py-3 text-[11px] font-semibold uppercase tracking-wide text-white transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0 cursor-pointer"
-                style={{
-                  background:
-                    "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%)",
-                  clipPath:
-                    "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)",
-                  boxShadow: isDark
-                    ? "0 0 20px hsl(var(--primary) / 0.35)"
-                    : "0 8px 24px hsl(var(--primary) / 0.25)",
-                }}
+                className="group inline-flex items-center gap-2.5 h-12 px-8 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-sans font-medium text-sm shadow-[0_4px_20px_rgba(16,185,129,0.35)] transition-all duration-300 hover:from-emerald-400 hover:to-emerald-500 hover:shadow-[0_8px_28px_rgba(16,185,129,0.55)] hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
               >
                 {sending ? (
                   "Sending…"
                 ) : submitted ? (
                   <>
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    Sent
+                    <CheckCircle2 className="w-4 h-4" />
+                    Sent!
                   </>
                 ) : (
                   <>
                     Send it
-                    <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
                   </>
                 )}
               </button>
@@ -362,7 +353,7 @@ export default function ContactWithGlobe({
               <div className="flex items-center gap-3">
                 <a
                   href={`mailto:${email}`}
-                  className="text-[13px] text-foreground hover:text-[#7C5CFC] transition-colors"
+                  className="text-[13px] text-foreground hover:text-[#10B981] transition-colors"
                 >
                   {email}
                 </a>
@@ -370,7 +361,7 @@ export default function ContactWithGlobe({
                   type="button"
                   onClick={handleCopyEmail}
                   title="Copy email address"
-                  className="text-foreground/40 hover:text-[#7C5CFC] transition-colors cursor-pointer"
+                  className="text-foreground/40 hover:text-[#10B981] transition-colors cursor-pointer"
                 >
                   {copied ? (
                     <Check className="w-3.5 h-3.5 text-emerald-500" />
@@ -395,7 +386,7 @@ export default function ContactWithGlobe({
                   target="_blank"
                   rel="noopener noreferrer"
                   title={item.name}
-                  className="w-10 h-10 rounded-full border border-black/[0.12] dark:border-white/[0.15] flex items-center justify-center text-foreground/60 hover:text-[#7C5CFC] hover:border-[#7C5CFC] transition-all"
+                  className="w-10 h-10 rounded-full border border-black/[0.12] dark:border-white/[0.15] flex items-center justify-center text-foreground/60 hover:text-[#10B981] hover:border-[#10B981] transition-all"
                 >
                   <item.Icon className="w-4 h-4" />
                 </a>

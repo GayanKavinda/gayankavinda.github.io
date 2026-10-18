@@ -14,7 +14,7 @@ const MATERIAL_CONFIG = {
   baseMetalness: 0.3,
   envMapIntensity: 2.5,
   aoMapIntensity: 1.2,
-  emissiveColor: "#7C5CFC",
+  emissiveColor: "#10B981",
   emissiveIntensity: 0.8,
   glassTransmission: 1,
   glassRoughness: 0,

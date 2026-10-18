@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
 import logoMask from '@/assets/images/mask.png';
-const CRIMSON = '#7C5CFC';
-const GOLD    = '#00D4FF';
+const CRIMSON = '#10B981';
+const GOLD    = '#F59E0B';
 const YEAR    = new Date().getFullYear();
 
 const NAV_LINKS = [
@@ -90,7 +90,7 @@ const Footer = () => {
           y: glowY,
         }}
       >
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[80px]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#10B981]/10 via-[#F59E0B]/10 to-transparent blur-[80px]" />
       </motion.div>
 
       <div

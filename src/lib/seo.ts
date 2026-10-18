@@ -63,7 +63,7 @@ export function setSEO(meta: SEOMeta = {}): void {
   setMetaName('description',      d);
   setMetaName('author',           'Gayan Kavinda');
   setMetaName('robots',           'index, follow');
-  setMetaName('theme-color',      '#7C5CFC');
+  setMetaName('theme-color',      '#6C63FF');
 
   // ── Open Graph ────────────────────────────────────────────────────────────
   setMetaProp('og:title',         t);

@@ -61,7 +61,7 @@ function ProfileCard() {
           <img src={portraitImg} alt="Gayan Kavinda" className="absolute inset-0 h-full w-full object-cover object-center z-10 transition-transform duration-700 hover:scale-[1.025]" />
           <div className="absolute bottom-0 left-0 right-0 z-20 px-5 pb-5 pt-14" style={{ background: 'linear-gradient(to top, rgba(8,8,14,0.9) 0%, rgba(8,8,14,0.45) 55%, transparent 100%)' }}>
             <p className="font-['Playfair_Display',serif] text-[1.05rem] font-normal italic leading-snug text-white/90">Gayan Kavinda</p>
-            <p className="mt-0.5 text-[10px] font-normal uppercase tracking-[0.18em]" style={{ color: '#d60d86' }}>Full-Stack & DevOps Engineer</p>
+            <p className="mt-0.5 text-[10px] font-normal uppercase tracking-[0.18em]" style={{ color: '#10B981' }}>Full-Stack & DevOps Engineer</p>
           </div>
           <div className="absolute top-4 left-4 z-30">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-black/40 px-2.5 py-1 text-[10px] text-emerald-300 backdrop-blur-md">
@@ -73,15 +73,15 @@ function ProfileCard() {
 
         {/* RIGHT: Content */}
         <div className="relative flex flex-1 flex-col justify-between p-6 sm:px-7 sm:py-6">
-          <div aria-hidden className="absolute left-0 top-10 bottom-10 w-[1.5px] hidden sm:block rounded-full" style={{ background: 'linear-gradient(to bottom, transparent, #d60d86 25%, #d60d86 75%, transparent)' }} />
+          <div aria-hidden className="absolute left-0 top-10 bottom-10 w-[1.5px] hidden sm:block rounded-full" style={{ background: 'linear-gradient(to bottom, transparent, #10B981 25%, #10B981 75%, transparent)' }} />
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Code2 size={13} className="text-[#d60d86]" />
+              <Code2 size={13} className="text-[#10B981]" />
               <span className={eyebrow}>Software Engineer</span>
             </div>
             <p className="text-sm leading-[1.8] text-slate-600 dark:text-zinc-400">
               I build things that scale — web platforms, cloud microservices, reactive interfaces. I care about architecture that{' '}
-              <em className="not-italic text-slate-900 dark:text-white underline underline-offset-2 decoration-[#d60d86]/40">makes sense</em>
+              <em className="not-italic text-slate-900 dark:text-white underline underline-offset-2 decoration-[#10B981]/40">makes sense</em>
               {' '}six months later.
             </p>
             <div className="mt-5 flex flex-wrap gap-1.5">
@@ -114,10 +114,10 @@ function EducationCard() {
         </div>
         <div className="mt-4">
           <div className="flex items-center gap-1.5 mb-1">
-            <GraduationCap size={13} className="text-[#d60d86]" />
+            <GraduationCap size={13} className="text-[#10B981]" />
             <span className={eyebrow}>Education</span>
           </div>
-          <p className="text-[11px] text-[#d60d86] mt-2">BSc (Hons) Software Engineering</p>
+          <p className="text-[11px] text-[#10B981] mt-2">BSc (Hons) Software Engineering</p>
           <h3 className="text-sm font-normal tracking-tight text-slate-900 dark:text-white mt-0.5 leading-snug">Sri Lanka Institute of<br />Information Technology</h3>
           <p className="text-[11px] text-slate-400 dark:text-zinc-500 mt-1">Faculty of Computing</p>
         </div>
@@ -154,7 +154,7 @@ function LocationCard() {
       <div>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-1.5">
-            <MapPin size={13} className="text-[#d60d86]" />
+            <MapPin size={13} className="text-[#10B981]" />
             <span className={eyebrow}>Location</span>
           </div>
           <span className="text-[10px] text-slate-400">LK</span>
@@ -163,8 +163,8 @@ function LocationCard() {
           <img src={isDark ? mapDark : mapLight} alt="Sri Lanka" className="absolute inset-0 h-full w-full object-cover object-center" />
           <div className="absolute z-10" style={{ bottom: '38%', left: '22%' }} title="Colombo">
             <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#d60d86] opacity-50" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#d60d86]" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-50" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#10B981]" />
             </span>
           </div>
         </div>
@@ -191,7 +191,7 @@ function SocialCard() {
       <div className="space-y-2">
         {socials.map((s) => (
           <a key={s.name} href={s.href} target="_blank" rel="noopener noreferrer"
-            className="group flex items-center justify-between rounded-xl border border-slate-200/70 bg-slate-50/50 p-2.5 transition-all duration-200 hover:border-[#d60d86]/30 hover:bg-slate-100/60 dark:border-zinc-800 dark:bg-zinc-900/30 dark:hover:border-[#d60d86]/30 dark:hover:bg-zinc-900">
+            className="group flex items-center justify-between rounded-xl border border-slate-200/70 bg-slate-50/50 p-2.5 transition-all duration-200 hover:border-[#10B981]/30 hover:bg-slate-100/60 dark:border-zinc-800 dark:bg-zinc-900/30 dark:hover:border-[#10B981]/30 dark:hover:bg-zinc-900">
             <div className="flex items-center gap-3">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200/80 bg-white text-slate-700 transition-colors group-hover:bg-slate-900 group-hover:text-white dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:group-hover:bg-white dark:group-hover:text-slate-900">
                 <s.Icon size={13} />
@@ -201,7 +201,7 @@ function SocialCard() {
                 <p className="text-[10px] text-slate-400">{s.handle}</p>
               </div>
             </div>
-            <ArrowUpRight size={13} className="text-slate-300 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#d60d86] dark:text-zinc-600" />
+            <ArrowUpRight size={13} className="text-slate-300 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#10B981] dark:text-zinc-600" />
           </a>
         ))}
       </div>
@@ -623,7 +623,7 @@ const About = () => {
         <div className="mb-10 md:mb-12">
           <p className={`${eyebrow} mb-2`}>About</p>
           <h2 className="text-2xl md:text-[1.75rem] font-normal text-slate-900 dark:text-white tracking-tight leading-snug">
-            The <span className="font-['Playfair_Display',serif] italic text-[#d60d86]">Engineer</span>
+            The <span className="font-['Playfair_Display',serif] italic text-[#10B981]">Engineer</span>
           </h2>
           <p className="mt-3 text-sm text-slate-500 dark:text-zinc-400 leading-relaxed max-w-xl">
             10 years building scalable systems. Obsessed with performance, clean architecture, and shipping things that{' '}
@@ -641,7 +641,7 @@ const About = () => {
               'Internal distributed-tracing library adopted by 8+ teams.',
             ].map((item) => (
               <li key={item} className="flex items-start gap-2">
-                <span className="text-[#d60d86] mt-[2px] shrink-0 text-[10px]">◆</span>
+                <span className="text-[#10B981] mt-[2px] shrink-0 text-[10px]">◆</span>
                 <span>{item}</span>
               </li>
             ))}

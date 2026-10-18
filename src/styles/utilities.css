@@ -207,7 +207,31 @@ select:focus-visible {
 }
 
 /* Backward-compat alias */
-.elevation-card { @extend .elevation-md; }
+.elevation-card {
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.elevation-card:hover {
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-4px);
+}
+.dark .elevation-card {
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.5),
+    0 8px 40px rgba(0, 0, 0, 0.35);
+}
+.dark .elevation-card:hover {
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.6),
+    0 0 60px hsl(var(--primary) / 0.08),
+    0 0 0 1px hsl(var(--primary) / 0.12);
+  transform: translateY(-4px);
+}
 
 /* ── Section Layout System ──────────────────────────────────────────────── */
 .section-container {
@@ -256,8 +280,8 @@ select:focus-visible {
 .text-gradient {
   background: linear-gradient(
     135deg,
-    #7C5CFC 0%,
-    #00D4FF 100%
+    #6C63FF 0%,
+    #8E86FF 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -268,9 +292,9 @@ select:focus-visible {
 .text-gradient-gold {
   background: linear-gradient(
     90deg,
-    #00D4FF 0%,
-    #7C5CFC 50%,
-    #00D4FF 100%
+    #8E86FF 0%,
+    #6C63FF 50%,
+    #8E86FF 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;

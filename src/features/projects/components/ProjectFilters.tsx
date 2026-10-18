@@ -41,10 +41,10 @@ export const ProjectFilters = ({
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
                 className={`
-                  relative px-5 py-2.5 rounded-xl text-xs font-mono uppercase tracking-widest transition-all duration-300
+                  relative px-5 py-2.5 rounded-full text-xs font-mono uppercase tracking-widest transition-all duration-300
                   ${isActive 
-                    ? 'text-white dark:text-neutral-900 bg-neutral-900 dark:bg-neutral-100 shadow-lg shadow-black/10 dark:shadow-white/5' 
-                    : 'text-foreground/50 hover:text-foreground/80 hover:bg-black/5 dark:hover:bg-white/5'}
+                    ? 'text-white bg-emerald-600 dark:bg-emerald-500 shadow-md shadow-emerald-500/25' 
+                    : 'text-foreground/60 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5'}
                 `}
               >
                 <span className="flex items-center gap-2 relative z-10">
@@ -54,7 +54,7 @@ export const ProjectFilters = ({
                 {isActive && (
                   <motion.div
                     layoutId="activeFilter"
-                    className="absolute inset-0 rounded-xl bg-neutral-900 dark:bg-white"
+                    className="absolute inset-0 rounded-full bg-emerald-600 dark:bg-emerald-500"
                     transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                   />
                 )}

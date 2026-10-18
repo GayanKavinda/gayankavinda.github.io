@@ -93,7 +93,7 @@ const Projects = () => {
         animate={isInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 1.2 }}
       >
-        <div className="absolute left-1/2 top-[10%] -translate-x-1/2 w-[600px] h-[260px] rounded-full bg-gradient-to-b from-primary/12 dark:from-[#d60d86]/10 to-transparent blur-[100px]" />
+        <div className="absolute left-1/2 top-[10%] -translate-x-1/2 w-[600px] h-[260px] rounded-full bg-gradient-to-b from-primary/12 dark:from-[#6C63FF]/10 to-transparent blur-[100px]" />
       </motion.div>
 
       {/* Header and Title — Compact & Elegant */}
@@ -111,7 +111,7 @@ const Projects = () => {
 
           <h2 className="font-jakarta font-semibold text-3xl sm:text-4xl md:text-5xl text-foreground tracking-tight leading-[1.1]">
             Selected{' '}
-            <span className="font-playfair italic font-medium text-primary dark:text-[#d60d86]">
+            <span className="font-playfair italic font-medium text-primary dark:text-[#6C63FF]">
               Projects
             </span>
           </h2>
@@ -169,7 +169,7 @@ const Projects = () => {
                 className={`absolute inset-0 p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 rounded-[16px] border ${
                   isHovered
                     ? isDark
-                      ? 'bg-neutral-950/90 backdrop-blur-md border-[#d60d86]/45 shadow-2xl shadow-primary/25'
+                      ? 'bg-neutral-950/90 backdrop-blur-md border-[#6C63FF]/45 shadow-2xl shadow-primary/25'
                       : 'bg-white/95 backdrop-blur-md border-primary/30 shadow-2xl shadow-black/15'
                     : 'bg-gradient-to-t from-black/85 via-black/25 to-transparent border-transparent'
                 }`}
@@ -180,9 +180,9 @@ const Projects = () => {
                     className={`text-[10px] font-mono tracking-wider uppercase px-2.5 py-0.5 rounded-full font-medium transition-colors ${
                       isHovered
                         ? isDark
-                          ? 'bg-[#d60d86]/20 text-[#f472b6] border border-[#d60d86]/30'
-                          : 'bg-primary/15 text-primary border border-primary/20'
-                        : 'bg-black/50 text-white/90 border border-white/10 backdrop-blur-xs'
+                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                          : 'bg-emerald-50 text-emerald-700 border border-emerald-300'
+                        : 'bg-black/60 text-white border border-white/20 backdrop-blur-sm'
                     }`}
                   >
                     {item.subtitle || 'Project'}
@@ -191,9 +191,7 @@ const Projects = () => {
                   <span
                     className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${
                       isHovered
-                        ? isDark
-                          ? 'bg-[#d60d86] text-white scale-105 shadow-md shadow-[#d60d86]/40'
-                          : 'bg-primary text-white scale-105 shadow-md shadow-primary/30'
+                        ? 'bg-emerald-500 text-white scale-105 shadow-md shadow-emerald-500/40'
                         : 'bg-white/10 text-white/60 opacity-0'
                     }`}
                   >
@@ -306,22 +304,10 @@ const Projects = () => {
           <div className="order-1 sm:order-2">
             <button
               onClick={() => navigate('/projects')}
-              className="group relative inline-flex items-center gap-2.5 px-7 py-3 rounded-full cursor-pointer overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg shadow-primary/20"
+              className="group inline-flex items-center gap-2.5 h-12 px-7 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-sans font-medium text-sm transition-all duration-300 hover:from-emerald-400 hover:to-emerald-500 shadow-[0_4px_20px_rgba(16,185,129,0.35)] hover:shadow-[0_8px_28px_rgba(16,185,129,0.55)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
             >
-              {/* Gradient fill */}
-              <span className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-[#d60d86] opacity-95 group-hover:opacity-100 transition-opacity duration-300" />
-              {/* Subtle glass sheen */}
-              <span className="absolute inset-0 rounded-full bg-gradient-to-b from-white/20 to-transparent" />
-              {/* Border */}
-              <span className="absolute inset-0 rounded-full ring-1 ring-white/25" />
-              {/* Label */}
-              <span className="relative font-mono text-[11px] font-semibold tracking-[0.12em] uppercase text-white">
-                View All Projects
-              </span>
-              {/* Arrow */}
-              <span className="relative text-white text-sm transition-transform duration-300 group-hover:translate-x-1">
-                →
-              </span>
+              View All Projects
+              <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
             </button>
           </div>
 

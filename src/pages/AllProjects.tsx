@@ -61,7 +61,7 @@ const AllProjects = () => {
           transform: `translateY(${useTransform(useScroll({ target: mainRef, offset: ['start center', 'end center'] }).scrollY, [0, 1], [100, -100])}px)`
         }}
       >
-        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#7C5CFC]/10 via-[#00D4FF]/10 to-transparent blur-[80px]" />
+        <div className="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#10B981]/10 via-[#F59E0B]/10 to-transparent blur-[80px]" />
       </motion.div>
 
       <Navbar />

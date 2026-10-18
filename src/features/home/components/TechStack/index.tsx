@@ -17,7 +17,7 @@ const TechStack = () => {
         >
           <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
             Technical{' '}
-            <span className="font-playfair italic font-medium text-[#d60d86]">Stack</span>
+            <span className="font-playfair italic font-medium text-[#10B981]">Stack</span>
           </h2>
           <p className="text-sm text-foreground/50 dark:text-foreground/60 leading-relaxed max-w-[280px]">
             Architecting scalable systems and refined sensory experiences.

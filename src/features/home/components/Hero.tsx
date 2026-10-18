@@ -170,19 +170,31 @@ const Hero = () => {
   const contentOpacity = useTransform(smoothProgress, [0, 0.7], [1, 0]);
 
   const c = useMemo(() => ({
-  eyebrow: isDark ? '#00D4FF' : '#B8783C',
-  name: isDark ? '#FFFFFF' : '#2E271F',
-  nameGlow: 'none',
-  tagline: isDark ? 'rgba(255,255,255,0.95)' : 'rgba(46,39,31,0.88)',
-  desc: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(46,39,31,0.62)',
-  scroll: isDark ? 'rgba(255,255,255,0.35)' : 'rgba(46,39,31,0.4)',
-  btnPrimary: 'linear-gradient(135deg, #7C5CFC 0%, #00D4FF 100%)',
-  btnSecBorder: isDark ? 'rgba(0,212,255,0.3)' : 'rgba(46,39,31,0.22)',
-  btnSecText: isDark ? '#FFFFFF' : '#2E271F',
-  btnSecBg: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.35)',
-  btnSecHoverBorder: isDark ? '#00D4FF' : '#B8783C',
-  btnSecHoverBg: isDark ? 'rgba(0,212,255,0.08)' : 'rgba(184,120,60,0.10)',
-}), [isDark]);
+    eyebrow: '#10B981', // Royal Emerald
+    name: isDark ? '#FFFFFF' : '#0F172A', // Clean high contrast without blurry covering shadow
+    nameGlow: 'none', // Removed covering text-shadow
+    tagline: isDark ? 'rgba(241, 245, 249, 0.95)' : '#1E293B',
+    desc: isDark ? 'rgba(203, 213, 225, 0.88)' : '#475569',
+    scroll: isDark ? 'rgba(203, 213, 225, 0.6)' : '#64748B',
+    // Explore Work button
+    btnPrimary: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+    btnPrimaryHover: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+    btnPrimaryShadow: '0 4px 16px -2px rgba(16,185,129,0.35)',
+    btnPrimaryHoverShadow: '0 6px 20px -2px rgba(16,185,129,0.45)',
+    // Let's Connect button (harmonious emerald glass/border, no abrupt gold mismatch)
+    btnSecBorder: isDark ? 'rgba(16, 185, 129, 0.35)' : 'rgba(16, 185, 129, 0.45)',
+    btnSecText: isDark ? '#FFFFFF' : '#0F172A',
+    btnSecBg: isDark ? 'rgba(15, 23, 42, 0.7)' : 'rgba(255, 255, 255, 0.85)',
+    btnSecHoverBorder: '#10B981',
+    btnSecHoverBg: isDark ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)',
+    btnSecHoverText: isDark ? '#34D399' : '#059669',
+    btnSecShadow: isDark ? '0 4px 16px rgba(0,0,0,0.4)' : '0 4px 16px rgba(0,0,0,0.06)',
+    // Tech pills styling
+    pillBg: isDark ? 'rgba(16, 185, 129, 0.14)' : 'rgba(16, 185, 129, 0.1)',
+    pillBorder: isDark ? 'rgba(16, 185, 129, 0.35)' : 'rgba(16, 185, 129, 0.3)',
+    pillText: isDark ? '#6EE7B7' : '#047857',
+    pillShadow: isDark ? '0 2px 8px rgba(0,0,0,0.3)' : '0 1px 4px rgba(0,0,0,0.05)',
+  }), [isDark]);
 
   // Fireflies near the lantern
   const fireflies = useMemo(() => [
@@ -365,7 +377,7 @@ const Hero = () => {
               fontFamily: "'Audiowide', sans-serif", 
               fontSize: 'clamp(9px, 1vw, 11px)', 
               color: c.eyebrow,
-              textShadow: '0 0 20px rgba(0,212,255,0.4)',
+              textShadow: c.eyebrowGlow,
             }}
           >
             Senior Systems Architect
@@ -375,18 +387,18 @@ const Hero = () => {
         {/* Name */}
         <div className="relative overflow-hidden">
           <h1
-  className="select-none uppercase font-winner"
-  style={{
-    fontSize: 'clamp(32px, 7vw, 80px)',
-    lineHeight: 0.9,
-    color: c.name,
-    textShadow: c.nameGlow,
-    letterSpacing: '0.04em',
-    perspective: '600px',
-    fontWeight: 700,
-  }}
-  aria-label="Gayan Kavinda"
->
+            className="select-none uppercase font-winner"
+            style={{
+              fontSize: 'clamp(36px, 7.5vw, 84px)',
+              lineHeight: 0.9,
+              color: c.name,
+              textShadow: c.nameGlow,
+              letterSpacing: '0.04em',
+              perspective: '600px',
+              fontWeight: 700,
+            }}
+            aria-label="Gayan Kavinda"
+          >
             <span className="block overflow-hidden">
               <MotionSplitChars text="GAYAN" delay={0.7} />
             </span>
@@ -401,8 +413,8 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
-          className="font-syne font-semibold leading-snug mt-4 max-w-[440px]"
-          style={{ fontSize: 'clamp(14px, 2vw, 22px)', color: c.tagline, letterSpacing: '-0.01em' }}
+          className="font-syne font-semibold leading-snug mt-4 max-w-[460px]"
+          style={{ fontSize: 'clamp(15px, 2.1vw, 22px)', color: c.tagline, letterSpacing: '-0.01em' }}
         >
           Architecting systems that scale beyond the horizon
         </motion.h2>
@@ -412,45 +424,48 @@ const Hero = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.6, ease: [0.16, 1, 0.3, 1] }}
-          className="font-sans leading-relaxed mt-4 max-w-[440px]"
+          className="font-sans leading-relaxed mt-4 max-w-[460px]"
           style={{ fontSize: 'clamp(13px, 1.4vw, 15px)', color: c.desc }}
         >
           I design and operate high‑performance distributed systems that power global‑scale products — combining cloud‑native architecture, observability‑first thinking, and clean, scalable code.
         </motion.p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row flex-wrap justify-end gap-4 mt-8 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row flex-wrap justify-end items-center gap-4 mt-8 w-full sm:w-auto">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.8 }}
           >
-            <Magnetic strength={0.15}>
-              <button
-                className="group relative overflow-hidden text-white focus:outline-none focus:ring-2 focus:ring-[#7C5CFC]/50"
-                style={{
-                  fontFamily: "'Audiowide', sans-serif",
-                  fontSize: 'clamp(10px, 1vw, 11px)',
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                  padding: '14px 40px',
-                  background: c.btnPrimary,
-                  clipPath: CLIP_BTN,
-                  boxShadow: '0 0 30px rgba(124,92,252,0.3), 0 0 60px rgba(0,212,255,0.1)',
-                  transition: 'box-shadow 0.3s ease, transform 0.2s ease',
-                }}
-                onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                <span className="relative z-10">Explore Work</span>
-                <motion.span
-                  className="absolute inset-0"
-                  style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 100%)' }}
-                  initial={{ x: '-100%' }}
-                  whileHover={{ x: '100%' }}
-                  transition={{ duration: 0.5 }}
-                />
-              </button>
-            </Magnetic>
+            <button
+              className="group relative overflow-hidden text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 cursor-pointer"
+              style={{
+                fontFamily: "'Instrument Sans', sans-serif",
+                fontSize: 'clamp(13px, 1.1vw, 15px)',
+                fontWeight: 600,
+                letterSpacing: '0.02em',
+                height: '48px',
+                padding: '0 28px',
+                borderRadius: '9999px',
+                background: c.btnPrimary,
+                boxShadow: c.btnPrimaryShadow,
+                transition: 'background 0.25s ease, box-shadow 0.25s ease',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = c.btnPrimaryHover;
+                e.currentTarget.style.boxShadow = c.btnPrimaryHoverShadow;
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = c.btnPrimary;
+                e.currentTarget.style.boxShadow = c.btnPrimaryShadow;
+              }}
+              onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                Explore Work 
+                <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </span>
+            </button>
           </motion.div>
 
           <motion.div
@@ -458,65 +473,61 @@ const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.95 }}
           >
-            <Magnetic strength={0.15}>
-              <button
-  className="group relative focus:outline-none focus:ring-2 focus:ring-white/20"
-  style={{
-    fontFamily: "'Audiowide', sans-serif",
-    fontSize: 'clamp(10px, 1vw, 11px)',
-    letterSpacing: '0.14em',
-    textTransform: 'uppercase',
-    padding: '14px 40px',
-    border: `1.5px solid ${c.btnSecBorder}`,
-    color: c.btnSecText,
-    background: c.btnSecBg,
-    clipPath: CLIP_BTN,
-    backdropFilter: 'blur(12px)',
-    WebkitBackdropFilter: 'blur(12px)',
-    transition: 'border-color 0.3s ease, background 0.3s ease',
-  }}
-  onMouseEnter={e => {
-    e.currentTarget.style.borderColor = c.btnSecHoverBorder;
-    e.currentTarget.style.background = c.btnSecHoverBg;
-  }}
-  onMouseLeave={e => {
-    e.currentTarget.style.borderColor = c.btnSecBorder;
-    e.currentTarget.style.background = c.btnSecBg;
-  }}
-  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
->
-  Let's Connect
-</button>
-            </Magnetic>
+            <button
+              className="group relative focus:outline-none focus:ring-2 focus:ring-emerald-400/40 backdrop-blur-md cursor-pointer"
+              style={{
+                fontFamily: "'Instrument Sans', sans-serif",
+                fontSize: 'clamp(13px, 1.1vw, 15px)',
+                fontWeight: 600,
+                height: '48px',
+                padding: '0 28px',
+                borderRadius: '9999px',
+                border: `1.5px solid ${c.btnSecBorder}`,
+                color: c.btnSecText,
+                background: c.btnSecBg,
+                boxShadow: c.btnSecShadow,
+                transition: 'border-color 0.25s ease, background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = c.btnSecHoverBorder;
+                e.currentTarget.style.background = c.btnSecHoverBg;
+                e.currentTarget.style.color = c.btnSecHoverText;
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(16,185,129,0.2)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = c.btnSecBorder;
+                e.currentTarget.style.background = c.btnSecBg;
+                e.currentTarget.style.color = c.btnSecText;
+                e.currentTarget.style.boxShadow = c.btnSecShadow;
+              }}
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              <span className="flex items-center gap-2">Let's Connect</span>
+            </button>
           </motion.div>
         </div>
 
         {/* Tech Stack Pills */}
         <motion.div 
-          className="flex flex-wrap justify-end gap-2 mt-6"
+          className="flex flex-wrap justify-end gap-2.5 mt-7"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 2.1 }}
         >
-          {['React', 'Go', 'Kubernetes', 'AWS', 'Terraform'].map((tech, i) => (
-  <span 
-    key={tech}
-    className="px-3 py-1 rounded-full text-[clamp(10px,1.1vw,12px)] font-semibold"
-    style={{ 
-      background: isDark
-        ? (i % 2 === 0 ? 'rgba(124,92,252,0.22)' : 'rgba(0,212,255,0.18)')
-        : 'rgba(46,39,31,0.10)',
-      color: isDark
-        ? (i % 2 === 0 ? '#C4B5FD' : '#7DF9FF')
-        : 'rgba(46,39,31,0.75)',
-      border: `1px solid ${isDark
-        ? (i % 2 === 0 ? 'rgba(124,92,252,0.4)' : 'rgba(0,212,255,0.35)')
-        : 'rgba(46,39,31,0.18)'}`,
-    }}
-  >
-    {tech}
-  </span>
-))}
+          {['React', 'Go', 'Kubernetes', 'AWS', 'Terraform'].map((tech) => (
+            <span 
+              key={tech}
+              className="px-3.5 py-1.5 rounded-full text-[clamp(11px,1.1vw,12.5px)] font-semibold backdrop-blur-md transition-colors"
+              style={{ 
+                background: c.pillBg,
+                color: c.pillText,
+                border: `1px solid ${c.pillBorder}`,
+                boxShadow: c.pillShadow,
+              }}
+            >
+              {tech}
+            </span>
+          ))}
         </motion.div>
       </motion.div>
 
@@ -536,7 +547,7 @@ const Hero = () => {
             <motion.div
               key={i}
               className="absolute w-[3px] h-[3px] rounded-full"
-              style={{ background: '#7C5CFC', left: 'calc(50% - 1.5px)' }}
+              style={{ background: '#10B981', left: 'calc(50% - 1.5px)', boxShadow: '0 0 8px #10B981' }}
               animate={{ y: [0, 36], opacity: [0, 1, 0] }}
               transition={{ duration: 1.5, delay: i * 0.5 + 2.5, repeat: Infinity, ease: 'easeInOut' }}
             />

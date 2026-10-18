@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
+import GooeyNav from '@components/ui/GooeyNav';
 
 // Logo
 import logoMask from '@/assets/images/mask.png';
@@ -108,6 +109,15 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Sync activeId with current route when navigating away from home page
+  useEffect(() => {
+    if (location.pathname === '/projects') {
+      setActiveId('projects');
+    } else if (location.pathname === '/') {
+      setActiveId('home');
+    }
+  }, [location.pathname]);
+
   const toggleTheme = useCallback(() => {
     setTheme(isDark ? 'light' : 'dark');
   }, [isDark, setTheme]);
@@ -117,27 +127,43 @@ export default function Navbar() {
     if (location.pathname !== '/') return;
 
     const handleScroll = () => {
-      const scrollPos = window.scrollY + 200;
-      const sectionElements = navItems
+      // Find all target section elements in actual DOM layout order
+      const sections = navItems
         .filter((item) => item.id !== 'home')
-        .map((item) => ({
-          id: item.id,
-          el: document.getElementById(item.id),
-        }))
-        .filter((item): item is { id: string; el: HTMLElement } => item.el !== null);
+        .map((item) => {
+          const el = document.getElementById(item.id);
+          return {
+            id: item.id,
+            top: el ? el.getBoundingClientRect().top + window.scrollY : Infinity,
+            height: el ? el.offsetHeight : 0,
+          };
+        })
+        .filter((item) => item.top !== Infinity)
+        .sort((a, b) => a.top - b.top);
 
-      if (window.scrollY < 300) {
+      const scrollPos = window.scrollY + 220;
+
+      // Top of page is Home
+      if (window.scrollY < 260) {
         setActiveId('home');
         return;
       }
 
-      for (let i = sectionElements.length - 1; i >= 0; i--) {
-        const item = sectionElements[i];
-        if (item.el.offsetTop <= scrollPos) {
-          setActiveId(item.id);
-          return;
+      // Check if user is scrolled to the bottom of the page (Contact section)
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 60) {
+        setActiveId('contact');
+        return;
+      }
+
+      // Find the last section whose top threshold has been crossed
+      let currentId = 'home';
+      for (const section of sections) {
+        if (scrollPos >= section.top - 50) {
+          currentId = section.id;
         }
       }
+
+      setActiveId(currentId);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -229,55 +255,17 @@ export default function Navbar() {
 
           {/* Desktop Nav Items */}
           <div className="hidden lg:flex items-center gap-1 relative px-1">
-            {navItems.map((item) => {
-              const isActive = activeId === item.id;
-              const isHovered = hoveredTab === item.id;
-
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => go(item.id)}
-                  onMouseEnter={() => setHoveredTab(item.id)}
-                  onMouseLeave={() => setHoveredTab(null)}
-                  className="relative px-3 py-1.5 text-[12px] font-semibold tracking-tight rounded-full transition-colors duration-200 outline-none"
-                  style={{
-                    color: isActive ? (isDark ? '#ffffff' : '#0f172a') : isHovered ? (isDark ? '#ffffff' : '#1e293b') : textMuted,
-                  }}
-                >
-                  {/* Floating active pill background */}
-                  {isActive && (
-                    <motion.div
-                      layoutId="active-nav-pill"
-                      className="absolute inset-0 rounded-full"
-                      style={{
-                        background: isDark
-                          ? 'rgba(255, 255, 255, 0.12)'
-                          : 'rgba(255, 255, 255, 0.95)',
-                        border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.18)' : 'rgba(15, 23, 42, 0.08)'}`,
-                        boxShadow: isDark
-                          ? '0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
-                          : '0 2px 8px -1px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04), inset 0 1px 0 #ffffff',
-                      }}
-                      transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-                    />
-                  )}
-
-                  {/* Hover preview indicator */}
-                  {!isActive && isHovered && (
-                    <motion.div
-                      layoutId="hover-nav-pill"
-                      className="absolute inset-0 rounded-full"
-                      style={{
-                        background: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(15, 23, 42, 0.04)',
-                      }}
-                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-                    />
-                  )}
-
-                  <span className="relative z-10">{item.label}</span>
-                </button>
-              );
-            })}
+            <GooeyNav
+              items={navItems.map((item) => ({ label: item.label, href: '#' }))}
+              initialActiveIndex={Math.max(0, navItems.findIndex((i) => i.id === activeId))}
+              activeIndex={Math.max(0, navItems.findIndex((i) => i.id === activeId))}
+              theme={isDark ? 'dark' : 'light'}
+              color="#10B981"
+              activeTextColor="#ffffff"
+              size="sm"
+              frame={false}
+              onChange={(index) => go(navItems[index].id)}
+            />
           </div>
 
           {/* Divider */}
@@ -313,15 +301,13 @@ export default function Navbar() {
           {/* Resume CTA Button */}
           <motion.button
             onClick={() => window.open('/resume.pdf', '_blank')}
-            whileHover={{ scale: 1.04, y: -0.5 }}
-            whileTap={{ scale: 0.96 }}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold tracking-wide uppercase rounded-full transition-shadow duration-200"
+            whileHover={{ scale: 1.05, y: -1 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-[11px] font-semibold tracking-wide uppercase rounded-full transition-all duration-300"
             style={{
-              background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%)',
+              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
               color: '#ffffff',
-              boxShadow: isDark
-                ? '0 3px 14px hsl(var(--primary) / 0.4), inset 0 1px 0 rgba(255,255,255,0.3)'
-                : '0 3px 12px hsl(var(--primary) / 0.3), inset 0 1px 0 rgba(255,255,255,0.4)',
+              boxShadow: '0 4px 16px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.35)',
             }}
           >
             <DownloadIcon className="w-3.5 h-3.5" />

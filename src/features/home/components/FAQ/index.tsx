@@ -26,7 +26,7 @@ const FAQ = () => {
         title={
           <>
             Frequently Asked{' '}
-            <span className="font-playfair italic font-medium text-[#d60d86]">
+            <span className="font-playfair italic font-medium text-[#10B981]">
               Questions
             </span>
           </>

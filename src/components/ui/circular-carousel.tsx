@@ -1099,7 +1099,7 @@ export const CircularCarousel = ({
                               isHovered ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
                             }`}
                           >
-                            <span className="text-[10px] font-mono uppercase tracking-wider text-primary dark:text-[#d60d86] font-semibold">
+                            <span className="text-[10px] font-mono uppercase tracking-wider text-primary dark:text-[#10B981] font-semibold">
                               {item.subtitle || 'Project'}
                             </span>
                             <h4 className="text-sm font-semibold text-white drop-shadow-sm line-clamp-1 mt-0.5">

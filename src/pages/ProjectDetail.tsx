@@ -107,8 +107,8 @@ const ProjectDetail = () => {
             <>
               <LightRays raysColor="#4f46e5" raysSpeed={0.45} noiseAmount={0.01} />
               <LightPillar
-                topColor="#7C5CFC"
-                bottomColor="#00D4FF"
+                topColor="#10B981"
+                bottomColor="#F59E0B"
                 intensity={0.6}
                 pillarWidth={2.5}
                 glowAmount={0.003}
@@ -291,7 +291,7 @@ const ProjectDetail = () => {
                           width: i === previewIndex ? 18 : 5,
                           height: 5,
                           borderRadius: 3,
-                          background: i === previewIndex ? '#7c5cfc' : 'rgba(255,255,255,0.25)',
+                          background: i === previewIndex ? '#10B981' : 'rgba(255,255,255,0.25)',
                           transition: 'all 0.25s ease',
                         }}
                       />

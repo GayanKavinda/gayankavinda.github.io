@@ -18,9 +18,9 @@ export const StickyResumeCTA = () => {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Download Resume / CV"
-          className="group flex items-center gap-2 sm:gap-2.5 overflow-hidden rounded-full bg-background/80 dark:bg-zinc-900/80 p-1.5 sm:p-2 border border-foreground/10 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-xl transition-all duration-300 hover:border-[#d60d86]/40 hover:shadow-[0_8px_30px_rgba(214,13,134,0.2)]"
+          className="group flex items-center gap-2 sm:gap-2.5 overflow-hidden rounded-full bg-background/80 dark:bg-zinc-900/80 p-1.5 sm:p-2 border border-foreground/10 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-xl transition-all duration-300 hover:border-emerald-500/50 hover:shadow-[0_8px_30px_rgba(16,185,129,0.25)]"
         >
-          <div className="relative flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-full bg-[#d60d86]/15 text-[#d60d86] transition-transform duration-300 group-hover:scale-105">
+          <div className="relative flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-500 transition-transform duration-300 group-hover:scale-105">
             <FileText className="absolute h-4 w-4 transition-all duration-300 group-hover:scale-0 group-hover:opacity-0" />
             <Download className="absolute h-4 w-4 scale-0 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100" />
           </div>

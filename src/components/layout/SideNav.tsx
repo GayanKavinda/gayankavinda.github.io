@@ -59,7 +59,7 @@ const SideNav = () => {
               className={[
                 'font-mono text-[9px] tracking-[.1em] uppercase transition-all duration-200',
                 isActive
-                  ? 'opacity-100 text-[#7C5CFC] translate-x-0'
+                  ? 'opacity-100 text-[#10B981] translate-x-0'
                   : 'opacity-0 group-hover:opacity-60 text-foreground translate-x-2 group-hover:translate-x-0',
               ].join(' ')}
             >
@@ -71,7 +71,7 @@ const SideNav = () => {
               className={[
                 'rounded-full transition-all duration-200 shrink-0',
                 isActive
-                  ? 'w-2 h-2 bg-[#7C5CFC]'
+                  ? 'w-2 h-2 bg-[#10B981]'
                   : 'w-1.5 h-1.5 bg-foreground/20 group-hover:bg-foreground/50',
               ].join(' ')}
             />

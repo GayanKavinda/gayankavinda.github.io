@@ -66,7 +66,7 @@ const Education = () => {
         >
           <h2 className="font-jakarta font-semibold text-3xl md:text-4xl text-foreground tracking-tight leading-[1.1] mb-5">
             Academic{' '}
-            <span className="font-playfair italic font-medium text-[#d60d86]">
+            <span className="font-playfair italic font-medium text-[#10B981]">
               Foundation
             </span>
           </h2>
@@ -139,7 +139,7 @@ const Education = () => {
             {/* Hairline divider with a single diamond */}
             <div className="my-6 flex w-full max-w-[240px] items-center gap-3">
               <span className="h-px flex-1 bg-gradient-to-r from-transparent to-black/[0.12] dark:to-white/[0.12]" />
-              <span className="text-[8px] text-[#d60d86]">◆</span>
+              <span className="text-[8px] text-[#10B981]">◆</span>
               <span className="h-px flex-1 bg-gradient-to-l from-transparent to-black/[0.12] dark:to-white/[0.12]" />
             </div>
 
