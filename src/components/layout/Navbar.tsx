@@ -111,10 +111,11 @@ export default function Navbar() {
 
   // Sync activeId with current route when navigating away from home page
   useEffect(() => {
-    if (location.pathname === '/projects') {
-      setActiveId('projects');
-    } else if (location.pathname === '/') {
+    const path = location.pathname;
+    if (path === '/' || path === '') {
       setActiveId('home');
+    } else if (path.startsWith('/projects')) {
+      setActiveId('projects');
     }
   }, [location.pathname]);
 

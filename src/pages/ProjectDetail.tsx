@@ -10,12 +10,9 @@ import Footer from '@components/layout/Footer';
 import { PROJECT_DETAILS } from '@features/projects/data/projectDetails';
 import LightRays from '@components/ui/LightRays';
 import LightPillar from '@components/ui/LightPillar';
-import BorderGlow from '@components/ui/BorderGlow';
-import { CardStack } from '@components/ui/card-stack';
-// import ScrollImageSequence from '@components/animations/ScrollImageSequence';
 import { useReducedMotion } from '@features/projects/components/ProjectDetail/utils';
 import MagneticCursor from '@features/projects/components/ProjectDetail/MagneticCursor';
-import ProjectBentoGrid from '@features/projects/components/ProjectDetail/ProjectBentoGrid';
+import ProjectContent from '@features/projects/components/ProjectDetail/ProjectContent';
 import PulseDot from '@features/projects/components/ProjectDetail/PulseDot';
 
 // ── Main component ───────────────────────────────────────────────────────────
@@ -26,19 +23,11 @@ const ProjectDetail = () => {
   const isDark = theme === 'dark';
   const reducedMotion = useReducedMotion();
   const pageRef = useRef<HTMLDivElement>(null);
-  const [activeTOC, setActiveTOC] = useState('overview');
   const [previewIndex, setPreviewIndex] = useState<number>(-1);
-
-  // Responsive card sizing — CardStack uses fixed pixel widths
-  const [cardDims, setCardDims] = useState({ w: 420, h: 280 });
   const [isTouch, setIsTouch] = useState(false);
   useEffect(() => {
     const compute = () => {
-      const vw = window.innerWidth;
       setIsTouch(window.matchMedia('(pointer: coarse)').matches);
-      if (vw < 480) setCardDims({ w: Math.min(300, vw - 40), h: 200 });
-      else if (vw < 768) setCardDims({ w: Math.min(360, vw - 60), h: 240 });
-      else setCardDims({ w: 420, h: 280 });
     };
     compute();
     window.addEventListener('resize', compute);
@@ -57,10 +46,6 @@ const ProjectDetail = () => {
   const previewImage = previewIndex >= 0 ? galleryImages[previewIndex] : null;
   const goNext = () => setPreviewIndex(i => (i + 1) % galleryImages.length);
   const goPrev = () => setPreviewIndex(i => (i - 1 + galleryImages.length) % galleryImages.length);
-
-  const hasCode = !!(project.github && project.github !== '#' && project.github !== null);
-  const hasDoc = !!(project.docUrl && project.docUrl !== '#');
-  const hasLive = !!project.liveUrl;
 
   const { scrollYProgress } = useScroll({ target: pageRef, offset: ['start start', 'end end'] });
   const progressScaleX = useSpring(scrollYProgress, { stiffness: 180, damping: 28 });
@@ -84,7 +69,7 @@ const ProjectDetail = () => {
 
       {/* Progress Bar (Zen) */}
       <motion.div
-        className={`fixed top-0 left-0 right-0 h-[2px] z-[200] origin-left ${isDark ? 'bg-gradient-to-r from-crimson via-purple-500 to-gold' : 'bg-foreground/10'}`}
+        className={`fixed top-0 left-0 right-0 h-[2px] z-[200] origin-left ${isDark ? 'bg-gradient-to-r from-gold via-gold/60 to-gold' : 'bg-foreground/10'}`}
         style={{ scaleX: progressScaleX }}
       />
 
@@ -119,21 +104,21 @@ const ProjectDetail = () => {
         </div>
       </div>
 
-      <div className="relative z-10 pt-28 pb-32 max-w-4xl mx-auto px-6 md:px-8">
+      <div className="relative z-10 pt-24 pb-24 max-w-7xl mx-auto px-6 md:px-10">
 
         {/* Back Button */}
         <motion.button
           onClick={() => navigate('/projects')}
           data-cursor="BACK"
-          className="flex items-center gap-2 text-sm font-mono tracking-widest text-foreground/50 hover:text-foreground mb-16 group"
+          className="flex items-center gap-2 text-sm font-mono tracking-widest text-foreground/50 hover:text-foreground mb-8 group"
         >
           ← <span className="group-hover:underline">All Projects</span>
         </motion.button>
 
         {/* Cinematic Header */}
-        <div className="mb-12">
-          <div className="flex items-center gap-4 mb-4">
-            <PulseDot color={project.status === 'Production' ? 'crimson' : 'gold'} />
+        <div className="mb-10">
+          <div className="flex items-center gap-4 mb-3">
+            <PulseDot color={project.status === 'Production' ? 'gold' : 'gold'} />
             <span className="font-mono text-xs tracking-[3px] text-foreground/50">{project.status}</span>
           </div>
 
@@ -141,7 +126,7 @@ const ProjectDetail = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="font-light text-4xl sm:text-5xl leading-tight tracking-tighter mb-4 break-words"
+            className="font-light text-4xl sm:text-5xl leading-tight tracking-tighter mb-3 break-words"
           >
             {project.title}
           </motion.h1>
@@ -150,23 +135,23 @@ const ProjectDetail = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-lg text-foreground/70 max-w-2xl leading-relaxed font-light"
+            className="text-lg text-foreground/70 max-w-3xl leading-relaxed font-light"
           >
             {project.tagline}
           </motion.p>
         </div>
 
-        {/* Main Content - Zen Bento Grid */}
-        <ProjectBentoGrid project={project} />
+        {/* Main Content - Natural Editorial Flow */}
+        <ProjectContent project={project} onOpenImage={setPreviewIndex} />
 
-        {/* Final CTA (Zen) */}
-        <div className="mt-24 text-center pb-8">
-          <p className="font-mono text-[10px] uppercase tracking-[4px] text-foreground/30 mb-8 font-bold">Colombo, Sri Lanka</p>
+        {/* Final CTA */}
+        <div className="mt-16 text-center pb-4">
+          <p className="font-mono text-[10px] uppercase tracking-[4px] text-foreground/30 mb-6 font-bold">Colombo, Sri Lanka</p>
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate('/#contact')}
-            className="inline-block px-16 py-8 border border-foreground/10 hover:border-foreground/30 rounded-full text-xl font-light transition-all shadow-sm hover:shadow-md bg-white dark:bg-transparent"
+            className="inline-block px-12 py-5 border border-foreground/10 hover:border-foreground/30 rounded-full text-lg font-light transition-all shadow-sm hover:shadow-md bg-foreground text-background hover:bg-foreground/90"
           >
             Start a Conversation
           </motion.button>
@@ -175,7 +160,7 @@ const ProjectDetail = () => {
 
       {/* Bottom fade over project details */}
       <div
-        className="relative w-full h-[22vh] pointer-events-none z-30 -mt-[22vh]"
+        className="relative w-full h-[18vh] pointer-events-none z-30 -mt-[18vh]"
         style={{
           background: 'linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)',
         }}

@@ -8,6 +8,7 @@ import StickyResumeCTA from "@components/layout/StickyResumeCTA";
 
 
 import { lazy, Suspense } from 'react';
+import { useLocation } from 'react-router-dom';
 
 // ── Pages (Lazy Loaded) ────────────────────────────────────────────────────────
 const Home = lazy(() => import("@pages/Home"));
@@ -23,14 +24,10 @@ import SmartScroll from "@components/layout/SmartScroll";
 
 const queryClient = new QueryClient();
 
-import { AnimatePresence } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
-
 const AnimatedRoutes = () => {
   const location = useLocation();
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+    <Routes location={location} key={location.pathname}>
         {/* Core */}
         <Route path="/" element={<Home />} />
         <Route path="/projects" element={<AllProjects />} />
@@ -49,9 +46,8 @@ const AnimatedRoutes = () => {
         {/* Catch-all */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </AnimatePresence>
-  );
-};
+    );
+  };
 
 const App = () => (
   <ThemeProvider defaultTheme="dark" storageKey="gy-theme">
@@ -67,11 +63,11 @@ const App = () => (
               }}
             >
               <SmartScroll />
-              <Suspense fallback={
-                <div className="fixed inset-0 bg-background flex items-center justify-center z-[9999]">
-                  <div className="w-12 h-[1px] bg-gold animate-pulse" />
-                </div>
-              }>
+<Suspense fallback={
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none">
+            <div className="w-12 h-[1px] bg-gold animate-pulse" />
+          </div>
+        }>
                 <AnimatedRoutes />
               </Suspense>
 

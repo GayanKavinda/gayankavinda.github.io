@@ -1,5 +1,5 @@
 // ── Pulse dot ───────────────────────────────────────────────────────────────
-const PulseDot = ({ color = 'crimson' }: { color?: string }) => (
+const PulseDot = ({ color = 'gold' }: { color?: string }) => (
   <span className="relative flex items-center justify-center w-2 h-2 flex-shrink-0">
     <span
       className="absolute inline-flex w-full h-full rounded-full opacity-40 animate-ping"
