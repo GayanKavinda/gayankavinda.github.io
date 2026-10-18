@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@app/providers/theme-provider';
-import maskImg from '@assets/logos/Sticker_PNG_Archive-removebg-preview.png';
 // Import hero images so Vite resolves the correct hashed URLs at build time
 import heroEve from '@assets/images/hero/eve.png';
 import heroMidnight from '@assets/images/hero/midnight.png';
@@ -34,13 +33,23 @@ async function preloadModel(url: string): Promise<void> {
 
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+const COLD_START_KEY = 'gy-cold-start-done';
+
 export const PreLoader = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
 
+  // Only run the preloader on the very first cold start of the session.
+  // On cached/back navigations the flag is already set, so we skip straight to children.
+  const coldStart = !sessionStorage.getItem(COLD_START_KEY);
+
   useEffect(() => {
+    if (!coldStart) {
+      setLoading(false);
+      return;
+    }
     let isMounted = true;
 
     const runChecks = async () => {
@@ -66,72 +75,40 @@ export const PreLoader = ({ children }: { children: React.ReactNode }) => {
 
       // Brief pause at 100%
       await wait(300);
+      sessionStorage.setItem(COLD_START_KEY, '1');
       if (isMounted) setLoading(false);
     };
 
     runChecks();
     return () => { isMounted = false; };
-  }, []);
+  }, [coldStart]);
 
   return (
     <>
+      {children}
       <AnimatePresence>
         {loading && (
           <motion.div
             key="preloader"
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.8, ease: 'easeInOut' } }}
-            className={`fixed inset-0 z-[100] flex flex-col items-center justify-center pointer-events-auto overflow-hidden transition-colors duration-700 ${isDark ? 'bg-[#050505]' : 'bg-[#F9FAFB]'}`}
+            exit={{ opacity: 0, transition: { duration: 0.6, ease: 'easeOut' } }}
+            className="fixed bottom-6 right-6 z-[100] flex items-center gap-2 px-3 py-2 rounded-full pointer-events-none"
+            style={{
+              background: isDark ? 'rgba(15,16,24,0.8)' : 'rgba(255,255,255,0.9)',
+              border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.08)'}`,
+              boxShadow: isDark ? '0 8px 32px -8px rgba(0,0,0,0.6)' : '0 8px 32px -8px rgba(15,23,42,0.12)',
+            }}
           >
-            {/* Ambient glow */}
             <div
-              className="absolute inset-0 opacity-40"
-              style={{
-                background: isDark
-                  ? 'radial-gradient(circle at center, rgba(124,92,252,0.08) 0%, transparent 70%)'
-                  : 'radial-gradient(circle at center, rgba(124,92,252,0.05) 0%, transparent 70%)',
-              }}
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ background: 'hsl(var(--gold))' }}
             />
-
-            {/* Logo + progress */}
-            <motion.div
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1, y: [0, -15, 0] }}
-              transition={{
-                opacity: { duration: 1.2 },
-                scale: { duration: 1.2 },
-                y: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
-              }}
-              className="relative z-10 flex flex-col items-center"
-            >
-              <img
-                src={maskImg}
-                alt="Logo"
-                className={`w-[180px] h-auto object-contain ${
-                  isDark
-                    ? 'filter drop-shadow-[0_0_40px_rgba(124,92,252,0.4)] brightness-110'
-                    : 'filter drop-shadow-[0_0_25px_rgba(124,92,252,0.2)]'
-                }`}
-              />
-
-              {/* Progress bar */}
-              <div
-                className="mt-8 w-24 h-[1.5px] rounded-full overflow-hidden"
-                style={{ background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' }}
-              >
-                <motion.div
-                  className="h-full rounded-full"
-                  style={{ background: 'linear-gradient(90deg, hsl(var(--primary)), hsl(var(--gold)))' }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.4, ease: 'easeOut' }}
-                />
-              </div>
-            </motion.div>
+            <span className="font-mono text-[10px] text-foreground/60 tabular-nums">
+              {progress}%
+            </span>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {!loading && children}
     </>
   );
 };

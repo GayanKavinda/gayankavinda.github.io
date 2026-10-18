@@ -1,5 +1,5 @@
 /* src/app/styles/base.css */
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,500&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Roboto+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,500&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
 
 /* ── Custom Display Fonts ─────────────────────────────────────────────── */
 @font-face {
@@ -39,8 +39,8 @@
       --card-foreground: 220 25% 10%;      /* #121826 */
       --popover: 0 0% 100%;
       --popover-foreground: 220 25% 10%;
-      --primary: 158 79% 42%;              /* #10B981 Royal Emerald */
-      --primary-hover: 161 84% 34%;        /* #059669 Emerald Hover */
+      --primary: 160 84% 22%;              /* #064E3B Deep Forest Emerald (Luxury Zen, no glare) */
+      --primary-hover: 160 84% 28%;        /* #065F46 Rich Forest Hover */
       --primary-foreground: 0 0% 100%;     /* #FFFFFF */
       --secondary: 43 96% 93%;             /* #FEF3C7 Soft Warm Champagne */
       --secondary-foreground: 220 25% 10%;

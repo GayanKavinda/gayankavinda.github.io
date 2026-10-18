@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-500 hover:to-emerald-600 shadow-[0_4px_20px_rgba(16,185,129,0.35)] hover:shadow-[0_8px_28px_rgba(16,185,129,0.5)] hover:-translate-y-0.5 active:translate-y-0 dark:from-emerald-500 dark:to-emerald-600",
+        default: "bg-gradient-to-r from-emerald-800 to-emerald-900 text-white hover:from-emerald-700 hover:to-emerald-800 shadow-[0_4px_16px_rgba(6,78,59,0.25)] hover:shadow-[0_6px_22px_rgba(6,78,59,0.35)] hover:-translate-y-0.5 active:translate-y-0 dark:from-emerald-600 dark:to-emerald-700 dark:shadow-[0_4px_20px_rgba(16,185,129,0.35)] dark:hover:shadow-[0_8px_28px_rgba(16,185,129,0.5)]",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
         outline: "border border-gold/30 bg-card/80 text-foreground hover:bg-gold/10 hover:border-gold/60 hover:text-gold dark:hover:text-gold transition-all shadow-sm hover:-translate-y-0.5",
         secondary: "border border-border bg-card/60 backdrop-blur-md text-foreground hover:bg-emerald-500/10 hover:border-emerald-500/40 hover:text-emerald-500 dark:hover:text-emerald-400 transition-all hover:-translate-y-0.5",
@@ -28,7 +28,7 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  },
+  }
 );
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
@@ -45,6 +45,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
-
-
-

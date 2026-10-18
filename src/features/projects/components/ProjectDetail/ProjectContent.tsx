@@ -1,3 +1,6 @@
+import { useTheme } from '@app/providers/theme-provider';
+import ArchitectureFlowDiagram from './ArchitectureFlowDiagram';
+
 // ── Helper components ─────────────────────────────────────────────────────────
 
 const Section = ({ children }: any) => (
@@ -72,6 +75,8 @@ const LinkBtn = ({ href, children, cursor }: any) => (
 // ── Main component ───────────────────────────────────────────────────────────
 
 const ProjectContent = ({ project, onOpenImage }: any) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const hasCode = !!(project.github && project.github !== '#');
   const hasDoc = !!(project.docUrl && project.docUrl !== '#');
   const hasLive = !!project.liveUrl;
@@ -162,14 +167,22 @@ const ProjectContent = ({ project, onOpenImage }: any) => {
       {/* ── Architecture ── */}
       {hasArchitecture && (
         <Section>
-          <SectionHead>Architecture</SectionHead>
+          <SectionHead>Architecture & System Flow</SectionHead>
           {project.architecture?.description && (
-            <p className="text-[14px] leading-relaxed text-foreground/60 mb-5">
+            <p className="text-[14px] leading-relaxed text-foreground/60 mb-2">
               {project.architecture.description}
             </p>
           )}
-          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2">
-            {project.architecture.components.map((c: any, i: number) => (
+
+          {/* Interactive Animated Beam Architecture Diagram */}
+          <ArchitectureFlowDiagram
+            title={`${project.title} - Data Topology`}
+            description={project.architecture?.description || 'Active event orchestration, worker consumer loops, and multi-tenant persistence layers.'}
+            isDark={isDark}
+          />
+
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2 mt-4">
+            {project.architecture.components.map((c: any) => (
               <Node key={c.name} name={c.name} role={c.role} />
             ))}
           </div>

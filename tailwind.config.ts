@@ -12,9 +12,11 @@ export default {
     },
     extend: {
       fontFamily: {
+        roboto: ['"Roboto"', 'sans-serif'],
+        'roboto-mono': ['"Roboto Mono"', 'monospace'],
         playfair: ['"Playfair Display"', 'serif'],
-        mono: ['"DM Mono"', 'monospace'],
-        sans: ['"Instrument Sans"', 'sans-serif'],
+        mono: ['"DM Mono"', '"Roboto Mono"', 'monospace'],
+        sans: ['"Roboto"', '"Plus Jakarta Sans"', 'sans-serif'],
         jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
         praktika: ['"Praktika Rounded"', 'sans-serif'],
         winner: ['"Winner Sans"', 'sans-serif'],

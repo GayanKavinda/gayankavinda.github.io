@@ -170,30 +170,38 @@ const Hero = () => {
   const contentOpacity = useTransform(smoothProgress, [0, 0.7], [1, 0]);
 
   const c = useMemo(() => ({
-    eyebrow: '#10B981', // Royal Emerald
-    name: isDark ? '#FFFFFF' : '#0F172A', // Clean high contrast without blurry covering shadow
-    nameGlow: 'none', // Removed covering text-shadow
-    tagline: isDark ? 'rgba(241, 245, 249, 0.95)' : '#1E293B',
-    desc: isDark ? 'rgba(203, 213, 225, 0.88)' : '#475569',
-    scroll: isDark ? 'rgba(203, 213, 225, 0.6)' : '#64748B',
-    // Explore Work button
-    btnPrimary: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-    btnPrimaryHover: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-    btnPrimaryShadow: '0 4px 16px -2px rgba(16,185,129,0.35)',
-    btnPrimaryHoverShadow: '0 6px 20px -2px rgba(16,185,129,0.45)',
-    // Let's Connect button (harmonious emerald glass/border, no abrupt gold mismatch)
-    btnSecBorder: isDark ? 'rgba(16, 185, 129, 0.35)' : 'rgba(16, 185, 129, 0.45)',
-    btnSecText: isDark ? '#FFFFFF' : '#0F172A',
-    btnSecBg: isDark ? 'rgba(15, 23, 42, 0.7)' : 'rgba(255, 255, 255, 0.85)',
-    btnSecHoverBorder: '#10B981',
-    btnSecHoverBg: isDark ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)',
-    btnSecHoverText: isDark ? '#34D399' : '#059669',
-    btnSecShadow: isDark ? '0 4px 16px rgba(0,0,0,0.4)' : '0 4px 16px rgba(0,0,0,0.06)',
+    eyebrow: isDark ? '#60A5FA' : '#2563EB', // Celestial / mountain azure
+    name: isDark ? '#E2E8F0' : '#334155', // Zen refined slate gray (calm, balanced, luxury)
+    nameGlow: 'none',
+    tagline: isDark ? '#94A3B8' : '#475569', // Muted serene slate
+    desc: isDark ? 'rgba(148, 163, 184, 0.85)' : '#64748B', // Soft tranquil tone
+    scroll: isDark ? 'rgba(148, 163, 184, 0.5)' : '#94A3B8',
+    // Explore Work button — luxury twilight sapphire / indigo matching the sky & horizon
+    btnPrimary: isDark 
+      ? 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)' 
+      : 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)',
+    btnPrimaryHover: isDark 
+      ? 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)' 
+      : 'linear-gradient(135deg, #334155 0%, #1E293B 100%)',
+    btnPrimaryShadow: isDark
+      ? '0 4px 16px -2px rgba(37,99,235,0.35)'
+      : '0 4px 14px -2px rgba(15,23,42,0.22)',
+    btnPrimaryHoverShadow: isDark
+      ? '0 6px 20px -2px rgba(59,130,246,0.45)'
+      : '0 6px 18px -2px rgba(15,23,42,0.3)',
+    // Let's Connect button — subtle zen glass outline
+    btnSecBorder: isDark ? 'rgba(255, 255, 255, 0.16)' : 'rgba(15, 23, 42, 0.16)',
+    btnSecText: isDark ? '#F1F5F9' : '#1E293B',
+    btnSecBg: isDark ? 'rgba(15, 23, 42, 0.55)' : 'rgba(255, 255, 255, 0.85)',
+    btnSecHoverBorder: isDark ? 'rgba(96, 165, 250, 0.6)' : 'rgba(37, 99, 235, 0.5)',
+    btnSecHoverBg: isDark ? 'rgba(37, 99, 235, 0.12)' : 'rgba(37, 99, 235, 0.05)',
+    btnSecHoverText: isDark ? '#93C5FD' : '#1D4ED8',
+    btnSecShadow: isDark ? '0 2px 8px rgba(0,0,0,0.25)' : '0 2px 6px rgba(0,0,0,0.03)',
     // Tech pills styling
-    pillBg: isDark ? 'rgba(16, 185, 129, 0.14)' : 'rgba(16, 185, 129, 0.1)',
-    pillBorder: isDark ? 'rgba(16, 185, 129, 0.35)' : 'rgba(16, 185, 129, 0.3)',
-    pillText: isDark ? '#6EE7B7' : '#047857',
-    pillShadow: isDark ? '0 2px 8px rgba(0,0,0,0.3)' : '0 1px 4px rgba(0,0,0,0.05)',
+    pillBg: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(15, 23, 42, 0.04)',
+    pillBorder: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(15, 23, 42, 0.08)',
+    pillText: isDark ? '#94A3B8' : '#475569',
+    pillShadow: 'none',
   }), [isDark]);
 
   // Fireflies near the lantern
@@ -222,7 +230,7 @@ const Hero = () => {
   return (
     <section
       ref={heroRef}
-      className="relative h-[100dvh] w-full overflow-hidden bg-black"
+      className="relative h-[100dvh] w-full overflow-hidden bg-background"
       aria-label="Hero section"
     >
             {/* ═══════════════════════════════════════════════════════════
@@ -237,9 +245,9 @@ const Hero = () => {
           alt={isDark ? 'Cosmic night sky' : 'Morning landscape'}
           className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ filter: isDark ? 'brightness(0.7) saturate(1.1)' : 'brightness(1.05) saturate(1.05)' }}
-          initial={{ scale: 1.12, opacity: 0 }}
+          initial={{ scale: 1.05, opacity: 1 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
           loading="eager"
         />
 
@@ -369,15 +377,13 @@ const Hero = () => {
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-4"
+          className="mb-3"
         >
           <span 
-            className="uppercase tracking-[0.3em]"
+            className="uppercase tracking-[0.2em] font-roboto font-semibold"
             style={{ 
-              fontFamily: "'Audiowide', sans-serif", 
-              fontSize: 'clamp(9px, 1vw, 11px)', 
+              fontSize: 'clamp(10px, 0.9vw, 12px)', 
               color: c.eyebrow,
-              textShadow: c.eyebrowGlow,
             }}
           >
             Senior Systems Architect
@@ -387,15 +393,13 @@ const Hero = () => {
         {/* Name */}
         <div className="relative overflow-hidden">
           <h1
-            className="select-none uppercase font-winner"
+            className="select-none uppercase font-roboto tracking-tight font-black"
             style={{
-              fontSize: 'clamp(36px, 7.5vw, 84px)',
-              lineHeight: 0.9,
+              fontSize: 'clamp(42px, 8vw, 92px)',
+              lineHeight: 0.92,
               color: c.name,
-              textShadow: c.nameGlow,
-              letterSpacing: '0.04em',
-              perspective: '600px',
-              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              fontWeight: 800,
             }}
             aria-label="Gayan Kavinda"
           >
@@ -413,8 +417,8 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
-          className="font-syne font-semibold leading-snug mt-4 max-w-[460px]"
-          style={{ fontSize: 'clamp(15px, 2.1vw, 22px)', color: c.tagline, letterSpacing: '-0.01em' }}
+          className="font-roboto font-normal leading-snug mt-4 max-w-[460px]"
+          style={{ fontSize: 'clamp(15px, 1.8vw, 19px)', color: c.tagline, letterSpacing: '-0.01em' }}
         >
           Architecting systems that scale beyond the horizon
         </motion.h2>
@@ -424,28 +428,27 @@ const Hero = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.6, ease: [0.16, 1, 0.3, 1] }}
-          className="font-sans leading-relaxed mt-4 max-w-[460px]"
-          style={{ fontSize: 'clamp(13px, 1.4vw, 15px)', color: c.desc }}
+          className="font-roboto leading-relaxed mt-4 max-w-[460px] font-normal"
+          style={{ fontSize: 'clamp(13px, 1.3vw, 15px)', color: c.desc }}
         >
           I design and operate high‑performance distributed systems that power global‑scale products — combining cloud‑native architecture, observability‑first thinking, and clean, scalable code.
         </motion.p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row flex-wrap justify-end items-center gap-4 mt-8 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row flex-wrap justify-end items-center gap-3.5 mt-7 w-full sm:w-auto">
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.8 }}
           >
             <button
-              className="group relative overflow-hidden text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 cursor-pointer"
+              className="group relative overflow-hidden text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 cursor-pointer font-roboto"
               style={{
-                fontFamily: "'Instrument Sans', sans-serif",
-                fontSize: 'clamp(13px, 1.1vw, 15px)',
-                fontWeight: 600,
-                letterSpacing: '0.02em',
-                height: '48px',
-                padding: '0 28px',
+                fontSize: 'clamp(12px, 0.95vw, 13.5px)',
+                fontWeight: 500,
+                letterSpacing: '0.01em',
+                height: '42px',
+                padding: '0 22px',
                 borderRadius: '9999px',
                 background: c.btnPrimary,
                 boxShadow: c.btnPrimaryShadow,
@@ -469,20 +472,19 @@ const Hero = () => {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.95 }}
           >
             <button
-              className="group relative focus:outline-none focus:ring-2 focus:ring-emerald-400/40 backdrop-blur-md cursor-pointer"
+              className="group relative focus:outline-none focus:ring-2 focus:ring-blue-500/30 backdrop-blur-md cursor-pointer font-roboto"
               style={{
-                fontFamily: "'Instrument Sans', sans-serif",
-                fontSize: 'clamp(13px, 1.1vw, 15px)',
-                fontWeight: 600,
-                height: '48px',
-                padding: '0 28px',
+                fontSize: 'clamp(12px, 0.95vw, 13.5px)',
+                fontWeight: 500,
+                height: '42px',
+                padding: '0 22px',
                 borderRadius: '9999px',
-                border: `1.5px solid ${c.btnSecBorder}`,
+                border: `1px solid ${c.btnSecBorder}`,
                 color: c.btnSecText,
                 background: c.btnSecBg,
                 boxShadow: c.btnSecShadow,
@@ -492,7 +494,7 @@ const Hero = () => {
                 e.currentTarget.style.borderColor = c.btnSecHoverBorder;
                 e.currentTarget.style.background = c.btnSecHoverBg;
                 e.currentTarget.style.color = c.btnSecHoverText;
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(16,185,129,0.2)';
+                e.currentTarget.style.boxShadow = '0 4px 14px rgba(37,99,235,0.18)';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderColor = c.btnSecBorder;

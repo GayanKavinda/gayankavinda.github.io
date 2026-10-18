@@ -65,7 +65,7 @@ const App = () => (
               <SmartScroll />
 <Suspense fallback={
           <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none">
-            <div className="w-12 h-[1px] bg-gold animate-pulse" />
+            <div className="w-12 h-[1px] bg-primary animate-pulse" />
           </div>
         }>
                 <AnimatedRoutes />

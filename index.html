@@ -38,6 +38,20 @@
     <!-- Critical Background Preloads - Ensures these load before JS execution -->
     <link rel="preload" as="image" href="/src/assets/logos/anime_stickers_car_2_Kakashi_Hatake_Aesthetic_Sticker-removebg-preview.png" />
     <link rel="preload" as="image" href="/src/assets/images/hero/whitemode_2.jpeg" />
+
+    <!-- Anti-flash theme init: runs synchronously before body render -->
+    <script>
+      (function() {
+        try {
+          var stored = localStorage.getItem('gy-theme');
+          var theme = stored === 'light' || stored === 'dark' 
+            ? stored 
+            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.classList.remove('light', 'dark');
+          document.documentElement.classList.add(theme);
+        } catch(e) {}
+      })();
+    </script>
   </head>
 
   <body>
