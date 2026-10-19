@@ -159,14 +159,20 @@ const Hero = () => {
 
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
 
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+  // On mobile, skip spring + parallax transforms entirely to prevent scroll lag
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: isMobile ? 0 : 100,
+    damping: isMobile ? 0 : 30,
+    restDelta: 0.001,
+  });
 
   // Parallax: background slowest, camper mid, content fastest
-  const bgY = useTransform(smoothProgress, [0, 1], [0, 140]);
-  const bgScale = useTransform(smoothProgress, [0, 1], [1, 1.06]);
-  const camperY = useTransform(smoothProgress, [0, 1], [0, 50]);
-  const camperScale = useTransform(smoothProgress, [0, 1], [1, 1.02]);
-  const contentY = useTransform(smoothProgress, [0, 1], [0, 90]);
+  // Mobile: static values (0/1) so GPU compositor handles no-op transforms
+  const bgY = useTransform(smoothProgress, [0, 1], isMobile ? [0, 0] : [0, 140]);
+  const bgScale = useTransform(smoothProgress, [0, 1], isMobile ? [1, 1] : [1, 1.06]);
+  const camperY = useTransform(smoothProgress, [0, 1], isMobile ? [0, 0] : [0, 50]);
+  const camperScale = useTransform(smoothProgress, [0, 1], isMobile ? [1, 1] : [1, 1.02]);
+  const contentY = useTransform(smoothProgress, [0, 1], isMobile ? [0, 0] : [0, 90]);
   const contentOpacity = useTransform(smoothProgress, [0, 0.7], [1, 0]);
 
   const c = useMemo(() => ({
@@ -238,7 +244,10 @@ const Hero = () => {
           ═══════════════════════════════════════════════════════════ */}
       <motion.div 
         className="absolute -top-[15%] left-0 right-0 bottom-0 -z-30"
-        style={{ y: bgY, scale: bgScale, willChange: 'transform' }}
+        style={isMobile
+          ? { willChange: 'auto' }
+          : { y: bgY, scale: bgScale, willChange: 'transform' }
+        }
       >
         <motion.img
           src={isDark ? nightHeroImg : dayHeroImg}
@@ -275,7 +284,10 @@ const Hero = () => {
           ═══════════════════════════════════════════════════════════ */}
       <motion.div
         className="absolute bottom-0 left-0 z-10 pointer-events-none"
-        style={{ y: camperY, scale: camperScale, willChange: 'transform' }}
+        style={isMobile
+          ? { willChange: 'auto' }
+          : { y: camperY, scale: camperScale, willChange: 'transform' }
+        }
         initial={{ y: 100, opacity: 0, scale: 0.96 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         transition={{ duration: 1.4, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
@@ -369,7 +381,10 @@ const Hero = () => {
           LAYER 4: Content (responsive: centered on mobile, right-aligned on desktop)
           ═══════════════════════════════════════════════════════════ */}
       <motion.div
-        style={{ y: contentY, opacity: contentOpacity, willChange: 'transform, opacity' }}
+        style={isMobile
+          ? { opacity: contentOpacity, willChange: 'auto' }
+          : { y: contentY, opacity: contentOpacity, willChange: 'transform, opacity' }
+        }
         className="relative z-20 h-full flex flex-col items-center md:items-end justify-center px-6 sm:px-12 md:pr-16 lg:pr-24 xl:pr-32 text-center md:text-right"
       >
         {/* Eyebrow */}
