@@ -1,0 +1,78 @@
+# GAYAN KAVINDA
+## Senior Software Engineer
+
+### CONTACT
+- **Email:** hello@gayankav.github.io
+- **Location:** Colombo, Sri Lanka
+- **GitHub:** https://github.com/YOUR_USERNAME
+- **LinkedIn:** https://linkedin.com/in/YOUR_USERNAME
+
+### SUMMARY
+Distributed systems architect with 10+ years of experience building scalable, high-performance applications. Expert in Go, TypeScript, and cloud infrastructure. Passionate about clean code, system design, and creating exceptional user experiences.
+
+### EXPERIENCE
+
+**Senior Software Engineer** | TechCorp Global | 2022 — Present
+- Led migration of monolith to microservices serving 2M+ users
+- Designed event-driven architecture reducing latency by 40%
+- Mentored team of 6 engineers on distributed systems patterns
+- Technologies: Go, Kafka, Kubernetes, AWS
+
+**Software Engineer II** | DataFlow Systems | 2020 — 2022
+- Built real-time data pipeline processing 500K events/sec
+- Implemented CI/CD reducing deployment time by 60%
+- Architected PostgreSQL sharding strategy for 10TB+ dataset
+- Technologies: Python, PostgreSQL, Docker, Redis
+
+**Full Stack Developer** | WebScale Inc | 2018 — 2020
+- Developed React dashboard used by 50K+ daily active users
+- Created GraphQL API layer consolidating 12 REST endpoints
+- Optimized bundle size by 45% through code splitting
+- Technologies: React, TypeScript, Node.js, GraphQL
+
+**Junior Developer** | StartupLab | 2016 — 2018
+- Shipped 3 production apps from concept to launch
+- Introduced automated testing increasing coverage to 85%
+- Built responsive UI components used across 4 products
+- Technologies: JavaScript, React, Express, MongoDB
+
+### SKILLS
+
+**Languages:** Go, TypeScript, Python, JavaScript, SQL
+**Frameworks:** React, Node.js, Express, GraphQL
+**Infrastructure:** AWS, Kubernetes, Docker, Terraform
+**Databases:** PostgreSQL, MongoDB, Redis
+**Tools:** Git, CI/CD, Prometheus, Grafana
+**Concepts:** Microservices, Event-Driven Architecture, System Design
+
+### PROJECTS
+
+**Distributed Task Engine**
+- High-throughput task orchestration processing 1M+ jobs/day
+- Event-driven architecture with Kafka and Go workers
+- Sub-100ms p99 latency with 99.99% uptime
+
+**Real-time Analytics Dashboard**
+- WebSocket-driven dashboard for 50K+ concurrent users
+- Live data visualization with D3.js
+- Sub-100ms latency for real-time updates
+
+**AuthShield SDK**
+- Zero-trust authentication SDK with biometric support
+- FIDO2 compliance and WebAuthn integration
+- Open source project with 500+ GitHub stars
+
+### EDUCATION
+
+**Bachelor of Science in Computer Science**
+University of Colombo | 2012 — 2016
+
+### CERTIFICATIONS
+
+- AWS Solutions Architect Professional
+- Kubernetes Administrator (CKA)
+- Google Cloud Professional Developer
+
+---
+
+*This is a placeholder resume. Replace this with your actual resume PDF file.*
